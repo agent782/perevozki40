@@ -1,0 +1,16 @@
+{
+  "name": "andkon/yii2kladr",
+  "description": "Widget for yii2 Kladr",
+  "homepage": "https://github.com/andkon13/yii2-klard",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "minimum-stability": "dev",
+  "require": {
+      "bower-asset/jquery.kladr": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "andkon\\yii2kladr\\": ""
+    }
+  }
+}
