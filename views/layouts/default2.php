@@ -243,8 +243,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
         </div>
     </div>
 
+<div style='overflow-x:scroll;overflow-y:hidden;width:auto;'>
         <?= $content ?>
-<!--        <i class="fas fa-truck"></i>perev<img src="/img/icons/wheel.png"/>zki40.ru'-->
+</div>
+    <!--        <i class="fas fa-truck"></i>perev<img src="/img/icons/wheel.png"/>zki40.ru'-->
 </div>
 
 <footer class="container-fluid footer">

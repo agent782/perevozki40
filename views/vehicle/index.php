@@ -268,44 +268,6 @@ $this->registerJs(
         <?php
     endif;
     ?>
-<!--    --><?//= Html::a('Delete selection', ['delete-selection'], ['class' => 'btn btn-success']) ?>
 </div>
 </div>
 
-<!--<script>-->
-<!--    $("document").ready(function(){-->
-<!---->
-<!--        $("input[name='selection[]']").on('click', function () {-->
-<!---->
-<!--            var selection = $("input[name='selection[]']");-->
-<!--            $.each(selection, function(key, value) {-->
-<!---->
-<!--                if(value.checked){-->
-<!--//                alert(value.checked);-->
-<!--                    $('#deleteButton').prop("disabled", false);-->
-<!--                    return false;-->
-<!--                } else {-->
-<!--//                    alert('2');-->
-<!--                    $('#deleteButton').prop("disabled", true);-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
-<!--        $("input[name='selection_all']").on('click', function () {-->
-<!---->
-<!--            var selection = $("input[name='selection[]']");-->
-<!--            $.each(selection, function(key, value) {-->
-<!---->
-<!--                if(!value.checked){-->
-<!--//                alert(value.checked);-->
-<!--                    $('#deleteButton').prop("disabled", false);-->
-<!--                    return false;-->
-<!--                } else {-->
-<!--//                    alert('2');-->
-<!--                    $('#deleteButton').prop("disabled", true);-->
-<!--                }-->
-<!--            });-->
-<!--        });-->
-<!---->
-<!---->
-<!--    });-->
-</script>
