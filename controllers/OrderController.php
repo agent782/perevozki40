@@ -86,9 +86,9 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-        $modelOrder = new Order();
         $session = Yii::$app->session;
-
+        $modelOrder = $session->get('modelOrder');
+        if(!$modelOrder) $modelOrder = new Order();
         switch (Yii::$app->request->post('button')){
             case 'next1':
                 if($modelOrder->load(Yii::$app->request->post())){
@@ -179,6 +179,8 @@ class OrderController extends Controller
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;
                         if($modelOrder->save()) {
+                            $session->remove('route');
+                            $session->remove('modelOrder');
                             return $this->redirect(['client']);
                         }
                         var_dump($modelOrder->getErrors());

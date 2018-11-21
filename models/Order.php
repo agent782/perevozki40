@@ -38,6 +38,7 @@ use yii\helpers\Url;
  * @property integer $id_price_zone_real
  * @property integer $id_user
  * @property integer $id_company
+ * @property integer $id_vehicle
  * @property float $cost
  * @property integer $id_payment
  * @property integer $type_payment
@@ -46,6 +47,7 @@ use yii\helpers\Url;
  * @property string $comment
  * @property string $statusText
  * @property string $paidText
+ * @property string startAndValidDateString
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -62,6 +64,7 @@ class Order extends \yii\db\ActiveRecord
 
     const PAID_NO = 0;
     const PAID_YES = 1;
+    const PAID_PARTIALLY = 2;
 //    const PAID_CANCELED = 2;
 
     public $body_typies;
@@ -90,8 +93,7 @@ class Order extends \yii\db\ActiveRecord
             [['datetime_start', 'valid_datetime', 'type_payment'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
-            [[ 'datetime_access','datetime_finish'],
-//                'date' ,'format' => 'php:d.M.Y H:ii'
+            [[ 'id_vehicle','datetime_access','datetime_finish'],
                 'safe'
             ],
             [['id',   'suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
@@ -108,6 +110,7 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    
     public function attributeLabels()
     {
         return [
@@ -138,7 +141,9 @@ class Order extends \yii\db\ActiveRecord
             'type_payment' => 'Способ оплаты:',
             'status' => 'Статус',
             'statusText' => 'Статус',
-            'paidText' => 'Оплата'
+            'paidText' => 'Оплата',
+            'startAndValidDateString' => 'Дата/время подачи ТС',
+            'create_at' => 'Дата оформления заказа'
         ];
     }
 
@@ -276,8 +281,10 @@ class Order extends \yii\db\ActiveRecord
             }
             if(count($this->loading_typies)) {
                 foreach ($this->loading_typies as $loading_type_id) {
-                    $LoadingType = LoadingType::findOne(['id' => $loading_type_id]);
-                    $this->link('loadingTypies', $LoadingType);
+                    if ($loading_type_id) { //что бы не сохранялся Любой
+                        $LoadingType = LoadingType::findOne(['id' => $loading_type_id]);
+                        $this->link('loadingTypies', $LoadingType);
+                    }
                 }
             }
             if($this->selected_rates) {
@@ -308,6 +315,10 @@ class Order extends \yii\db\ActiveRecord
         return $this->update();
     }
 
+    public function getVehicleType(){
+        return $this->hasOne(VehicleType::className(), ['id' => 'id_vehicle_type']);
+    }
+
     public function getBodyTypies(){
         return $this->hasMany(BodyType::className(), ['id' => 'id_bodytype'])
             ->viaTable('XorderXtypebody', ['id_order' => 'id']);
@@ -325,6 +336,9 @@ class Order extends \yii\db\ActiveRecord
     }
     public function getRealRoute(){
         return $this->hasOne(Route::className(), ['id' => 'id_route_real']);
+    }
+    public function getVehicle(){
+        return $this->hasOne(Vehicle::className(), ['id' => 'id_vehicle']);
     }
 
     public function getStatusText(){
@@ -373,7 +387,22 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function getPaidText(){
-       return ($this->paid_status) ? 'Оплачен' : 'Не оплачен';
+       switch ($this->paid_status){
+           case self::PAID_NO:
+               return 'Не оплачен';
+               break;
+           case self::PAID_NO:
+               return 'Оплачен';
+               break;
+           case self::PAID_NO:
+               return 'Частично оплачен';
+               break;
+       }
+       return null;
+    }
+
+    public function getStartAndValidDateString(){
+        return $this->datetime_start . ' - ' . $this->valid_datetime;
     }
 
 }

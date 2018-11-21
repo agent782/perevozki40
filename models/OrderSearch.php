@@ -52,6 +52,7 @@ class OrderSearch extends Order
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => $sort
         ]);
 
         $this->load($params);
@@ -100,8 +101,16 @@ class OrderSearch extends Order
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ]
         ]);
+        $dataProvider->setSort([
 
+            'defaultOrder' => [
+                'datetime_start' => SORT_DESC
+            ]
+        ]);
         $this->load($params);
 
         if (!$this->validate()) {
