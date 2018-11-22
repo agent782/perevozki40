@@ -122,6 +122,14 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/order/create'
                         ],
                         [
+                            'label' => 'Заказы (Клиент)',
+                            'url' => '/order/client'
+                        ],
+                        [
+                            'label' => 'Заказы (Водитель)',
+                            'url' => '/order/vehicle'
+                        ],
+                        [
                             'label' => 'Договора с клиентами',
                             'url' => '/document',
                             'visible' => Yii::$app->user->can('admin'),
