@@ -33,7 +33,6 @@
         "gietos/dadata": "^1.1",
         "mazurva/yii2-dadata-suggestions": "@dev",
         "phpoffice/phpword": "^0.14.0",
-
         "breadlesscode/office-converter": "^1.0",
         "mnvx/lowrapper": "^1.0",
         "kartik-v/yii2-widget-fileinput": "@dev",
