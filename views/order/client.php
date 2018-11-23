@@ -1,5 +1,7 @@
+
 <?php
-use yii\grid\GridView;
+//use yii\grid\GridView;
+use kartik\grid\GridView;
 use app\models\Order;
 use yii\bootstrap\Html;
 
@@ -18,9 +20,9 @@ var_dump($searchModel->paid_statuses);
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-<!--    --><?php //\yii\widgets\Pjax::begin([
-//            'id' => 'pjax'
-//        ]);
+    <?php \yii\widgets\Pjax::begin([
+            'id' => 'pjax'
+        ]);
 
     ?>
 
@@ -28,86 +30,76 @@ var_dump($searchModel->paid_statuses);
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
+//            [
+//                'attribute' => 'id',
+//                'options' => [
+//                    'style' =>'width: 80px;'
+//                ],
+//            ],
+//            [
+//                'attribute' => 'startAndValidDateString',
+//                'options' => [
+//                    'style' =>'width: 100px;'
+//                ]
+//            ],
             [
-                'attribute' => 'id',
-                'options' => [
-                    'style' =>'width: 80px;'
+                'class' => 'kartik\grid\ExpandRowColumn',
+                'value' => function ($model, $key, $index, $column) {
+
+                    return GridView::ROW_COLLAPSED;
+                },
+
+                'allowBatchToggle'=>true,
+                'detail'=>function ($model) {
+                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
+                },
+                'detailOptions'=>[
+                    'class'=> 'kv-state-enable',
                 ],
-            ],
-            [
-                'attribute' => 'startAndValidDateString',
-                'options' => [
-                    'style' =>'width: 100px;'
-                ]
-            ],
-            [
-                'label' => 'ТС',
-                'format' => 'raw',
-                'value' => function($data){
-                    $bTypies = '';
-                    $lTypies = '';
-                    $return  = $data->vehicleType->type;
-                    $return .= '. ';
-                    foreach ($data->bodyTypies as $bodyType){
-                        $bTypies .=  $bodyType->body . ', ';
-                    }
-                    $bTypies = substr($bTypies, 0, -2) . '. ';
-                    $return .= $bTypies;
-                    if(count($data->loadingTypies)){
-                        foreach ($data->loadingTypies as $loadingType){
-                            $lTypies .= $loadingType->type . ', ';
-                        }
-                        $lTypies = substr($lTypies, 0, -2) . '. ';
-                        $return .= $lTypies;
-                    }
-                    return $return;
-                },
-                'contentOptions' => [
-                    'class' => 'minRoute'
-                ]
-            ],
-            [
-                'label' => 'Маршрут',
-                'format' => 'raw',
-                'value' => function($data){
-                    $route = $data->route;
-                    $return = $route->routeStart . ' - ';
-                    for($i = 1; $i<9; $i++){
-                        $attribute = 'route' . $i;
-                        if($route->$attribute) $return .= '<br>- ' . $route->$attribute;
-                    }
-                    $return .=  '<br>- ' . $route->routeFinish ;
-                    return $return;
-                },
-                'contentOptions' => [
-                    'class' => 'minRoute'
-                ]
-            ],
-//            'vehicleType.type',
-            [
-                'attribute' => 'statusText',
-                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
 
             ],
-            [
-                'label' => 'ТС',
-                'format' => 'raw',
-                'value' => function ($data){
-                    return ($data->vehicle)?
-                        $data->vehicle->regLicense->brand->brand
-                        . ' '
-                        . $data->vehicle->regLicense->reg_number
-                        :'Не назначено'
-                        ;
-                }
-            ],
-            [
-                'attribute' => 'paidText',
-                'filter' => Html::activeCheckboxList($searchModel, 'paid_statuses', [
-                    Order::PAID_NO => 'Не оплачен',
-                    Order::PAID_PARTIALLY => 'Частично оплачен',
-                    Order::PAID_YES => 'Оплачен']),
-            ],
+//            [
+//                'label' => 'Маршрут',
+//                'format' => 'raw',
+//                'value' => function($data){
+//                    $route = $data->route;
+//                    $return = $route->routeStart . ' - ';
+//                    for($i = 1; $i<9; $i++){
+//                        $attribute = 'route' . $i;
+//                        if($route->$attribute) $return .= '<br>- ' . $route->$attribute;
+//                    }
+//                    $return .=  '<br>- ' . $route->routeFinish ;
+//                    return $return;
+//                },
+//                'contentOptions' => [
+//                    'class' => 'minRoute'
+//                ]
+//            ],
+//            'vehicleType.type',
+//            [
+//                'attribute' => 'statusText',
+//                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
+//
+//            ],
+//            [
+//                'label' => 'ТС',
+//                'format' => 'raw',
+//                'value' => function ($data){
+//                    return ($data->vehicle)?
+//                        $data->vehicle->regLicense->brand->brand
+//                        . ' '
+//                        . $data->vehicle->regLicense->reg_number
+//                        :'Не назначено'
+//                        ;
+//                }
+//            ],
+//            [
+//                'attribute' => 'paidText',
+//                'filter' => Html::activeCheckboxList($searchModel, 'paid_statuses', [
+//                    Order::PAID_NO => 'Не оплачен',
+//                    Order::PAID_PARTIALLY => 'Частично оплачен',
+//                    Order::PAID_YES => 'Оплачен']),
+//            ],
 //            'id_vehicle_type',
 //            'tonnage',
 //            'length',
@@ -127,13 +119,13 @@ var_dump($searchModel->paid_statuses);
             // 'datetime_finish:datetime',
             // 'datetime_access:datetime',
 //            'valid_datetime',
-            'create_at',
+//            'create_at',
             // 'id_route',
             // 'id_route_real',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-<!--    --><?php //\yii\widgets\Pjax::end()?>
+    <?php \yii\widgets\Pjax::end()?>
 
 </div>
