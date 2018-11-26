@@ -53,6 +53,20 @@ class OrderController extends Controller
         ]);
     }
 
+    public function actionClient(){
+        $searchModel = new OrderSearch();
+        $dataProvider = $searchModel->searchForClient(Yii::$app->request->queryParams);
+
+        return $this->render('client', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionVehicle(){
+        return $this->render('vehicle');
+    }
+
     /**
      * Displays a single Order model.
      * @param integer $id
@@ -72,9 +86,9 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-        $modelOrder = new Order();
         $session = Yii::$app->session;
-
+        $modelOrder = $session->get('modelOrder');
+        if(!$modelOrder) $modelOrder = new Order();
         switch (Yii::$app->request->post('button')){
             case 'next1':
                 if($modelOrder->load(Yii::$app->request->post())){
@@ -161,12 +175,13 @@ class OrderController extends Controller
 
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
-
                     if($route->save()) {
                         $modelOrder->id_route = $route->id;
+                        $modelOrder->id_user = Yii::$app->user->id;
                         if($modelOrder->save()) {
-                            return $this->redirect(['view', 'id' => $modelOrder->id
-                            ]);
+                            $session->remove('route');
+                            $session->remove('modelOrder');
+                            return $this->redirect(['client']);
                         }
                         var_dump($modelOrder->getErrors());
 

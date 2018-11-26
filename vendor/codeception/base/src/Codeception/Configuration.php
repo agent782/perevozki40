@@ -94,8 +94,7 @@ class Configuration
             'log_incomplete_skipped'    => false,
             'report_useless_tests'      => false,
             'disallow_test_output'      => false,
-            'be_strict_about_changes_to_global_state' => false,
-            'shuffle'     => false,
+            'be_strict_about_changes_to_global_state' => false
         ],
         'coverage'   => [],
         'params'     => [],
@@ -544,7 +543,7 @@ class Configuration
 
         if (!is_writable($dir)) {
             throw new ConfigurationException(
-                "Path for output is not writable. Please, set appropriate access mode for output path: {$dir}"
+                "Path for output is not writable. Please, set appropriate access mode for output path."
             );
         }
 

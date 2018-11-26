@@ -221,11 +221,6 @@ class Symfony extends Framework implements DoctrineProvider, PartedModule
         parent::_after($test);
     }
 
-    public function onReconfigure()
-    {
-        $this->_beforeSuite();
-    }
-
     /**
      * Retrieve Entity Manager.
      *

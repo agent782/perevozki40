@@ -21,6 +21,7 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/loader.css',
+        'css/order.css'
     ];
     public $cssOptions = [
         'type' => 'text/css',

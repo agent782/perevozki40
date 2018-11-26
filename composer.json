@@ -33,14 +33,12 @@
         "gietos/dadata": "^1.1",
         "mazurva/yii2-dadata-suggestions": "@dev",
         "phpoffice/phpword": "^0.14.0",
-        "tecnickcom/tcpdf": "^6.2",
-        "dompdf/dompdf": "@dev",
-        "mpdf/mpdf": "@dev",
         "breadlesscode/office-converter": "^1.0",
         "mnvx/lowrapper": "^1.0",
         "kartik-v/yii2-widget-fileinput": "@dev",
         "kartik-v/yii2-widget-alert": "*",
-        "kartik-v/yii2-widget-growl": "*"
+        "kartik-v/yii2-widget-growl": "*",
+        "kartik-v/yii2-grid": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
