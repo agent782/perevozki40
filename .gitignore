@@ -30,5 +30,5 @@ tests/_output/*
 tests/_support/_generated
 
 /config
-#/web/documents
-#/web/uploads
+#/web/documents/*
+#/web/uploads/*
