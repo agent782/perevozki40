@@ -11,7 +11,6 @@ use yii\bootstrap\Html;
 
 $this->title = 'Заказы (Клиент)';
 $this->params['breadcrumbs'][] = $this->title;
-var_dump($searchModel->paid_statuses);
 ?>
 <div class="order-index">
     <p>
@@ -30,35 +29,38 @@ var_dump($searchModel->paid_statuses);
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-//            [
-//                'attribute' => 'id',
-//                'options' => [
-//                    'style' =>'width: 80px;'
-//                ],
-//            ],
-//            [
-//                'attribute' => 'startAndValidDateString',
-//                'options' => [
-//                    'style' =>'width: 100px;'
-//                ]
-//            ],
             [
                 'class' => 'kartik\grid\ExpandRowColumn',
                 'value' => function ($model, $key, $index, $column) {
 
                     return GridView::ROW_COLLAPSED;
                 },
-
+                'enableRowClick' => true,
                 'allowBatchToggle'=>true,
                 'detail'=>function ($model) {
+//                    return $model->id;
                     return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
                 },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
+//                'detailOptions'=>[
+//                    'class'=> 'kv-state-enable',
+//                ],
 
             ],
+            [
+                'attribute' => 'id',
+                'options' => [
+                    'style' =>'width: 80px;'
+                ],
+            ],
 //            [
+//                'attribute' => 'startAndValidDateString',
+//                'options' => [
+//                    'style' =>'width: 100px;'
+//                ]
+//            ],
+//
+//            [
+////                'class' => 'kartik\grid\ExpandRowColumn',
 //                'label' => 'Маршрут',
 //                'format' => 'raw',
 //                'value' => function($data){
@@ -75,7 +77,7 @@ var_dump($searchModel->paid_statuses);
 //                    'class' => 'minRoute'
 //                ]
 //            ],
-//            'vehicleType.type',
+            'vehicleType.type',
 //            [
 //                'attribute' => 'statusText',
 //                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
