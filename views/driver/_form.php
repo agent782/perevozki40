@@ -39,10 +39,7 @@ use yii\widgets\MaskedInput;
         ])
     ?>
     <?= $form->field($DriverForm, 'address')->textarea(['rows' => 6]) ?>
-<!--    --><?//= $form->field($model, 'passport_id')->textInput() ?>
-<!---->
-<!--    --><?//= $form->field($model, 'license_id')->textInput() ?>
-    <?= $form->field($DriverForm, 'phone')
+\    <?= $form->field($DriverForm, 'phone')
         ->widget(MaskedInput::className(),[
             'mask' => '+7(999)999-99-99',
             'clientOptions'=>[
@@ -136,7 +133,6 @@ use yii\widgets\MaskedInput;
         <?= $form->field($DriverForm, 'photo')->fileInput([
             'id' => 'pathPhoto'
         ]) ?>
-        <!--        --><?//= Html::button('Загрузить', ['class' => 'btn btn', 'id' => 'selectPhoto'])?>
         <?= Html::img(Yii::getAlias(($model->isNewRecord)? '/uploads/photos/drivers/noPhoto.jpg' : '/uploads/photos/drivers/'.$DriverForm->photo), ['id' => 'photoPreview', 'class' => 'profile_photo_min'])?>
     </div>
 

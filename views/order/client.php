@@ -28,6 +28,19 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+//        'bordered' => true,
+//        'striped' => false,
+//        'responsive'=>true,
+//        'floatHeader'=>false,
+        'options' => [
+            'class' => 'minRoute'
+        ],
+//        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
+//        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
+//        'filterRowOptions'=>['class'=>'kartik-sheet-style'],
+//        'persistResize'=>true,
+        'responsiveWrap' => false,
+        'pjax'=>true,
         'columns' => [
             [
                 'class' => 'kartik\grid\ExpandRowColumn',
@@ -41,10 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
 //                    return $model->id;
                     return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
                 },
-//                'detailOptions'=>[
-//                    'class'=> 'kv-state-enable',
-//                ],
-
+                'detailOptions'=>[
+                    'class'=> 'kv-state-enable',
+                ],
             ],
             [
                 'attribute' => 'id',
@@ -52,37 +64,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     'style' =>'width: 80px;'
                 ],
             ],
-//            [
-//                'attribute' => 'startAndValidDateString',
-//                'options' => [
-//                    'style' =>'width: 100px;'
-//                ]
-//            ],
-//
-//            [
-////                'class' => 'kartik\grid\ExpandRowColumn',
-//                'label' => 'Маршрут',
-//                'format' => 'raw',
-//                'value' => function($data){
-//                    $route = $data->route;
-//                    $return = $route->routeStart . ' - ';
-//                    for($i = 1; $i<9; $i++){
-//                        $attribute = 'route' . $i;
-//                        if($route->$attribute) $return .= '<br>- ' . $route->$attribute;
-//                    }
-//                    $return .=  '<br>- ' . $route->routeFinish ;
-//                    return $return;
-//                },
-//                'contentOptions' => [
-//                    'class' => 'minRoute'
-//                ]
-//            ],
+            [
+                'attribute' => 'statusText',
+                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
+
+            ],
+            [
+                'attribute' => 'startAndValidDateString',
+                'options' => [
+//                    'style' =>'width: 100px',
+                ],
+                'contentOptions'=>['style'=>'white-space: normal;']
+            ],
+            [
+                'label' => 'Маршрут',
+                'format' => 'raw',
+                'value' => function($data){
+                    $route = $data->route;
+                    $return = $route->routeStart . ' - ';
+                    for($i = 1; $i<9; $i++){
+                        $attribute = 'route' . $i;
+                        if($route->$attribute) $return .= '<br>- ' . $route->$attribute;
+                    }
+                    $return .=  '<br>- ' . $route->routeFinish ;
+                    return $return;
+                },
+            ],
             'vehicleType.type',
-//            [
-//                'attribute' => 'statusText',
-//                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
-//
-//            ],
+
 //            [
 //                'label' => 'ТС',
 //                'format' => 'raw',
