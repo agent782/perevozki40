@@ -51,8 +51,7 @@ class OrderSearch extends Order
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'sort' => $sort
+            'query' => $query
         ]);
 
         $this->load($params);

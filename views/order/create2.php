@@ -37,7 +37,7 @@ echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
     }
     ?>
 <?=
-Html::a('Отмена', '/order', ['class' => 'btn btn-warning'])
+Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
 ?>
 
 <?= Html::submitButton('Далее', [

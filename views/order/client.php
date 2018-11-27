@@ -58,12 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'=> 'kv-state-enable',
                 ],
             ],
-            [
-                'attribute' => 'id',
-                'options' => [
-                    'style' =>'width: 80px;'
-                ],
-            ],
+
             [
                 'attribute' => 'statusText',
                 'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
@@ -81,12 +76,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function($data){
                     $route = $data->route;
-                    $return = $route->routeStart . ' - ';
+                    $return = $route->startCity . ' -';
                     for($i = 1; $i<9; $i++){
                         $attribute = 'route' . $i;
-                        if($route->$attribute) $return .= '<br>- ' . $route->$attribute;
+                        if($route->$attribute) $return .= '... -';
                     }
-                    $return .=  '<br>- ' . $route->routeFinish ;
+                    $return .=  ' '.$route->finishCity ;
                     return $return;
                 },
             ],
