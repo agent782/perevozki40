@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'=> 'kv-state-enable',
                 ],
             ],
-
+            'id',
             [
                 'attribute' => 'statusText',
                 'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),

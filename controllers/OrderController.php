@@ -64,7 +64,13 @@ class OrderController extends Controller
     }
 
     public function actionVehicle(){
-        return $this->render('vehicle');
+        $searchModel = new OrderSearch();
+        $dataProvider = $searchModel->searchForVehicle(Yii::$app->request->queryParams);
+
+        return $this->render('vehicle', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**

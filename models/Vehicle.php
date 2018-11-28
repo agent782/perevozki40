@@ -318,7 +318,12 @@ class Vehicle extends \yii\db\ActiveRecord
     {
         return $this->hasOne(BodyType::className(), ['id' => 'body_type']);
     }
-
+    //Выбранные тарифы
+    public function getPriceZonesSelect(){
+        return $this->hasMany(PriceZone::className(),['id' => 'id_price_zone'])
+            ->viaTable('XvehicleXpricezone', ['id_vehicle' => 'id']);
+    }
+// Подходящие тарифы
     public static function getPriceZones($modelVehicle, $idVehicleType)
     {
         $result = [];
@@ -479,4 +484,40 @@ class Vehicle extends \yii\db\ActiveRecord
         return $res;
     }
 
+    public function canOrder($Order){
+        if ($this->id_vehicle_type != $Order->id_vehicle_type) return false;
+        $hasPriceZone = 0;
+        foreach ($this->priceZonesSelect as $priceZone){
+            foreach ($Order->priceZones as $pZone){
+                if ($priceZone->id == $pZone->id) $hasPriseZone = 1;
+            }
+        }
+        if(!$hasPriceZone && !$Order->hasBodyType($this->bodyType)) return false;
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK:
+                if(
+                    $this->tonnage >= $Order->tonnage
+                    && $this->length >= $Order->length
+                    && $this->height >= $Order->height
+                    && $this->width >= $Order->width
+//                    && $this->passengers >=$Order->passengers
+                    && $this->volume >= $Order->volume
+                    && $Order->hasLoadingTypies($this->loadingtypes)
+                )
+                    return true;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                if(
+                    $this->passengers >= $Order->passengers
+                )
+                    return true;
+                break;
+            case Vehicle::TYPE_SPEC:
+//                $bodyType = $this->
+                break;
+            default:
+                return false;
+        }
+
+    }
 }
