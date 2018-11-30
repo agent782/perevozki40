@@ -410,17 +410,9 @@ class Order extends \yii\db\ActiveRecord
 
     public function hasBodyType($bodyType){
         foreach ($this->bodyTypies as $bType) {
-            if($bodyType == $bType) return true;
+            if($bodyType->id == $bType->id) return true;
         }
         return false;
-    }
-    public function hasLoadingTypies($loadingTypies){
-        foreach ($loadingTypies as $loadingType){
-            foreach ($this->loadingTypies as $lType) {
-                if($loadingType == $lType) continue;
-                return false;
-            }
-        }
     }
 
 }

@@ -3,12 +3,13 @@
 use kartik\grid\GridView;
 use app\models\Order;
 use yii\bootstrap\Html;
+use app\models\Vehicle;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Заказы (Клиент)';
+$this->title = 'Заказы (Водитель)';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-index">
@@ -85,49 +86,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             'vehicleType.type',
-
-//            [
-//                'label' => 'ТС',
-//                'format' => 'raw',
-//                'value' => function ($data){
-//                    return ($data->vehicle)?
-//                        $data->vehicle->regLicense->brand->brand
-//                        . ' '
-//                        . $data->vehicle->regLicense->reg_number
-//                        :'Не назначено'
-//                        ;
-//                }
-//            ],
-//            [
-//                'attribute' => 'paidText',
-//                'filter' => Html::activeCheckboxList($searchModel, 'paid_statuses', [
-//                    Order::PAID_NO => 'Не оплачен',
-//                    Order::PAID_PARTIALLY => 'Частично оплачен',
-//                    Order::PAID_YES => 'Оплачен']),
-//            ],
-//            'id_vehicle_type',
-//            'tonnage',
-//            'length',
-//            'width',
-            // 'height',
-            // 'volume',
-            // 'longlength',
-            // 'passengers',
-            // 'ep',
-            // 'rp',
-            // 'lp',
-            // 'tonnage_spec',
-            // 'length_spec',
-            // 'volume_spec',
-            // 'cargo:ntext',
-//            'datetime_start',
-            // 'datetime_finish:datetime',
-            // 'datetime_access:datetime',
-//            'valid_datetime',
-//            'create_at',
-            // 'id_route',
-            // 'id_route_real',
-
+            [
+                'label' => 'Подходит для Ваших ТС',
+                'format' => 'raw',
+                'value' => function($model){
+                    $res = '';
+                    $vehicles = \app\models\Vehicle::find()
+                        ->where([
+                            'id_user' => Yii::$app->user->id,
+                            'status' => [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]
+                        ])->all();
+                    if(!count($vehicles)) return;
+                    foreach ($vehicles as $vehicle) {
+                        if ($vehicle->canOrder($model)) {
+                            $res .= $vehicle->regLicense->reg_number . '<br>';
+                        }
+                    }
+                    return $res;
+                }
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

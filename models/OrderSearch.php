@@ -163,15 +163,15 @@ class OrderSearch extends Order
             'status' => [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]
         ]) ->all();
         foreach ($vehicles as $vehicle){
-            $tmpQuery = Order::find();
+            $query->where(['id_vehicle' => $vehicle->id]);
 
-            $tmpQuery->where(['id_vehicle' => $vehicle->id]);
             foreach($newOrders as $newOrder){
                 if ($vehicle->canOrder($newOrder)){
-                    $query->where(['id' => $newOrder->id]);
+                    $tmpQuery = Order::find();
+                    $tmpQuery->where(['id' => $newOrder->id]);
+                    $query->union($tmpQuery);
                 }
             }
-            $query->union($tmpQuery);
         }
 
         // add conditions that should always apply here

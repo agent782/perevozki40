@@ -1,5 +1,8 @@
 
     function UpdatePriceZones() {
+        startLoading();
+        $('#loader').click();
+
         var id_vehicle = $('#id_vehicle').val();
         var veh_type = $('#vehtype');
 
@@ -74,5 +77,7 @@
                 alert('ERROR');
             },
         });
+        endLoading();
+
     }
 

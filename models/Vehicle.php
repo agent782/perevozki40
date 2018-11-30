@@ -487,12 +487,12 @@ class Vehicle extends \yii\db\ActiveRecord
     public function canOrder($Order){
         if ($this->id_vehicle_type != $Order->id_vehicle_type) return false;
         $hasPriceZone = 0;
-        foreach ($this->priceZonesSelect as $priceZone){
-            foreach ($Order->priceZones as $pZone){
-                if ($priceZone->id == $pZone->id) $hasPriseZone = 1;
+        foreach ($Order->priceZones as $priceZone){
+            foreach ($this->priceZonesSelect as $pZone){
+                if ($priceZone->id == $pZone->id) $hasPriceZone = 1;
             }
         }
-        if(!$hasPriceZone && !$Order->hasBodyType($this->bodyType)) return false;
+        if(!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) return false;
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:
                 if(
@@ -502,7 +502,7 @@ class Vehicle extends \yii\db\ActiveRecord
                     && $this->width >= $Order->width
 //                    && $this->passengers >=$Order->passengers
                     && $this->volume >= $Order->volume
-                    && $Order->hasLoadingTypies($this->loadingtypes)
+//                    && $this->hasLoadingTypies($Order->loadingTypies)
                 )
                     return true;
                 break;
@@ -518,6 +518,15 @@ class Vehicle extends \yii\db\ActiveRecord
             default:
                 return false;
         }
-
+        return false;
+    }
+    //ТС имеет все заданные виды погрузки или нет
+    public function hasLoadingTypies($loadingTypies){
+        foreach ($loadingTypies as $loadingType){
+            foreach ($this->loadingtypes as $lType){
+                if ($loadingType != $lType) return false;
+            }
+        }
+        return true;
     }
 }

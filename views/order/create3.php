@@ -9,8 +9,8 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 echo $modelOrder->id_vehicle_type;
 //var_dump($VehicleAttributes);
-//var_dump($modelOrder);
 ?>
+
 <div class="container">
 <h4>Необходимые характеристики ТС и груза.</h4>
 
