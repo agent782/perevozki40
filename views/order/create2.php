@@ -17,8 +17,10 @@ $this->registerJsFile('/js/order.js');
         'enableAjaxValidation' => true,
         'validationUrl' => '/order/validate-order',
     ]);
-echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
+    echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
 
+//    $modelOrder->loading_typies[0] = '2';
+//    var_dump($modelOrder);
 ?>
 
 <?=
@@ -33,11 +35,14 @@ echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
 <?php
     if($LTypies){
        echo $form->field($modelOrder, 'loading_typies[]')->checkboxList(ArrayHelper::map($LTypies, 'id', 'type'),
-            ['id' => 'chkLoadingTypies']);
+            [
+                'id' => 'chkLoadingTypies',
+                'value' => [2]
+            ])->label('Необходимый тип погрузки/выгрузки.')->hint('Выбирайте дополнительные типы погрузки только при необходимости!');
     }
     ?>
 <?=
-Html::a('Отмена', '/order', ['class' => 'btn btn-warning'])
+Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
 ?>
 
 <?= Html::submitButton('Далее', [

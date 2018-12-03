@@ -1,12 +1,15 @@
 Change Log: `yii2-krajee-base`
 ==============================
 
+<<<<<<< HEAD
 ## Version 2.0.3
 
 **Date:** 27-Nov-2018
 
 - (enh #105): Allow global setting of `AssetBundle::bsDependencyEnabled` via `Yii::$app->params`.
 
+=======
+>>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
 ## Version 2.0.2
 
 **Date:** 26-Nov-2018

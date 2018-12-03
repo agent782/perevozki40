@@ -51,7 +51,9 @@ $(document).ready(function () {
                                 SuggestView[i].events.fire('requestsuccess', {
                                     target: SuggestView[i],
                                 })
+
                                 return res;
+
                             });
                     }
                 }
@@ -62,6 +64,8 @@ $(document).ready(function () {
             });
             endLoading();
         }
+
+        function alertObj(o){var s="";for(k in o){s+=k+": "+o[k]+"\r\n";}alert(s);}
 
         $('#but').on('click', function () {
             createRoute();
@@ -101,185 +105,6 @@ $(document).ready(function () {
          * Created by Admin on 30.10.2017.
          */
 
-        $('#typeVehChk').on('change', function () {
-            $('#longlength').hide();
-            $('input:radio[name="Order[longlenth]"]').filter('[value="0"]').prop('checked', true);
-            if ($(this).val() == 1) {
-                $('#typeload').show();
-                $.ajax({
-                    type: 'POST',
-                    url: '/site/ajax-order',
-                    data: {'key': this.id, 'values': $(this).val()},
-                    datatype: 'json',
-                    success: function (res) {
-                        var data = eval(JSON.parse(res));
-                        $('#loadingtype').find('div').remove();
-                        for (var id in data) {
-                            $('#loadingtype').append('<div><label><input name="Order[id_loadingTypes][]" type="checkbox" value=' + id + '> ' + data[id] + '</label></div>');
-                        }
-                    },
-                    error: function (res) {
-                        alert('Ошибка');
-                    },
-                    beforeSend: function () {
-                    },
-                    complete: function () {
-
-                    }
-                })
-            } else {
-                $('#loadingtype').find('div').remove();
-                $('#typeload').hide();
-                $('#longlength').hide();
-            }
-        })
-//    $('#loadingtype').on('change', function (){
-//        $('input:radio[name="Order[longlenth]"]').filter('[value="0"]').prop('checked', true);
-//    })
-        $('#loadingtype, #longlenradio').on('change', function () {
-            var data = [];
-            var lt = $('#loadingtype');
-            var chkd = lt.find('input:checkbox:checked');
-            chkd.each(function () {
-                data.push(this.value);
-            })
-            var longlen = [];
-            var chkdRadio = $('#longlenradio').find('input:radio:checked');
-            chkdRadio.each(function () {
-                longlen.push(this.value);
-            })
-            $('#bodytype').find('div').remove();
-            if (data.length) {
-                $('#longlength').show();
-                $.ajax({
-                    type: 'POST',
-                    url: '/site/ajax-order',
-                    data: {'key': 'loadingtype', 'longlen': longlen, 'values': data},
-                    datatype: 'json',
-                    success: function (res) {
-                        var data = eval(JSON.parse(res));
-                        var count = 0;
-                        for (var id in data) {
-                            $('#bodytype').append('<div><label><input name="Order[id_bodyTypes][]" type="checkbox" value=' + id + '> ' + data[id] + '</label></div>');
-                            count++;
-                        }
-                        (count) ? $('#typebody').show() : $('#typebody').hide();
-                    },
-                    error: function (res) {
-                        alert('Ошибка');
-                    },
-                    beforeSend: function () {
-                    },
-                    complete: function () {
-                    }
-                })
-
-            }
-            else {
-                $('#typebody').hide();
-                $('#longlength').hide();
-                $('#size').hide();
-                $('#date_time').hide();
-                $('#route').hide();
-            }
-        })
-
-        $('#bodytype, #palletradio ').on('change', function () {
-            $('#size').show();
-            $('#route').show();
-            $('#palletEP').attr({type: 'hidden'});
-            $('#palletRP').attr({type: 'hidden'});
-            $('#palletLP').attr({type: 'hidden'});
-            var pallet = [];
-            var chkdRadio = $('#palletradio').find('input:radio:checked');
-
-            chkdRadio.each(function () {
-                pallet.push(this.value);
-            })
-            if (pallet.length) {
-                switch (pallet[0]) {
-                    case '1':
-                        $('#palletEP').attr({type: 'number'});
-                        break;
-                    case '2':
-                        $('#palletRP').attr({type: 'number'});
-                        break;
-                    case '3':
-                        $('#palletLP').attr({type: 'number'});
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            var data = [];
-            var bt = $('#bodytype');
-            var chkd = bt.find('input:checkbox:checked');
-            chkd.each(function () {
-                data.push(this.value);
-            })
-            var longlen = [];
-            var chkdRadio = $('#longlenradio').find('input:radio:checked');
-            chkdRadio.each(function () {
-                longlen.push(this.value);
-            })
-            if (data.length) {
-                $('#size').show();
-                $('#route').show();
-                // $.ajax({
-                //     type: 'POST',
-                //     url: '/site/ajax-order',
-                //     data: {
-                //         'key': 'bodytype',
-                //         'longlen': longlen,
-                //         'values': data,
-                //     },
-                //
-                //     datatype: 'json',
-                //     success: function (res) {
-                //         var data = eval(JSON.parse(res));
-                //         var count = 0;
-                //         for (var id in data) {
-                //             $('#bodytype').append('<div><label><input name="Order[id_bodyTypes][]" type="checkbox" value=' + id + '> ' + data[id] + '</label></div>');
-                //             count++;
-                //         }
-                //         (count) ? $('#typebody').show() : $('#typebody').hide();
-                //     },
-                //     error: function (res) {
-                //         alert('Ошибка');
-                //     },
-                //     beforeSend: function () {
-                //     },
-                //     complete: function () {
-                //     }
-                // });
-
-            }
-            else {
-                // $('#typebody').hide();
-                // $('#longlength').hide();
-                $('#size').hide();
-                $('#date_time').hide();
-                $('#route').hide();
-            }
-        });
-
-        // $('#len').change(function () {
-        //     $.ajax({
-        //         type : 'POST',
-        //         datatype : 'json',
-        //         url : '/order/ajax-change-price_zones',
-        //         data : {
-        //
-        //         },
-        //         success : function (data) {
-        //             alert(data);
-        //         },
-        //         error : function () {
-        //             alert('Error');
-        //         }
-        //     });
-        // })
 
         function createRoute() {
 
@@ -322,7 +147,6 @@ $(document).ready(function () {
                         // }
                         lenRoute = (parseFloat(routes[0].properties.get("distance").value) / 1000);
                         (lenRoute < 1) ? lenRoute = lenRoute.toFixed(1) : lenRoute = lenRoute.toFixed(0);
-
                         $('#len').text(lenRoute).trigger('change');
                         $('#lengthRoute').val(lenRoute);
                         endLoading();
@@ -365,7 +189,7 @@ $(document).ready(function () {
                 }
             });
         }
-        
+
         // ФУНКЦИИ ГЕТТЕРЫ ПОЛЕЙ, ЧЕКБОКСОВ и т.д.
         function getLoadTypes() {
             var ltypes = [];

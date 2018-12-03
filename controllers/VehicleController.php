@@ -384,7 +384,7 @@ class VehicleController extends Controller
                         ;
                         break;
                     case Vehicle::BODY_dump:
-                        return $tonnage;
+//                        return $tonnage;
                         $priceZones = $priceZones
                             ->andFilterWhere(['<=', 'tonnage_min', $tonnage])
                             ->andFilterWhere(['<=', 'volume_min', $volume])

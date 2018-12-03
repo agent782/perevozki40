@@ -17,7 +17,7 @@ use app\models\BodyType;
 use app\models\LoadingType;
 use app\models\PriceZone;
 use yii\helpers\ArrayHelper;
-
+use streltcov\YandexUtils\GeoCoder;
 /**
  * OrderController implements the CRUD actions for Order model.
  */
@@ -45,7 +45,7 @@ class OrderController extends Controller
     public function actionIndex()
     {
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchForClient(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -64,7 +64,13 @@ class OrderController extends Controller
     }
 
     public function actionVehicle(){
-        return $this->render('vehicle');
+        $searchModel = new OrderSearch();
+        $dataProvider = $searchModel->searchForVehicle(Yii::$app->request->queryParams);
+
+        return $this->render('vehicle', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
@@ -172,9 +178,9 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if($modelOrder->load(Yii::$app->request->post())) {
-
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
+//                    return  GeoCoder::search($route->routeStart)->one()->getLocality();
                     if($route->save()) {
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;

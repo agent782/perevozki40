@@ -9,8 +9,8 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 echo $modelOrder->id_vehicle_type;
 //var_dump($VehicleAttributes);
-//var_dump($modelOrder);
 ?>
+
 <div class="container">
 <h4>Необходимые характеристики ТС и груза.</h4>
 
@@ -61,7 +61,7 @@ echo $modelOrder->id_vehicle_type;
     }
 ?>
 
-<?= Html::a('Отмена', '/order', ['class' => 'btn btn-warning']) ?>
+<?= Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning']) ?>
 
 <?= Html::submitButton('Далее', [
     'class' => 'btn btn-success',

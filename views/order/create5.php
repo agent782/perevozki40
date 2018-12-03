@@ -111,10 +111,10 @@ use app\components\widgets\ShowMessageWidget;
 
 <div class="col-lg-12">
     <?=
-        Html::a('Отмена', '/order', ['class' => 'btn btn-warning'])
+        Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
     ?>
 
-    <?= Html::submitButton('Далее', [
+    <?= Html::submitButton('Оформить заказ', [
         'class' => 'btn btn-success',
         'name' => 'button',
         'value' => 'next5'

@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
     )?>
 
     <?=
-    Html::a('Отмена', '/order', ['class' => 'btn btn-warning'])
+    Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
     ?>
 
     <?= Html::submitButton('Далее', [
