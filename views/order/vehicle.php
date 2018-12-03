@@ -13,10 +13,8 @@ $this->title = 'Заказы (Водитель)';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-index">
-    <p>
-        <?= Html::a('Сделать новый заказ', ['create'], ['class' => 'btn btn-lg btn-danger']) ?>
-    </p>
-    <h3><?= Html::encode($this->title) ?></h3>
+
+    <h4><?= Html::encode($this->title) ?></h4>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php \yii\widgets\Pjax::begin([

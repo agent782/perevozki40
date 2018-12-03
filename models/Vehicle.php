@@ -502,7 +502,7 @@ class Vehicle extends \yii\db\ActiveRecord
                     && $this->width >= $Order->width
 //                    && $this->passengers >=$Order->passengers
                     && $this->volume >= $Order->volume
-//                    && $this->hasLoadingTypies($Order->loadingTypies)
+                    && $this->hasLoadingTypies($Order->loadingTypies)
                 )
                     return true;
                 break;
@@ -523,9 +523,11 @@ class Vehicle extends \yii\db\ActiveRecord
     //ТС имеет все заданные виды погрузки или нет
     public function hasLoadingTypies($loadingTypies){
         foreach ($loadingTypies as $loadingType){
+            $hasLoadingType = 0;
             foreach ($this->loadingtypes as $lType){
-                if ($loadingType != $lType) return false;
+                if ($loadingType->id == $lType->id) $hasLoadingType = 1;
             }
+            if(!$hasLoadingType) return false;
         }
         return true;
     }
