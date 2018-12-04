@@ -135,7 +135,7 @@ class Order extends \yii\db\ActiveRecord
             'datetime_start' => 'Дата и время подачи ТС.',
             'datetime_finish' => 'Дата и время завершения заказа.',
             'datetime_access' => 'Дата и  время подтверждения Заказчиком.',
-            'valid_datetime' => 'Крайний срок подачи ТС по заказу',
+            'valid_datetime' => 'Выполнять поиск ТС до:',
             'id_route' => 'Id маршруты',
             'id_route_real' => 'Id реального маршрута',
             'type_payment' => 'Способ оплаты:',
@@ -293,6 +293,19 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
+
+            Yii::$app->db->createCommand('
+                CREATE EVENT IF NOT EXISTS cancel_order_'
+                . $this->id .
+                ' ON SCHEDULE AT (FROM_UNIXTIME ('.
+                $this->valid_datetime
+                . '))
+                DO
+                UPDATE Orders SET status = '
+                . Order::STATUS_EXPIRED
+                . ' WHERE id = '. $this->id
+            )->query();
+
             functions::setFlashSuccess('Заказ добавлен в список заказов.');
             parent::afterSave($insert, $changedAttributes);
 

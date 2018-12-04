@@ -61,7 +61,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             [
                 'attribute' => 'statusText',
-                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
+                'filter' => Html::activeCheckboxList($searchModel, 'statuses',
+                    \app\models\Order::getStatusesArray()),
 
             ],
             [
