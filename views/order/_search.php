@@ -11,11 +11,11 @@ use yii\widgets\ActiveForm;
 <div class="order-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
+        'action' => ['client'],
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id_service') ?>
+    <?= $form->field($model, 'id') ?>
 
     <?= $form->field($model, 'id_vehicle_type') ?>
 
