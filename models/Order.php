@@ -7,6 +7,7 @@ use FontLib\Table\Type\post;
 use Yii;
 use app\components\DateBehaviors;
 use yii\helpers\Url;
+use
 
 /**
  * This is the model class for table "Orders".
@@ -305,6 +306,19 @@ class Order extends \yii\db\ActiveRecord
                 . Order::STATUS_EXPIRED
                 . ' WHERE id = '. $this->id
             )->query();
+
+            functions::sendEmail(
+                Yii::$app->user->identity->email,
+                null,
+                'Заказ №'.$this->id.' офоррмлен.',
+                [
+                    'modelOrder' => $this
+                ],
+                [
+                    'html' => 'views/Order/newOrder_html',
+                    'text' => 'views/Order/newOrder_text'
+                ]
+            );
 
             functions::setFlashSuccess('Заказ добавлен в список заказов.');
             parent::afterSave($insert, $changedAttributes);
