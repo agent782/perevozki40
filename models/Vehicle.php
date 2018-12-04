@@ -500,7 +500,7 @@ class Vehicle extends \yii\db\ActiveRecord
                     && $this->length >= $Order->length
                     && $this->height >= $Order->height
                     && $this->width >= $Order->width
-//                    && $this->passengers >=$Order->passengers
+                    && $this->passengers >=$Order->passengers
                     && $this->volume >= $Order->volume
                     && $this->hasLoadingTypies($Order->loadingTypies)
                 )
@@ -509,11 +509,48 @@ class Vehicle extends \yii\db\ActiveRecord
             case Vehicle::TYPE_PASSENGER:
                 if(
                     $this->passengers >= $Order->passengers
+                    && $this->tonnage >= $Order->tonnage
                 )
                     return true;
                 break;
             case Vehicle::TYPE_SPEC:
-//                $bodyType = $this->
+                switch ($this->body_type){
+                    case Vehicle::BODY_dump:
+                        if(
+                            $this->tonnage >= $Order->tonnage
+                            &&$this->volume >= $Order->volume
+                        )
+                            return true;
+                        break;
+                    case Vehicle::BODY_crane:
+                        if(
+                            $this->tonnage_spec >= $Order->tonnage_spec
+                            && $this->length_spec >= $Order->length_spec
+                        )
+                            return true;
+                        break;
+                    case Vehicle::BODY_manipulator:
+                        if(
+                            $this->tonnage >= $Order->tonnage
+                            && $this->length >= $Order->length
+                            && $this->tonnage_spec >= $Order->tonnage_spec
+                            && $this->length_spec >= $Order->length_spec
+                        )
+                            return true;
+                        break;
+                    case Vehicle::BODY_excavator:
+                        if(
+                            $this->volume_spec >= $Order->volume_spec
+                        )
+                            return true;
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        if(
+                            $this->volume_spec >= $Order->volume_spec
+                        )
+                            return true;
+                        break;
+                }
                 break;
             default:
                 return false;
