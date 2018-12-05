@@ -294,7 +294,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
-
+// Создание myaql события на изменение статуса заказа на просрочен при достижении времени valid_datetime
             Yii::$app->db->createCommand('
                 CREATE EVENT IF NOT EXISTS cancel_order_'
                 . $this->id .
@@ -302,14 +302,20 @@ class Order extends \yii\db\ActiveRecord
                 $this->valid_datetime
                 . '))
                 DO
-                UPDATE Orders SET status = '
+                UPDATE Orders SET status = IF(status = '
+                . Order::STATUS_NEW . ' OR status = '
+                . Order::STATUS_IN_PROCCESSING . ', '
                 . Order::STATUS_EXPIRED
+                . ', status)'
                 . ' WHERE id = '. $this->id
             )->query();
 
             functions::sendEmail(
-                Yii::$app->user->identity->email,
-                null,
+                [
+                    Yii::$app->user->identity->email,
+                    Yii::$app->params['logistEmail']['email']
+                ],
+                Yii::$app->params['logistEmail'],
                 'Заказ №'.$this->id.' офоррмлен.',
                 [
                     'modelOrder' => $this
@@ -378,7 +384,7 @@ class Order extends \yii\db\ActiveRecord
                 $res = 'Не принят';
                 break;
             case self::STATUS_EXPIRED:
-                $res = 'Просрочен';
+                $res = 'ТС не найдено';
                 break;
             case self::STATUS_IN_PROCCESSING:
                 $res = 'В обработке';

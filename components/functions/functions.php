@@ -91,7 +91,7 @@ class functions
 
         if(is_array($to)){
             foreach ($to as $item){
-                $mes->setTo($item['email'])->send();
+                $mes->setTo($item)->send();
             }
             return;
         } else {

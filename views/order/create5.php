@@ -36,10 +36,11 @@ use app\components\widgets\ShowMessageWidget;
             'convertFormat' => true,
             'value'=> date("d.m.Y H:i",time()),
             'pluginOptions' => [
-                'format' => 'd.M.yyyy H:i',
+                'format' => 'dd.M.yyyy H:i',
                 'autoclose'=>true,
                 'weekStart'=>1, //неделя начинается с понедельника
-                'startDate' => date('d.m.Y H:i',  time()), //самая ранняя возможная дата
+                'startDate' => date('d.m.Y H:i',  time() + 60*60), //самая ранняя возможная дата
+//                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
                 'todayBtn'=>true, //снизу кнопка "сегодня",
 
             ],
@@ -50,14 +51,15 @@ use app\components\widgets\ShowMessageWidget;
             'name' => 'dp_2',
             //        'type' => DateTimePicker::TYPE_INPUT,
             'options' => ['placeholder' => 'Ввод даты/времени...'],
-            'convertFormat' => false,
+            'convertFormat' => true,
 
             'value'=> date("d.m.Y H:i",time()),
             'pluginOptions' => [
-                'format' => 'dd.mm.yyyy H:i',
+                'format' => 'dd.M.yyyy H:i',
                 'autoclose'=>true,
                 'weekStart'=>1, //неделя начинается с понедельника
-                'startDate' => date('d.m.Y H:i',  time()), //самая ранняя возможная дата
+                'startDate' => date('d.m.Y H:i',  time() + 60*10), //самая ранняя возможная дата
+//                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
                 'todayBtn'=>true, //снизу кнопка "сегодня"
             ]
         ])
