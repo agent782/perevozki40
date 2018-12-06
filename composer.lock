@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "045194fcd3036b74d103b7b00da47c17",
-    "content-hash": "00769ee6db5b4e2f788c2f717721cfb2",
+    "hash": "c6a0d2dc9a7f0dd323c663e340fd3029",
+    "content-hash": "814650c140d9af5996aaa4f297bd43e6",
     "packages": [
         {
             "name": "3ch3r46/bootui-datetimepicker",
@@ -1028,12 +1028,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-grid.git",
-                "reference": "5fdfcfc2c7cd285411d97e4ab4baae508d6d896a"
+                "reference": "13dd1d66909de3320f14e1343392ebe551b5d5e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/5fdfcfc2c7cd285411d97e4ab4baae508d6d896a",
-                "reference": "5fdfcfc2c7cd285411d97e4ab4baae508d6d896a",
+                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/13dd1d66909de3320f14e1343392ebe551b5d5e2",
+                "reference": "13dd1d66909de3320f14e1343392ebe551b5d5e2",
                 "shasum": ""
             },
             "require": {
@@ -1072,7 +1072,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2018-11-20 04:15:55"
+            "time": "2018-12-05 14:43:41"
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -2424,6 +2424,53 @@
                 "yii2"
             ],
             "time": "2018-02-09 14:02:04"
+        },
+        {
+            "name": "yii2tech/crontab",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yii2tech/crontab.git",
+                "reference": "594f8039307ff5e9ee325b0d2b714a68f23df0d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yii2tech/crontab/zipball/594f8039307ff5e9ee325b0d2b714a68f23df0d6",
+                "reference": "594f8039307ff5e9ee325b0d2b714a68f23df0d6",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii2tech\\crontab\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Klimov",
+                    "email": "klimov.paul@gmail.com"
+                }
+            ],
+            "description": "Crontab support extension for the Yii2 framework",
+            "keywords": [
+                "cron",
+                "cronjob",
+                "crontab",
+                "yii2"
+            ],
+            "time": "2017-11-03 15:43:19"
         },
         {
             "name": "yiisoft/yii2",

@@ -18,6 +18,8 @@ use app\models\LoadingType;
 use app\models\PriceZone;
 use yii\helpers\ArrayHelper;
 use streltcov\YandexUtils\GeoCoder;
+use yii2tech\crontab\CronJob;
+use yii2tech\crontab\CronTab;
 /**
  * OrderController implements the CRUD actions for Order model.
  */
@@ -92,6 +94,19 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
+        $cronJob = new CronJob();
+        $cronJob->min = '5';
+//        $cronJob->hour = '11';
+        $cronJob->command = Yii::getAlias('@app/yii cron/monitoring-expired-orders');
+
+        $cronTab = new CronTab();
+        $cronTab->setJobs([
+            $cronJob
+        ]);
+//        $cronTab->username = 'denis';
+        $cronTab->apply();
+        $cronTab->removeAll();
+
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
         if(!$modelOrder) $modelOrder = new Order();
@@ -272,4 +287,5 @@ return 'error';
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
+
 }
