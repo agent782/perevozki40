@@ -21,29 +21,34 @@ class CronController extends Controller
     public function actionMonitoringExpiredOrders(){
         $setting = Setting::find()->one();
         if(!$setting->FLAG_EXPIRED_ORDER) {
-            $setting->FLAG_EXPIRED_ORDER = 1;
-            if($setting->save()) echo 'y'; else echo 'n';
+
             $orders = Order::find()
                 ->where(['status' => Order::STATUS_EXPIRED])
                 ->andWhere(['FLAG_SEND_EMAIL_STATUS_EXPIRED'=>0])
                 ->all();
+
             foreach ($orders as $order) {
-//                functions::sendEmail(
-//                    Yii::$app->user->identity->email,
-//                    null,
-//                    'Заказ №' . $order->id . '. Машина не найдена.',
-//                    ['modelOrder' => $order],
-//                    [
-//                        'html' => 'views/Order/expiredOrder_html',
-//                        'text' => 'views/Order/expiredOrder_text'
-//                    ]
-//                );
-                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
+
+                functions::sendEmail(
+                    Yii::$app->user->identity->email,
+                    null,
+                    'Заказ №' . $order->id . '. Машина не найдена.',
+                    ['modelOrder' => $order],
+                    [
+                        'html' => 'views/Order/expiredOrder_html',
+                        'text' => 'views/Order/expiredOrder_text'
+                    ]
+                );
+//                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 $order->scenario = $order::SCENARIO_UPDATE_STATUS;
                 $order->save();
+//                $order->update();
+                echo $order->id . "\r\n";
             }
-
-
+            $setting->FLAG_EXPIRED_ORDER = 1;
+//            if($setting->save()) echo 'y'; else echo 'n';
         }
     }
+
+
 }
