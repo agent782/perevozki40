@@ -8,6 +8,7 @@
 
 namespace app\commands;
 
+use app\models\User;
 use Yii;
 use app\components\functions\functions;
 use app\models\Order;
@@ -28,25 +29,29 @@ class CronController extends Controller
                 ->all();
 
             foreach ($orders as $order) {
-
+                $user = User::find()->where(['id' => $order->id_user])->one();
                 functions::sendEmail(
-                    Yii::$app->user->identity->email,
+                    $user->email,
                     null,
                     'Заказ №' . $order->id . '. Машина не найдена.',
-                    ['modelOrder' => $order],
+                    [
+                        'order' => $order,
+                        'user' => $user
+                    ],
                     [
                         'html' => 'views/Order/expiredOrder_html',
                         'text' => 'views/Order/expiredOrder_text'
                     ]
                 );
-//                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
+                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 $order->scenario = $order::SCENARIO_UPDATE_STATUS;
                 $order->save();
 //                $order->update();
-                echo $order->id . "\r\n";
+//                echo $order->id . "\r\n";
             }
             $setting->FLAG_EXPIRED_ORDER = 1;
-//            if($setting->save()) echo 'y'; else echo 'n';
+//            $setting->save();
+            if($setting->save()) echo 'y'; else echo 'n';
         }
     }
 

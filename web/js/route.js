@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     endLoading();
 
-    startLoading();
+    // startLoading();
     var lenRoute = 0;
     var nRoutes = 0;
     var myMap;

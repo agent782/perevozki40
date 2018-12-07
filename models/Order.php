@@ -311,7 +311,7 @@ class Order extends \yii\db\ActiveRecord
                 ' ON SCHEDULE AT (FROM_UNIXTIME ('.
                 $this->valid_datetime
                 . '))
-                DO
+                DO BEGIN
                 UPDATE Orders 
                 SET status = IF(status = '
                 . Order::STATUS_NEW . ' OR status = '
@@ -319,7 +319,11 @@ class Order extends \yii\db\ActiveRecord
                 . Order::STATUS_EXPIRED
                 . ', status), 
                 FLAG_SEND_EMAIL_STATUS_EXPIRED = 0 '
-                . ' WHERE id = '. $this->id . ';'
+                . ' WHERE id = '. $this->id
+                . ';
+                UPDATE setting 
+                SET FLAG_EXPIRED_ORDER = 0;
+                END;'
 
             )->query();
 
