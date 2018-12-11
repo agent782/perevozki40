@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Сделать новый заказ', ['create'], ['class' => 'btn btn-lg btn-danger']) ?>
     </p>
     <h3><?= Html::encode($this->title) ?></h3>
-    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+<!--    --><?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php \yii\widgets\Pjax::begin([
             'id' => 'pjax'
@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => $dataProviderNewOrders,
         'filterModel' => $searchModel,
 //        'bordered' => true,
 //        'striped' => false,
@@ -58,15 +58,23 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'=> 'kv-state-enable',
                 ],
             ],
-            'id',
+            'id_user',
+            [
+                'attribute' => 'id',
+                'options' => [
+                    'style' => 'width:80px;'
+                ]
+            ],
             [
                 'attribute' => 'statusText',
                 'filter' => Html::activeCheckboxList($searchModel, 'statuses',
                     \app\models\Order::getStatusesArray()),
-
+                'options' => [
+                    'style' => 'width:150px;'
+                ]
             ],
             [
-                'attribute' => 'startAndValidDateString',
+                'attribute' => 'datetime_start',
                 'options' => [
 //                    'style' =>'width: 100px',
                 ],
@@ -86,49 +94,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $return;
                 },
             ],
+            [
+                'attribute' => 'shortInfoForClient',
+                'format' => 'raw'
+            ],
             'vehicleType.type',
-
-//            [
-//                'label' => 'ТС',
-//                'format' => 'raw',
-//                'value' => function ($data){
-//                    return ($data->vehicle)?
-//                        $data->vehicle->regLicense->brand->brand
-//                        . ' '
-//                        . $data->vehicle->regLicense->reg_number
-//                        :'Не назначено'
-//                        ;
-//                }
-//            ],
-//            [
-//                'attribute' => 'paidText',
-//                'filter' => Html::activeCheckboxList($searchModel, 'paid_statuses', [
-//                    Order::PAID_NO => 'Не оплачен',
-//                    Order::PAID_PARTIALLY => 'Частично оплачен',
-//                    Order::PAID_YES => 'Оплачен']),
-//            ],
-//            'id_vehicle_type',
-//            'tonnage',
-//            'length',
-//            'width',
-            // 'height',
-            // 'volume',
-            // 'longlength',
-            // 'passengers',
-            // 'ep',
-            // 'rp',
-            // 'lp',
-            // 'tonnage_spec',
-            // 'length_spec',
-            // 'volume_spec',
-            // 'cargo:ntext',
-//            'datetime_start',
-            // 'datetime_finish:datetime',
-            // 'datetime_access:datetime',
-//            'valid_datetime',
-//            'create_at',
-            // 'id_route',
-            // 'id_route_real',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

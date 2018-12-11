@@ -28,6 +28,22 @@ use yii\helpers\Url;
  * @property double $length_spec
  * @property double $volume_spec
  * @property string $cargo
+ * @property integer $real_body_type
+ * @property array $real_loading_typies
+ * @property double $real_tonnage
+ * @property double $real_length
+ * @property double $real_width
+ * @property double $real_height
+ * @property double $real_volume
+ * @property integer $real_longlength
+ * @property integer $real_passengers
+ * @property integer $real_ep
+ * @property integer $real_rp
+ * @property integer $real_lp
+ * @property double $real_tonnage_spec
+ * @property double $real_length_spec
+ * @property double $real_volume_spec
+ * @property string $real_cargo
  * @property integer $datetime_start
  * @property integer $datetime_finish
  * @property integer $datetime_access
@@ -48,7 +64,6 @@ use yii\helpers\Url;
  * @property string $comment
  * @property string $statusText
  * @property string $paidText
- * @property string $startAndValidDateString
  * @property integer $FLAG_SEND_EMAIL_STATUS_EXPIRED
  */
 class Order extends \yii\db\ActiveRecord
@@ -153,7 +168,6 @@ class Order extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'statusText' => 'Статус',
             'paidText' => 'Оплата',
-            'startAndValidDateString' => 'Дата/время подачи ТС',
             'create_at' => 'Дата оформления заказа'
         ];
     }
@@ -454,10 +468,6 @@ class Order extends \yii\db\ActiveRecord
        return null;
     }
 
-    public function getStartAndValidDateString(){
-        return $this->datetime_start . ' - ' . $this->valid_datetime;
-    }
-
     public function hasBodyType($bodyType){
         foreach ($this->bodyTypies as $bType) {
             if($bodyType->id == $bType->id) return true;
@@ -465,6 +475,73 @@ class Order extends \yii\db\ActiveRecord
         return false;
     }
 
+    public function getShortInfoForClient(){
+        $return = $this->vehicleType->type;
+
+        $bTypies = ' (';
+        if($this->status == self::STATUS_CONFIRMED_VEHICLE
+            || $this->status == self::STATUS_CONFIRMED_CLIENT
+        ){
+
+        }
+        else {
+            foreach ($this->bodyTypies as $bodyType) {
+                $bTypies .= $bodyType->body . ', ';
+            }
+            $bTypies = substr($bTypies, 0, -2);
+            $return .= $bTypies . '). <br>';
+
+            switch ($this->id_vehicle_type) {
+                case Vehicle::TYPE_TRUCK:
+                    $return .= $this->tonnage . ' тонн(ы). ';
+                    $return .= ($this->length)?$this->length. ' * ':'--.  * ';
+                    $return .= ($this->height)?$this->height. ' * ':'-- * ';
+                    $return .= ($this->width)?$this->width:'--';
+                    $return .= ' (Д*В*Ш). ';
+                    $return .= 'Объем: ';
+                    $return .= ($this->volume)?$this->volume.' м3':'--';
+                    $return .= ($this->longlength)?' Груз-длинномер.':'';
+                    $lTypies = 'Погрузка/разгрузка: ';
+                    $return .= "<br>";
+                    foreach ($this->loadingTypies as $loadingType) {
+                        $lTypies .= $loadingType->type . ', ';
+                    }
+                    $lTypies = substr($lTypies, 0, -2) . '.';
+                    $return .= $lTypies;
+                    break;
+                case Vehicle::TYPE_PASSENGER:
+                    $return .= $this->passengers . ' пассажира(ов)';
+                    break;
+
+                case Vehicle::TYPE_SPEC:
+                    switch ($this->bodyTypies[0]->id) {
+                        case Vehicle::BODY_manipulator:
+                            $return .= $this->tonnage . ' тонн(ы). ';
+                            $return .= 'Стрела: ';
+                            $return .= ($this->tonnage_spec)?$this->tonnage_spec . ' т., ': '--, ';
+                            $return .= ($this->length_spec)?$this->length_spec . ' м.': '--';
+                            break;
+                        case Vehicle::BODY_dump:
+                            $return .= $this->tonnage . ' тонн(ы). ';
+                            $return .= $this->volume . ' м3. ';
+                            break;
+                        case Vehicle::BODY_crane:
+
+                            break;
+                        case Vehicle::BODY_excavator:
+
+                            break;
+                        case Vehicle::BODY_excavator_loader:
+
+                            break;
+                    }
+                    break;
+            }
+
+        }
+
+        return $return;
+    }
 }
 
 

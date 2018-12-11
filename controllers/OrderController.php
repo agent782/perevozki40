@@ -57,11 +57,10 @@ class OrderController extends Controller
 
     public function actionClient(){
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->searchForClient(Yii::$app->request->queryParams);
-
+        $dataProviderNewOrders = $searchModel->searchForClientNEWOrders(Yii::$app->request->queryParams);
         return $this->render('client', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProviderNewOrders' => $dataProviderNewOrders,
         ]);
     }
 
@@ -202,7 +201,7 @@ class OrderController extends Controller
                             $session->remove('modelOrder');
                             return $this->redirect(['client']);
                         }
-                        var_dump($modelOrder->getErrors());
+//                        var_dump($modelOrder->getErrors());
 
                         return 'error_save_order';
                     }
