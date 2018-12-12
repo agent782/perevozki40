@@ -824,7 +824,6 @@ class ApplicationTest extends TestCase
         $this->assertStringMatchesFormatFile(self::$fixturesPath.'/application_renderexception_linebreaks.txt', $tester->getDisplay(true), '->renderException() keep multiple line breaks');
     }
 
-<<<<<<< HEAD
     public function testRenderAnonymousException()
     {
         $application = new Application();
@@ -850,14 +849,11 @@ class ApplicationTest extends TestCase
         $this->assertContains('Dummy type "@anonymous" is invalid.', $tester->getDisplay(true));
     }
 
-=======
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
     public function testRenderExceptionStackTraceContainsRootException()
     {
         $application = new Application();
         $application->setAutoExit(false);
         $application->register('foo')->setCode(function () {
-<<<<<<< HEAD
             throw new class('') extends \InvalidArgumentException {
             };
         });
@@ -876,15 +872,6 @@ class ApplicationTest extends TestCase
 
         $tester->run(array('command' => 'foo'), array('decorated' => false));
         $this->assertContains('Dummy type "@anonymous" is invalid.', $tester->getDisplay(true));
-=======
-            throw new \Exception('Verbose exception');
-        });
-
-        $tester = new ApplicationTester($application);
-        $tester->run(array('command' => 'foo'), array('decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE));
-
-        $this->assertContains(sprintf('() at %s:', __FILE__), $tester->getDisplay());
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
     }
 
     public function testRun()

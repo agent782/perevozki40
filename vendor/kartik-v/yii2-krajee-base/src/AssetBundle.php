@@ -4,11 +4,7 @@
  * @package   yii2-krajee-base
  * @author    Kartik Visweswaran <kartikv2@gmail.com>
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
-<<<<<<< HEAD
- * @version   2.0.3
-=======
- * @version   2.0.2
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
+ * @version   2.0.4
  */
 
 namespace kartik\base;
@@ -30,11 +26,7 @@ class AssetBundle extends BaseAssetBundle implements BootstrapInterface
     /**
      * @var bool whether to enable the dependency with yii2 bootstrap asset bundle (depending on [[bsVersion]])
      */
-<<<<<<< HEAD
     public $bsDependencyEnabled;
-=======
-    public $bsDependencyEnabled = true;
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
 
     /**
      * @var bool whether the bootstrap JS plugins are to be loaded and enabled
@@ -54,12 +46,9 @@ class AssetBundle extends BaseAssetBundle implements BootstrapInterface
      */
     public function init()
     {
-<<<<<<< HEAD
         if (!isset($this->bsDependencyEnabled)) {
             $this->bsDependencyEnabled = ArrayHelper::getValue(Yii::$app->params, 'bsDependencyEnabled', true);
         }
-=======
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
         if ($this->bsDependencyEnabled) {
             $this->initBsAssets();
         }

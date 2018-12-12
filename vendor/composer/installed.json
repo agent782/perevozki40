@@ -737,65 +737,6 @@
         ]
     },
     {
-        "name": "egulias/email-validator",
-        "version": "2.1.6",
-        "version_normalized": "2.1.6.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/egulias/EmailValidator.git",
-            "reference": "0578b32b30b22de3e8664f797cf846fc9246f786"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/0578b32b30b22de3e8664f797cf846fc9246f786",
-            "reference": "0578b32b30b22de3e8664f797cf846fc9246f786",
-            "shasum": ""
-        },
-        "require": {
-            "doctrine/lexer": "^1.0.1",
-            "php": ">= 5.5"
-        },
-        "require-dev": {
-            "dominicsayers/isemail": "dev-master",
-            "phpunit/phpunit": "^4.8.35||^5.7||^6.0",
-            "satooshi/php-coveralls": "^1.0.1"
-        },
-        "suggest": {
-            "ext-intl": "PHP Internationalization Libraries are required to use the SpoofChecking validation"
-        },
-        "time": "2018-09-25 20:47:26",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Egulias\\EmailValidator\\": "EmailValidator"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Eduardo Gulias Davis"
-            }
-        ],
-        "description": "A library for validating emails against several RFCs",
-        "homepage": "https://github.com/egulias/EmailValidator",
-        "keywords": [
-            "email",
-            "emailvalidation",
-            "emailvalidator",
-            "validation",
-            "validator"
-        ]
-    },
-    {
         "name": "ezyang/htmlpurifier",
         "version": "v4.10.0",
         "version_normalized": "4.10.0.0",
@@ -4418,7 +4359,6 @@
             "url": "https://api.github.com/repos/php-fig/log/zipball/6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
             "reference": "6c001f1daafa3a3ac1d8ff69ee4db8e799a654dd",
             "shasum": ""
-<<<<<<< HEAD
         },
         "require": {
             "php": ">=5.3.0"
@@ -4570,7 +4510,7 @@
                 "dev-master": "1.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "kartik\\dialog\\": "src"
@@ -4597,111 +4537,6 @@
             "modal",
             "yii2"
         ]
-    },
-    {
-        "name": "kartik-v/yii2-grid",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/kartik-v/yii2-grid.git",
-            "reference": "5fdfcfc2c7cd285411d97e4ab4baae508d6d896a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/5fdfcfc2c7cd285411d97e4ab4baae508d6d896a",
-            "reference": "5fdfcfc2c7cd285411d97e4ab4baae508d6d896a",
-            "shasum": ""
-        },
-        "require": {
-            "kartik-v/yii2-dialog": "~1.0"
-        },
-        "suggest": {
-            "kartik-v/yii2-mpdf": "For exporting grids to PDF"
-        },
-        "time": "2018-11-20 04:15:55",
-        "type": "yii2-extension",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.2.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "kartik\\grid\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Kartik Visweswaran",
-                "email": "kartikv2@gmail.com",
-                "homepage": "http://www.krajee.com/"
-            }
-        ],
-        "description": "Yii 2 GridView on steroids. Various enhancements and utilities for the Yii 2.0 GridView widget.",
-        "homepage": "https://github.com/kartik-v/yii2-grid",
-        "keywords": [
-            "extension",
-            "grid",
-            "widget",
-            "yii2"
-        ]
-    },
-    {
-        "name": "symfony/process",
-        "version": "v3.4.19",
-        "version_normalized": "3.4.19.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/process.git",
-            "reference": "abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/process/zipball/abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2",
-            "reference": "abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.5.9|>=7.0.8"
-        },
-        "time": "2018-11-20 16:10:26",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.4-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Process\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Process Component",
-        "homepage": "https://symfony.com"
     },
     {
         "name": "ralouphie/getallheaders",
@@ -4746,101 +4581,32 @@
         "description": "A polyfill for getallheaders."
     },
     {
-        "name": "guzzlehttp/psr7",
-        "version": "1.5.0",
-        "version_normalized": "1.5.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/guzzle/psr7.git",
-            "reference": "53662d6688033a5eccde987bdd5a4a98ebe2d952"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/psr7/zipball/53662d6688033a5eccde987bdd5a4a98ebe2d952",
-            "reference": "53662d6688033a5eccde987bdd5a4a98ebe2d952",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0",
-            "psr/http-message": "~1.0",
-            "ralouphie/getallheaders": "^2.0.5"
-        },
-        "provide": {
-            "psr/http-message-implementation": "1.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
-        },
-        "time": "2018-12-03 05:07:51",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.5-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "GuzzleHttp\\Psr7\\": "src/"
-            },
-            "files": [
-                "src/functions_include.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Michael Dowling",
-                "email": "mtdowling@gmail.com",
-                "homepage": "https://github.com/mtdowling"
-            },
-            {
-                "name": "Tobias Schultze",
-                "homepage": "https://github.com/Tobion"
-            }
-        ],
-        "description": "PSR-7 message implementation that also provides common utility methods",
-        "keywords": [
-            "http",
-            "message",
-            "psr-7",
-            "request",
-            "response",
-            "stream",
-            "uri",
-            "url"
-        ]
-    },
-    {
         "name": "kartik-v/yii2-krajee-base",
-        "version": "v2.0.3",
-        "version_normalized": "2.0.3.0",
+        "version": "v2.0.4",
+        "version_normalized": "2.0.4.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-krajee-base.git",
-            "reference": "11896b44c3d70666b057c9153f2f77aeeb078ff6"
+            "reference": "ec7fc2c5ed76ee29c939ed6fe33bab76eb25499c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/11896b44c3d70666b057c9153f2f77aeeb078ff6",
-            "reference": "11896b44c3d70666b057c9153f2f77aeeb078ff6",
+            "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/ec7fc2c5ed76ee29c939ed6fe33bab76eb25499c",
+            "reference": "ec7fc2c5ed76ee29c939ed6fe33bab76eb25499c",
             "shasum": ""
         },
         "suggest": {
             "yiisoft/yii2-bootstrap": "for Krajee extensions to work with Bootstrap 3.x version",
             "yiisoft/yii2-bootstrap4": "for Krajee extensions to work with Bootstrap 4.x version"
         },
-        "time": "2018-11-27 03:22:26",
+        "time": "2018-12-04 03:40:27",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.0.x-dev"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "kartik\\base\\": "src"
@@ -5023,30 +4789,13 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "7.4-dev"
-=======
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "time": "2018-11-20 15:27:04",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
-<<<<<<< HEAD
             "classmap": [
                 "src/"
             ]
-=======
-            "psr-4": {
-                "Psr\\Log\\": "Psr/Log/"
-            }
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -5054,7 +4803,6 @@
         ],
         "authors": [
             {
-<<<<<<< HEAD
                 "name": "Sebastian Bergmann",
                 "email": "sebastian@phpunit.de",
                 "role": "lead"
@@ -5099,88 +4847,6 @@
         "autoload": {
             "psr-4": {
                 "Codeception\\PHPUnit\\": "src\\"
-=======
-                "name": "PHP-FIG",
-                "homepage": "http://www.php-fig.org/"
-            }
-        ],
-        "description": "Common interface for logging libraries",
-        "homepage": "https://github.com/php-fig/log",
-        "keywords": [
-            "log",
-            "psr",
-            "psr-3"
-        ]
-    },
-    {
-        "name": "codeception/base",
-        "version": "2.4.5",
-        "version_normalized": "2.4.5.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/Codeception/base.git",
-            "reference": "5044443f200843218353b061c942857a62ceca9b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/Codeception/base/zipball/5044443f200843218353b061c942857a62ceca9b",
-            "reference": "5044443f200843218353b061c942857a62ceca9b",
-            "shasum": ""
-        },
-        "require": {
-            "behat/gherkin": "^4.4.0",
-            "codeception/phpunit-wrapper": "^6.0.9|^7.0.6",
-            "codeception/stub": "^2.0",
-            "ext-json": "*",
-            "ext-mbstring": "*",
-            "guzzlehttp/psr7": "~1.0",
-            "php": ">=5.6.0 <8.0",
-            "symfony/browser-kit": ">=2.7 <5.0",
-            "symfony/console": ">=2.7 <5.0",
-            "symfony/css-selector": ">=2.7 <5.0",
-            "symfony/dom-crawler": ">=2.7 <5.0",
-            "symfony/event-dispatcher": ">=2.7 <5.0",
-            "symfony/finder": ">=2.7 <5.0",
-            "symfony/yaml": ">=2.7 <5.0"
-        },
-        "require-dev": {
-            "codeception/specify": "~0.3",
-            "facebook/graph-sdk": "~5.3",
-            "flow/jsonpath": "~0.2",
-            "monolog/monolog": "~1.8",
-            "pda/pheanstalk": "~3.0",
-            "php-amqplib/php-amqplib": "~2.4",
-            "predis/predis": "^1.0",
-            "squizlabs/php_codesniffer": "~2.0",
-            "symfony/process": ">=2.7 <5.0",
-            "vlucas/phpdotenv": "^2.4.0"
-        },
-        "suggest": {
-            "aws/aws-sdk-php": "For using AWS Auth in REST module and Queue module",
-            "codeception/phpbuiltinserver": "Start and stop PHP built-in web server for your tests",
-            "codeception/specify": "BDD-style code blocks",
-            "codeception/verify": "BDD-style assertions",
-            "flow/jsonpath": "For using JSONPath in REST module",
-            "league/factory-muffin": "For DataFactory module",
-            "league/factory-muffin-faker": "For Faker support in DataFactory module",
-            "phpseclib/phpseclib": "for SFTP option in FTP Module",
-            "stecman/symfony-console-completion": "For BASH autocompletion",
-            "symfony/phpunit-bridge": "For phpunit-bridge support"
-        },
-        "time": "2018-08-01 07:46:24",
-        "bin": [
-            "codecept"
-        ],
-        "type": "library",
-        "extra": {
-            "branch-alias": []
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Codeception\\": "src\\Codeception",
-                "Codeception\\Extension\\": "ext"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -5189,7 +4855,6 @@
         ],
         "authors": [
             {
-<<<<<<< HEAD
                 "name": "Davert",
                 "email": "davert.php@resend.cc"
             }
@@ -5227,74 +4892,31 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-                "name": "Michael Bodnarchuk",
-                "email": "davert@mail.ua",
-                "homepage": "http://codegyre.com"
-            }
-        ],
-        "description": "BDD-style testing framework",
-        "homepage": "http://codeception.com/",
-        "keywords": [
-            "BDD",
-            "TDD",
-            "acceptance testing",
-            "functional testing",
-            "unit testing"
-        ]
-    },
-    {
-        "name": "kartik-v/yii2-dialog",
-        "version": "v1.0.5",
-        "version_normalized": "1.0.5.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/kartik-v/yii2-dialog.git",
-            "reference": "c38616d719f52530749457c022ca6134d0ad31ce"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-dialog/zipball/c38616d719f52530749457c022ca6134d0ad31ce",
-            "reference": "c38616d719f52530749457c022ca6134d0ad31ce",
-            "shasum": ""
-        },
-        "require": {
-            "kartik-v/yii2-krajee-base": ">=2.0.0"
-        },
-        "time": "2018-10-09 08:08:51",
-        "type": "yii2-extension",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0.x-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
-<<<<<<< HEAD
                 "Symfony\\Component\\DomCrawler\\": ""
             },
             "exclude-from-classmap": [
                 "/Tests/"
             ]
-=======
-                "kartik\\dialog\\": "src"
-            }
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
-            "BSD-3-Clause"
+            "MIT"
         ],
         "authors": [
             {
-                "name": "Kartik Visweswaran",
-                "email": "kartikv2@gmail.com",
-                "homepage": "http://www.krajee.com/"
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
             }
         ],
-<<<<<<< HEAD
         "description": "Symfony DomCrawler Component",
         "homepage": "https://symfony.com"
     },
@@ -5329,194 +4951,15 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-        "description": "An asset bundle for bootstrap3-dialog for Yii 2.0 framework.",
-        "homepage": "https://github.com/kartik-v/yii2-dialog",
-        "keywords": [
-            "alert",
-            "bootstrap",
-            "dialog",
-            "extension",
-            "modal",
-            "yii2"
-        ]
-    },
-    {
-        "name": "kartik-v/yii2-grid",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/kartik-v/yii2-grid.git",
-            "reference": "5fdfcfc2c7cd285411d97e4ab4baae508d6d896a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/5fdfcfc2c7cd285411d97e4ab4baae508d6d896a",
-            "reference": "5fdfcfc2c7cd285411d97e4ab4baae508d6d896a",
-            "shasum": ""
-        },
-        "require": {
-            "kartik-v/yii2-dialog": "~1.0"
-        },
-        "suggest": {
-            "kartik-v/yii2-mpdf": "For exporting grids to PDF"
-        },
-        "time": "2018-11-20 04:15:55",
-        "type": "yii2-extension",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.2.x-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
-<<<<<<< HEAD
                 "Symfony\\Component\\BrowserKit\\": ""
             },
             "exclude-from-classmap": [
                 "/Tests/"
-            ]
-=======
-                "kartik\\grid\\": "src"
-            }
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Kartik Visweswaran",
-                "email": "kartikv2@gmail.com",
-                "homepage": "http://www.krajee.com/"
-            }
-        ],
-        "description": "Yii 2 GridView on steroids. Various enhancements and utilities for the Yii 2.0 GridView widget.",
-        "homepage": "https://github.com/kartik-v/yii2-grid",
-        "keywords": [
-            "extension",
-            "grid",
-            "widget",
-            "yii2"
-        ]
-    },
-    {
-        "name": "streltcov/yandex-geocoder",
-        "version": "0.8",
-        "version_normalized": "0.8.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/streltcov/yandex-geocoder.git",
-            "reference": "c224bce23a7b17051e6a8d58ac2e5463a66a16b5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/streltcov/yandex-geocoder/zipball/c224bce23a7b17051e6a8d58ac2e5463a66a16b5",
-            "reference": "c224bce23a7b17051e6a8d58ac2e5463a66a16b5",
-            "shasum": ""
-        },
-        "require-dev": {
-            "phpunit/phpunit": "^7.2"
-        },
-        "time": "2018-08-28 05:07:34",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "streltcov\\": "",
-                "streltcov\\YandexUtils\\": "",
-                "streltcov\\geocoder\\": "src",
-                "streltcov\\geocoder\\traits\\": "/src/traits",
-                "streltcov\\geocoder\\collections\\": "/src/collections",
-                "streltcov\\geocoder\\bin\\": "/src/bin",
-                "streltcov\\geocoder\\components\\": "/src/components",
-                "streltcov\\geocoder\\errors\\": "/src/errors",
-                "streltcov\\geocoder\\interfaces\\": "/src/interfaces"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "authors": [
-            {
-                "name": "Peter Streltsov",
-                "email": "streltsov83@yandex.ru"
-            }
-        ],
-<<<<<<< HEAD
-        "description": "Symfony BrowserKit Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/contracts",
-        "version": "v1.0.1",
-        "version_normalized": "1.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/contracts.git",
-            "reference": "3edf0ab943d1985a356721952cba36ff31bd6e5f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/contracts/zipball/3edf0ab943d1985a356721952cba36ff31bd6e5f",
-            "reference": "3edf0ab943d1985a356721952cba36ff31bd6e5f",
-=======
-        "keywords": [
-            "geocoder",
-            "geolocation",
-            "yandex"
-        ]
-    },
-    {
-        "name": "symfony/process",
-        "version": "v3.4.19",
-        "version_normalized": "3.4.19.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/process.git",
-            "reference": "abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/process/zipball/abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2",
-            "reference": "abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2",
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.1.3"
-        },
-        "require-dev": {
-            "psr/cache": "^1.0",
-            "psr/container": "^1.0"
-        },
-        "suggest": {
-            "psr/cache": "When using the Cache contracts",
-            "psr/container": "When using the Service contracts",
-            "symfony/cache-contracts-implementation": "",
-            "symfony/service-contracts-implementation": "",
-            "symfony/translation-contracts-implementation": ""
-        },
-<<<<<<< HEAD
-        "time": "2018-11-24 09:35:08",
-=======
-        "time": "2018-11-20 16:10:26",
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.0-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Contracts\\": ""
-            },
-            "exclude-from-classmap": [
-                "**/Tests/"
             ]
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -5525,27 +4968,18 @@
         ],
         "authors": [
             {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
             },
             {
                 "name": "Symfony Community",
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "A set of abstractions extracted out of the Symfony components",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "abstractions",
-            "contracts",
-            "decoupling",
-            "interfaces",
-            "interoperability",
-            "standards"
-        ]
+        "description": "Symfony BrowserKit Component",
+        "homepage": "https://symfony.com"
     },
     {
-<<<<<<< HEAD
         "name": "symfony/console",
         "version": "v4.2.0",
         "version_normalized": "4.2.0.0",
@@ -5588,102 +5022,12 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-        "name": "kartik-v/yii2-krajee-base",
-        "version": "v2.0.2",
-        "version_normalized": "2.0.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/kartik-v/yii2-krajee-base.git",
-            "reference": "e23b914399c77df45123d1ac848cf129f0d3d740"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/e23b914399c77df45123d1ac848cf129f0d3d740",
-            "reference": "e23b914399c77df45123d1ac848cf129f0d3d740",
-            "shasum": ""
-        },
-        "suggest": {
-            "yiisoft/yii2-bootstrap": "for Krajee extensions to work with Bootstrap 3.x version",
-            "yiisoft/yii2-bootstrap4": "for Krajee extensions to work with Bootstrap 4.x version"
-        },
-        "time": "2018-11-26 06:13:21",
-        "type": "yii2-extension",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.0.x-dev"
-            }
-        },
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "kartik\\base\\": "src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "authors": [
-            {
-                "name": "Kartik Visweswaran",
-                "email": "kartikv2@gmail.com",
-                "homepage": "http://www.krajee.com/"
-            }
-        ],
-        "description": "Base library and foundation components for all Yii2 Krajee extensions.",
-        "homepage": "https://github.com/kartik-v/yii2-krajee-base",
-        "keywords": [
-            "base",
-            "extension",
-            "foundation",
-            "krajee",
-            "widget",
-            "yii2"
-        ]
-    },
-    {
-        "name": "symfony/dom-crawler",
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/dom-crawler.git",
-            "reference": "a9f533524dcc3970a2c06ee1ec0bba35d3f5910e"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/a9f533524dcc3970a2c06ee1ec0bba35d3f5910e",
-            "reference": "a9f533524dcc3970a2c06ee1ec0bba35d3f5910e",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.1.3",
-            "symfony/polyfill-ctype": "~1.8",
-            "symfony/polyfill-mbstring": "~1.0"
-        },
-        "require-dev": {
-            "symfony/css-selector": "~3.4|~4.0"
-        },
-        "suggest": {
-            "symfony/css-selector": ""
-        },
-        "time": "2018-11-26 10:26:29",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-<<<<<<< HEAD
                 "Symfony\\Component\\Console\\": ""
-=======
-                "Symfony\\Component\\DomCrawler\\": ""
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             },
             "exclude-from-classmap": [
                 "/Tests/"
@@ -5703,7 +5047,6 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-<<<<<<< HEAD
         "description": "Symfony Console Component",
         "homepage": "https://symfony.com"
     },
@@ -5730,52 +5073,12 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-        "description": "Symfony DomCrawler Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/browser-kit",
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/browser-kit.git",
-            "reference": "1c4e2f368a09cd33bf4b6e4a4a32b361a16ef1db"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/browser-kit/zipball/1c4e2f368a09cd33bf4b6e4a4a32b361a16ef1db",
-            "reference": "1c4e2f368a09cd33bf4b6e4a4a32b361a16ef1db",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.1.3",
-            "symfony/dom-crawler": "~3.4|~4.0"
-        },
-        "require-dev": {
-            "symfony/css-selector": "~3.4|~4.0",
-            "symfony/process": "~3.4|~4.0"
-        },
-        "suggest": {
-            "symfony/process": ""
-        },
-        "time": "2018-11-26 10:26:29",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-<<<<<<< HEAD
                 "Symfony\\Component\\CssSelector\\": ""
-=======
-                "Symfony\\Component\\BrowserKit\\": ""
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             },
             "exclude-from-classmap": [
                 "/Tests/"
@@ -5787,13 +5090,10 @@
         ],
         "authors": [
             {
-<<<<<<< HEAD
                 "name": "Jean-François Simon",
                 "email": "jeanfrancois.simon@sensiolabs.com"
             },
             {
-=======
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
                 "name": "Fabien Potencier",
                 "email": "fabien@symfony.com"
             },
@@ -5802,7 +5102,6 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-<<<<<<< HEAD
         "description": "Symfony CssSelector Component",
         "homepage": "https://symfony.com"
     },
@@ -5819,46 +5118,19 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/9b788b5f7cd6be22918f3d18ee3ff0a78e060137",
             "reference": "9b788b5f7cd6be22918f3d18ee3ff0a78e060137",
-=======
-        "description": "Symfony BrowserKit Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/console",
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/console.git",
-            "reference": "c74f4d1988dfcd8760273e53551694da32b056d0"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/console/zipball/c74f4d1988dfcd8760273e53551694da32b056d0",
-            "reference": "c74f4d1988dfcd8760273e53551694da32b056d0",
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3",
-<<<<<<< HEAD
             "symfony/contracts": "^1.0"
         },
         "conflict": {
             "symfony/dependency-injection": "<3.4"
-=======
-            "symfony/polyfill-mbstring": "~1.0"
-        },
-        "conflict": {
-            "symfony/dependency-injection": "<3.4",
-            "symfony/process": "<3.3"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
         },
         "require-dev": {
             "psr/log": "~1.0",
             "symfony/config": "~3.4|~4.0",
             "symfony/dependency-injection": "~3.4|~4.0",
-<<<<<<< HEAD
             "symfony/expression-language": "~3.4|~4.0",
             "symfony/stopwatch": "~3.4|~4.0"
         },
@@ -5871,39 +5143,16 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-            "symfony/event-dispatcher": "~3.4|~4.0",
-            "symfony/lock": "~3.4|~4.0",
-            "symfony/process": "~3.4|~4.0"
-        },
-        "suggest": {
-            "psr/log-implementation": "For using the console logger",
-            "symfony/event-dispatcher": "",
-            "symfony/lock": "",
-            "symfony/process": ""
-        },
-        "time": "2018-11-26 14:00:40",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-<<<<<<< HEAD
                 "Symfony\\Component\\EventDispatcher\\": ""
-=======
-                "Symfony\\Component\\Console\\": ""
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             },
             "exclude-from-classmap": [
                 "/Tests/"
             ]
-<<<<<<< HEAD
-=======
         },
         "notification-url": "https://packagist.org/downloads/",
         "license": [
@@ -5919,66 +5168,6 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Console Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/css-selector",
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/css-selector.git",
-            "reference": "9e4dc57949853315561f0cd5eb84d0707465502a"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/css-selector/zipball/9e4dc57949853315561f0cd5eb84d0707465502a",
-            "reference": "9e4dc57949853315561f0cd5eb84d0707465502a",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.1.3"
-        },
-        "time": "2018-11-11 19:51:29",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
-            }
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\CssSelector\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-<<<<<<< HEAD
-=======
-                "name": "Jean-François Simon",
-                "email": "jeanfrancois.simon@sensiolabs.com"
-            },
-            {
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-<<<<<<< HEAD
         "description": "Symfony EventDispatcher Component",
         "homepage": "https://symfony.com"
     },
@@ -5995,115 +5184,21 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/finder/zipball/e53d477d7b5c4982d0e1bfd2298dbee63d01441d",
             "reference": "e53d477d7b5c4982d0e1bfd2298dbee63d01441d",
-=======
-        "description": "Symfony CssSelector Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/event-dispatcher",
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/event-dispatcher.git",
-            "reference": "8b93ce06506d58485893e2da366767dcc5390862"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/8b93ce06506d58485893e2da366767dcc5390862",
-            "reference": "8b93ce06506d58485893e2da366767dcc5390862",
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             "shasum": ""
         },
         "require": {
             "php": "^7.1.3"
         },
-<<<<<<< HEAD
         "time": "2018-11-11 19:52:12",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-        "conflict": {
-            "symfony/dependency-injection": "<3.4"
-        },
-        "require-dev": {
-            "psr/log": "~1.0",
-            "symfony/config": "~3.4|~4.0",
-            "symfony/dependency-injection": "~3.4|~4.0",
-            "symfony/expression-language": "~3.4|~4.0",
-            "symfony/stopwatch": "~3.4|~4.0"
-        },
-        "suggest": {
-            "symfony/dependency-injection": "",
-            "symfony/http-kernel": ""
-        },
-        "time": "2018-11-26 10:26:29",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-<<<<<<< HEAD
-=======
-                "Symfony\\Component\\EventDispatcher\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony EventDispatcher Component",
-        "homepage": "https://symfony.com"
-    },
-    {
-        "name": "symfony/finder",
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/finder.git",
-            "reference": "68fbdcafe915db67adb13fddaec4532e684f6689"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/finder/zipball/68fbdcafe915db67adb13fddaec4532e684f6689",
-            "reference": "68fbdcafe915db67adb13fddaec4532e684f6689",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.1.3"
-        },
-        "time": "2018-11-11 19:51:29",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
                 "Symfony\\Component\\Finder\\": ""
             },
             "exclude-from-classmap": [
@@ -6129,7 +5224,6 @@
     },
     {
         "name": "symfony/yaml",
-<<<<<<< HEAD
         "version": "v4.2.0",
         "version_normalized": "4.2.0.0",
         "source": {
@@ -6141,19 +5235,6 @@
             "type": "zip",
             "url": "https://api.github.com/repos/symfony/yaml/zipball/c41175c801e3edfda90f32e292619d10c27103d7",
             "reference": "c41175c801e3edfda90f32e292619d10c27103d7",
-=======
-        "version": "v4.1.8",
-        "version_normalized": "4.1.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/yaml.git",
-            "reference": "fe87e3b24d15ec8948f0280ee867a65ca44fdbaa"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/fe87e3b24d15ec8948f0280ee867a65ca44fdbaa",
-            "reference": "fe87e3b24d15ec8948f0280ee867a65ca44fdbaa",
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             "shasum": ""
         },
         "require": {
@@ -6169,19 +5250,11 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-<<<<<<< HEAD
         "time": "2018-11-11 19:52:12",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "4.2-dev"
-=======
-        "time": "2018-11-11 19:51:29",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "4.1-dev"
->>>>>>> df1a21e84a73f0fb0e15ac53c3cc5acf88287564
             }
         },
         "installation-source": "dist",
@@ -6209,5 +5282,355 @@
         ],
         "description": "Symfony Yaml Component",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "streltcov/yandex-geocoder",
+        "version": "0.8",
+        "version_normalized": "0.8.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/streltcov/yandex-geocoder.git",
+            "reference": "c224bce23a7b17051e6a8d58ac2e5463a66a16b5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/streltcov/yandex-geocoder/zipball/c224bce23a7b17051e6a8d58ac2e5463a66a16b5",
+            "reference": "c224bce23a7b17051e6a8d58ac2e5463a66a16b5",
+            "shasum": ""
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^7.2"
+        },
+        "time": "2018-08-28 05:07:34",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "streltcov\\": "",
+                "streltcov\\YandexUtils\\": "",
+                "streltcov\\geocoder\\": "src",
+                "streltcov\\geocoder\\traits\\": "/src/traits",
+                "streltcov\\geocoder\\collections\\": "/src/collections",
+                "streltcov\\geocoder\\bin\\": "/src/bin",
+                "streltcov\\geocoder\\components\\": "/src/components",
+                "streltcov\\geocoder\\errors\\": "/src/errors",
+                "streltcov\\geocoder\\interfaces\\": "/src/interfaces"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "authors": [
+            {
+                "name": "Peter Streltsov",
+                "email": "streltsov83@yandex.ru"
+            }
+        ],
+        "keywords": [
+            "geocoder",
+            "geolocation",
+            "yandex"
+        ]
+    },
+    {
+        "name": "symfony/process",
+        "version": "v3.4.20",
+        "version_normalized": "3.4.20.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/process.git",
+            "reference": "abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/process/zipball/abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2",
+            "reference": "abb46b909dd6ba0b50e10d4c10ffe6ee96dd70f2",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.5.9|>=7.0.8"
+        },
+        "time": "2018-11-20 16:10:26",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.4-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Component\\Process\\": ""
+            },
+            "exclude-from-classmap": [
+                "/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Fabien Potencier",
+                "email": "fabien@symfony.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "Symfony Process Component",
+        "homepage": "https://symfony.com"
+    },
+    {
+        "name": "guzzlehttp/psr7",
+        "version": "1.5.2",
+        "version_normalized": "1.5.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/guzzle/psr7.git",
+            "reference": "9f83dded91781a01c63574e387eaa769be769115"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/guzzle/psr7/zipball/9f83dded91781a01c63574e387eaa769be769115",
+            "reference": "9f83dded91781a01c63574e387eaa769be769115",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0",
+            "psr/http-message": "~1.0",
+            "ralouphie/getallheaders": "^2.0.5"
+        },
+        "provide": {
+            "psr/http-message-implementation": "1.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
+        },
+        "time": "2018-12-04 20:46:45",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.5-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "GuzzleHttp\\Psr7\\": "src/"
+            },
+            "files": [
+                "src/functions_include.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Michael Dowling",
+                "email": "mtdowling@gmail.com",
+                "homepage": "https://github.com/mtdowling"
+            },
+            {
+                "name": "Tobias Schultze",
+                "homepage": "https://github.com/Tobion"
+            }
+        ],
+        "description": "PSR-7 message implementation that also provides common utility methods",
+        "keywords": [
+            "http",
+            "message",
+            "psr-7",
+            "request",
+            "response",
+            "stream",
+            "uri",
+            "url"
+        ]
+    },
+    {
+        "name": "symfony/contracts",
+        "version": "v1.0.2",
+        "version_normalized": "1.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/symfony/contracts.git",
+            "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/symfony/contracts/zipball/1aa7ab2429c3d594dd70689604b5cf7421254cdf",
+            "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.1.3"
+        },
+        "require-dev": {
+            "psr/cache": "^1.0",
+            "psr/container": "^1.0"
+        },
+        "suggest": {
+            "psr/cache": "When using the Cache contracts",
+            "psr/container": "When using the Service contracts",
+            "symfony/cache-contracts-implementation": "",
+            "symfony/service-contracts-implementation": "",
+            "symfony/translation-contracts-implementation": ""
+        },
+        "time": "2018-12-05 08:06:11",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Symfony\\Contracts\\": ""
+            },
+            "exclude-from-classmap": [
+                "**/Tests/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Nicolas Grekas",
+                "email": "p@tchwork.com"
+            },
+            {
+                "name": "Symfony Community",
+                "homepage": "https://symfony.com/contributors"
+            }
+        ],
+        "description": "A set of abstractions extracted out of the Symfony components",
+        "homepage": "https://symfony.com",
+        "keywords": [
+            "abstractions",
+            "contracts",
+            "decoupling",
+            "interfaces",
+            "interoperability",
+            "standards"
+        ]
+    },
+    {
+        "name": "egulias/email-validator",
+        "version": "2.1.7",
+        "version_normalized": "2.1.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/egulias/EmailValidator.git",
+            "reference": "709f21f92707308cdf8f9bcfa1af4cb26586521e"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/709f21f92707308cdf8f9bcfa1af4cb26586521e",
+            "reference": "709f21f92707308cdf8f9bcfa1af4cb26586521e",
+            "shasum": ""
+        },
+        "require": {
+            "doctrine/lexer": "^1.0.1",
+            "php": ">= 5.5"
+        },
+        "require-dev": {
+            "dominicsayers/isemail": "dev-master",
+            "phpunit/phpunit": "^4.8.35||^5.7||^6.0",
+            "satooshi/php-coveralls": "^1.0.1"
+        },
+        "suggest": {
+            "ext-intl": "PHP Internationalization Libraries are required to use the SpoofChecking validation"
+        },
+        "time": "2018-12-04 22:38:24",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Egulias\\EmailValidator\\": "EmailValidator"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Eduardo Gulias Davis"
+            }
+        ],
+        "description": "A library for validating emails against several RFCs",
+        "homepage": "https://github.com/egulias/EmailValidator",
+        "keywords": [
+            "email",
+            "emailvalidation",
+            "emailvalidator",
+            "validation",
+            "validator"
+        ]
+    },
+    {
+        "name": "kartik-v/yii2-grid",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/kartik-v/yii2-grid.git",
+            "reference": "13dd1d66909de3320f14e1343392ebe551b5d5e2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/13dd1d66909de3320f14e1343392ebe551b5d5e2",
+            "reference": "13dd1d66909de3320f14e1343392ebe551b5d5e2",
+            "shasum": ""
+        },
+        "require": {
+            "kartik-v/yii2-dialog": "~1.0"
+        },
+        "suggest": {
+            "kartik-v/yii2-mpdf": "For exporting grids to PDF"
+        },
+        "time": "2018-12-05 14:43:41",
+        "type": "yii2-extension",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "3.2.x-dev"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "kartik\\grid\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Kartik Visweswaran",
+                "email": "kartikv2@gmail.com",
+                "homepage": "http://www.krajee.com/"
+            }
+        ],
+        "description": "Yii 2 GridView on steroids. Various enhancements and utilities for the Yii 2.0 GridView widget.",
+        "homepage": "https://github.com/kartik-v/yii2-grid",
+        "keywords": [
+            "extension",
+            "grid",
+            "widget",
+            "yii2"
+        ]
     }
 ]
