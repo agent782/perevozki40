@@ -115,14 +115,6 @@ EOF;
         }
     }
 
-    /**
-     * @throws ModuleConfigException
-     */
-    public function onReconfigure()
-    {
-        $this->retrieveEntityManager();
-    }
-
     protected function retrieveEntityManager()
     {
         if ($this->dependentModule) {
@@ -163,9 +155,7 @@ EOF;
         }
         if ($this->config['cleanup'] && $this->em->getConnection()->isTransactionActive()) {
             try {
-                while ($this->em->getConnection()->getTransactionNestingLevel() > 0) {
-                    $this->em->getConnection()->rollback();
-                }
+                $this->em->getConnection()->rollback();
                 $this->debugSection('Database', 'Transaction cancelled; all changes reverted.');
             } catch (\PDOException $e) {
             }

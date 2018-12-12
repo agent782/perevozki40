@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c6a0d2dc9a7f0dd323c663e340fd3029",
+    "hash": "96c70890e2889e84dfea3faded31ee58",
     "content-hash": "814650c140d9af5996aaa4f297bd43e6",
     "packages": [
         {
@@ -4041,6 +4041,7 @@
         {
             "name": "phpunit/phpunit",
 <<<<<<< HEAD
+<<<<<<< HEAD
             "version": "7.4.5",
             "source": {
                 "type": "git",
@@ -4053,16 +4054,24 @@
                 "reference": "61d34e8dd6eb3555900f0f2a2fa9e7e570730102",
 =======
             "version": "7.5.0",
+=======
+            "version": "7.5.1",
+>>>>>>> 5a70af3d849aec0ac96c689f3276f4a3d05c8f13
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "520723129e2b3fc1dc4c0953e43c9d40e1ecb352"
+                "reference": "c23d78776ad415d5506e0679723cb461d71f488f"
             },
             "dist": {
                 "type": "zip",
+<<<<<<< HEAD
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/520723129e2b3fc1dc4c0953e43c9d40e1ecb352",
                 "reference": "520723129e2b3fc1dc4c0953e43c9d40e1ecb352",
 >>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
+=======
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c23d78776ad415d5506e0679723cb461d71f488f",
+                "reference": "c23d78776ad415d5506e0679723cb461d71f488f",
+>>>>>>> 5a70af3d849aec0ac96c689f3276f4a3d05c8f13
                 "shasum": ""
             },
             "require": {
@@ -4138,10 +4147,14 @@
                 "xunit"
             ],
 <<<<<<< HEAD
+<<<<<<< HEAD
             "time": "2018-12-03 05:01:24"
 =======
             "time": "2018-12-07 07:08:12"
 >>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
+=======
+            "time": "2018-12-12 07:20:32"
+>>>>>>> 5a70af3d849aec0ac96c689f3276f4a3d05c8f13
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

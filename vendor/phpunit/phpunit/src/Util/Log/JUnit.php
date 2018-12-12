@@ -290,15 +290,22 @@ class JUnit extends Printer implements TestListener
      */
     public function startTest(Test $test): void
     {
+<<<<<<< HEAD
         if (!$test instanceof TestCase) {
             return;
+=======
+        $usesDataprovider = false;
+
+        if (\method_exists($test, 'usesDataProvider')) {
+            $usesDataprovider = $test->usesDataProvider();
+>>>>>>> 5a70af3d849aec0ac96c689f3276f4a3d05c8f13
         }
 
         $testCase = $this->document->createElement('testcase');
         $testCase->setAttribute('name', $test->getName());
 
         $class      = new ReflectionClass($test);
-        $methodName = $test->getName(!$test->usesDataProvider());
+        $methodName = $test->getName(!$usesDataprovider);
 
         if ($class->hasMethod($methodName)) {
             $method = $class->getMethod($methodName);

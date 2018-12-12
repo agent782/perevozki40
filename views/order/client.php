@@ -98,6 +98,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'shortInfoForClient',
                 'format' => 'raw'
             ],
+            [
+                'label' => 'Поиск ТС до:',
+                'attribute' => 'valid_datetime'
+            ],
             'vehicleType.type',
 
             ['class' => 'yii\grid\ActionColumn'],
