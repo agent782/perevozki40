@@ -12,6 +12,8 @@
 
     $this->title = Html::encode('Личный кабинет')
 ?>
+<?= Yii::getAlias('@app')?>
+<br>
 <?= $modelUser->id . " - " . key(Yii::$app->authManager->getRolesByUser($modelUser->id))?>
 <!--<?//= $modelUser->profile->getRolesToString()?>-->
     <br>

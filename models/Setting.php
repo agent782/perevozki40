@@ -11,6 +11,7 @@ use Yii;
  * @property integer $last_num_contract
  * @property integer $id_our_company
  * @property string $noPhotoPath
+ * @property integer $FLAG_EXPIRED_ORDER
  */
 class Setting extends \yii\db\ActiveRecord
 {
@@ -29,7 +30,7 @@ class Setting extends \yii\db\ActiveRecord
     {
         return [
             [['id'], 'required'],
-            [['id', 'last_num_contract', 'id_our_company'], 'integer'],
+            [['id', 'last_num_contract', 'id_our_company', 'FLAG_EXPIRED_ORDER'], 'integer'],
             [['noPhotoPath'], 'string']
         ];
     }

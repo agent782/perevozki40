@@ -92,9 +92,14 @@ class OrderSearch extends Order
         return $dataProvider;
     }
 
-    public function searchForClient($params)
+    public function searchForClientNEWOrders($params)
     {
-        $query = Order::find()->where(['id_user' => Yii::$app->user->id]);
+        $query = Order::find()
+            ->where(['status' => Order::STATUS_NEW])
+            ->orWhere(['status' => Order::STATUS_EXPIRED])
+            ->orWhere(['status' => Order::STATUS_IN_PROCCESSING])
+            ->andWhere(['id_user' => Yii::$app->user->id])
+        ;
 
         // add conditions that should always apply here
 
@@ -107,7 +112,7 @@ class OrderSearch extends Order
         $dataProvider->setSort([
 
             'defaultOrder' => [
-                'datetime_start' => SORT_DESC
+                'datetime_start' => SORT_ASC
             ]
         ]);
         $this->load($params);

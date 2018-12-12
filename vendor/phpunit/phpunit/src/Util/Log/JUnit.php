@@ -15,7 +15,6 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\ExceptionWrapper;
 use PHPUnit\Framework\SelfDescribing;
 use PHPUnit\Framework\Test;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestFailure;
 use PHPUnit\Framework\TestListener;
 use PHPUnit\Framework\TestSuite;
@@ -318,11 +317,20 @@ class JUnit extends Printer implements TestListener
      */
     public function endTest(Test $test, float $time): void
     {
+<<<<<<< HEAD
         if (!$test instanceof TestCase) {
             return;
         }
 
         $numAssertions = $test->getNumAssertions();
+=======
+        $numAssertions = 0;
+
+        if (\method_exists($test, 'getNumAssertions')) {
+            $numAssertions = $test->getNumAssertions();
+        }
+
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
         $this->testSuiteAssertions[$this->testSuiteLevel] += $numAssertions;
 
         $this->currentTestCase->setAttribute(
@@ -342,10 +350,20 @@ class JUnit extends Printer implements TestListener
         $this->testSuiteTests[$this->testSuiteLevel]++;
         $this->testSuiteTimes[$this->testSuiteLevel] += $time;
 
+<<<<<<< HEAD
         if ($test->hasOutput()) {
+=======
+        $testOutput = '';
+
+        if (\method_exists($test, 'hasOutput') && \method_exists($test, 'getActualOutput')) {
+            $testOutput = $test->hasOutput() ? $test->getActualOutput() : '';
+        }
+
+        if (!empty($testOutput)) {
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             $systemOut = $this->document->createElement(
                 'system-out',
-                Xml::prepareString($test->getActualOutput())
+                Xml::prepareString($testOutput)
             );
 
             $this->currentTestCase->appendChild($systemOut);

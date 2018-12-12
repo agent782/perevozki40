@@ -15,6 +15,7 @@ return array(
     'yii\\composer\\' => array($vendorDir . '/yiisoft/yii2-composer'),
     'yii\\bootstrap\\' => array($vendorDir . '/yiisoft/yii2-bootstrap/src'),
     'yii\\' => array($vendorDir . '/yiisoft/yii2'),
+    'yii2tech\\crontab\\' => array($vendorDir . '/yii2tech/crontab'),
     'yii2tech\\ar\\linkmany\\' => array($vendorDir . '/yii2tech/ar-linkmany/src'),
     'streltcov\\geocoder\\traits\\' => array($vendorDir . '/streltcov/yandex-geocoder/src/traits'),
     'streltcov\\geocoder\\interfaces\\' => array($vendorDir . '/streltcov/yandex-geocoder/src/interfaces'),

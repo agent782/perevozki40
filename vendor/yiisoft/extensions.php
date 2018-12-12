@@ -201,12 +201,30 @@ return array (
       '@kartik/base' => $vendorDir . '/kartik-v/yii2-krajee-base/src',
     ),
   ),
+<<<<<<< HEAD
   'kartik-v/yii2-grid' => 
   array (
     'name' => 'kartik-v/yii2-grid',
     'version' => '9999999-dev',
     'alias' => 
     array (
+=======
+  'yii2tech/crontab' => 
+  array (
+    'name' => 'yii2tech/crontab',
+    'version' => '1.0.3.0',
+    'alias' => 
+    array (
+      '@yii2tech/crontab' => $vendorDir . '/yii2tech/crontab',
+    ),
+  ),
+  'kartik-v/yii2-grid' => 
+  array (
+    'name' => 'kartik-v/yii2-grid',
+    'version' => '9999999-dev',
+    'alias' => 
+    array (
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
       '@kartik/grid' => $vendorDir . '/kartik-v/yii2-grid/src',
     ),
   ),

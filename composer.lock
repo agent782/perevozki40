@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "830691572e8755402281cef99dd1af44",
-    "content-hash": "00769ee6db5b4e2f788c2f717721cfb2",
+    "hash": "c6a0d2dc9a7f0dd323c663e340fd3029",
+    "content-hash": "814650c140d9af5996aaa4f297bd43e6",
     "packages": [
         {
             "name": "3ch3r46/bootui-datetimepicker",
@@ -1028,12 +1028,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-grid.git",
+<<<<<<< HEAD
                 "reference": "13dd1d66909de3320f14e1343392ebe551b5d5e2"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/13dd1d66909de3320f14e1343392ebe551b5d5e2",
                 "reference": "13dd1d66909de3320f14e1343392ebe551b5d5e2",
+=======
+                "reference": "3735c999eda391961220845063f8b373f409f488"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/3735c999eda391961220845063f8b373f409f488",
+                "reference": "3735c999eda391961220845063f8b373f409f488",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
                 "shasum": ""
             },
             "require": {
@@ -1072,7 +1081,11 @@
                 "widget",
                 "yii2"
             ],
+<<<<<<< HEAD
             "time": "2018-12-05 14:43:41"
+=======
+            "time": "2018-12-07 12:28:30"
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -2426,6 +2439,53 @@
             "time": "2018-02-09 14:02:04"
         },
         {
+            "name": "yii2tech/crontab",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yii2tech/crontab.git",
+                "reference": "594f8039307ff5e9ee325b0d2b714a68f23df0d6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yii2tech/crontab/zipball/594f8039307ff5e9ee325b0d2b714a68f23df0d6",
+                "reference": "594f8039307ff5e9ee325b0d2b714a68f23df0d6",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii2tech\\crontab\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Klimov",
+                    "email": "klimov.paul@gmail.com"
+                }
+            ],
+            "description": "Crontab support extension for the Yii2 framework",
+            "keywords": [
+                "cron",
+                "cronjob",
+                "crontab",
+                "yii2"
+            ],
+            "time": "2017-11-03 15:43:19"
+        },
+        {
             "name": "yiisoft/yii2",
             "version": "2.0.12.2",
             "source": {
@@ -2961,22 +3021,23 @@
         },
         {
             "name": "codeception/base",
-            "version": "2.4.5",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/base.git",
-                "reference": "5044443f200843218353b061c942857a62ceca9b"
+                "reference": "ec6b7bd4d78c1adba3dbd5c3c52fc683e8aef6de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/base/zipball/5044443f200843218353b061c942857a62ceca9b",
-                "reference": "5044443f200843218353b061c942857a62ceca9b",
+                "url": "https://api.github.com/repos/Codeception/base/zipball/ec6b7bd4d78c1adba3dbd5c3c52fc683e8aef6de",
+                "reference": "ec6b7bd4d78c1adba3dbd5c3c52fc683e8aef6de",
                 "shasum": ""
             },
             "require": {
                 "behat/gherkin": "^4.4.0",
                 "codeception/phpunit-wrapper": "^6.0.9|^7.0.6",
                 "codeception/stub": "^2.0",
+                "ext-curl": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "guzzlehttp/psr7": "~1.0",
@@ -3022,7 +3083,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Codeception\\": "src\\Codeception",
+                    "Codeception\\": "src/Codeception",
                     "Codeception\\Extension\\": "ext"
                 }
             },
@@ -3046,10 +3107,11 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2018-08-01 07:46:24"
+            "time": "2018-10-29 21:37:15"
         },
         {
             "name": "codeception/phpunit-wrapper",
+<<<<<<< HEAD
             "version": "7.4.0",
             "source": {
                 "type": "git",
@@ -3060,11 +3122,27 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/4d09630101f1f746f6c073fdc1b76bd17e12c908",
                 "reference": "4d09630101f1f746f6c073fdc1b76bd17e12c908",
+=======
+            "version": "7.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Codeception/phpunit-wrapper.git",
+                "reference": "c4272e2d140ff408c8a93fa9aec659a8621cbd58"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/c4272e2d140ff408c8a93fa9aec659a8621cbd58",
+                "reference": "c4272e2d140ff408c8a93fa9aec659a8621cbd58",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
                 "shasum": ""
             },
             "require": {
                 "phpunit/php-code-coverage": "^6.0",
+<<<<<<< HEAD
                 "phpunit/phpunit": ">=7.1 <7.5",
+=======
+                "phpunit/phpunit": ">=7.1 <7.6",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
                 "sebastian/comparator": "^3.0",
                 "sebastian/diff": "^3.0"
             },
@@ -3089,7 +3167,11 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
+<<<<<<< HEAD
             "time": "2018-12-02 15:15:13"
+=======
+            "time": "2018-12-07 10:48:17"
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
         },
         {
             "name": "codeception/specify",
@@ -3958,6 +4040,7 @@
         },
         {
             "name": "phpunit/phpunit",
+<<<<<<< HEAD
             "version": "7.4.5",
             "source": {
                 "type": "git",
@@ -3968,6 +4051,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/61d34e8dd6eb3555900f0f2a2fa9e7e570730102",
                 "reference": "61d34e8dd6eb3555900f0f2a2fa9e7e570730102",
+=======
+            "version": "7.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "520723129e2b3fc1dc4c0953e43c9d40e1ecb352"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/520723129e2b3fc1dc4c0953e43c9d40e1ecb352",
+                "reference": "520723129e2b3fc1dc4c0953e43c9d40e1ecb352",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
                 "shasum": ""
             },
             "require": {
@@ -4012,7 +4107,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< HEAD
                     "dev-master": "7.4-dev"
+=======
+                    "dev-master": "7.5-dev"
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
                 }
             },
             "autoload": {
@@ -4038,7 +4137,11 @@
                 "testing",
                 "xunit"
             ],
+<<<<<<< HEAD
             "time": "2018-12-03 05:01:24"
+=======
+            "time": "2018-12-07 07:08:12"
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -4605,7 +4708,11 @@
         },
         {
             "name": "symfony/browser-kit",
+<<<<<<< HEAD
             "version": "v4.2.0",
+=======
+            "version": "v4.2.1",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
@@ -4662,7 +4769,11 @@
         },
         {
             "name": "symfony/console",
+<<<<<<< HEAD
             "version": "v4.2.0",
+=======
+            "version": "v4.2.1",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
@@ -4799,7 +4910,11 @@
         },
         {
             "name": "symfony/css-selector",
+<<<<<<< HEAD
             "version": "v4.2.0",
+=======
+            "version": "v4.2.1",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
@@ -4852,7 +4967,11 @@
         },
         {
             "name": "symfony/dom-crawler",
+<<<<<<< HEAD
             "version": "v4.2.0",
+=======
+            "version": "v4.2.1",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
@@ -4909,6 +5028,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
+<<<<<<< HEAD
             "version": "v4.2.0",
             "source": {
                 "type": "git",
@@ -4919,6 +5039,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/9b788b5f7cd6be22918f3d18ee3ff0a78e060137",
                 "reference": "9b788b5f7cd6be22918f3d18ee3ff0a78e060137",
+=======
+            "version": "v4.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/event-dispatcher.git",
+                "reference": "921f49c3158a276d27c0d770a5a347a3b718b328"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/921f49c3158a276d27c0d770a5a347a3b718b328",
+                "reference": "921f49c3158a276d27c0d770a5a347a3b718b328",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
                 "shasum": ""
             },
             "require": {
@@ -4969,11 +5101,19 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2018-11-26 10:55:26"
         },
         {
             "name": "symfony/finder",
             "version": "v4.2.0",
+=======
+            "time": "2018-12-01 08:52:38"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v4.2.1",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -5139,7 +5279,11 @@
         },
         {
             "name": "symfony/yaml",
+<<<<<<< HEAD
             "version": "v4.2.0",
+=======
+            "version": "v4.2.1",
+>>>>>>> 64b161444950a0f9b805f8b88c3e6ae18c821a5c
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",

@@ -18,6 +18,8 @@ use app\models\LoadingType;
 use app\models\PriceZone;
 use yii\helpers\ArrayHelper;
 use streltcov\YandexUtils\GeoCoder;
+use yii2tech\crontab\CronJob;
+use yii2tech\crontab\CronTab;
 /**
  * OrderController implements the CRUD actions for Order model.
  */
@@ -55,11 +57,10 @@ class OrderController extends Controller
 
     public function actionClient(){
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->searchForClient(Yii::$app->request->queryParams);
-
+        $dataProviderNewOrders = $searchModel->searchForClientNEWOrders(Yii::$app->request->queryParams);
         return $this->render('client', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProviderNewOrders' => $dataProviderNewOrders,
         ]);
     }
 
@@ -92,6 +93,17 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
+//        $cronJob = new CronJob();
+//        $cronJob->min = '*/6';
+//        $cronJob->command = Yii::getAlias('@app/yii cron/monitoring-expired-orders');
+//
+//        $cronTab = new CronTab();
+//        $cronTab->setJobs([
+//            $cronJob
+//        ]);
+//        $cronTab->apply();
+//        $cronTab->removeAll();
+
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
         if(!$modelOrder) $modelOrder = new Order();
@@ -189,7 +201,7 @@ class OrderController extends Controller
                             $session->remove('modelOrder');
                             return $this->redirect(['client']);
                         }
-                        var_dump($modelOrder->getErrors());
+//                        var_dump($modelOrder->getErrors());
 
                         return 'error_save_order';
                     }
@@ -272,4 +284,5 @@ return 'error';
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
+
 }

@@ -74,7 +74,7 @@ class User extends ActiveRecord implements IdentityInterface
 //            TimestampBehavior::className(),
             'addUserRole' => [
                 'class' => UserBehaviors::className(),
-                '_id' => Yii::$app->user->getId(),
+//                '_id' => Yii::$app->user->getId(),
             ],
 //            'encryption' => [
 //                'class' => '\nickcv\encrypter\behaviors\EncryptionBehavior',Da
