@@ -65,6 +65,8 @@ use yii\helpers\Url;
  * @property string $statusText
  * @property string $paidText
  * @property integer $FLAG_SEND_EMAIL_STATUS_EXPIRED
+ * @property object $userClient;
+ * @property object $vehicle
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -93,11 +95,11 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
     public static function tableName()
     {
         return 'Orders';
     }
-
     /**
      * @inheritdoc
      */
@@ -404,8 +406,14 @@ class Order extends \yii\db\ActiveRecord
     public function getRealRoute(){
         return $this->hasOne(Route::className(), ['id' => 'id_route_real']);
     }
+    public function getUserClient(){
+        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
     public function getVehicle(){
-        return $this->hasOne(Vehicle::className(), ['id' => 'id_vehicle']);
+        if($this->id_vehicle){
+            return $this->hasOne(Vehicle::className(), ['id'=> 'id_vehicle']);
+        }
+        return null;
     }
 
     public function getStatusText(){
@@ -518,28 +526,30 @@ class Order extends \yii\db\ActiveRecord
                         case Vehicle::BODY_manipulator:
                             $return .= $this->tonnage . ' тонн(ы). ';
                             $return .= 'Стрела: ';
-                            $return .= ($this->tonnage_spec)?$this->tonnage_spec . ' т., ': '--, ';
-                            $return .= ($this->length_spec)?$this->length_spec . ' м.': '--';
+                            $return .= ($this->tonnage_spec)?$this->tonnage_spec . ' т., ': '-- т., ';
+                            $return .= ($this->length_spec)?$this->length_spec . ' м.': '-- м.';
                             break;
                         case Vehicle::BODY_dump:
                             $return .= $this->tonnage . ' тонн(ы). ';
                             $return .= $this->volume . ' м3. ';
                             break;
                         case Vehicle::BODY_crane:
-
+                            $return .= 'Стрела: ';
+                            $return .= ($this->tonnage_spec)?$this->tonnage_spec . ' т., ': '-- т., ';
+                            $return .= ($this->length_spec)?$this->length_spec . ' м.': '-- м.';
                             break;
                         case Vehicle::BODY_excavator:
-
+                            $return .= 'Ковш: ';
+                            $return .= ($this->volume_spec)?$this->volume_spec . ' м3. ': '-- м3.';
                             break;
                         case Vehicle::BODY_excavator_loader:
-
+                            $return .= 'Ковш: ';
+                            $return .= ($this->volume_spec)?$this->volume_spec . ' м3. ': '-- м3.';
                             break;
                     }
                     break;
             }
-
         }
-
         return $return;
     }
 }
