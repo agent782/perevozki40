@@ -48,6 +48,8 @@ use yii\helpers\Url;
  * @property string $photoHtml
  * @property string $priceZonesList
  * @property string $error_mes
+ * @property object $user
+ * @property object $profile
 
 
 
@@ -422,6 +424,10 @@ class Vehicle extends \yii\db\ActiveRecord
     public function getProfile(){
         return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
     }
+    public function getUser(){
+        return $this->hasOne(User::className(), ['id' => 'id_user']);
+    }
+
 
     public function getLonglengthIcon(){
         return
