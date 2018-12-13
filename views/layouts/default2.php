@@ -171,6 +171,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Управление Прайс-листом',
                             'url' => '/price-zone'
                         ],
+                        [
+                            'label' => 'Настройки',
+                            'url' => '/setting',
+                            'visible' => Yii::$app->user->can('admin'),
+                        ],
                         ['label' => 'Выход', 'url' => '/default/logout']
                     ];
             ?>
