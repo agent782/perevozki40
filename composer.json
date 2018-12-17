@@ -17,7 +17,6 @@
         "php": ">=5.4.0",
         "yiisoft/yii2": "@stable",
         "yiisoft/yii2-bootstrap": "@stable",
-        "yiisoft/yii2-swiftmailer": "@dev",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "twbs/bootstrap": "@stable",
         "nirvana-msu/yii2-showloading": "1.0.*@dev",

@@ -71,4 +71,8 @@ class UserController extends Controller
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
+
+    public function actionAddpushallid(){
+        return var_dump(Yii::$app->get('pushalluserid'));
+    }
 }

@@ -27,7 +27,7 @@ class AppAsset extends AssetBundle
         'type' => 'text/css',
     ];
     public $js = [
-        'js/site.js'
+        'js/site.js',
     ];
     public $depends = [
         'yii\bootstrap\BootstrapAsset',

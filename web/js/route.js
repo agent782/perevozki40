@@ -156,6 +156,7 @@ $(document).ready(function () {
                     .add("requestfail", function (event) {
                         console.log("Ошибка: " + event.get("error").message);
                     });
+                endLoading();
 
 
             }
