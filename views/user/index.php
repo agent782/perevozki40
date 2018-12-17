@@ -12,6 +12,9 @@
 
     $this->title = Html::encode('Личный кабинет')
 ?>
+
+    <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781&type=middle" width="420" height="110" scrolling="no" style="overflow: hidden;">
+    </iframe>
 <?= Yii::getAlias('@app')?>
 <br>
 <?= $modelUser->id . " - " . key(Yii::$app->authManager->getRolesByUser($modelUser->id))?>
