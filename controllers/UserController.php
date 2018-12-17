@@ -12,6 +12,7 @@ use app\models\Company;
 use app\models\OrderOLD;
 use app\models\Passport;
 use app\models\Profile;
+use app\models\User;
 use Yii;
 use app\components\functions\functions;
 use app\models\signUpClient\SignUpClientFormStart;
@@ -72,7 +73,17 @@ class UserController extends Controller
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 
-    public function actionAddpushallid(){
-        return var_dump(Yii::$app->get('pushalluserid'));
+    public function actionAddpushallid($user_id = null){
+        if (Yii::$app->request->get('pushalluserid')) {
+            if(!$user_id){
+                $user = Yii::$app->user->identity;
+            } else {
+                $user = User::find()->where(['id' => $user_id])->one();
+            }
+            if(!$user)return;
+            $user->push_ids[] = Yii::$app->request->get('pushalluserid');
+            $user->save();
+            return $this->redirect('user');
+        }
     }
 }
