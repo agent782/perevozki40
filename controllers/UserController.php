@@ -94,5 +94,6 @@ class UserController extends Controller
             return var_dump($user->push_ids);
         }
         return $this->redirect('user');
+        
     }
 }
