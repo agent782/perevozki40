@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\DateBehaviors;
+use app\components\SerializeBehaviors;
 use app\components\UserBehaviors;
 use Yii;
 use yii\base\NotSupportedException;
@@ -25,6 +26,7 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property array $push_ids
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -91,6 +93,10 @@ class User extends ActiveRecord implements IdentityInterface
                     'active_at'
                 ],
                 'format' => DateBehaviors::FORMAT_DATETIME,
+            ],
+            'SerializeUnserialize' => [
+                'class' => SerializeBehaviors::className(),
+                'arrAttributes' => ['push_ids']
             ]
         ];
     }
@@ -115,6 +121,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
+            [['push_ids'], 'safe']
         ];
     }
 
