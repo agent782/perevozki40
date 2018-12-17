@@ -93,16 +93,7 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-//        $cronJob = new CronJob();
-//        $cronJob->min = '*/6';
-//        $cronJob->command = Yii::getAlias('@app/yii cron/monitoring-expired-orders');
-//
-//        $cronTab = new CronTab();
-//        $cronTab->setJobs([
-//            $cronJob
-//        ]);
-//        $cronTab->apply();
-//        $cronTab->removeAll();
+        Yii::$app->pusher->push('perevozki40', null, 'TEST2');
 
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
