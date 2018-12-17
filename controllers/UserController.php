@@ -92,7 +92,6 @@ class UserController extends Controller
             $user->save();
             return var_dump($user->push_ids);
         }
-        return 2;
         return $this->redirect('user');
     }
 }
