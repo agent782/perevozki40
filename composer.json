@@ -15,7 +15,6 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0",
-        "yiisoft/yii2": "@stable",
         "yiisoft/yii2-bootstrap": "@stable",
         "kartik-v/yii2-widget-datepicker": "@dev",
         "twbs/bootstrap": "@stable",
@@ -42,6 +41,7 @@
         "yii2tech/crontab": "^1.0"
     },
     "require-dev": {
+        "yiisoft/yii2": "@stable",
         "yiisoft/yii2-debug": "~2.0.0",
         "yiisoft/yii2-gii": "~2.0.0",
         "yiisoft/yii2-faker": "~2.0.0",
@@ -79,6 +79,10 @@
         }
     },
     "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        },
         {
             "type": "composer",
             "url": "https://packagist.org"

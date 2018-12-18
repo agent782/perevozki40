@@ -149,7 +149,7 @@ class DefaultController extends Controller
                 }
                 break;
             case 'signup2':
-                if(!$session->get(modelProfile) || !$session->get(modelUser)) break;
+                if(!$session->has('modelProfile') || !$session->has('modelUser')) break;
                 if($session->get('modelUser')) $modelUser = $session->get('modelUser');
 
                 $session->remove('modelVerifyPhone');
@@ -163,7 +163,9 @@ class DefaultController extends Controller
                 return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                 break;
             case 'signup3':
-                if(!$session->get(modelProfile) || !$session->get(modelUser) || !$session->get('modelVerifyPhone')) break;
+                if(!$session->has('modelProfile')
+                    || !$session->has('modelUser')
+                    || !$session->has('modelVerifyPhone')) break;
                 $modelVerifyPhone = $session->get('modelVerifyPhone');
                 $modelUser = $session->get('modelUser');
                 //отправить код по смс
