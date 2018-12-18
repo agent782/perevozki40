@@ -21,6 +21,17 @@ CRONTAB
 */6 * * * * /mnt/hgfs/H/test.loc/yii cron/monitoring-expired-orders
 
 
+//        $cronJob = new CronJob();
+//        $cronJob->min = '*/6';
+//        $cronJob->command = Yii::getAlias('@app/yii cron/monitoring-expired-orders');
+//
+//        $cronTab = new CronTab();
+//        $cronTab->setJobs([
+//            $cronJob
+//        ]);
+//        $cronTab->apply();
+//        $cronTab->removeAll();
+
 =====================================
 MYSQL EVENTS
 
