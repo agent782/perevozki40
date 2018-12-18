@@ -131,6 +131,7 @@ class DriverForm extends Model
         $modelDriver->address = $this->address;
         $modelDriver->phone = $this->phone;
         $modelDriver->phone2 = $this->phone2;
+        $modelDriver->id_car_owner = Yii::$app->user->id;
 
         if($modelDriver->save()){
             $this->photo = UploadedFile::getInstance($this, 'photo');

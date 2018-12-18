@@ -41,7 +41,7 @@ class DriverController extends Controller
     {
         $searchModel = new DriverSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->query->where(['id_car_owner' => Yii::$app->user->id]);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

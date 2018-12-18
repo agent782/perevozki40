@@ -156,8 +156,8 @@ class VehicleController extends Controller
 
                             functions::sendEmail(
                               [
-                                  Yii::$app->params['adminEmail'],
-                                  Yii::$app->params['logistEmail'],
+                                  Yii::$app->params['adminEmail']['email'],
+                                  Yii::$app->params['logistEmail']['email'],
                               ],
                               null,
                               'Новое ТС!',

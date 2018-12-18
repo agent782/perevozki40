@@ -9,6 +9,7 @@ use nickcv\encrypter\behaviors\EncryptionBehavior;
  * This is the model class for table "drivers".
  *
  * @property integer $id
+ * @property integer $id_car_owner
  * @property string $name
  * @property string $surname
  * @property string $patronymic
@@ -63,6 +64,7 @@ class Driver extends \yii\db\ActiveRecord
             ['create_at', 'default', 'value' => date('d.m.Y')],
             ['photo', 'string', 'max' => 255, 'tooLong' => 'Слишком длинное название файла.'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['id_car_owner', 'integer']
         ];
     }
 
@@ -132,7 +134,7 @@ class Driver extends \yii\db\ActiveRecord
             case 0:
                 return 'Удален';
             case 1:
-                return 'Антивен';
+                return 'Активен';
             default:
                 return 'Не установлен';
         }

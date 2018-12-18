@@ -39,10 +39,10 @@ class CarOwnerController extends Controller
             $modelStart->phone2 = $modelProfile->phone2;
             $modelStart->email2 = $modelProfile->email2;
             $modelStart->bithday = $modelProfile->bithday;
-            $modelStart->passport_number = $modelProfile->passport->number;
-            $modelStart->country = $modelProfile->passport->country;
-            $modelStart->passport_date = $modelProfile->passport->date;
-            $modelStart->passport_place = $modelProfile->passport->place;
+//            $modelStart->passport_number = $modelProfile->passport->number;
+//            $modelStart->country = $modelProfile->passport->country;
+//            $modelStart->passport_date = $modelProfile->passport->date;
+//            $modelStart->passport_place = $modelProfile->passport->place;
 
             $modelStart->reg_address = $modelProfile->reg_address;
             $modelStart->photo = $modelProfile->photo;

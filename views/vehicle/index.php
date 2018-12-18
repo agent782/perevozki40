@@ -30,9 +30,6 @@ $this->registerJs(
         if($dataProviderTruck->getCount()):
     ?>
     <h2>Грузовой транспорт</h2>
-    <?php
-        endif;
-    ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
@@ -111,6 +108,9 @@ $this->registerJs(
     ]);
     ?>
 
+            <?php
+                endif;
+            ?>
 
     <?php
     if($dataProviderPass->getCount()):
