@@ -74,24 +74,30 @@ class UserController extends Controller
     }
 
     public function actionAddpushallid($user_id = null){
-        return (Yii::$app->request->get('pushalluserid'));
-        if (Yii::$app->request->get('pushalluserid')) {
+        $pushalluserid = Yii::$app->request->get('pushalluserid');
+        if ($pushalluserid) {
             if(!$user_id){
                 $user = Yii::$app->user->identity;
             } else {
                 $user = User::find()->where(['id' => $user_id])->one();
             }
-            if(!$user)return 'test';
-            if(is_array($user->push_ids)) {
+            if(!$user){
+                functions::setFlashWarning('Ошибка на сервере.');
+                return $this->redirect('/user');
+            }
+            if(!is_array($user->push_ids)) {
                 $pids = [];
             } else {
                 $pids = $user->push_ids;
             }
-            $pids [] = Yii::$app->request->get('pushalluserid');
+            $pids [] = $pushalluserid;
             $user->push_ids = $pids;
-            return var_dump($user->push_ids);
-            $user->save();
-            return var_dump($user->push_ids);
+            if$user->save()) {
+                functions::setFlashSuccess('Вы подписались на push-уведомления.');
+            } else {
+                functions::setFlashWarning('Ошибка на сервере.');
+            }
+            return $this->redirect('/user');
         }
         return $this->redirect('user');
 
