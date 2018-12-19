@@ -43,3 +43,8 @@ Order   afterSave()
 НАСТРОЙКИ
 
 ______________________________________
+
+Push
+
+pushall.ru
+UserController actionAddpushallid
