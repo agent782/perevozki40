@@ -92,7 +92,7 @@ class UserController extends Controller
             }
             $pids [] = $pushalluserid;
             $user->push_ids = $pids;
-            if$user->save()) {
+            if($user->save()) {
                 functions::setFlashSuccess('Вы подписались на push-уведомления.');
             } else {
                 functions::setFlashWarning('Ошибка на сервере.');
