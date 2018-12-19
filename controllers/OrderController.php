@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use yii\filters\AccessControl;
 use app\components\functions\functions;
 use app\models\Route;
 use app\models\Service;
@@ -38,7 +39,7 @@ class OrderController extends Controller
                 ],
             ],
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,
