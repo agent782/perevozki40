@@ -74,7 +74,7 @@ class UserController extends Controller
     }
 
     public function actionAddpushallid($user_id = null){
-        return var_dump(Yii::$app->request->get());
+        return (Yii::$app->request->get('pushalluserid'));
         if (Yii::$app->request->get('pushalluserid')) {
             if(!$user_id){
                 $user = Yii::$app->user->identity;
