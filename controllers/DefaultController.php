@@ -55,41 +55,11 @@ class DefaultController extends Controller
                     ],
                 ],
             ],
+
         ];
     }
 
-    public function actionTest(){
 
-//        (Yii::$app->mailer->compose('test', [
-//            'profile' => \app\models\Profile::findOne(['id_user' => Yii::$app->user->id]),
-//        ])
-//            ->setFrom('admin@perevozki40.ru')
-//            ->setTo('agent782@yandex.ru')
-//            ->setSubject('Subject')
-////            ->setTextBody('TEAT TEAT TEAT')
-//        ->send())
-//        ?
-//        Yii::$app->session->setFlash('success', 'Письмо отправлено'):
-//            Yii::$app->session->setFlash('warning', 'Письмо  НЕ ОТПРАВЛЕНО!!');
-//        return $this->redirect('/');
-
-//        $to = "9206167111";
-//        $message = "Test\nTest\nTest\nTest";
-//        return var_dump(Yii::$app->smsru->send($to, $message));
-//      echo
-        var_dump((new Sms('9206167111', 'Проверка'))->sendAndSave());
-//            var_dump($sms->sendAndSave());
-//                echo var_dump($sms->checkBalance());
-//        var_dump (Yii::$app->smsru->status('error_1539331510_3850')->status_code);
-
-//        foreach (Yii::$app->smsru->status('201841-1000009')->sms as $sms){
-//            echo $data->status_text;
-//            echo($sms->status_text);
-//            echo '<br>';
-//        }
-//        var_dump(Sms::find()->select('id')->asArray()->all());
-        echo Sms::updateStatuses() . '<br>' . Sms::checkBalance();
-    }
 
     public function actionIndex(){
 //        $auth = new auth_item();
@@ -104,7 +74,10 @@ class DefaultController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goHome();
+            if($urlBack = Yii::$app->request->get('urlBack')){
+                return $this->redirect($urlBack);
+            }
+            return $this->redirect('/');
         }
         return $this->render('login', [
             'model' => $model,
@@ -119,7 +92,6 @@ class DefaultController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-
         return $this->goHome();
     }
 

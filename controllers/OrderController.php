@@ -45,7 +45,10 @@ class OrderController extends Controller
                         'allow' => true,
                         'roles' => ['car_owner', 'client']
                     ]
-                ]
+                ],
+//                'denyCallback' => function($rule, $action) {
+//                    Yii::$app->response->redirect(['/default/login', 'urlBack' => $_SERVER['REQUEST_URI']]);
+//                },
             ]
         ];
     }
