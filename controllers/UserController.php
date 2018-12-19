@@ -87,14 +87,21 @@ class UserController extends Controller
             }
             if(!is_array($user->push_ids)) {
                 $pids = [];
+                $pids [] = $pushalluserid;
             } else {
+                $hasId=0;
+                foreach ($user->push_ids as $push_id){
+                    if($push_id == $pushalluserid) $hasId = 1;
+                }
                 $pids = $user->push_ids;
+                if(!$hasId) $pids [] = $pushalluserid;
             }
-            $pids [] = $pushalluserid;
             $user->push_ids = $pids;
+            $user->scenario = $user::SCENARIO_SAVE;
             if($user->save()) {
                 functions::setFlashSuccess('Вы подписались на push-уведомления.');
             } else {
+//                return var_dump($user->getErrors());
                 functions::setFlashWarning('Ошибка на сервере.');
             }
             return $this->redirect('/user');
