@@ -15,6 +15,22 @@
 <?//= var_dump($_SERVER)?>
     <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781&type=middle" width="420" height="110" scrolling="no" style="overflow: hidden;">
     </iframe>
+<br>
+<?php
+    $url = Yii::$app->urlManager->createAbsoluteUrl([
+        '//https://pushall.ru/api.php',
+        'type' => 'self',
+        'id' => '82753',
+        'key' => '9b554173cb1dcce6034a49511ef997c6',
+        'title' => 'test',
+        'text' => 'TEST TEST',
+        'priority' => '1'
+    ], 'https');
+?>
+<?= $url?>
+<?= Html::a('Отправить',
+        $url,  ['class' => 'btn btn-primary'])?>
+<br>
 <?= Yii::getAlias('@app')?>
 <br>
 <?= $modelUser->id . " - " . key(Yii::$app->authManager->getRolesByUser($modelUser->id))?>
