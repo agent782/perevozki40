@@ -106,7 +106,7 @@ class UserController extends Controller
             }
             return $this->redirect('/user');
         }
-        return $this->redirect('user');
+        return $this->redirect('/user');
 
     }
 }
