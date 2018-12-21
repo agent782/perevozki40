@@ -71,5 +71,5 @@
 ?>
 <?php
 
-    var_dump(unserialize($modelUser->push_ids));
+    var_dump(($modelUser->push_ids));
 ?>
