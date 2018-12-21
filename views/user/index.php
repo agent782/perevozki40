@@ -19,11 +19,12 @@
 <?php
     $url = Yii::$app->urlManager->createAbsoluteUrl([
         '//https://pushall.ru/api.php',
-        'type' => 'self',
-        'id' => '82753',
-        'key' => '9b554173cb1dcce6034a49511ef997c6',
-        'title' => 'test',
+        'type' => 'broadcast',
+        'id' => '4781',
+        'key' => 'fbbc4ea3fbe1cdb2f7fc1b4246d48174',
+        'title' => 'test1',
         'text' => 'TEST TEST',
+        'url' => 'http://2.grigorov.org/order/vehicle',
         'priority' => '1'
     ], 'https');
 ?>

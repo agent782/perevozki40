@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9932323021e48d2f14eea55b75486378",
-    "content-hash": "0e539b844dec3958471e0a632558c076",
+    "hash": "d9c1ec0ff29ead174ea7dc7d6bea00cb",
+    "content-hash": "8c8ffac1fc09f81475b2d3d7433cae9b",
     "packages": [
         {
             "name": "3ch3r46/bootui-datetimepicker",
@@ -63,41 +63,14 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/twbs/bootstrap/zipball/0b9c4a4007c44201dce9a6cc1a38407005c26c86",
                 "reference": "0b9c4a4007c44201dce9a6cc1a38407005c26c86",
-                "shasum": ""
+                "shasum": null
             },
             "require": {
                 "bower-asset/jquery": ">=1.9.1,<4.0"
             },
-            "type": "bower-asset-library",
-            "extra": {
-                "bower-asset-main": [
-                    "less/bootstrap.less",
-                    "dist/js/bootstrap.js"
-                ],
-                "bower-asset-ignore": [
-                    "/.*",
-                    "_config.yml",
-                    "CNAME",
-                    "composer.json",
-                    "CONTRIBUTING.md",
-                    "docs",
-                    "js/tests",
-                    "test-infra"
-                ]
-            },
+            "type": "bower-asset",
             "license": [
                 "MIT"
-            ],
-            "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
-            "keywords": [
-                "css",
-                "framework",
-                "front-end",
-                "js",
-                "less",
-                "mobile-first",
-                "responsive",
-                "web"
             ]
         },
         {
@@ -175,21 +148,9 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/bestiejs/punycode.js/zipball/38c8d3131a82567bfef18da09f7f4db68c84f8a3",
                 "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3",
-                "shasum": ""
+                "shasum": null
             },
-            "type": "bower-asset-library",
-            "extra": {
-                "bower-asset-main": "punycode.js",
-                "bower-asset-ignore": [
-                    "coverage",
-                    "tests",
-                    ".*",
-                    "component.json",
-                    "Gruntfile.js",
-                    "node_modules",
-                    "package.json"
-                ]
-            }
+            "type": "bower-asset"
         },
         {
             "name": "bower-asset/yii2-pjax",
@@ -1975,47 +1936,6 @@
             "time": "2017-02-20 20:02:35"
         },
         {
-            "name": "sevenfloor/yii2-sendpulse",
-            "version": "0.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SevenFloor/yii2-sendpulse.git",
-                "reference": "1e92373829e44ef1a42f0ea53f8ba06c35a0adba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SevenFloor/yii2-sendpulse/zipball/1e92373829e44ef1a42f0ea53f8ba06c35a0adba",
-                "reference": "1e92373829e44ef1a42f0ea53f8ba06c35a0adba",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "*"
-            },
-            "type": "yii2-extension",
-            "autoload": {
-                "psr-4": {
-                    "sevenfloor\\sendpulse\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Ignatenkov Nikita",
-                    "email": "ignatenkov.n@gmail.com"
-                }
-            ],
-            "description": "Client for service sendpulse",
-            "keywords": [
-                "extension",
-                "sendpulse",
-                "yii2"
-            ],
-            "time": "2016-04-26 15:17:57"
-        },
-        {
             "name": "spatie/temporary-directory",
             "version": "1.1.4",
             "source": {
@@ -2788,20 +2708,12 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/twitter/typeahead.js/zipball/588440f66559714280628a4f9799f0c4eb880a4a",
                 "reference": "588440f66559714280628a4f9799f0c4eb880a4a",
-                "shasum": ""
+                "shasum": null
             },
             "require": {
                 "bower-asset/jquery": ">=1.7"
             },
-            "require-dev": {
-                "bower-asset/jasmine-ajax": "~1.3.1",
-                "bower-asset/jasmine-jquery": "~1.5.2",
-                "bower-asset/jquery": "~1.7"
-            },
-            "type": "bower-asset-library",
-            "extra": {
-                "bower-asset-main": "dist/typeahead.bundle.js"
-            }
+            "type": "bower-asset"
         },
         {
             "name": "codeception/base",
