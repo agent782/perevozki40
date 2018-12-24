@@ -38,7 +38,8 @@
         "kartik-v/yii2-widget-growl": "*",
         "kartik-v/yii2-grid": "dev-master",
         "streltcov/yandex-geocoder": "^0.8.0",
-        "yii2tech/crontab": "^1.0"
+        "yii2tech/crontab": "^1.0",
+        "wowkaster/yii2-serialize-attributes": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",
