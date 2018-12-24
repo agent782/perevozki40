@@ -31,7 +31,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-    <script charset="UTF-8" src="//cdn.sendpulse.com/js/push/ed2cce3784ec8246afa34633f9a33b2a_0.js" async></script>
+<!--    <script charset="UTF-8" src="//cdn.sendpulse.com/js/push/ed2cce3784ec8246afa34633f9a33b2a_0.js" async></script>-->
     <?php $this->head() ?>
 </head>
 <body>
@@ -109,6 +109,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Профиль ('.Yii::$app->user->identity->profile->name . ' ' . Yii::$app->user->identity->profile->surname.')',
                             'url' => '/user',
+                        ],
+                        [
+                            'label' => 'Сообщения',
+                            'url' => '/message',
                         ],
                         [
                             'label' => 'Юридические лица',

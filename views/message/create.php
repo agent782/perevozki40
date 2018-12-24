@@ -8,6 +8,8 @@ use yii\helpers\Html;
 $this->title = 'Create Message';
 $this->params['breadcrumbs'][] = ['label' => 'Messages', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+var_dump($model);
 ?>
 <div class="message-create">
 

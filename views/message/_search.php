@@ -25,7 +25,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status') ?>
 
-    <?php // echo $form->field($model, 'user_id') ?>
+    <?php // echo $form->field($model, 'id_to_user') ?>
+
+    <?php // echo $form->field($model, 'id_from_user') ?>
 
     <?php // echo $form->field($model, 'email_status') ?>
 

@@ -20,7 +20,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status')->textInput() ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($model, 'id_to_user')->textInput() ?>
+
+    <?= $form->field($model, 'id_from_user')->textInput() ?>
 
     <?= $form->field($model, 'email_status')->textInput() ?>
 

@@ -37,6 +37,9 @@ class MessageController extends Controller
     {
         $searchModel = new MessageSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query
+            ->where(['id_to_user' => Yii::$app->user->id])
+            ->orWhere(['id_from_user' => Yii::$app->user->id]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -64,20 +67,22 @@ class MessageController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Message();
-        $model->user_id = Yii::$app->user->id;
-        $model->save();
-        $model->sendPush();
-        return $this->redirect('/user');
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
+        $model = new Message([
+            'id_to_user' => Yii::$app->user->id,
+            'title' => 'TTTEST',
+            'text' => 'TEST',
+            'push_status' => Message::STATUS_NEED_TO_SEND,
+            'email_status' => Message::STATUS_NEED_TO_SEND,
+        ]);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
 
         return $this->render('create', [
             'model' => $model,
         ]);
     }
-
     /**
      * Updates an existing Message model.
      * If update is successful, the browser will be redirected to the 'view' page.

@@ -17,7 +17,7 @@ class MessageSearch extends Message
     public function rules()
     {
         return [
-            [['id', 'type', 'status', 'user_id', 'email_status', 'sms_status', 'push_status'], 'integer'],
+            [['id', 'type', 'status', 'id_to_user', 'id_from_user', 'email_status', 'sms_status', 'push_status'], 'integer'],
             [['title', 'text'], 'safe'],
         ];
     }
@@ -61,7 +61,8 @@ class MessageSearch extends Message
             'id' => $this->id,
             'type' => $this->type,
             'status' => $this->status,
-            'user_id' => $this->user_id,
+            'id_to_user' => $this->id_to_user,
+            'id_from_user' => $this->id_from_user,
             'email_status' => $this->email_status,
             'sms_status' => $this->sms_status,
             'push_status' => $this->push_status,
