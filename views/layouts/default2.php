@@ -188,9 +188,9 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             <?=
                             Nav::widget([
                                 'options' => [
-                                    'class' => 'menu',
+                                    'class' => 'menu navbar-nav navbar-right',
                                     'style' => [
-        //                                'font-size' => '24px',
+//                                        'width' => '50%',
                                     ],
                                 ],
                                 'items' => $cabinet_items,
