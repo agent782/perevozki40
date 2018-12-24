@@ -28,6 +28,7 @@ class SerializeBehaviors extends Behavior
             ActiveRecord::EVENT_BEFORE_UPDATE => 'Serialize',
             ActiveRecord::EVENT_AFTER_INSERT => 'Unserialize',
             ActiveRecord::EVENT_AFTER_UPDATE => 'Unserialize',
+            ActiveRecord::EVENT_AFTER_REFRESH => 'Unserialize',
         ];
     }
 
