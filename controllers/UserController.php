@@ -106,9 +106,10 @@ class UserController extends Controller
 //                return var_dump($user->getErrors());
                 functions::setFlashWarning('Ошибка на сервере.');
             }
+            return var_dump(Yii::$app->request->get());
             return $this->redirect('/user');
         }
-        return var_dump(Yii::$app->request->get());
+
 
         return $this->redirect('/user');
 
