@@ -100,10 +100,10 @@ class Message extends \yii\db\ActiveRecord
 
                 ], 'https');
 
-                file_get_contents($url);
+                $res = file_get_contents($url);
                 $this->push_status = self::STATUS_SEND;
                 $this -> save();
-                return var_dump($this->getErrors());
+                return $res;
             }
         }
     }
