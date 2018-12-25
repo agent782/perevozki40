@@ -181,6 +181,7 @@ a.desc:after {
     left: 5px;
     right: 5px;
     top: auto;
+
     position: fixed;
 }
 
