@@ -74,7 +74,6 @@ class Message extends \yii\db\ActiveRecord
     }
 
     public function sendPush(){
-        $res = [];
         if($push_ids = User::findOne($this->id_to_user)->push_ids) {
             foreach ($push_ids as $push_id) {
 
@@ -100,11 +99,9 @@ class Message extends \yii\db\ActiveRecord
 
                 ], 'https');
 
-                $res [] = file_get_contents($url);
+                file_get_contents($url);
                 $this->push_status = self::STATUS_SEND;
-                $this -> save();
-                return $res;
-            }
+                if($this -> save());
         }
     }
 }
