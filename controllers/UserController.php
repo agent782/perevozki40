@@ -76,7 +76,7 @@ class UserController extends Controller
     public function actionAddpushallid($user_id = null){
 
         $pushalluserid = Yii::$app->request->get('pushalluserid');
-        return var_dump(Yii::$app->request->get());
+//        return var_dump(Yii::$app->request->get());
         if ($pushalluserid) {
             if(!$user_id){
                 $user = User::findOne(Yii::$app->user->id);
@@ -106,8 +106,11 @@ class UserController extends Controller
 //                return var_dump($user->getErrors());
                 functions::setFlashWarning('Ошибка на сервере.');
             }
+            return var_dump(Yii::$app->request->get());
             return $this->redirect('/user');
         }
+
+
         return $this->redirect('/user');
 
     }
