@@ -48,12 +48,13 @@ class CronController extends Controller
                     'id_to_user' => $order->id_user,
                     'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
                     'text' => 'Машина не найдена.',
-                    'url' => Url::to(['/order/view', 'id' => $this->id], true),
+                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
                     'push_status' => Message::STATUS_NEED_TO_SEND,
                     'email_status' => Message::STATUS_NEED_TO_SEND,
                 ]);
                 $Message->save();
                 $Message->sendPush();
+
                 $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 $order->scenario = $order::SCENARIO_UPDATE_STATUS;
                 $order->save();
