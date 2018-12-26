@@ -48,3 +48,8 @@ Push
 
 pushall.ru
 UserController actionAddpushallid
+____________________________
+ПЕРЕНОС НА СЕРВЕР
+
+Поменять адрес колбэк экшена на pushall.ru
+

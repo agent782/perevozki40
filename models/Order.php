@@ -6,6 +6,7 @@ use app\components\functions\functions;
 use FontLib\Table\Type\post;
 use Yii;
 use app\components\DateBehaviors;
+use yii\bootstrap\Html;
 use yii\helpers\Url;
 
 
@@ -358,6 +359,16 @@ class Order extends \yii\db\ActiveRecord
                     'text' => 'views/Order/newOrder_text'
                 ]
             );
+            $Message = new Message([
+                'id_to_user' => Yii::$app->user->id,
+                'title' => 'Заказ №'.$this->id.' принят.',
+                'text' => 'Перейти к заказу...',
+                'url' => Url::to(['/order/view', 'id' => $this->id], true),
+                'push_status' => Message::STATUS_NEED_TO_SEND,
+                'email_status' => Message::STATUS_NEED_TO_SEND,
+            ]);
+            $Message->save();
+            $Message->sendPush();
 
             functions::setFlashSuccess('Заказ добавлен в список заказов.');
             parent::afterSave($insert, $changedAttributes);
