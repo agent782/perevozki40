@@ -106,8 +106,6 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-        Yii::$app->pusher->push('perevozki40', null, 'TEST2');
-
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
         if(!$modelOrder) $modelOrder = new Order();
