@@ -44,15 +44,15 @@ class CronController extends Controller
                         'text' => 'views/Order/expiredOrder_text'
                     ]
                 );
-                $Message = new Message([
-                    'id_to_user' => $order->id_user,
-                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
-                    'text' => 'Машина не найдена.',
-                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
-                    'push_status' => Message::STATUS_NEED_TO_SEND,
-                    'email_status' => Message::STATUS_NEED_TO_SEND,
-                ]);
-                $Message->save();
+//                $Message = new Message([
+//                    'id_to_user' => $order->id_user,
+//                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
+//                    'text' => 'Машина не найдена.',
+//                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
+//                    'push_status' => Message::STATUS_NEED_TO_SEND,
+//                    'email_status' => Message::STATUS_NEED_TO_SEND,
+//                ]);
+//                $Message->save();
 //                $Message->sendPush();
 
                 $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
