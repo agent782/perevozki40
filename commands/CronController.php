@@ -16,6 +16,7 @@ use app\models\Setting;
 use yii\console\Controller;
 use yii2tech\crontab\CronJob;
 use yii2tech\crontab\CronTab;
+use app\models\Message;
 
 class CronController extends Controller
 {

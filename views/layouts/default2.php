@@ -92,6 +92,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                 else:
                     $cabinet_items = [
                         [
+                            'label' => 'Диспетчерская',
+                            'url' => '/logist',
+                            'visible' => Yii::$app->user->can('admin')
+                        ],
+                        [
                             'label' => 'Админка',
                             'url' => '/admin',
                             'visible' => Yii::$app->user->can('admin'),
@@ -177,6 +182,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/setting',
                             'visible' => Yii::$app->user->can('admin'),
                         ],
+
                         ['label' => 'Выход', 'url' => '/default/logout']
                     ];
             ?>
