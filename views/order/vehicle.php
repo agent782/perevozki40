@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ],
             [
-                'attribute' => 'startAndValidDateString',
+                'attribute' => 'datetime_start',
                 'options' => [
 //                    'style' =>'width: 100px',
                 ],
