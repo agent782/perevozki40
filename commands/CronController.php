@@ -53,7 +53,7 @@ class CronController extends Controller
                     'email_status' => Message::STATUS_NEED_TO_SEND,
                 ]);
                 $Message->save();
-                $Message->sendPush();
+//                $Message->sendPush();
 
                 $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 $order->scenario = $order::SCENARIO_UPDATE_STATUS;
