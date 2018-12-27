@@ -368,7 +368,6 @@ class Order extends \yii\db\ActiveRecord
                 'email_status' => Message::STATUS_NEED_TO_SEND,
             ]);
             $Message->save();
-            $Message->sendPush();
 
             functions::setFlashSuccess('Заказ добавлен в список заказов.');
             parent::afterSave($insert, $changedAttributes);
@@ -562,6 +561,13 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         return $return;
+    }
+
+    static public function getCountNewOrders(){
+        return Order::find()
+            ->where(['status' => self::STATUS_NEW])
+            ->orWhere(['status' => self::STATUS_IN_PROCCESSING])
+            ->count();
     }
 }
 

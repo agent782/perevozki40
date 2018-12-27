@@ -27,26 +27,25 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
-        'brandLabel' => 'My Company',
-        'brandUrl' => Yii::$app->homeUrl,
+        'brandLabel' => 'perevozki40.ru',
+        'brandUrl' => '/logist',
         'options' => [
             'class' => 'navbar-default navbar-fixed-top',
             'id' => 'menu',
         ],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
+        'options' => ['class' => 'navbar-nav navbar-left'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/default/index']],
-            ['label' => 'About', 'url' => ['/default/about']],
-            ['label' => 'Contact', 'url' => ['/default/contact']],
+            ['label' => 'Заказы', 'url' => '/logist/order'],
+
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/default/login']]
+                ['label' => 'Войти', 'url' => ['/default/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/default/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
+                    'Выход (' . Yii::$app->user->identity->profile->name . ' ' . Yii::$app->user->identity->profile->surname . ')',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()
