@@ -28,7 +28,7 @@ AppAsset::register($this);
     <?php
     NavBar::begin([
         'brandLabel' => 'perevozki40.ru',
-        'brandUrl' => '/logist',
+        'brandUrl' => '/',
         'options' => [
             'class' => 'navbar-default navbar-fixed-top',
             'id' => 'menu',
