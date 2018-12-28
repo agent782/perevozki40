@@ -55,6 +55,9 @@ class MessageController extends Controller
      */
     public function actionView($id)
     {
+        $mes = $this->findModel($id);
+        $mes->status = $mes::STATUS_READ;
+        $mes->save();
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -75,8 +78,10 @@ class MessageController extends Controller
             'email_status' => Message::STATUS_NEED_TO_SEND,
         ]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->save();
+            $model->sendPush();
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -90,18 +95,18 @@ class MessageController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
+//    public function actionUpdate($id)
+//    {
+//        $model = $this->findModel($id);
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        }
+//
+//        return $this->render('update', [
+//            'model' => $model,
+//        ]);
+//    }
 
     /**
      * Deletes an existing Message model.
