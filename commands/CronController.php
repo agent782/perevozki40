@@ -17,6 +17,7 @@ use yii\console\Controller;
 use yii2tech\crontab\CronJob;
 use yii2tech\crontab\CronTab;
 use app\models\Message;
+use yii\helpers\Url;
 
 class CronController extends Controller
 {
@@ -44,16 +45,15 @@ class CronController extends Controller
                         'text' => 'views/Order/expiredOrder_text'
                     ]
                 );
-//                $Message = new Message([
-//                    'id_to_user' => $order->id_user,
-//                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
-//                    'text' => 'Машина не найдена.',
-//                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
-//                    'push_status' => Message::STATUS_NEED_TO_SEND,
-//                    'email_status' => Message::STATUS_NEED_TO_SEND,
-//                ]);
-//                $Message->save();
-//                $Message->sendPush();
+                $Message = new Message([
+                    'id_to_user' => $order->id_user,
+                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
+                    'text' => 'Машина не найдена.',
+                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
+                    'push_status' => Message::STATUS_NEED_TO_SEND,
+                    'email_status' => Message::STATUS_NEED_TO_SEND,
+                ]);
+                $Message->save();
 
                 $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 $order->scenario = $order::SCENARIO_UPDATE_STATUS;
@@ -65,6 +65,28 @@ class CronController extends Controller
 //            $setting->save();
             if($setting->save()) echo 'y'; else echo 'n';
         }
+    }
+
+    public function actionTest(){
+        echo 1;
+       $Message = new Message(
+           [
+                    'id_to_user' => 73,
+                    'title' => 'Заказ №' .
+                        108 .
+                        '. Машина не найдена.',
+                    'text' => 'Машина не найдена.',
+                    'url' => Url::to(['/order/view', 'id' => 108], true),
+                    'push_status' => Message::STATUS_NEED_TO_SEND,
+                    'email_status' => Message::STATUS_NEED_TO_SEND,
+                ]
+       );
+//        $Message->url = Url::to(['/order/view', 'id' => 108], true);
+
+//                var_dump($Message);
+                $Message->save();
+
+                echo 1;
     }
 
 

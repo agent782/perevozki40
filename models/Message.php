@@ -115,7 +115,26 @@ class Message extends \yii\db\ActiveRecord
 
                 ], 'https');
 
-                file_get_contents($url);
+//                file_get_contents($url);
+
+                curl_setopt_array($ch = curl_init(), array(
+                    CURLOPT_URL => "https://pushall.ru/api.php",
+                    CURLOPT_POSTFIELDS => array(
+                        "type" => "unicast",
+                        "id" => $this->idPushall,
+                        "key" => $this->keyPushall,
+                        "text" => $this->text,
+                        "title" => $this->title,
+                        'priority' => '1',
+                        'url' => $this->url,
+                        'uid' => $push_id,
+                    ),
+                    CURLOPT_SAFE_UPLOAD => true,
+                    CURLOPT_RETURNTRANSFER => true
+                ));
+                $return=curl_exec($ch); //получить данные о рассылке
+                curl_close($ch);
+
                 $this->push_status = self::STATUS_SEND;
                 $this->save();
             }
