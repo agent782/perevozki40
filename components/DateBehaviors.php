@@ -26,6 +26,7 @@ class DateBehaviors extends Behavior
             ActiveRecord::EVENT_BEFORE_UPDATE => 'ConvertToUnix',
             ActiveRecord::EVENT_AFTER_INSERT => 'ConvertToDate',
             ActiveRecord::EVENT_AFTER_UPDATE => 'ConvertToDate',
+            ActiveRecord::EVENT_AFTER_REFRESH => 'ConvertToDate',
         ];
     }
 
