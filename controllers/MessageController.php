@@ -39,7 +39,9 @@ class MessageController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query
             ->where(['id_to_user' => Yii::$app->user->id])
-            ->orWhere(['id_from_user' => Yii::$app->user->id]);
+            ->orFilterWhere(['id_from_user' => Yii::$app->user->id])
+            ->andWhere(['not', ['status' => Message::STATUS_DELETE]])
+        ;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -117,7 +119,8 @@ class MessageController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $mes = $this->findModel($id);
+        $mes->changeStatus(Message::STATUS_DELETE);
 
         return $this->redirect(['index']);
     }
@@ -129,6 +132,7 @@ class MessageController extends Controller
      * @return Message the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
+
     protected function findModel($id)
     {
         if (($model = Message::findOne($id)) !== null) {

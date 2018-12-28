@@ -26,7 +26,7 @@ class Message extends \yii\db\ActiveRecord
     const STATUS_NEED_TO_SEND = 1;
     const STATUS_SEND = 2;
     const STATUS_READ = 3;
-    const status_DELETE = 10;
+    const STATUS_DELETE = 10;
 
 
     private $idPushall = "4781";
@@ -74,18 +74,18 @@ class Message extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'type' => 'Type',
-            'title' => 'Сообщение',
-            'text' => 'Text',
+            'title' => 'Тема',
+            'text' => 'Сообщение',
             'status' => 'Status',
             'id_to_user' => 'Id To User',
             'id_from_user' => 'Id From User',
             'email_status' => 'Email Status',
             'sms_status' => 'Sms Status',
             'push_status' => 'Push Status',
-            'create_at' => 'Доставлено'
+            'create_at' => 'Дата'
         ];
     }
-    
+
 
     public function sendPush()
     {
@@ -139,5 +139,10 @@ class Message extends \yii\db\ActiveRecord
 
             }
         }
+    }
+
+    public function  changeStatus($newStatus){
+        $this->status = $newStatus;
+        $this->save();
     }
 }
