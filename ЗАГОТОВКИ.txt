@@ -1,4 +1,4 @@
-JS LOADER
+yf yt yfqltyfJS LOADER
 ____________________________________
 e-mail Клиенту и логиступри оформлении заказа
 e-mail Клиенту. Машина не найдена
@@ -48,6 +48,10 @@ Push
 
 pushall.ru
 UserController actionAddpushallid
+sendPush
+
+Сохранение нового заказа Order/afterSave Message
+Машина не найдена cron/monitoring....   new Message aterSave
 ____________________________
 ПЕРЕНОС НА СЕРВЕР
 

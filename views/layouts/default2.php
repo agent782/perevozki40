@@ -94,7 +94,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Диспетчерская',
                             'url' => '/logist',
-                            'visible' => Yii::$app->user->can('admin')
+//                            'visible' => Yii::$app->user->can('logist')
                         ],
                         [
                             'label' => 'Админка',
