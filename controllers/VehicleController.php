@@ -16,6 +16,7 @@ use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\LoadingType;
+use yii\filters\AccessControl;
 
 use yii\web\UploadedFile;
 
@@ -36,6 +37,15 @@ class VehicleController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['car_owner']
+                    ]
+                ],
+            ]
         ];
     }
 

@@ -76,7 +76,6 @@ class MessageController extends Controller
         ]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $model->sendPush();
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
