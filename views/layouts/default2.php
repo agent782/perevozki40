@@ -3,13 +3,16 @@
 /* @var $content string */
 use yii\bootstrap\Button;
 use yii\bootstrap\ButtonDropdown;
-use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 use yii\widgets;
+use app\models\Message;
+use yii\bootstrap\Html;
+use yii\helpers\Url;
 AppAsset::register($this);
+
 
 //$this->registerJsFile('/js/hideMenu.js');
 //$this->registerCss('
@@ -74,7 +77,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
             </div>
 <!--            <img src="/img/icons/menu.png" alt="Меню"/>-->
         </div>
-        <div  class="col-xs-6">
+        <div  class="col-xs-5">
             <div class="row" style="font-size: 20px; font-weight: 900">
                 <a href="/<?php Yii::$app->homeUrl?>"><img src="/img/icons/cargo-20.png"> perevozki40.ru</a>
             </div>
@@ -83,7 +86,23 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
             </div>
 
         </div>
-        <div class="col-xs-3">
+<!--        <div class="col-xs-1">1111111111</div>-->
+        <div class="col-xs-2">
+            <?php
+                if(Message::countNewMessage(Yii::$app->user->id)){
+                    echo Html::a(
+                        Html::img('/img/icons/message-48.png'
+                        ) . '(+' . Message::countNewMessage(Yii::$app->user->id) . ')'
+                        , Url::to(['/message']
+                    ));
+                } else {
+                    echo Html::a(
+                        Html::img('/img/icons/message-48.png')
+                    ,Url::to(['/message']));
+                }
+            ?>
+        </div>
+        <div class="col-xs-1">
             <?php
                 if((Yii::$app->user->isGuest)):
             ?>

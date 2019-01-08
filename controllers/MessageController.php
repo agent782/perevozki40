@@ -8,7 +8,7 @@ use app\models\MessageSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\filters\AccessControl;
 /**
  * MessageController implements the CRUD actions for Message model.
  */
@@ -26,6 +26,15 @@ class MessageController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ],
+            ]
         ];
     }
 

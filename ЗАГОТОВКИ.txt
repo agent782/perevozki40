@@ -57,4 +57,32 @@ ____________________________
 
 Поменять адрес колбэк экшена на pushall.ru
 ==============================
+Возврат на страницу входа, если не залогинен
+1. 'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['car_owner', 'client']]],            ]
+2.  'user' => [
+               'identityClass' => 'app\models\User',
+               'enableAutoLogin' => true,
+               'loginUrl' => ['/default/login', 'urlBack' => $_SERVER['REQUEST_URI']],],
+ 3. DefaultController/actionLogin
+    if($urlBack = Yii::$app->request->get('urlBack')){
+                   return $this->redirect($urlBack);}
+  ______________________________________________
+Ппоказывать весь текст при наведении
+.truncate {
+    max-width: 150px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
+.truncate:hover{
+    overflow: visible;
+    white-space: normal;
+    width: auto;
+}
+++++++++++++++++++++++++++++++++++++++++++

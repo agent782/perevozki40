@@ -65,9 +65,14 @@ use yii\helpers\Url;
  * @property string $comment
  * @property string $statusText
  * @property string $paidText
+ * @property string $shortRoute
+ * @property string $clientInfo
  * @property integer $FLAG_SEND_EMAIL_STATUS_EXPIRED
- * @property object $userClient;
+ * @property User $user;
  * @property object $vehicle
+ * @property Route $route
+ * @property string $paymentText
+ *
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -171,7 +176,10 @@ class Order extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'statusText' => 'Статус',
             'paidText' => 'Оплата',
-            'create_at' => 'Дата оформления заказа'
+            'create_at' => 'Дата оформления заказа',
+            'clientInfo' => 'Заказчик',
+            'shortInfoForClient' => 'ТС',
+            'paymentText' => 'Тип оплаты'
         ];
     }
 
@@ -417,8 +425,14 @@ class Order extends \yii\db\ActiveRecord
     public function getRealRoute(){
         return $this->hasOne(Route::className(), ['id' => 'id_route_real']);
     }
-    public function getUserClient(){
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+    public function getUser(){
+        return $this->hasOne(User::className(), ['id' => 'id_user']);
+    }
+    public function getProfile(){
+        return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
+    }
+    public function getCompany(){
+        return $this->hasOne(Company::class, ['id' => 'id_company']);
     }
     public function getVehicle(){
         if($this->id_vehicle){
@@ -569,6 +583,41 @@ class Order extends \yii\db\ActiveRecord
             ->where(['status' => self::STATUS_NEW])
             ->orWhere(['status' => self::STATUS_IN_PROCCESSING])
             ->count();
+    }
+
+    public function getShortRoute(){
+        $route = $this->route;
+        $return = '(' . $route->distance . 'km) '. $route->startCity . ' -';
+        for($i = 1; $i<9; $i++){
+            $attribute = 'route' . $i;
+            if($route->$attribute) $return .= '... -';
+        }
+        $return .=  ' '.$route->finishCity ;
+        return $return;
+    }
+
+    public function getClientInfo(){
+        $return = '';
+        $return .= $this->profile->fioFull
+            . '<br>'
+            . '<a href="tel:+7'. $this->user->username .'">'. $this->user->username. '</a>'
+        ;
+
+        return $return;
+    }
+
+    public function getPaymentText(){
+        switch ($this->type_payment){
+            case Payment::TYPE_CASH:
+                return 'Наличными водителю';
+                break;
+            case Payment::TYPE_SBERBANK_CARD:
+                return 'На карту Сбербанка';
+                break;
+            case Payment::TYPE_BANK_TRANSFER:
+                return 'По безналичному расчету';
+                break;
+        }
     }
 }
 

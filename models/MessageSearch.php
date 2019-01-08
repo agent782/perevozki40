@@ -18,7 +18,7 @@ class MessageSearch extends Message
     {
         return [
             [['id', 'type', 'status', 'id_to_user', 'id_from_user', 'email_status', 'sms_status', 'push_status'], 'integer'],
-            [['title', 'text'], 'safe'],
+            [['title', 'text', 'create_at'], 'safe'],
         ];
     }
 
@@ -44,8 +44,14 @@ class MessageSearch extends Message
 
         // add conditions that should always apply here
 
+        $sort = [
+            'defaultOrder' => [
+                'create_at' => SORT_DESC
+            ]
+        ];
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => $sort
         ]);
 
         $this->load($params);

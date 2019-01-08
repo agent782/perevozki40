@@ -145,4 +145,13 @@ class Message extends \yii\db\ActiveRecord
         $this->status = $newStatus;
         $this->save();
     }
+
+    static public function countNewMessage($id_user){
+        $newMessages = Message::find()
+            ->filterWhere(['id_to_user' => $id_user])
+            ->orFilterWhere(['id_from_user' => $id_user])
+            ->andWhere(['status' => self::STATUS_SEND])
+            ->count();
+        return ($newMessages)?$newMessages:false;
+    }
 }
