@@ -17,79 +17,36 @@ $this->title = 'ЗАКАЗЫ';
     <p>
         <?= Html::a('Новый заказ', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <a class = "btn btn-link left"><h3>В поиске  ( + <?= $countNewOrders ?>)</h3></a>
+<!--    <a class = "btn btn-link left"><h3>В поиске  ( + --><?//= $countNewOrders ?><!--)</h3></a>-->
     <div id="new_orders">
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+        <?=
+            \yii\bootstrap\Tabs::widget([
+                'encodeLabels' => false,
+                'items' => [
+                    [
+                        'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->getCount() . ')',
+                        'content' => $this->render('orders/new_orders', [
+                            'dataProvider_newOrders' => $dataProvider_newOrders,
+                            'searchModel' => $searchModel
+                        ])
+                    ],
+                    [
+                        'label' => 'В процессе... <br>(+' . $dataProvider_in_process->getCount() . ')' ,
+                    ],
+                    [
+                        'label' => 'Архив<br>(+' . $dataProvider_arhive->getCount() . ')',
+                    ],
+                    [
+                        'label' => 'Отмененные <br>(+' . $dataProvider_expired_and_canceled->getCount() . ')' ,
+                        'content' => $this->render('orders/expired_and_canceled_orders',
+                            ['dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled,
+                                'searchModel' => $searchModel])
+                    ],
+                ]
+            ])
+        ?>
 
-            'id',
-            'id_user',
-            'id_company',
-            'id_vehicle_type',
-            'tonnage',
-            //'length',
-            //'width',
-            //'height',
-            //'volume',
-            //'longlength',
-            //'passengers',
-            //'ep',
-            //'rp',
-            //'lp',
-            //'tonnage_spec',
-            //'length_spec',
-            //'volume_spec',
-            //'cargo:ntext',
-            //'datetime_start:datetime',
-            //'datetime_finish:datetime',
-            //'datetime_access:datetime',
-            //'valid_datetime:datetime',
-            //'id_route',
-            //'id_route_real',
-            //'id_price_zone_real',
-            //'create_at',
-            //'update_at',
-            //'cost',
-            //'type_payment',
-            //'id_payment',
-            //'status',
-            //'paid_status',
-            //'comment:ntext',
-            //'id_vehicle',
-            //'id_driver',
-            //'FLAG_SEND_EMAIL_STATUS_EXPIRED:email',
-            //'real_body_type',
-            //'real_loading_typies',
-            //'real_tonnage',
-            //'real_length',
-            //'real_height',
-            //'real_width',
-            //'real_volume',
-            //'real_longlength',
-            //'real_passengers',
-            //'real_ep',
-            //'real_rp',
-            //'real_lp',
-            //'real_tonnage_spec',
-            //'real_length_spec',
-            //'real_volume_spec',
-            //'real_cargo',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    </div>
-    <br>
-    <a class = "btn btn-link left"><h3>В процессе</h3></a>
-    <div id="in_process_orders">
 
-    </div>
-    <br>
-    <a class = "btn btn-link left"><h3>Архив</h3></a>
-    <div id="arhive_orders">
-
-    </div>
+</div>
 </div>

@@ -35,6 +35,8 @@ use Yii;
  * @property integer $id_reg_license
  * @property string $reg_address
  * @property date $create_at
+ * @property string $fioShort
+ * @property string $fioFull
  *
  * @property Passports $idPassport
  * @property DriverLicenses $idDriverLicense

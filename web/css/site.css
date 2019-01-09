@@ -261,4 +261,17 @@ a.desc:after {
 .smallNumberInput {
     width: 100px;
 }
+/* Показывать полный текст при наведении*/
+.truncate {
+    max-width: 300px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.truncate:hover{
+    overflow: visible;
+    white-space: normal;
+    width: auto;
+}
 

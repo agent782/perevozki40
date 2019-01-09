@@ -82,17 +82,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Маршрут',
+                'attribute' => 'shortRoute',
                 'format' => 'raw',
-                'value' => function($data){
-                    $route = $data->route;
-                    $return = $route->startCity . ' -';
-                    for($i = 1; $i<9; $i++){
-                        $attribute = 'route' . $i;
-                        if($route->$attribute) $return .= '... -';
-                    }
-                    $return .=  ' '.$route->finishCity ;
-                    return $return;
-                },
             ],
             [
                 'attribute' => 'shortInfoForClient',

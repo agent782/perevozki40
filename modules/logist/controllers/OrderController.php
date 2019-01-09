@@ -37,13 +37,35 @@ class OrderController extends Controller
     {
         $searchModel = new OrderSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_newOrders = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider_newOrders->query
+            ->where(['status' => Order::STATUS_NEW])
+            ->orWhere(['status' => Order::STATUS_IN_PROCCESSING])
+        ;
+        $dataProvider_in_process->query
+            ->where(['status' => Order::STATUS_VEHICLE_ASSIGNED])
+            ->orWhere(['status' => Order::STATUS_DISPUTE]);
+        $dataProvider_arhive->query
+            ->where(['status' => Order::STATUS_CONFIRMED_VEHICLE])
+            ->orWhere(['status' => Order::STATUS_CONFIRMED_CLIENT]);
+        $dataProvider_expired_and_canceled->query
+            ->where(['status' => Order::STATUS_EXPIRED])
+            ->orWhere(['status' => Order::STATUS_CANCELED])
+            ->orWhere(['status' => Order::STATUS_NOT_ACCEPTED]);
 
         $countNewOrders = Order::getCountNewOrders();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'countNewOrders' => $countNewOrders
+            'dataProvider_newOrders' => $dataProvider_newOrders,
+            'countNewOrders' => $countNewOrders,
+            'dataProvider_in_process' => $dataProvider_in_process,
+            'dataProvider_arhive' => $dataProvider_arhive,
+            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 

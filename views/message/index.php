@@ -14,6 +14,7 @@ $this->title = 'Сообщения';
 <div class="message-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
+<bR>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -21,41 +22,30 @@ $this->title = 'Сообщения';
 //        'filterModel' => $searchModel,
         'responsiveWrap' => false,
             'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
 
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);;
-                },
-//                'detailUrl' => function($model) {
-//                    return Url::to(['/message/view', 'id' => $model->id]);
-//                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-                ],
                 [
                     'attribute' => 'title',
                     'contentOptions' => function($model){
                         return ($model->status != $model::STATUS_SEND)?
                             [
-                                'class' => 'h1'
+                                'style' => 'font-size: 12px;'
                             ]:
                             [
-                                'class' => 'h4'
+                                'style' => 'font-size: 14px; font-weight:bold;'
                             ];
+                    },
+                    'format' => 'raw',
+                    'value' => function($model){
+                        return Html::a(
+                            $model->title,
+                            Url::to(['/message/view', 'id' => $model->id])
+                        );
                     }
-
                 ],
                 [
                     'attribute' => 'create_at',
                 ],
-                'status',
+//                'status',
                 [
                    'class' => \kartik\grid\ActionColumn::class,
                     'template' => '{delete}'
