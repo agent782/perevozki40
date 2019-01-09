@@ -8,6 +8,7 @@ use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
+use app\components\widgets\ShowMessageWidget;
 
 
 /**
@@ -72,7 +73,8 @@ use yii\helpers\Url;
  * @property object $vehicle
  * @property Route $route
  * @property string $paymentText
- *
+ * @property string $priceZonesWithInfo
+ * @property integer $id_pricezone_for_vehicle
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -119,7 +121,8 @@ class Order extends \yii\db\ActiveRecord
             [['datetime_start', 'valid_datetime', 'type_payment'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
-            [[ 'id_vehicle','datetime_access','datetime_finish', 'FLAG_SEND_EMAIL_STATUS_EXPIRED'],
+            [[ 'id_vehicle','datetime_access','datetime_finish', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
+                'id_pricezone_for_vehicle'],
                 'safe'
             ],
             [['id',   'suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
@@ -179,7 +182,8 @@ class Order extends \yii\db\ActiveRecord
             'create_at' => 'Дата оформления заказа',
             'clientInfo' => 'Заказчик',
             'shortInfoForClient' => 'ТС',
-            'paymentText' => 'Тип оплаты'
+            'paymentText' => 'Тип оплаты',
+            'priceZonesWithInfo' => 'Тарифы'
         ];
     }
 
@@ -619,6 +623,15 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
     }
+
+    public function getPriceZonesWithInfo(){
+        $return = '';
+        foreach ($this->priceZones as $priceZone){
+            $return .= $priceZone->getTextWithShowMessageButton($this->route->distance);
+        }
+        return $return;
+    }
+
 }
 
 

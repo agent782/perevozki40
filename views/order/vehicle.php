@@ -4,7 +4,7 @@ use kartik\grid\GridView;
 use app\models\Order;
 use yii\bootstrap\Html;
 use app\models\Vehicle;
-
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -101,6 +101,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     }
                     return $res;
+                }
+            ],
+            [
+                'label' => '',
+                'format' => 'raw',
+                'value' => function ($model, $index){
+                    return Html::a('Принять',Url::to([
+                            '/order/accept-order',
+                            'id_order' => $index,
+                            'id_user' => Yii::$app->user->id,
+                        ]), ['class' => 'btn btn-primary']);
                 }
             ],
             ['class' => 'yii\grid\ActionColumn'],

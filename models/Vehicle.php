@@ -574,4 +574,14 @@ class Vehicle extends \yii\db\ActiveRecord
         }
         return true;
     }
+
+    public function getMinRate(Order $Order){
+        if(!$this->canOrder($Order)) return 1;
+        $cost = 0;
+        $id_rate = null;
+        foreach ($Order->priceZones as $priceZone) {
+            if($cost < $priceZone->r_km) $id_rate = $priceZone->id;
+        }
+        return ($id_rate) ? $id_rate : false;
+    }
 }

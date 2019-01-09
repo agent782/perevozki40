@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\User;
+use yii\bootstrap\Html;
 use yii\filters\AccessControl;
 use app\components\functions\functions;
 use app\models\Route;
@@ -282,6 +284,48 @@ return 'error';
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionAcceptOrder($id_order, $id_user, $redirect = '/order/vehicle'){
+        $OrderModel = Order::findOne($id_order);
+        if($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING){
+            functions::setFlashWarning('Заказ был принят другим водителем.');
+            return $this->redirect($redirect);
+        }
+        $UserModel = User::findOne($id_user);
+        if(!$OrderModel || !$UserModel){
+            functions::setFlashWarning('Ошибка на сервере');
+            $this->redirect($redirect);
+        }
+        if(!$UserModel->getDrivers()->count()){
+            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
+            return $this->redirect($redirect);
+        }
+        $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+        $vehicles = [];
+        foreach ($UserModel->vehicles as $vehicle) {
+
+            if($vehicle->canOrder($OrderModel)) {
+                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
+                $vehicles[$vehicle->id] = $vehicle->brand
+                    . ' (' . $vehicle->regLicense->reg_number . ') '
+                    . '<br>'
+//                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance)
+                ;
+            }
+        }
+//        $vehicles = ArrayHelper::map($vehicles, 'id', 'regLicense.reg_number');
+        if($OrderModel->load(Yii::$app->request->post())){
+
+        }
+
+        return $this->render('/order/accept-order', [
+            'OrderModel' => $OrderModel,
+            'UserModel' => $UserModel,
+            'drivers' => $driversArr,
+            'vehicles' => $vehicles,
+            'redirect' => $redirect
+        ]);
     }
 
 }
