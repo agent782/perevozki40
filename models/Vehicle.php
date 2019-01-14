@@ -576,7 +576,7 @@ class Vehicle extends \yii\db\ActiveRecord
     }
 
     public function getMinRate(Order $Order){
-        if(!$this->canOrder($Order)) return 1;
+        if(!$this->canOrder($Order)) return false;
         $cost = 0;
         $id_rate = null;
         foreach ($Order->priceZones as $priceZone) {

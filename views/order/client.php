@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class'=> 'kv-state-enable',
                 ],
             ],
-            'id_user',
+//            'id_user',
             [
                 'attribute' => 'id',
                 'options' => [

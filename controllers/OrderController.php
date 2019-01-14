@@ -68,11 +68,34 @@ class OrderController extends Controller
     }
 
     public function actionClient(){
+//        $searchModel = new OrderSearch();
+//        $dataProviderNewOrders = $searchModel->searchForClientNEWOrders(Yii::$app->request->queryParams);
         $searchModel = new OrderSearch();
-        $dataProviderNewOrders = $searchModel->searchForClientNEWOrders(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_newOrders = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider_newOrders->query
+            ->where(['in', 'status', [Order::STATUS_NEW, 'status' => Order::STATUS_IN_PROCCESSING]])
+            ->andWhere(['id_user' => Yii::$app->user->id])
+        ;
+        $dataProvider_in_process->query
+            ->where(['status' => Order::STATUS_VEHICLE_ASSIGNED])
+            ->orWhere(['status' => Order::STATUS_DISPUTE]);
+        $dataProvider_arhive->query
+            ->where(['status' => Order::STATUS_CONFIRMED_VEHICLE])
+            ->orWhere(['status' => Order::STATUS_CONFIRMED_CLIENT]);
+        $dataProvider_expired_and_canceled->query
+            ->where(['status' => Order::STATUS_EXPIRED])
+            ->orWhere(['status' => Order::STATUS_CANCELED])
+            ->orWhere(['status' => Order::STATUS_NOT_ACCEPTED]);
+
+
         return $this->render('client', [
             'searchModel' => $searchModel,
-            'dataProviderNewOrders' => $dataProviderNewOrders,
+            'dataProviderNewOrders' => $dataProvider_newOrders,
         ]);
     }
 
@@ -303,20 +326,27 @@ return 'error';
         }
         $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
         $vehicles = [];
-        foreach ($UserModel->vehicles as $vehicle) {
-
+        $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+        foreach ($Vehicles as $vehicle) {
             if($vehicle->canOrder($OrderModel)) {
                 $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
-                $vehicles[$vehicle->id] = $vehicle->brand
+                $vehicles[$vehicle->id] =
+                    $vehicle->brand
                     . ' (' . $vehicle->regLicense->reg_number . ') '
-                    . '<br>'
-//                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance)
+                    . ' <br> '
+                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance)
                 ;
             }
         }
-//        $vehicles = ArrayHelper::map($vehicles, 'id', 'regLicense.reg_number');
+        if($vehicles){
+            $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
+        }
         if($OrderModel->load(Yii::$app->request->post())){
+            $OrderModel->status = Order::STATUS_VEHICLE_ASSIGNED;
 
+            if($OrderModel->save())functions::setFlashSuccess('Вы приняли заказ.');
+            else functions::setFlashWarning('шибка на сервере, обратитесь к администратору');
+            return $this->redirect($redirect);
         }
 
         return $this->render('/order/accept-order', [

@@ -159,13 +159,12 @@ class OrderSearch extends Order
 
     public function searchForVehicle($params)
     {
-        $vehicles = Vehicle::find()->where([
-            'id_user' => Yii::$app->user->id,
-//            'status' => Vehicle::STATUS_ACTIVE
-        ])->all();
+        $vehicles = Vehicle::find()->where(['id_user' => Yii::$app->user->id])
+            ->andWhere(['in','status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->all();
         $query = Order::find();
         $newOrders = Order::find()->where([
-            'status' => [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]
+            'status' => [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING, Order::STATUS_VEHICLE_ASSIGNED]
         ]) ->all();
         foreach ($vehicles as $vehicle){
             $query->where(['id_vehicle' => $vehicle->id]);
