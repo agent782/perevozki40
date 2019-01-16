@@ -79,33 +79,52 @@ class OrderController extends Controller
 
         $dataProvider_newOrders->query
             ->where(['in', 'status', [Order::STATUS_NEW, 'status' => Order::STATUS_IN_PROCCESSING]])
-            ->andWhere(['id_user' => Yii::$app->user->id])
-        ;
+            ->andWhere(['id_user' => Yii::$app->user->id]);
         $dataProvider_in_process->query
-            ->where(['status' => Order::STATUS_VEHICLE_ASSIGNED])
-            ->orWhere(['status' => Order::STATUS_DISPUTE]);
+            ->where(['in','status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
         $dataProvider_arhive->query
-            ->where(['status' => Order::STATUS_CONFIRMED_VEHICLE])
-            ->orWhere(['status' => Order::STATUS_CONFIRMED_CLIENT]);
+            ->where(['in', 'status' , [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
         $dataProvider_expired_and_canceled->query
-            ->where(['status' => Order::STATUS_EXPIRED])
-            ->orWhere(['status' => Order::STATUS_CANCELED])
-            ->orWhere(['status' => Order::STATUS_NOT_ACCEPTED]);
-
+            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
 
         return $this->render('client', [
             'searchModel' => $searchModel,
             'dataProviderNewOrders' => $dataProvider_newOrders,
+            'dataProvider_in_process' => $dataProvider_in_process,
+            'dataProvider_arhive' => $dataProvider_arhive,
+            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
     public function actionVehicle(){
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->searchForVehicle(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_newOrders = $searchModel->searchCanVehicle(Yii::$app->request->queryParams);
+        $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
+
+//        $dataProvider_newOrders
+//            ->where(['in', 'status', [Order::STATUS_NEW, 'status' => Order::STATUS_IN_PROCCESSING]]);
+        $dataProvider_in_process->query
+            ->where(['in','status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
+            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
+        $dataProvider_arhive->query
+            ->where(['in', 'status' , [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
+        $dataProvider_expired_and_canceled->query
+            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
+            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
 
         return $this->render('vehicle', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider_newOrders' => $dataProvider_newOrders,
+            'dataProvider_in_process' => $dataProvider_in_process,
+            'dataProvider_arhive' => $dataProvider_arhive,
+            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
@@ -220,17 +239,19 @@ class OrderController extends Controller
                     if($route->save()) {
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;
+                        $modelOrder->scenario = Order::SCENARIO_NEW_ORDER;
                         if($modelOrder->save()) {
                             $session->remove('route');
                             $session->remove('modelOrder');
                             return $this->redirect(['client']);
                         }
 //                        var_dump($modelOrder->getErrors());
-
-                        return 'error_save_order';
+//                        return var_dump($modelOrder->getErrors());
+//                        return 'error_save_order';
+                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     }
 
-                    return 'error_save_route';
+                    functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                 }
                 var_dump($modelOrder->getErrors());
 return 'error';
