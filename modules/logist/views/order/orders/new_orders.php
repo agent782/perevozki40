@@ -30,6 +30,13 @@
             'format' => 'raw',
 //            'contentOptions' => ['class' => 'truncate']
         ],
+        [
+            'attribute' => 'priceZonesWithInfo',
+            'format' => 'raw',
+            'contentOptions' => ['style' => 'width: 200px;']
+
+        ]
+        ,
         'paymentText',
         'company.name',
         ['class' => 'yii\grid\ActionColumn'],

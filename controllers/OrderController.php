@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\User;
+use yii\bootstrap\Html;
 use yii\filters\AccessControl;
 use app\components\functions\functions;
 use app\models\Route;
@@ -66,21 +68,63 @@ class OrderController extends Controller
     }
 
     public function actionClient(){
+//        $searchModel = new OrderSearch();
+//        $dataProviderNewOrders = $searchModel->searchForClientNEWOrders(Yii::$app->request->queryParams);
         $searchModel = new OrderSearch();
-        $dataProviderNewOrders = $searchModel->searchForClientNEWOrders(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_newOrders = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider_newOrders->query
+            ->where(['in', 'status', [Order::STATUS_NEW, 'status' => Order::STATUS_IN_PROCCESSING]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
+        $dataProvider_in_process->query
+            ->where(['in','status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
+        $dataProvider_arhive->query
+            ->where(['in', 'status' , [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
+        $dataProvider_expired_and_canceled->query
+            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
+            ->andWhere(['id_user' => Yii::$app->user->id]);
+
         return $this->render('client', [
             'searchModel' => $searchModel,
-            'dataProviderNewOrders' => $dataProviderNewOrders,
+            'dataProviderNewOrders' => $dataProvider_newOrders,
+            'dataProvider_in_process' => $dataProvider_in_process,
+            'dataProvider_arhive' => $dataProvider_arhive,
+            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
     public function actionVehicle(){
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->searchForVehicle(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_newOrders = $searchModel->searchCanVehicle(Yii::$app->request->queryParams);
+        $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
+
+        $dataProvider_in_process->query
+            ->where(['in','status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
+            ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids])
+        ;
+        $dataProvider_arhive->query
+            ->where(['in', 'status' , [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['id_vehicle' => Yii::$app->user->id])
+        ;
+        $dataProvider_expired_and_canceled->query
+            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
+            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
 
         return $this->render('vehicle', [
             'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'dataProvider_newOrders' => $dataProvider_newOrders,
+            'dataProvider_in_process' => $dataProvider_in_process,
+            'dataProvider_arhive' => $dataProvider_arhive,
+            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
@@ -195,17 +239,19 @@ class OrderController extends Controller
                     if($route->save()) {
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;
+                        $modelOrder->scenario = Order::SCENARIO_NEW_ORDER;
                         if($modelOrder->save()) {
                             $session->remove('route');
                             $session->remove('modelOrder');
                             return $this->redirect(['client']);
                         }
 //                        var_dump($modelOrder->getErrors());
-
-                        return 'error_save_order';
+//                        return var_dump($modelOrder->getErrors());
+//                        return 'error_save_order';
+                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     }
 
-                    return 'error_save_route';
+                    functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                 }
                 var_dump($modelOrder->getErrors());
 return 'error';
@@ -282,6 +328,60 @@ return 'error';
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionAcceptOrder($id_order, $id_user, $redirect = '/order/vehicle'){
+        $OrderModel = Order::findOne($id_order);
+        if($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING){
+            functions::setFlashWarning('Заказ был принят другим водителем.');
+            return $this->redirect($redirect);
+        }
+        $UserModel = User::findOne($id_user);
+        if(!$OrderModel || !$UserModel){
+            functions::setFlashWarning('Ошибка на сервере');
+            $this->redirect($redirect);
+        }
+        if(!$UserModel->getDrivers()->count()){
+            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
+            return $this->redirect($redirect);
+        }
+        $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+        $vehicles = [];
+        $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+        foreach ($Vehicles as $vehicle) {
+            if($vehicle->canOrder($OrderModel)) {
+                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
+                $vehicles[$vehicle->id] =
+                    $vehicle->brand
+                    . ' (' . $vehicle->regLicense->reg_number . ') '
+                    . ' <br> '
+                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance)
+                ;
+            }
+        }
+        if($vehicles){
+            $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
+        }
+        if($OrderModel->load(Yii::$app->request->post())){
+            $OrderModel->status = Order::STATUS_VEHICLE_ASSIGNED;
+            $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
+                ->getMinRate($OrderModel);
+            if($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+                if ($OrderModel->save()) $OrderModel->changeStatus(
+                    Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
+                else functions::setFlashWarning('Ошибка на сервере, обратитесь к администратору');
+            } else  functions::setFlashWarning('Заказ только что был принят другим водителем.');
+
+            return $this->redirect($redirect);
+        }
+
+        return $this->render('/order/accept-order', [
+            'OrderModel' => $OrderModel,
+            'UserModel' => $UserModel,
+            'drivers' => $driversArr,
+            'vehicles' => $vehicles,
+            'redirect' => $redirect
+        ]);
     }
 
 }

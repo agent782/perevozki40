@@ -28,6 +28,9 @@ use yii\web\IdentityInterface;
  * @property integer $updated_at
  * @property string $password write-only password
  * @property array $push_ids
+ * @property array $drivers
+ * @property array $vehicles
+ * @property array $vehicleIds
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -301,8 +304,24 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
+    public function getDrivers(){
+        return $this->hasMany(Driver::class, ['id_car_owner' => 'id']);
+    }
+
+    public function getVehicles(){
+        return $this->hasMany(Vehicle::class, ['id_user' => 'id']);
+    }
+
     public  function statusDeleted(){
         return $this->status === self::STATUS_DELETED ? true : false;
+    }
+
+    public function getVehicleIds(){
+        $arr = [];
+        foreach ($this->vehicles as $vehicle){
+            $arr [] = $vehicle->id;
+        }
+        return $arr;
     }
 
 

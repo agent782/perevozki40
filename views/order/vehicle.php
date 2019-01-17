@@ -4,7 +4,8 @@ use kartik\grid\GridView;
 use app\models\Order;
 use yii\bootstrap\Html;
 use app\models\Vehicle;
-
+use yii\helpers\Url;
+use yii\bootstrap\Tabs;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -13,99 +14,31 @@ $this->title = 'Заказы (Водитель)';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-index">
-
     <h4><?= Html::encode($this->title) ?></h4>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php \yii\widgets\Pjax::begin([
-        'id' => 'pjax'
-    ]);
-
+    <?=
+        Tabs::widget([
+            'encodeLabels' => false,
+            'items' => [
+                [
+                    'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->getCount() . ')',
+                    'content' => $this->render('orders/new_orders', [
+                        'dataProvider_newOrders' => $dataProvider_newOrders,
+                        'searchModel' => $searchModel
+                    ])
+                ],
+                [
+                    'label' => 'В процессе... <br>(+' . $dataProvider_in_process->getCount() . ')' ,
+                    'content' => $this->render('orders/in_proccess', [
+                        'dataProvider_in_process' => $dataProvider_in_process,
+                        'searchModel' => $searchModel
+                    ])
+                ],
+                [
+                    'label' => 'Завершенные<br>(+' . $dataProvider_arhive->getCount() . ')',
+                ],
+            ]
+        ]);
     ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-//        'bordered' => true,
-//        'striped' => false,
-//        'responsive'=>true,
-//        'floatHeader'=>false,
-        'options' => [
-            'class' => 'minRoute'
-        ],
-//        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
-//        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
-//        'filterRowOptions'=>['class'=>'kartik-sheet-style'],
-//        'persistResize'=>true,
-        'responsiveWrap' => false,
-        'pjax'=>true,
-        'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
-
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-//                    return $model->id;
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-            ],
-            'id',
-            [
-                'attribute' => 'statusText',
-                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
-
-            ],
-            [
-                'attribute' => 'datetime_start',
-                'options' => [
-//                    'style' =>'width: 100px',
-                ],
-                'contentOptions'=>['style'=>'white-space: normal;']
-            ],
-            [
-                'label' => 'Маршрут',
-                'format' => 'raw',
-                'value' => function($data){
-                    $route = $data->route;
-                    $return = $route->startCity . ' -';
-                    for($i = 1; $i<9; $i++){
-                        $attribute = 'route' . $i;
-                        if($route->$attribute) $return .= '... -';
-                    }
-                    $return .=  ' '.$route->finishCity ;
-                    return $return;
-                },
-            ],
-            'vehicleType.type',
-            [
-                'label' => 'Подходит для Ваших ТС',
-                'format' => 'raw',
-                'value' => function($model){
-                    $res = '';
-                    $vehicles = \app\models\Vehicle::find()
-                        ->where([
-                            'id_user' => Yii::$app->user->id,
-                            'status' => [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]
-                        ])->all();
-                    if(!count($vehicles)) return;
-                    foreach ($vehicles as $vehicle) {
-                        if ($vehicle->canOrder($model)) {
-                            $res .= $vehicle->regLicense->reg_number . '<br>';
-                        }
-                    }
-                    return $res;
-                }
-            ],
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-    <?php \yii\widgets\Pjax::end()?>
 
 </div>

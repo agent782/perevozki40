@@ -6,7 +6,7 @@ use app\components\SerializeBehaviors;
 use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
-
+use app\components\widgets\ShowMessageWidget;
 
 /**
  * This is the model class for table "price_zone".
@@ -330,5 +330,24 @@ class PriceZone extends \yii\db\ActiveRecord
             return $cost;
         }
         return 'Невозможно расчитать стоимость. Неверно задан маршрут!';
+    }
+
+    public function getTextWithShowMessageButton($distance = null){
+        $return = '';
+//        $return .= 'Тариф №' . $this->id;
+        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';
+        $return .= '<br>'
+            . '<p style="font-size: x-small; font-style: italic">'
+            . '(Тариф №' . $this->id . '. '
+            . $this->r_km . ' р/км '
+            . ', '
+            . $this->r_h . ' р/час...)';
+        $return .= ShowMessageWidget::widget([
+                'helpMessage' => $this->printHtml(),
+                'header' => 'Тарифная зона ' . $this->id,
+                'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn']
+            ]) . '</p>';
+
+        return $return;
     }
 }

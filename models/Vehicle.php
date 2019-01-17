@@ -39,7 +39,6 @@ use yii\helpers\Url;
  * @property string $bodyTypeText
  * @property float $description
  * @property float $photo
- * @property object $regLicense
  * @property array $loadingtypes
  * @property array $loadingtypesText
  * @property array $bodyType
@@ -50,6 +49,7 @@ use yii\helpers\Url;
  * @property string $error_mes
  * @property object $user
  * @property object $profile
+ * @property RegLicense $regLicense
 
 
 
@@ -573,5 +573,15 @@ class Vehicle extends \yii\db\ActiveRecord
             if(!$hasLoadingType) return false;
         }
         return true;
+    }
+
+    public function getMinRate(Order $Order){
+        if(!$this->canOrder($Order)) return false;
+        $cost = 0;
+        $id_rate = null;
+        foreach ($Order->priceZones as $priceZone) {
+            if($cost < $priceZone->r_km) $id_rate = $priceZone->id;
+        }
+        return ($id_rate) ? $id_rate : false;
     }
 }
