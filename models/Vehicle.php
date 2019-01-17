@@ -39,7 +39,6 @@ use yii\helpers\Url;
  * @property string $bodyTypeText
  * @property float $description
  * @property float $photo
- * @property object $regLicense
  * @property array $loadingtypes
  * @property array $loadingtypesText
  * @property array $bodyType
@@ -50,6 +49,7 @@ use yii\helpers\Url;
  * @property string $error_mes
  * @property object $user
  * @property object $profile
+ * @property RegLicense $regLicense
 
 
 

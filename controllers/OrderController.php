@@ -107,14 +107,14 @@ class OrderController extends Controller
         $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
 
-//        $dataProvider_newOrders
-//            ->where(['in', 'status', [Order::STATUS_NEW, 'status' => Order::STATUS_IN_PROCCESSING]]);
         $dataProvider_in_process->query
             ->where(['in','status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
-            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
+            ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids])
+        ;
         $dataProvider_arhive->query
             ->where(['in', 'status' , [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
-            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
+            ->andWhere(['id_vehicle' => Yii::$app->user->id])
+        ;
         $dataProvider_expired_and_canceled->query
             ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
             ->andWhere(['id_vehicle' => Yii::$app->user->id]);
@@ -364,9 +364,14 @@ return 'error';
         }
         if($OrderModel->load(Yii::$app->request->post())){
             $OrderModel->status = Order::STATUS_VEHICLE_ASSIGNED;
+            $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
+                ->getMinRate($OrderModel);
+            if($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+                if ($OrderModel->save()) $OrderModel->changeStatus(
+                    Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
+                else functions::setFlashWarning('Ошибка на сервере, обратитесь к администратору');
+            } else  functions::setFlashWarning('Заказ только что был принят другим водителем.');
 
-            if($OrderModel->save())functions::setFlashSuccess('Вы приняли заказ.');
-            else functions::setFlashWarning('шибка на сервере, обратитесь к администратору');
             return $this->redirect($redirect);
         }
 

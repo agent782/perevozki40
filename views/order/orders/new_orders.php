@@ -12,7 +12,7 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 ?>
-
+<div>
 <?= GridView::widget([
     'dataProvider' => $dataProvider_newOrders,
 //    'filterModel' => $searchModel,
@@ -104,6 +104,7 @@ use yii\bootstrap\Tabs;
                 ]), ['class' => 'btn btn-primary']);
             }
         ],
-        ['class' => 'yii\grid\ActionColumn'],
+//        ['class' => 'yii\grid\ActionColumn'],
     ],
 ]); ?>
+</div>

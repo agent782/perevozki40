@@ -30,6 +30,7 @@ use yii\web\IdentityInterface;
  * @property array $push_ids
  * @property array $drivers
  * @property array $vehicles
+ * @property array $vehicleIds
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -313,6 +314,14 @@ class User extends ActiveRecord implements IdentityInterface
 
     public  function statusDeleted(){
         return $this->status === self::STATUS_DELETED ? true : false;
+    }
+
+    public function getVehicleIds(){
+        $arr = [];
+        foreach ($this->vehicles as $vehicle){
+            $arr [] = $vehicle->id;
+        }
+        return $arr;
     }
 
 

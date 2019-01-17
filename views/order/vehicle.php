@@ -15,31 +15,30 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-index">
     <h4><?= Html::encode($this->title) ?></h4>
-    <?php
-        $Tab = Tabs::begin();
-        $Tab->encodeLabels = false;
-        $Tab->items = [
-            [
-                'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->getCount() . ')',
-                'content' => $this->render('orders/new_orders', [
-                    'dataProvider_newOrders' => $dataProvider_newOrders,
-                    'searchModel' => $searchModel
-                ])
-            ],
-            [
-                'label' => 'В процессе... <br>(+' . $dataProvider_in_process->getCount() . ')' ,
-            ],
-            [
-                'label' => 'Архив<br>(+' . $dataProvider_arhive->getCount() . ')',
-            ],
-            [
-                'label' => 'Отмененные <br>(+' . $dataProvider_expired_and_canceled->getCount() . ')' ,
-                'content' => $this->render('orders/expired_and_canceled_orders',
-                    ['dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled,
-                        'searchModel' => $searchModel])
-            ],
-        ];
-        Tabs::end();
+
+    <?=
+        Tabs::widget([
+            'encodeLabels' => false,
+            'items' => [
+                [
+                    'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->getCount() . ')',
+                    'content' => $this->render('orders/new_orders', [
+                        'dataProvider_newOrders' => $dataProvider_newOrders,
+                        'searchModel' => $searchModel
+                    ])
+                ],
+                [
+                    'label' => 'В процессе... <br>(+' . $dataProvider_in_process->getCount() . ')' ,
+                    'content' => $this->render('orders/in_proccess', [
+                        'dataProvider_in_process' => $dataProvider_in_process,
+                        'searchModel' => $searchModel
+                    ])
+                ],
+                [
+                    'label' => 'Завершенные<br>(+' . $dataProvider_arhive->getCount() . ')',
+                ],
+            ]
+        ]);
     ?>
 
 </div>
