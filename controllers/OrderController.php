@@ -367,6 +367,7 @@ return 'error';
             $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
                 ->getMinRate($OrderModel);
             if($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+                $OrderModel->id_vehicle = $id_user;
                 if ($OrderModel->save()) $OrderModel->changeStatus(
                     Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
                 else functions::setFlashWarning('Ошибка на сервере, обратитесь к администратору');
