@@ -32,7 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'content' => $this->render('orders/in_proccess', [
                         'dataProvider_in_process' => $dataProvider_in_process,
                         'searchModel' => $searchModel
-                    ])
+                    ]),
+                    'active' => ($dataProvider_in_process->count)?true:false,
                 ],
                 [
                     'label' => 'Завершенные<br>(+' . $dataProvider_arhive->getCount() . ')',

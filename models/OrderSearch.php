@@ -52,7 +52,12 @@ class OrderSearch extends Order
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query
+            'query' => $query,
+            'sort' => [
+                'defaultOrder' => [
+                    'datetime_start' => SORT_ASC
+                ]
+            ]
         ]);
 
         $this->load($params);
@@ -165,7 +170,7 @@ class OrderSearch extends Order
             ->all();
         $orders = [];
         $Orders = Order::find()
-            ->where(['in', 'status' , Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING])
+            ->where(['in', 'status' , [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]])
 //            ->asArray();
             ->all();
         foreach ($Orders as $Order){

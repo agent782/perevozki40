@@ -108,12 +108,18 @@ use yii\bootstrap\Tabs;
                 'label' => '',
                 'format' => 'raw',
                 'value' => function ($model){
-                    return Html::a('Отказаться',Url::to([
-                        '',
-                        'id_order' => $model->id,
-                        'id_user' => Yii::$app->user->id,
-                    ]), ['class' => 'btn btn-warning']);
-                }
+                    $return = '';
+                        $return .= Html::a('Отказаться', Url::to([
+                            '/order/canceled-by-vehicle',
+                            'id_order' => $model->id,
+                            'id_user' => Yii::$app->user->id,
+                        ]),
+                            ['data-confirm' => Yii::t('yii',
+                                'Отказ от заказа может повлиять на Ваш рейтинг! Отказаться от заказа?'),
+                            'data-method' => 'post',
+                            'class' => 'btn btn-warning']);
+                    return $return;
+                },
             ],
 //            ['class' => 'yii\grid\ActionColumn'],
         ],
