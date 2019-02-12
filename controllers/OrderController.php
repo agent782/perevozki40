@@ -421,9 +421,10 @@ return 'error';
             ]);
             $Message->save();
             $Message->sendPush();
-            return var_dump($order);
-        }
-        return var_dump($order->getErrors());
+            functions::setFlashSuccess('Вы отказались от заказа!');
+        } else functions::setFlashWarning('Ошибка на сервере! Повторите попытку или свяжитесь с диспетчером!');
+        return $this->redirect('/order/vehicle');
+
     }
 
 }

@@ -50,7 +50,7 @@ class Message extends \yii\db\ActiveRecord
             [['type', 'status', 'id_to_user', 'id_from_user', 'email_status', 'sms_status', 'push_status'], 'integer'],
             [['id_to_user'], 'required'],
             [['title', 'text', 'url'], 'string', 'max' => 255],
-            ['create_at', 'default', 'value' => date('d.m.Y h:i')],
+            ['create_at', 'default', 'value' => date('d.m.Y H:i')],
             ['status','default', 'value' => self::STATUS_SEND]
         ];
     }
