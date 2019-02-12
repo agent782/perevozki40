@@ -148,7 +148,7 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_ACCESSING] = ['id_vehicle', 'id_driver'];
         $scenarios[self::SCENARIO_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime', 'type_payment',
-            'passengers','id_company', 'status'];
+            'passengers','id_company', 'status', 'create_at', 'update_at'];
         return $scenarios;
     }
 

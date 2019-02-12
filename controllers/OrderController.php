@@ -1,7 +1,8 @@
 <?php
 
 namespace app\controllers;
-
+use yii\helpers\Url;
+use app\models\Message;
 use app\models\User;
 use yii\bootstrap\Html;
 use yii\filters\AccessControl;
@@ -383,6 +384,46 @@ return 'error';
             'vehicles' => $vehicles,
             'redirect' => $redirect
         ]);
+    }
+
+    public function actionCanceledByVehicle($id_order, $id_user){
+        $user = User::findOne($id_user);
+        $order = Order::findOne($id_order);
+        if(!$user || !$order) {
+            functions::setFlashWarning('шибка на сервере, попробуте позже.');
+            return $this->redirect('/order/vehicle');
+        }
+        $text = '';
+        $title = '';
+        if(strtotime($order->valid_datetime) > time()){
+            $valid_datetime = $order->valid_datetime;
+        } else{
+            $valid_datetime = date('d.m.Y H:i', time() + (60*60*2));
+        }
+
+        $title = 'Заказ №' . $order->id . '. Водитель отказался от заказа.';
+        $text = 'Поиск ТС продолжится до ' . $valid_datetime;
+        $order->status = Order::STATUS_IN_PROCCESSING;
+        $order->valid_datetime = $valid_datetime;
+        $order->id_vehicle = null;
+        $order->id_driver = null;
+        $order->id_pricezone_for_vehicle = null;
+        $order->scenario = $order::SCENARIO_UPDATE_STATUS;
+        if($order->save()) {
+            $order->setEventChangeStatusToExpired();
+            $Message = new Message([
+                'id_to_user' => $order->id_user,
+                'title' => $title,
+                'text' => $text,
+                'url' => Url::to(['/order/view', 'id' => $this->id], true),
+                'push_status' => Message::STATUS_NEED_TO_SEND,
+                'email_status' => Message::STATUS_NEED_TO_SEND,
+            ]);
+            $Message->save();
+            $Message->sendPush();
+            return var_dump($order);
+        }
+        return var_dump($order->getErrors());
     }
 
 }

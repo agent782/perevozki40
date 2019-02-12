@@ -1,0 +1,8 @@
+Водители
+    Setting->raiting_vehicle_canceled_order_before_find_time
+    Setting->raiting_vehicle_canceled_order_after_find_time
+    Setting->raiting_vehicle_canceled_order_after_start_time
+
+Заказчики
+    Setting->raiting_client_canceled_order_before_assigned
+    Setting->raiting_client_canceled_order_after_assigned

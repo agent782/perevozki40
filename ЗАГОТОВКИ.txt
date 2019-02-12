@@ -51,7 +51,7 @@ UserController actionAddpushallid
 sendPush
 
 Сохранение нового заказа Order/afterSave Message
-Машина не найдена cron/monitoring....   new Message aterSave
+Машина не найдена cron/monitoring....   new Message afterSave
 ____________________________
 ПЕРЕНОС НА СЕРВЕР
 
@@ -89,3 +89,6 @@ ____________________________
 ActiveField RadioList ЭКРАНИРОВАНИЕ html
 ['encode' => false]
 ==========================================
+Рейтинг Rating
+id, value, text, type(vehicle, client), comment, create_at, update_at, status
+==============================================
