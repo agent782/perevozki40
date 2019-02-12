@@ -620,7 +620,7 @@ class Order extends \yii\db\ActiveRecord
     public function setEventChangeStatusToExpired(){
         return Yii::$app->db->createCommand('
                 CREATE EVENT IF NOT EXISTS cancel_order_'
-            . $this->id .
+            . $this->id . '_' .time() .
             ' ON SCHEDULE AT (FROM_UNIXTIME ('.
             $this->valid_datetime
             . '))
