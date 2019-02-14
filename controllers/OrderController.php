@@ -364,14 +364,12 @@ return 'error';
             $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
         }
         if($OrderModel->load(Yii::$app->request->post())){
-            $OrderModel->status = Order::STATUS_VEHICLE_ASSIGNED;
             $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
                 ->getMinRate($OrderModel);
             if($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
-                $OrderModel->id_vehicle = $id_user;
-                if ($OrderModel->save()) $OrderModel->changeStatus(
+//                $OrderModel->id_vehicle = $id_user;
+                $OrderModel->changeStatus(
                     Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
-                else functions::setFlashWarning('Ошибка на сервере, обратитесь к администратору');
             } else  functions::setFlashWarning('Заказ только что был принят другим водителем.');
 
             return $this->redirect($redirect);
@@ -389,40 +387,45 @@ return 'error';
     public function actionCanceledByVehicle($id_order, $id_user){
         $user = User::findOne($id_user);
         $order = Order::findOne($id_order);
+
         if(!$user || !$order) {
             functions::setFlashWarning('шибка на сервере, попробуте позже.');
             return $this->redirect('/order/vehicle');
         }
-        $text = '';
-        $title = '';
-        if(strtotime($order->valid_datetime) > time()){
-            $valid_datetime = $order->valid_datetime;
-        } else{
-            $valid_datetime = date('d.m.Y H:i', time() + (60*60*2));
-        }
 
-        $title = 'Заказ №' . $order->id . '. Водитель отказался от заказа.';
-        $text = 'Поиск ТС продолжится до ' . $valid_datetime;
-        $order->status = Order::STATUS_IN_PROCCESSING;
-        $order->valid_datetime = $valid_datetime;
-        $order->id_vehicle = null;
-        $order->id_driver = null;
-        $order->id_pricezone_for_vehicle = null;
-        $order->scenario = $order::SCENARIO_UPDATE_STATUS;
-        if($order->save()) {
-            $order->setEventChangeStatusToExpired();
-            $Message = new Message([
-                'id_to_user' => $order->id_user,
-                'title' => $title,
-                'text' => $text,
-                'url' => Url::to(['/order/view', 'id' => $this->id], true),
-                'push_status' => Message::STATUS_NEED_TO_SEND,
-                'email_status' => Message::STATUS_NEED_TO_SEND,
-            ]);
-            $Message->save();
-            $Message->sendPush();
-            functions::setFlashSuccess('Вы отказались от заказа!');
-        } else functions::setFlashWarning('Ошибка на сервере! Повторите попытку или свяжитесь с диспетчером!');
+        $order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle);
+
+
+//        $text = '';
+//        $title = '';
+//        if(strtotime($order->valid_datetime) > time()){
+//            $valid_datetime = $order->valid_datetime;
+//        } else{
+//            $valid_datetime = date('d.m.Y H:i', time() + (60*60*2));
+//        }
+//
+//        $title = 'Заказ №' . $order->id . '. Водитель отказался от заказа.';
+//        $text = 'Поиск ТС продолжится до ' . $valid_datetime;
+//        $order->status = Order::STATUS_IN_PROCCESSING;
+//        $order->valid_datetime = $valid_datetime;
+//        $order->id_vehicle = null;
+//        $order->id_driver = null;
+//        $order->id_pricezone_for_vehicle = null;
+//        $order->scenario = $order::SCENARIO_UPDATE_STATUS;
+//        if($order->save()) {
+//            $order->setEventChangeStatusToExpired();
+//            $Message = new Message([
+//                'id_to_user' => $order->id_user,
+//                'title' => $title,
+//                'text' => $text,
+//                'url' => Url::to(['/order/view', 'id' => $this->id], true),
+//                'push_status' => Message::STATUS_NEED_TO_SEND,
+//                'email_status' => Message::STATUS_NEED_TO_SEND,
+//            ]);
+////            $Message->save();
+//            $Message->sendPush();
+//            functions::setFlashSuccess('Вы отказались от заказа!');
+//        } else functions::setFlashWarning('Ошибка на сервере! Повторите попытку или свяжитесь с диспетчером!');
         return $this->redirect('/order/vehicle');
 
     }
