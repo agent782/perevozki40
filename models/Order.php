@@ -699,7 +699,6 @@ class Order extends \yii\db\ActiveRecord
                 $push_to_vehicle = true;
                 break;
             case self::STATUS_EXPIRED:
-                $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
             case self::STATUS_CONFIRMED_VEHICLE:
                 $title = 'Заказ №' . $this->id . 'подтвержден водителем.';
