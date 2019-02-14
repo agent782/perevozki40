@@ -3,6 +3,7 @@
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+use
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Order */
@@ -20,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
         $form = ActiveForm::begin();
     ?>
-
+    <?= $form->field($modelOrder, 'id_vehicle_type')->?>
     <?= $form->field($modelOrder, 'id_vehicle_type')->radioList(
             ArrayHelper::map(\app\models\VehicleType::find()->asArray()->all(), 'id', 'type')
     )?>
