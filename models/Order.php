@@ -343,6 +343,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
+
 // Создание myaql события на изменение статуса заказа на просрочен при достижении времени valid_datetime
             $this->setEventChangeStatusToExpired();
 //
@@ -369,7 +370,6 @@ class Order extends \yii\db\ActiveRecord
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
             ]);
-            $Message->save();
             $Message->sendPush();
 
             functions::setFlashSuccess('Заказ добавлен в список заказов.');
@@ -642,56 +642,73 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function changeStatus($newStatus, $id_client, $id_vehicle){
-        $title = '';
-        $message = '';
-        $url_client = Url::to(['/order/client']);
-        $url_vehicle = Url::to(['/order/vehicle']);
-        $flash = '';
-        $email_addresses = [
-            Yii::$app->params['logistEmail']['email'],
-
-        ];
+        $vehicle = Vehicle::findOne($this->id_vehicle);
+        $title = 'Заказ №' . $this->id . '. Статус изменен.';
+        $message_client = '';
+        $message_vehicle = '';
+        $url_client = Url::to(['/order/client'], true);
+        $url_vehicle = Url::to(['/order/vehicle'], true);
+        $email_from = Yii::$app->params['logistEmail'];
+        $email_client = User::findOne($id_client)->email;
+        $email_vehicle = User::findOne($vehicle->id_user)->email;
         $push_to_vehicle = false;
+        $email_to_vehicle = false;
         switch ($newStatus){
             case self::STATUS_IN_PROCCESSING:
-                $title = 'Заказ №' . $this->id . ' в процессе поиска ТС.';
-                $message = '';
-                $email_addresses [] = User::findOne($id_client)->email;
-                $flash = 'Заказ в процессе поиска ТС';
+                $title .= 'В поиске ТС.';
+                if(self::STATUS_VEHICLE_ASSIGNED){
+                    $valid_datetime = $this->valid_datetime;
+                    if(strtotime($this->valid_datetime) < time()) {
+                        $valid_datetime = date('d.m.Y H:i', time() + (60 * 60 * 2));
+                    }
+
+                    $message_vehicle = 'Вы отказались от заказа';
+                    $message_client = 'Водитель отказался от заказа. Поиск ТС продолжится до ' . $valid_datetime;
+                    functions::setFlashSuccess('Заказ принят водителем.');
+                    $push_to_vehicle = true;
+                    $email_to_vehicle = true;
+
+                    $this->valid_datetime = $valid_datetime;
+                    $this->id_vehicle = null;
+                    $this->id_driver = null;
+                    $this->id_pricezone_for_vehicle = null;
+                    $this->status = $newStatus;
+                    $this->scenario = self::SCENARIO_UPDATE_STATUS;
+                    $this->save();
+                    $this->setEventChangeStatusToExpired();
+                    break;
+                }
+
+//                $title = 'Заказ №' . $this->id . ' в процессе поиска ТС.';
+
                 break;
             case self::STATUS_NEW:
                 $title = 'Заказ №' . $this->id . ' в процессе поиска ТС.';
-                $message = '';
-                $email_addresses [] = User::findOne($id_client)->email;
-                functions::setFlashSuccess('Заказ добавлен в список заказов.');
+//                functions::setFlashSuccess('Заказ добавлен в список заказов.');
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
-                $title = 'Заказ №' . $this->id . '. Назначено ТС.';
-
+//                $title = 'Заказ №' . $this->id . '. Назначено ТС.';
                 $vehicle = Vehicle::findOne($this->id_vehicle);
-                $message = $vehicle->brand . '(' . $vehicle->regLicense->reg_number . ') <br>'
-                    . PriceZone::findOne($this->id_pricezone_for_vehicle)->getTextWithShowMessageButton();
+                $message_vehicle = $vehicle->brand . '(' . $vehicle->regLicense->reg_number . ') <br>'
+                    . 'Тарифная зона №' . PriceZone::findOne($this->id_pricezone_for_vehicle)->id;
+                $message_client = $vehicle->brand . '(' . $vehicle->regLicense->reg_number . ') <br>'
+                    . 'Тарифная зона №' . PriceZone::findOne($this->id_pricezone_for_vehicle)->id;
                 $email_addresses [] = User::findOne($id_client)->email;
                 $email_addresses [] = User::findOne($id_vehicle)->email;
                 functions::setFlashSuccess('Заказ принят водителем.');
                 $push_to_vehicle = true;
                 break;
             case self::STATUS_EXPIRED:
-                $title = 'Заказ №' . $this->id . '. Машина не найдена.';
-                $message = '';
-                $email_addresses [] = User::findOne($id_client)->email;
-                functions::setFlashSuccess('Заказ удален из поиска.');
+                $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
             case self::STATUS_CONFIRMED_VEHICLE:
                 $title = 'Заказ №' . $this->id . 'подтвержден водителем.';
-                $message = '';
                 $email_addresses [] = User::findOne($id_client)->email;
                 $email_addresses [] = User::findOne($id_vehicle)->email;
                 functions::setFlashSuccess('Водитель подтвердил завершение заказа.');
                 break;
             case self::STATUS_CONFIRMED_CLIENT:
                 $title = 'Заказ №' . $this->id . ' подтвержден клиентом.';
-                $message = '';
                 $email_addresses [] = User::findOne($id_client)->email;
                 $email_addresses [] = User::findOne($id_vehicle)->email;
                 functions::setFlashSuccess('Клиент подтвердил завершение заказа.');
@@ -699,7 +716,6 @@ class Order extends \yii\db\ActiveRecord
                 break;
             case self::STATUS_CANCELED:
                 $title = 'Заказ №' . $this->id . ' отменен.';
-                $message = '';
                 if($id_vehicle) $email_addresses [] = User::findOne($id_vehicle)->email;
                 functions::setFlashSuccess('Заказ отменен.');
                 break;
@@ -708,52 +724,77 @@ class Order extends \yii\db\ActiveRecord
                 break;
             case self::STATUS_NOT_ACCEPTED:
                 $title = 'Заказ №' . $this->id . ' не принят в обработку.';
-                $message = '';
                 $email_addresses [] = User::findOne($id_client)->email;
                 functions::setFlashSuccess('Заказ аннулирован.');
                 break;
         }
-
+        // Емэил Клиенту
         functions::sendEmail(
-            $email_addresses,
-            Yii::$app->params['logistEmail'],
+            $email_client,
+            $email_from,
             $title,
             [
                 'modelOrder' => $this,
-                'text' => $message
+                'modelVehicle' => $vehicle,
+                'text' => $message_client
             ],
             [
                 'html' => 'views/Order/change_status_html',
                 'text' => 'views/Order/change_status_text'
             ]
         );
+        //Емэил Водителю
+        if($email_to_vehicle) {
+            functions::sendEmail(
+                $email_vehicle,
+                $email_from,
+                $title,
+                [
+                    'modelOrder' => $this,
+                    'modelVehicle' => $vehicle,
+                    'text' => $message_vehicle
+                ],
+                [
+                    'html' => 'views/Order/change_status_html',
+                    'text' => 'views/Order/change_status_text'
+                ]
+            );
+        }
         //Сообщение клиенту
         if($id_client) {
             $Message_to_client = new Message([
                 'id_to_user' => $id_client,
-                'title' => $title . 'клиент',
-                'text' => $message,
+                'title' => $title,
+                'text' => $message_client,
                 'url' => $url_client,
-//            Url::to(['/order/view', 'id' => $this->id], true),
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
             ]);
 //            $Message_to_client->save();
-//            $Message_to_client->sendPush();
+            $Message_to_client->sendPush();
         }
         //Сообщение водителю
         if($id_vehicle && $push_to_vehicle) {
             $Message_to_vehicle = new Message([
-                'id_to_user' => $id_vehicle,
-                'title' => $title . 'водитель',
-                'text' => $message,
+                'id_to_user' => $vehicle->id_user,
+                'title' => $title,
+                'text' => $message_vehicle,
                 'url' => $url_vehicle,
-//            Url::to(['/order/view', 'id' => $this->id], true),
-            'push_status' => Message::STATUS_NEED_TO_SEND,
+                'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
             ]);
-            $Message_to_vehicle->save();
+//            $Message_to_vehicle->save();
             $Message_to_vehicle->sendPush();
+        }
+        $this->status = $newStatus;
+        $this->scenario = self::SCENARIO_UPDATE_STATUS;
+        if($this->save()){
+//            $this->setEventChangeStatusToExpired();
+            functions::setFlashSuccess('Статус заказа №' . $this->id . ' изменен на "' . $this->statusText . '".');
+            return true;
+        } else {
+            functions::setFlashWarning('Ошибка на сервере!');
+            return false;
         }
     }
 

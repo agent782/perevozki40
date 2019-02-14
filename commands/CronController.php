@@ -31,34 +31,36 @@ class CronController extends Controller
                 ->all();
 
             foreach ($orders as $order) {
-                $user = User::find()->where(['id' => $order->id_user])->one();
-                functions::sendEmail(
-                    $user->email,
-                    null,
-                    'Заказ №' . $order->id . '. Машина не найдена.',
-                    [
-                        'order' => $order,
-                        'user' => $user
-                    ],
-                    [
-                        'html' => 'views/Order/expiredOrder_html',
-                        'text' => 'views/Order/expiredOrder_text'
-                    ]
-                );
-                $Message = new Message([
-                    'id_to_user' => $order->id_user,
-                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
-                    'text' => 'Машина не найдена.',
-                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
-                    'push_status' => Message::STATUS_NEED_TO_SEND,
-                    'email_status' => Message::STATUS_NEED_TO_SEND,
-                ]);
-                $Message->save();
-                $Message->sendPush();
-
-                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
-                $order->scenario = $order::SCENARIO_UPDATE_STATUS;
-                $order->save();
+                $order->changeStatus(Order::STATUS_EXPIRED, $order->id_user, null);
+//
+//
+//                $user = User::find()->where(['id' => $order->id_user])->one();
+//                functions::sendEmail(
+//                    $user->email,
+//                    null,
+//                    'Заказ №' . $order->id . '. Машина не найдена.',
+//                    [
+//                        'order' => $order,
+//                        'user' => $user
+//                    ],
+//                    [
+//                        'html' => 'views/Order/expiredOrder_html',
+//                        'text' => 'views/Order/expiredOrder_text'
+//                    ]
+//                );
+//                $Message = new Message([
+//                    'id_to_user' => $order->id_user,
+//                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
+//                    'text' => 'Машина не найдена.',
+//                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
+//                    'push_status' => Message::STATUS_NEED_TO_SEND,
+//                    'email_status' => Message::STATUS_NEED_TO_SEND,
+//                ]);
+//                $Message->sendPush();
+//
+//                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
+//                $order->scenario = $order::SCENARIO_UPDATE_STATUS;
+//                $order->save();
             }
             $setting->FLAG_EXPIRED_ORDER = 1;
 //            $setting->save();
