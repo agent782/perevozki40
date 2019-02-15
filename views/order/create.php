@@ -21,7 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
         $form = ActiveForm::begin();
     ?>
-    <?= $form->field($modelOrder, 'id_vehicle_type')->widget(StarRating::class)?>
     <?= $form->field($modelOrder, 'id_vehicle_type')->radioList(
             ArrayHelper::map(\app\models\VehicleType::find()->asArray()->all(), 'id', 'type')
     )?>

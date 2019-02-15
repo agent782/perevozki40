@@ -369,6 +369,7 @@ class Order extends \yii\db\ActiveRecord
                 'url' => Url::to(['/order/view', 'id' => $this->id], true),
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
+                'can_review' => false
             ]);
             $Message->sendPush();
 
@@ -653,6 +654,7 @@ class Order extends \yii\db\ActiveRecord
         $email_vehicle = User::findOne($vehicle->id_user)->email;
         $push_to_vehicle = false;
         $email_to_vehicle = false;
+        $message_can_review = false;
         switch ($newStatus){
             case self::STATUS_IN_PROCCESSING:
                 $title .= 'В поиске ТС.';
@@ -663,10 +665,12 @@ class Order extends \yii\db\ActiveRecord
                     }
 
                     $message_vehicle = 'Вы отказались от заказа';
-                    $message_client = 'Водитель отказался от заказа. Поиск ТС продолжится до ' . $valid_datetime;
+                    $message_client = 'Водитель отказался от заказа. Поиск ТС продолжится до ' . $valid_datetime
+                        . '. Вы можете оценить действия водителя в Личном кабинете, в разделе Уведомления.';
                     functions::setFlashSuccess('Заказ принят водителем.');
                     $push_to_vehicle = true;
                     $email_to_vehicle = true;
+                    $message_can_review = true;
 
                     $this->valid_datetime = $valid_datetime;
                     $this->id_vehicle = null;
@@ -683,11 +687,8 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_NEW:
-                $title = 'Заказ №' . $this->id . ' в процессе поиска ТС.';
-//                functions::setFlashSuccess('Заказ добавлен в список заказов.');
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
-//                $title = 'Заказ №' . $this->id . '. Назначено ТС.';
                 $vehicle = Vehicle::findOne($this->id_vehicle);
                 $message_vehicle = $vehicle->brand . '(' . $vehicle->regLicense->reg_number . ') <br>'
                     . 'Тарифная зона №' . PriceZone::findOne($this->id_pricezone_for_vehicle)->id;
@@ -768,8 +769,9 @@ class Order extends \yii\db\ActiveRecord
                 'url' => $url_client,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
+                'can_review' => $message_can_review,
+                'id_order' => $this->id
             ]);
-//            $Message_to_client->save();
             $Message_to_client->sendPush();
         }
         //Сообщение водителю
@@ -781,14 +783,14 @@ class Order extends \yii\db\ActiveRecord
                 'url' => $url_vehicle,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
+                'can_review' => $message_can_review,
+                'id_order' => $this->id
             ]);
-//            $Message_to_vehicle->save();
             $Message_to_vehicle->sendPush();
         }
         $this->status = $newStatus;
         $this->scenario = self::SCENARIO_UPDATE_STATUS;
         if($this->save()){
-//            $this->setEventChangeStatusToExpired();
             functions::setFlashSuccess('Статус заказа №' . $this->id . ' изменен на "' . $this->statusText . '".');
             return true;
         } else {
@@ -796,7 +798,6 @@ class Order extends \yii\db\ActiveRecord
             return false;
         }
     }
-
 }
 
 

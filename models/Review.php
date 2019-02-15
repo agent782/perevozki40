@@ -16,6 +16,7 @@ use Yii;
  * @property int $status
  * @property int $create_at
  * @property int $update_at
+ * @property int $id_message
  */
 class Review extends \yii\db\ActiveRecord
 {
@@ -24,6 +25,9 @@ class Review extends \yii\db\ActiveRecord
 
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 1;
+    const STATUS_ONCHECKING = 2;
+
+
     /**
      * {@inheritdoc}
      */
@@ -38,9 +42,11 @@ class Review extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['value', 'id_user_from', 'id_user_to', 'comment', 'type', 'status', 'create_at', 'update_at'], 'required'],
-            [['value', 'id_user_from', 'id_user_to', 'type', 'status', 'create_at', 'update_at'], 'integer'],
+            [['value', 'id_user_from', 'id_user_to', 'comment', 'type'], 'required'],
+            [['value', 'id_user_from', 'id_user_to', 'type', 'status', 'id_message'], 'integer'],
             [['comment'], 'string'],
+            [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
+            ['status', 'default', 'value' => self::STATUS_ONCHECKING],
         ];
     }
 

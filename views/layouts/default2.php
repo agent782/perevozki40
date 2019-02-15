@@ -135,8 +135,13 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/user',
                         ],
                         [
-                            'label' => 'Сообщения',
+                            'label' => (Message::countNewMessage(Yii::$app->user->id))
+                                ?'Уведомления ' .
+                                    '<b class="incube-invert">' . \app\models\Message::countNewMessage(Yii::$app->user->id) . '</b>'
+                                :'Уведомления',
                             'url' => '/message',
+                            'class' => 'incircle',
+                            'encode' => false
                         ],
                         [
                             'label' => 'Юридические лица',

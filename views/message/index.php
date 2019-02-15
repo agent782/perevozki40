@@ -8,12 +8,15 @@ use yii\web\YiiAsset;
 /* @var $searchModel app\models\MessageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Сообщения';
+$this->title = 'Уведомления';
 //$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="message-index">
 
-    <h3><?= Html::encode($this->title) ?></h3>
+    <h3>
+        <?= Html::encode($this->title) ?>
+        <b class="incube"><?= \app\models\Message::countNewMessage(Yii::$app->user->id)?></b>
+    </h3>
 <bR>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 

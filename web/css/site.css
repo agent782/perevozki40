@@ -274,4 +274,16 @@ a.desc:after {
     white-space: normal;
     width: auto;
 }
-
+/* Символы в круге*/
+.incube{
+    border-radius:10%;
+    background:#821e82;
+    text-align:center;
+    color:#d3a7db;
+}
+.incube-invert{
+    border-radius:10%;
+    background:#d3a7db;
+    text-align:center;
+    color:#821e82;
+}
