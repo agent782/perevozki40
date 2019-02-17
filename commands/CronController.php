@@ -54,6 +54,9 @@ class CronController extends Controller
                     'url' => Url::to(['/order/view', 'id' => $order->id], true),
                     'push_status' => Message::STATUS_NEED_TO_SEND,
                     'email_status' => Message::STATUS_NEED_TO_SEND,
+                    'can_review_client' => false,
+                    'can_review_vehicle' => false,
+                    'id_order' => $order->id
                 ]);
                 $Message->sendPush();
 

@@ -654,7 +654,8 @@ class Order extends \yii\db\ActiveRecord
         $email_vehicle = User::findOne($vehicle->id_user)->email;
         $push_to_vehicle = false;
         $email_to_vehicle = false;
-        $message_can_review = false;
+        $message_can_review_client = false;
+        $message_can_review_vehicle = false;
         switch ($newStatus){
             case self::STATUS_IN_PROCCESSING:
                 $title .= 'В поиске ТС.';
@@ -670,7 +671,7 @@ class Order extends \yii\db\ActiveRecord
                     functions::setFlashSuccess('Заказ принят водителем.');
                     $push_to_vehicle = true;
                     $email_to_vehicle = true;
-                    $message_can_review = true;
+                    $message_can_review_client = true;
 
                     $this->valid_datetime = $valid_datetime;
                     $this->id_vehicle = null;
@@ -769,7 +770,8 @@ class Order extends \yii\db\ActiveRecord
                 'url' => $url_client,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
-                'can_review' => $message_can_review,
+                'can_review_client' => $message_can_review_client,
+                'can_review_vehicle' => $message_can_review_vehicle,
                 'id_order' => $this->id
             ]);
             $Message_to_client->sendPush();
@@ -783,7 +785,8 @@ class Order extends \yii\db\ActiveRecord
                 'url' => $url_vehicle,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
-                'can_review' => $message_can_review,
+                'can_review_client' => $message_can_review_client,
+                'can_review_vehicle' => $message_can_review_vehicle,
                 'id_order' => $this->id
             ]);
             $Message_to_vehicle->sendPush();
