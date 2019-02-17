@@ -369,7 +369,9 @@ class Order extends \yii\db\ActiveRecord
                 'url' => Url::to(['/order/view', 'id' => $this->id], true),
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
-                'can_review' => false
+                'can_review_client' => false,
+                'can_review_vehicle' => false,
+                'id_order' => $this->id
             ]);
             $Message->sendPush();
 
