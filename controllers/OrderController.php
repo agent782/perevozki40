@@ -393,7 +393,7 @@ return 'error';
             return $this->redirect($redirect);
         }
 
-        $order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle);
+        return $order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle);
 
         return $this->redirect($redirect);
 
