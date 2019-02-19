@@ -242,6 +242,9 @@ class OrderController extends Controller
                         $modelOrder->id_user = Yii::$app->user->id;
                         $modelOrder->scenario = Order::SCENARIO_NEW_ORDER;
                         if($modelOrder->save()) {
+// Создание myaql события на изменение статуса заказа на просрочен при достижении времени valid_datetime
+                            $modelOrder->setEventChangeStatusToExpired();
+
                             $session->remove('route');
                             $session->remove('modelOrder');
                             return $this->redirect(['client']);
@@ -393,7 +396,8 @@ return 'error';
             return $this->redirect($redirect);
         }
 
-        return $order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle);
+        ($order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle));
+//        return;
 
         return $this->redirect($redirect);
 

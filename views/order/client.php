@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'allowBatchToggle'=>true,
                 'detail'=>function ($model) {
 //                    return $model->id;
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
+//                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
                 },
                 'detailOptions'=>[
                     'class'=> 'kv-state-enable',
