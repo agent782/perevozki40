@@ -689,8 +689,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->id_vehicle = null;
                     $this->id_driver = null;
                     $this->id_pricezone_for_vehicle = null;
-//                    $this->scenario = self::SCENARIO_UPDATE_STATUS;
-//                    $this->save();
+
                     $this->setEventChangeStatusToExpired();
                     break;
                 }
@@ -702,7 +701,7 @@ class Order extends \yii\db\ActiveRecord
                 $vehicle = Vehicle::findOne($this->id_vehicle);
                 $message_vehicle = 'Вы приняли заказ №'
                     . $this->id
-                    . 'на ТС '
+                    . ' на ТС '
                     .  $vehicle->brand . '(' . $vehicle->regLicense->reg_number . ') <br>'
                     . 'Тарифная зона №' . PriceZone::findOne($this->id_pricezone_for_vehicle)->id;
                 $message_client = $vehicle->brand . '(' . $vehicle->regLicense->reg_number . ') <br>'

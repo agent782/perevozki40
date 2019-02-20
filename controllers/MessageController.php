@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\functions\functions;
 use Yii;
 use app\models\Message;
 use app\models\MessageSearch;
@@ -67,8 +68,10 @@ class MessageController extends Controller
     public function actionView($id)
     {
         $mes = $this->findModel($id);
-        $mes->status = $mes::STATUS_READ;
-        $mes->save();
+        if($mes->status != $mes::STATUS_READ) {
+            $mes->status = $mes::STATUS_READ;
+            $mes->save();
+        }
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -148,6 +151,18 @@ class MessageController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('Сообщение не найдено.');
+    }
+
+    public function actionSetAllStatusRead(){
+        $messages = Message::findAll(['id_to_user' => Yii::$app->user->id]);
+        if($messages) {
+            foreach ($messages as $message) {
+                $message->status = $message::STATUS_READ;
+                $message->save();
+            }
+        }
+        functions::setFlashSuccess('Все сообщения помечены как прочитанные');
+        $this->redirect('/message');
     }
 }

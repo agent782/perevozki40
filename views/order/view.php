@@ -77,32 +77,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' =>
                 $attributes,
 
-//        [
-//            'id',
-//            'id_vehicle_type',
-//            'tonnage',
-//            'length',
-//            'width',
-//            'height',
-//            'volume',
-//            'longlength',
-//            'passengers',
-//            'ep',
-//            'rp',
-//            'lp',
-//            'tonnage_spec',
-//            'length_spec',
-//            'volume_spec',
-//            'cargo:ntext',
-//            'datetime_start',
-//            'datetime_finish',
-//            'datetime_access',
-//            'valid_datetime',
-//            'create_at',
-//            'id_route',
-//            'id_route_real',
-//            'type_payment'
-//        ],
     ]) ?>
 
 </div>

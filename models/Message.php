@@ -20,8 +20,8 @@ use app\components\DateBehaviors;
  * @property int $sms_status
  * @property int $push_status
  * @property int $create_at
- * @property int $can_review_client
- * @property int $can_review_vehicle
+ * @property boolean $can_review_client
+ * @property boolean $can_review_vehicle
  * @property int $id_order
  */
 class Message extends \yii\db\ActiveRecord
