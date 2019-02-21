@@ -23,6 +23,8 @@ use app\components\DateBehaviors;
  * @property boolean $can_review_client
  * @property boolean $can_review_vehicle
  * @property int $id_order
+ * @property int $id_to_review
+ * @property int $id_from_review
  */
 class Message extends \yii\db\ActiveRecord
 {
@@ -56,7 +58,7 @@ class Message extends \yii\db\ActiveRecord
             [['title', 'text', 'url'], 'string', 'max' => 255],
             ['create_at', 'default', 'value' => date('d.m.Y H:i:s')],
             ['status','default', 'value' => self::STATUS_SEND],
-            [[ 'can_review_client', 'can_review_vehicle'], 'safe']
+            [[ 'can_review_client', 'can_review_vehicle', 'id_to_review', 'id_from_review'], 'safe']
         ];
     }
 
@@ -162,4 +164,6 @@ class Message extends \yii\db\ActiveRecord
             ->count();
         return ($newMessages)?$newMessages:false;
     }
+
+
 }

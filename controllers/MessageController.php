@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\functions\functions;
+use app\models\Order;
 use Yii;
 use app\models\Message;
 use app\models\MessageSearch;
@@ -10,6 +11,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use app\models\Review;
 /**
  * MessageController implements the CRUD actions for Message model.
  */
@@ -72,8 +74,17 @@ class MessageController extends Controller
             $mes->status = $mes::STATUS_READ;
             $mes->save();
         }
+
+        $reviewModel = Review::find()->where(['id_message' => $id])->one();
+        if(!$reviewModel) {
+            $reviewModel = new Review();
+            $reviewModel->id_message = $id;
+        }
+
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'modelMessage' => $mes,
+            'modelReview' => $reviewModel,
         ]);
     }
 

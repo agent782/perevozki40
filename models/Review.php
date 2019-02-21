@@ -57,10 +57,10 @@ class Review extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'value' => 'Value',
+            'value' => 'Оценка',
             'id_user_from' => 'Id User From',
             'id_user_to' => 'Id User To',
-            'comment' => 'Comment',
+            'comment' => 'Комментарий (не обязательно)',
             'type' => 'Type',
             'status' => 'Status',
             'create_at' => 'Create At',

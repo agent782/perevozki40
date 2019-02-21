@@ -3,6 +3,7 @@
 use yii\bootstrap\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
+use app\components\widgets\AddOrEditReview;
 use yii\web\YiiAsset;
 use app\components\widgets\ShowMessageWidget;
 /* @var $this yii\web\View */
@@ -63,12 +64,20 @@ $this->title = 'Уведомления';
                 'label' => 'Оценка',
                 'format' => 'raw',
                 'value' => function($model){
-                    if($model->can_review_client || $model->can_review_vehicle) {
-                        echo
-                        ShowMessageWidget::widget([
-                            'header' => 'Оцените действия '
-                            . ($model->can_review_client) ? 'водителя.' : 'клиента',
-                            'helpMessage' => '111111111111'
+                    if($model->can_review_client) {
+                        return AddOrEditReview::widget([
+                            'message' => $model,
+                            'id_user_from' => '',
+                            'id_user_to' => '',
+                            'redirect' => '',
+                        ]);
+                    }
+                    if($model->can_review_vehicle) {
+                        return AddOrEditReview::widget([
+                            'message' => $model,
+                            'id_user_from' => '',
+                            'id_user_to' => '',
+                            'redirect' => '',
                         ]);
                     }
                 }

@@ -343,39 +343,40 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
-
-
-            functions::sendEmail(
-                [
-                    Yii::$app->user->identity->email,
-                    Yii::$app->params['logistEmail']['email']
-                ],
-                Yii::$app->params['logistEmail'],
-                'Заказ №'.$this->id.' офоррмлен.',
-                [
-                    'modelOrder' => $this
-                ],
-                [
-                    'html' => 'views/Order/newOrder_html',
-                    'text' => 'views/Order/newOrder_text'
-                ]
-            );
-            $Message = new Message([
-                'id_to_user' => Yii::$app->user->id,
-                'title' => 'Заказ №'.$this->id.' оформлен.',
-                'text' => 'Заказ оформлен.',
-                'url' => Url::to(['/order/view', 'id' => $this->id], true),
-                'push_status' => Message::STATUS_NEED_TO_SEND,
-                'email_status' => Message::STATUS_NEED_TO_SEND,
-                'can_review_client' => false,
-                'can_review_vehicle' => false,
-                'id_order' => $this ->id
-            ]);
-            $Message->sendPush();
-
-            functions::setFlashSuccess('Заказ добавлен в список заказов.');
+            parent::afterSave($insert, $changedAttributes);
+            $this->changeStatus(self::STATUS_NEW, $this->id_user);
+//            functions::sendEmail(
+//                [
+//                    Yii::$app->user->identity->email,
+//                    Yii::$app->params['logistEmail']['email']
+//                ],
+//                Yii::$app->params['logistEmail'],
+//                'Заказ №'.$this->id.' офоррмлен.',
+//                [
+//                    'modelOrder' => $this
+//                ],
+//                [
+//                    'html' => 'views/Order/newOrder_html',
+//                    'text' => 'views/Order/newOrder_text'
+//                ]
+//            );
+//            $Message = new Message([
+//                'id_to_user' => Yii::$app->user->id,
+//                'title' => 'Заказ №'.$this->id.' оформлен.',
+//                'text' => 'Заказ оформлен.',
+//                'url' => Url::to(['/order/view', 'id' => $this->id], true),
+//                'push_status' => Message::STATUS_NEED_TO_SEND,
+//                'email_status' => Message::STATUS_NEED_TO_SEND,
+//                'can_review_client' => false,
+//                'can_review_vehicle' => false,
+//                'id_order' => $this ->id
+//            ]);
+//            $Message->sendPush();
+//
+//            functions::setFlashSuccess('Заказ добавлен в список заказов.');
+        }else {
+            parent::afterSave($insert, $changedAttributes);
         }
-        parent::afterSave($insert, $changedAttributes);
     }
 
     public function beforeDelete()
@@ -576,12 +577,12 @@ class Order extends \yii\db\ActiveRecord
 
     public function getShortRoute(){
         $route = $this->route;
-        $return = '(&asymp;' . $route->distance . 'km)* '. $route->startCity . ' -';
+        $return = '(&asymp;' . $route->distance . 'km)* <br>'. $route->startCity . ' <br>';
         for($i = 1; $i<9; $i++){
             $attribute = 'route' . $i;
-            if($route->$attribute) $return .= '... -';
+            if($route->$attribute) $return .=  '- '.$route->$attribute.' <br>';
         }
-        $return .=  ' '.$route->finishCity ;
+        $return .=  '- '.$route->finishCity ;
         return $return;
     }
 
@@ -654,21 +655,29 @@ class Order extends \yii\db\ActiveRecord
         ;
     }
 
-    public function changeStatus($newStatus, $id_client, $id_vehicle){
-        $vehicle = Vehicle::findOne($this->id_vehicle);
+    public function changeStatus($newStatus, $id_client, $id_vehicle = null){
+
         $this->status = $newStatus;
         $title = 'Заказ №' . $this->id . '. Статус изменен. ' . $this->statusText;
-        $message_client = '';
-        $message_vehicle = '';
+
         $url_client = Url::to(['/order/client'], true);
         $url_vehicle = Url::to(['/order/vehicle'], true);
         $email_from = Yii::$app->params['logistEmail'];
         $email_client = User::findOne($id_client)->email;
-        $email_vehicle = User::findOne($vehicle->id_user)->email;
+        if($id_vehicle) {
+            $vehicle = Vehicle::findOne($this->id_vehicle);
+            $email_vehicle = User::findOne($vehicle->id_user)->email;
+        }
         $push_to_vehicle = false;
         $email_to_vehicle = false;
         $message_can_review_client = false;
         $message_can_review_vehicle = false;
+
+        $titles_and_messages = $this->getTitleAndTextMessageBeforeChangeStatus($newStatus);
+        $title_client = $titles_and_messages['title_for_client'] ;
+        $title_vehicle = $titles_and_messages['title_for_vehicle'] ;
+        $message_client = $titles_and_messages['message_for_client'] ;
+        $message_vehicle = $titles_and_messages['message_for_client'] ;
         switch ($newStatus){
             case self::STATUS_IN_PROCCESSING:
                 if(self::STATUS_VEHICLE_ASSIGNED){
@@ -677,10 +686,9 @@ class Order extends \yii\db\ActiveRecord
                         $valid_datetime = date('d.m.Y H:i', time() + (60 * 60 * 2));
                     }
 
-                    $message_vehicle = 'Вы отказались от заказа';
+                    $message_vehicle = 'Вы отказались от ранее принятого заказа. ';
                     $message_client = 'Водитель отказался от заказа. Поиск ТС продолжится до ' . $valid_datetime
                         . '. Вы можете оценить действия водителя в Личном кабинете, в разделе Уведомления.';
-                    functions::setFlashSuccess('Заказ принят водителем.');
                     $push_to_vehicle = true;
                     $email_to_vehicle = true;
                     $message_can_review_client = true;
@@ -747,8 +755,6 @@ class Order extends \yii\db\ActiveRecord
             $email_from,
             $title,
             [
-                'modelOrder' => $this,
-                'modelVehicle' => $vehicle,
                 'text' => $message_client
             ],
             [
@@ -763,8 +769,6 @@ class Order extends \yii\db\ActiveRecord
                 $email_from,
                 $title,
                 [
-                    'modelOrder' => $this,
-                    'modelVehicle' => $vehicle,
                     'text' => $message_vehicle
                 ],
                 [
@@ -777,14 +781,17 @@ class Order extends \yii\db\ActiveRecord
         if($id_client) {
             $Message_to_client = new Message([
                 'id_to_user' => $id_client,
-                'title' => $title,
+                'title' => $title_client,
                 'text' => $message_client,
                 'url' => $url_client,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
                 'can_review_client' => $message_can_review_client,
-                'can_review_vehicle' => $message_can_review_vehicle,
-                'id_order' => $this->id
+                'can_review_vehicle' => false,
+                'id_order' => $this->id,
+                'id_to_review' => $id_client,
+                'id_from_review' => $id_vehicle
+
             ]);
             $Message_to_client->sendPush();
         }
@@ -792,14 +799,16 @@ class Order extends \yii\db\ActiveRecord
         if($id_vehicle && $push_to_vehicle) {
             $Message_to_vehicle = new Message([
                 'id_to_user' => $vehicle->id_user,
-                'title' => $title,
+                'title' => $title_vehicle,
                 'text' => $message_vehicle,
                 'url' => $url_vehicle,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
-                'can_review_client' => $message_can_review_client,
+                'can_review_client' => false,
                 'can_review_vehicle' => $message_can_review_vehicle,
-                'id_order' => $this->id
+                'id_order' => $this->id,
+                'id_to_review' => $id_vehicle,
+                'id_from_review' => $id_client
             ]);
             $Message_to_vehicle->sendPush();
         }
@@ -814,6 +823,77 @@ class Order extends \yii\db\ActiveRecord
             functions::setFlashWarning('Ошибка на сервере!');
             return false;
         }
+    }
+
+    public function getTitleAndTextMessageBeforeChangeStatus($newStatus){
+        $return = [
+            'title_for_client' => '',
+            'title_for_vehicle' => '',
+            'message_for_client' => '',
+            'message_for_vehicle' => '',
+        ];
+        switch ($newStatus){
+            case self::STATUS_NEW:
+                $return['title_for_client'] =
+                    'Заказ №'.$this->id.' оформлен.'
+                ;
+                $return['message_for_client'] =
+                    'Спасибо за Ваш щаказ.  <br>'
+                    . 'Маршрут: <br>'
+                    . $this->shortRoute
+                    . $this->getShortInfoForClient();
+                ;
+                break;
+            case self::STATUS_IN_PROCCESSING:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_VEHICLE_ASSIGNED:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_NOT_ACCEPTED:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_CANCELED:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_EXPIRED:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_CONFIRMED_CLIENT:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_CONFIRMED_VEHICLE:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+            case self::STATUS_DISPUTE:
+                $return['title_for_client'] = '';
+                $return['title_for_vehicle'] = '';
+                $return['message_for_client'] = '';
+                $return['message_for_vehicle'] = '';
+                break;
+        }
+        return $return;
     }
 }
 
