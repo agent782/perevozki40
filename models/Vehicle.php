@@ -47,9 +47,10 @@ use yii\helpers\Url;
  * @property string $photoHtml
  * @property string $priceZonesList
  * @property string $error_mes
- * @property object $user
- * @property object $profile
+ * @property User $user
+ * @property Profile $profile
  * @property RegLicense $regLicense
+ * @property string $brandAndNumber
 
 
 
@@ -583,5 +584,9 @@ class Vehicle extends \yii\db\ActiveRecord
             if($cost < $priceZone->r_km) $id_rate = $priceZone->id;
         }
         return ($id_rate) ? $id_rate : false;
+    }
+
+    public function getBrandAndNumber(){
+        return $this->brand . ' ' . $this->regLicense->number;
     }
 }

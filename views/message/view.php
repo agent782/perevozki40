@@ -10,6 +10,8 @@ use kartik\rating\StarRating;
 \yii\web\YiiAsset::register($this);
  ?>
 <div class="message-view">
+    <h4><?= $modelMessage->title?></h4>
+    <br>
     <?= $modelMessage->text?>
     <?php
         if($modelMessage->can_review_client || $modelMessage->can_review_vehicle) {
@@ -39,4 +41,6 @@ use kartik\rating\StarRating;
             ActiveForm::end();
         }
 ?>
+    <br><br>
+    <?= $modelMessage->create_at?>
 </div>

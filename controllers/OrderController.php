@@ -387,12 +387,12 @@ return 'error';
         ]);
     }
 
-    public function actionCanceledByVehicle($id_order, $id_user, $redirect = '/order/vehicle'){
+    public function actionCanceledByVehicle($id_order, $id_user,  $redirect = '/order/vehicle'){
         $user = User::findOne($id_user);
         $order = Order::findOne($id_order);
 
         if(!$user || !$order) {
-            functions::setFlashWarning('шибка на сервере, попробуте позже.');
+            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
             return $this->redirect($redirect);
         }
 

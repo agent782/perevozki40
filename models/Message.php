@@ -55,7 +55,8 @@ class Message extends \yii\db\ActiveRecord
             [['type', 'status', 'id_to_user', 'id_from_user', 'email_status',
                 'sms_status', 'push_status', 'id_order'], 'integer'],
             [['id_to_user'], 'required'],
-            [['title', 'text', 'url'], 'string', 'max' => 255],
+            [['title', 'url'], 'string', 'max' => 255],
+            [['text'], 'string'],
             ['create_at', 'default', 'value' => date('d.m.Y H:i:s')],
             ['status','default', 'value' => self::STATUS_SEND],
             [[ 'can_review_client', 'can_review_vehicle', 'id_to_review', 'id_from_review'], 'safe']
@@ -146,7 +147,7 @@ class Message extends \yii\db\ActiveRecord
 
                 $this->push_status = self::STATUS_SEND;
                 $this->save();
-                return var_dump($this->getErrors());
+//                return var_dump($this->getErrors());
             }
         }
     }

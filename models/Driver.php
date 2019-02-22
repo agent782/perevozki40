@@ -24,8 +24,8 @@ use nickcv\encrypter\behaviors\EncryptionBehavior;
  * @property integer $create_at
  * @property string $fio
  * @property string $photo
- * @property object $passport
- * @property object $license
+ * @property Passport $passport
+ * @property DriverLicense $license
  * @property integer $status
  * @property string statusString
  */

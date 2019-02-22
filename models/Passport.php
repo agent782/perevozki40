@@ -14,6 +14,7 @@ use app\components\DateBehaviors;
  * @property string $place
  * @property string $country
  * @property integer $checked
+ * @property string $fullInfo
  *
  * @property Profile[] $profiles
  */
@@ -84,6 +85,10 @@ class Passport extends \yii\db\ActiveRecord
     public function getProfile()
     {
         return $this->hasOne(Profile::className(), ['id_passport' => 'id']);
+    }
+
+    public function getFullInfo(){
+        return 'Паспорт'.$this->number . ' выдан ' . $this->place . ' ' . $this->date;
     }
 
 
