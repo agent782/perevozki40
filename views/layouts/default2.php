@@ -89,7 +89,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 <!--        <div class="col-xs-1">1111111111</div>-->
         <div class="col-xs-2">
             <?php
-                widgets\Pjax::begin(['id' => 'pjax_message']);
+//                widgets\Pjax::begin(['id' => 'pjax_message']);
                 if(Message::countNewMessage(Yii::$app->user->id)){
                     echo Html::a(
                         Html::img('/img/icons/message-48.png'
@@ -101,7 +101,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         Html::img('/img/icons/message-48.png')
                     ,Url::to(['/message']));
                 }
-                widgets\Pjax::end();
+//                widgets\Pjax::end();
             ?>
         </div>
         <div class="col-xs-1">

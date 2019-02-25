@@ -36,7 +36,7 @@ use app\components\widgets\ShowMessageWidget;
             'convertFormat' => true,
             'value'=> date("d.m.Y H:i",time()),
             'pluginOptions' => [
-                'format' => 'dd.M.yyyy H:i',
+                'format' => 'dd.MM.yyyy H:i',
                 'autoclose'=>true,
                 'weekStart'=>1, //неделя начинается с понедельника
                 'startDate' => date('d.m.Y H:i',  time() + 60*60), //самая ранняя возможная дата
@@ -55,7 +55,7 @@ use app\components\widgets\ShowMessageWidget;
 
             'value'=> date("d.m.Y H:i",time()),
             'pluginOptions' => [
-                'format' => 'dd.M.yyyy H:i',
+                'format' => 'dd.MM.yyyy H:i',
                 'autoclose'=>true,
                 'weekStart'=>1, //неделя начинается с понедельника
                 'startDate' => date('d.m.Y H:i',  time() + 60*10), //самая ранняя возможная дата

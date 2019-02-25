@@ -587,6 +587,6 @@ class Vehicle extends \yii\db\ActiveRecord
     }
 
     public function getBrandAndNumber(){
-        return $this->brand . ' ' . $this->regLicense->number;
+        return $this->brand . ' ' . $this->regLicense->reg_number;
     }
 }

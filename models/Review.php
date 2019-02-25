@@ -42,7 +42,7 @@ class Review extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['value', 'id_user_from', 'id_user_to', 'comment', 'type'], 'required'],
+            [['value', 'id_user_from', 'id_user_to', 'type'], 'required'],
             [['value', 'id_user_from', 'id_user_to', 'type', 'status', 'id_message'], 'integer'],
             [['comment'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],

@@ -88,7 +88,7 @@ class Passport extends \yii\db\ActiveRecord
     }
 
     public function getFullInfo(){
-        return 'Паспорт'.$this->number . ' выдан ' . $this->place . ' ' . $this->date;
+        return 'Паспорт '.$this->number . ' выдан ' . $this->place . ' ' . $this->date . '. ';
     }
 
 

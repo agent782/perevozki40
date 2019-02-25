@@ -13,6 +13,7 @@ use kartik\rating\StarRating;
     <h4><?= $modelMessage->title?></h4>
     <br>
     <?= $modelMessage->text?>
+    <br><br>
     <?php
         if($modelMessage->can_review_client || $modelMessage->can_review_vehicle) {
             $form = ActiveForm::begin([

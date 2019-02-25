@@ -350,4 +350,15 @@ class PriceZone extends \yii\db\ActiveRecord
 
         return $return;
     }
+
+    public function getPriceAndShortInfo($distance = null){
+        $return = '';
+        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';
+        $return .= '<p style="font-size: x-small; font-style: italic">'
+            . '(Тариф №' . $this->id . '. '
+            . $this->r_km . ' р/км '
+            . ', '
+            . $this->r_h . ' р/час...)</p>';
+        return $return ;
+    }
 }
