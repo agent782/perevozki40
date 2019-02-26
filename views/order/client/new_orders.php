@@ -48,11 +48,6 @@ use yii\bootstrap\Tabs;
         ],
         'id',
         [
-            'attribute' => 'statusText',
-            'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
-
-        ],
-        [
             'attribute' => 'datetime_start',
             'options' => [
 //                    'style' =>'width: 100px',
@@ -62,18 +57,23 @@ use yii\bootstrap\Tabs;
         [
             'label' => 'Маршрут',
             'format' => 'raw',
-            'value' => function($data){
-                $route = $data->route;
-                $return = $route->startCity . ' -';
-                for($i = 1; $i<9; $i++){
-                    $attribute = 'route' . $i;
-                    if($route->$attribute) $return .= '... -';
-                }
-                $return .=  ' '.$route->finishCity ;
-                return $return;
-            },
+            'attribute' => 'route.fullRoute'
+//            'value' => function($data){
+//                $route = $data->route;
+//                $return = $route->startCity . ' -';
+//                for($i = 1; $i<9; $i++){
+//                    $attribute = 'route' . $i;
+//                    if($route->$attribute) $return .= '... -';
+//                }
+//                $return .=  ' '.$route->finishCity ;
+//                return $return;
+//            },
         ],
-//        'vehicleType.type',
+        [
+            'label' => 'Информация',
+            'format' => 'raw',
+            'attribute'=>'shortInfoForClient'
+        ],
         [
             'label' => 'Подходит для Ваших ТС',
             'format' => 'raw',
@@ -93,6 +93,12 @@ use yii\bootstrap\Tabs;
                 return $res;
             }
         ],
+        [
+            'label' => 'Заказчик',
+            'format' => 'raw',
+            'attribute' => 'clientInfo'
+        ],
+        'paymentText',
         [
             'label' => '',
             'format' => 'raw',

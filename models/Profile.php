@@ -37,7 +37,7 @@ use Yii;
  * @property date $create_at
  * @property string $fioShort
  * @property string $fioFull
- *
+ * @property int $rating
  * @property Passports $idPassport
  * @property DriverLicenses $idDriverLicense
  * @property RegLicenses $idRegLicense
@@ -279,4 +279,32 @@ class Profile extends \yii\db\ActiveRecord
         return $companies;
     }
 
+    public function getRating($type = Review::TYPE_TO_VEHICLE)
+    {
+        $params = ['id_user_to' => $this->id_user];
+        switch ($type) {
+            case Review::TYPE_TO_VEHICLE:
+                $params[] = ['type' => Review::TYPE_TO_VEHICLE];
+                break;
+            case Review::TYPE_TO_CLIENT:
+                $params[] = ['type' => Review::TYPE_TO_CLIENT];
+                break;
+        }
+
+        $reviews = Review::findAll($params);
+        $totalValue = 0;
+        $count = 0;
+        if ($reviews) {
+            foreach ($reviews as $review) {
+                if ($review->value) {
+                    $totalValue += $review->value;
+                    $count++;
+                }
+            }
+            if ($totalValue) {
+                return round($totalValue / $count, 1);
+            }
+        }
+        return false;
+    }
 }

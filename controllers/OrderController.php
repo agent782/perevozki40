@@ -93,7 +93,7 @@ class OrderController extends Controller
 
         return $this->render('client', [
             'searchModel' => $searchModel,
-            'dataProviderNewOrders' => $dataProvider_newOrders,
+            'dataProvider_newOrders' => $dataProvider_newOrders,
             'dataProvider_in_process' => $dataProvider_in_process,
             'dataProvider_arhive' => $dataProvider_arhive,
             'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
@@ -114,11 +114,11 @@ class OrderController extends Controller
         ;
         $dataProvider_arhive->query
             ->where(['in', 'status' , [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
-            ->andWhere(['id_vehicle' => Yii::$app->user->id])
+            ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids])
         ;
         $dataProvider_expired_and_canceled->query
             ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
-            ->andWhere(['id_vehicle' => Yii::$app->user->id]);
+            ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids]);
 
         return $this->render('vehicle', [
             'searchModel' => $searchModel,

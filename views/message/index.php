@@ -3,6 +3,7 @@
 use yii\bootstrap\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
+use kartik\rating\StarRating;
 use yii\web\YiiAsset;
 use app\components\widgets\ShowMessageWidget;
 /* @var $this yii\web\View */
@@ -63,12 +64,15 @@ $this->title = 'Уведомления';
                 'label' => 'Оценка',
                 'format' => 'raw',
                 'value' => function($model){
-                    if($model->can_review_client) {
-
+                    $review = \app\models\Review::findOne(['id_message' => $model->id]);
+                    if($model->can_review_client || $model->can_review_vehicle) {
+                        if($review){
+                            return $review->getRatingImage();
+                        } else {
+                            return Html::a('Оценить', ['/message/view', 'id' => $model->id], ['class' => 'btn-sm btn-info']);
+                        }
                     }
-                    if($model->can_review_vehicle) {
 
-                    }
                 }
             ]
         ],

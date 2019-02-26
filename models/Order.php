@@ -503,14 +503,14 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function getShortInfoForClient(){
-        $return = 'Тип ТС: ' . $this->vehicleType->type .'. Тип(ы) кузова: ';
+        $return = 'Тип ТС: ' . $this->vehicleType->type .'.<br> Тип(ы) кузова: ';
 
         $bTypies = ' (';
         foreach ($this->bodyTypies as $bodyType) {
             $bTypies .= $bodyType->body . ', ';
         }
         $bTypies = substr($bTypies, 0, -2);
-        $return .= $bTypies . '). ';
+        $return .= $bTypies . '). <br>';
 
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
@@ -521,7 +521,7 @@ class Order extends \yii\db\ActiveRecord
                 $return .= ' (Д*В*Ш). ';
                 $return .= 'Объем: ';
                 $return .= ($this->volume)?$this->volume.' м3 ':'-- ';
-                $return .= ($this->longlength)?' Груз-длинномер.':'';
+                $return .= ($this->longlength)?' Груз-длинномер.<br>':'<br>';
                 $lTypies = 'Погрузка/разгрузка: ';
                 foreach ($this->loadingTypies as $loadingType) {
                     $lTypies .= $loadingType->type . ', ';
@@ -672,6 +672,12 @@ class Order extends \yii\db\ActiveRecord
         $email_to_vehicle = false;
         $message_can_review_client = false;
         $message_can_review_vehicle = false;
+        //айдишники в сообщении клиенту, отзыв от и отзыв кому
+        $client_id_to_review = null;
+        $client_id_from_review = null;
+        //айдишники в сообщении водителю, отзыв от и отзыв кому
+        $vehicle_id_to_review = null;
+        $vehicle_id_from_review = null;
 
         $title_client = '';
         $title_vehicle = '';
@@ -700,6 +706,8 @@ class Order extends \yii\db\ActiveRecord
                     $email_to_vehicle = true;
 
                    $message_can_review_client = true;
+                   $client_id_to_review = $vehicle->id_user;
+                   $client_id_from_review = $id_client;
 
                     $this->valid_datetime = $valid_datetime;
                     $this->id_vehicle = null;
@@ -724,7 +732,8 @@ class Order extends \yii\db\ActiveRecord
                     . $this->id
                     . ' на ТС '
                     .  $vehicle->brandAndNumber.' <br>'
-//                    . 'Тарифная зона №' . PriceZone::findOne($this->id_pricezone_for_vehicle)->id . '<br>'
+                    . 'Водитель: ' . $this->driver->fio
+                    . ' (' . $this->driver->passport->fullInfo . '). <br>'
                     . $this->getFullNewInfo(false, true);
 
                 $message_client = 'ТС: ' . $vehicle->brandAndNumber . ' <br>'
@@ -808,8 +817,8 @@ class Order extends \yii\db\ActiveRecord
                 'can_review_client' => $message_can_review_client,
                 'can_review_vehicle' => false,
                 'id_order' => $this->id,
-                'id_to_review' => $id_client,
-                'id_from_review' => $id_vehicle
+                'id_to_review' => $client_id_to_review,
+                'id_from_review' => $client_id_from_review
 
             ]);
             $Message_to_client->sendPush();
@@ -819,15 +828,15 @@ class Order extends \yii\db\ActiveRecord
             $Message_to_vehicle = new Message([
                 'id_to_user' => $vehicle->id_user,
                 'title' => $title_vehicle,
-                'text' => Html::$message_vehicle,
+                'text' => $message_vehicle,
                 'url' => $url_vehicle,
                 'push_status' => Message::STATUS_NEED_TO_SEND,
                 'email_status' => Message::STATUS_NEED_TO_SEND,
                 'can_review_client' => false,
                 'can_review_vehicle' => $message_can_review_vehicle,
                 'id_order' => $this->id,
-                'id_to_review' => $id_vehicle,
-                'id_from_review' => $id_client
+                'id_to_review' => $vehicle_id_to_review,
+                'id_from_review' => $vehicle_id_from_review
             ]);
             $Message_to_vehicle->sendPush();
         }
@@ -848,15 +857,14 @@ class Order extends \yii\db\ActiveRecord
     public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false){
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
         $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
-        $return .= $this->getShortInfoForClient() . '<br>';
+        $return .= $this->getShortInfoForClient() . ' <br>';
         $return .= ($showPriceForVehicle)
-            ? 'Тарифная зона №'. $this->id_pricezone_for_vehicle . ' ('
-            . PriceZone::findOne($this->id_pricezone_for_vehicle)->getPriceAndShortInfo($this->route->distance) .').<br>'
-            : 'Тарифные зоны: ' . $this->idsPriceZonesWithPriceAndShortInfo . '<br>';
-        $return .= 'Тип оплаты: ' . $this->paymentText . '<br>';
+            ? 'Тарифная зона №'. $this->id_pricezone_for_vehicle . '. <br>'
+            : 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>';
+        $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
-            ?'Заказчик:' . $this->clientInfo . '<br>'
-            :'Заказчик:' . $this->clientInfoWithoutPhone . '<br>';
+            ?'Заказчик:' . $this->clientInfo . ' <br>'
+            :'Заказчик:' . $this->clientInfoWithoutPhone . ' <br>';
 
         return $return;
     }

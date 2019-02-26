@@ -78,9 +78,18 @@ class MessageController extends Controller
         $reviewModel = Review::find()->where(['id_message' => $id])->one();
         if(!$reviewModel) {
             $reviewModel = new Review();
-            $reviewModel->id_message = $id;
         }
+        if($reviewModel->load(Yii::$app->request->post())){
+            $reviewModel->id_user_to = $mes->id_to_review;
+            $reviewModel->id_user_from = $mes->id_from_review;
+            if($mes->can_review_client) $reviewModel->type = $reviewModel::TYPE_TO_VEHICLE;
+            if($mes->can_review_vehicle) $reviewModel->type = $reviewModel::TYPE_TO_CLIENT;
+            $reviewModel->id_message = $id;
 
+            if($reviewModel->save()) functions::setFlashSuccess('Ваш отзыв отправлен на проверку.');
+            else functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+            return $this->redirect('/message');
+        }
 
         return $this->render('view', [
             'modelMessage' => $mes,

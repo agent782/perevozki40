@@ -22,14 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'items' => [
                 [
                     'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->getCount() . ')',
-                    'content' => $this->render('orders/new_orders', [
+                    'content' => $this->render('vehicle/new_orders', [
                         'dataProvider_newOrders' => $dataProvider_newOrders,
                         'searchModel' => $searchModel
                     ])
                 ],
                 [
                     'label' => 'В процессе... <br>(+' . $dataProvider_in_process->getCount() . ')' ,
-                    'content' => $this->render('orders/in_proccess', [
+                    'content' => $this->render('vehicle/in_proccess', [
                         'dataProvider_in_process' => $dataProvider_in_process,
                         'searchModel' => $searchModel
                     ]),

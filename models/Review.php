@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use kartik\rating\StarRating;
 
 /**
  * This is the model class for table "review".
@@ -66,5 +67,30 @@ class Review extends \yii\db\ActiveRecord
             'create_at' => 'Create At',
             'update_at' => 'Update At',
         ];
+    }
+
+    public function getRatingImage(){
+        if($this->value){
+            return StarRating::widget([
+                'name' => 'raiting'.$this->id,
+                'value' => $this->value,
+                'pluginOptions' => [
+                    'filledStar' => '<i class="glyphicon glyphicon-star" style="color: #821e82"></i>',
+                    'emptyStar' => '<i class="glyphicon glyphicon-star"></i>',
+                    'readonly' => true,
+                    'starCaptions' => [
+                        1 => 'Очень плохо',
+                        2 => 'Плохо',
+                        3 => 'Нормально',
+                        4 => 'Хорошо',
+                        5 => 'Очень хорошо',
+                    ],
+                    'showClear' => false,
+                    'size' => 'xm',
+                    'showCaption' => false
+                ]
+            ]);
+        }
+        return false;
     }
 }
