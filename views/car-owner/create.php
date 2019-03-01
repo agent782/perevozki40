@@ -65,15 +65,6 @@ $this->registerJsFile('/js/signup.js');
     </div>
 
     <div class="col-md-4 col-sm-4">
-        <!--        --><?//= Html::dropDownList( null, 0,[
-        //                    '0'=>'Паспорт РФ',
-        //                    '1'=>'Паспорт другой страны'
-        //                ],
-        //                [
-        //                    'id' => 'countryPassportDwnList',
-        //                    'class' => 'btn btn-primary',
-        //                ]
-        //        )?>
         <?= $form->field($modelStart, 'country')->dropDownList(\yii\helpers\ArrayHelper::map(
             (($q = new \yii\db\Query())
                 ->select(['id_country', 'name'])
@@ -123,7 +114,6 @@ $this->registerJsFile('/js/signup.js');
         <?= $form->field($modelStart, 'photo')->fileInput([
             'id' => 'pathPhoto'
         ]) ?>
-        <!--        --><?//= Html::button('Загрузить', ['class' => 'btn btn', 'id' => 'selectPhoto'])?>
 
 
         <?php

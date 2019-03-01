@@ -54,7 +54,7 @@ class SignupUserForm extends Model
            $user->scenario = $user::SCENARIO_DEFAULT;
             return $user;
         } else {
-            $this->scenario = [];
+            $this->scenario = self::SCENARIO_DEFAULT;
             return null;
 
         }

@@ -13,20 +13,12 @@ use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 ?>
 <div>
+    <h4>В процессе поиска ТС...</h4>
 <?= GridView::widget([
     'dataProvider' => $dataProvider_newOrders,
-//    'filterModel' => $searchModel,
-//        'bordered' => true,
-//        'striped' => false,
-//        'responsive'=>true,
-//        'floatHeader'=>false,
     'options' => [
         'class' => 'minRoute'
     ],
-//        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
-//        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
-//        'filterRowOptions'=>['class'=>'kartik-sheet-style'],
-//        'persistResize'=>true,
     'responsiveWrap' => false,
     'pjax'=>true,
     'columns' => [
@@ -58,16 +50,6 @@ use yii\bootstrap\Tabs;
             'label' => 'Маршрут',
             'format' => 'raw',
             'attribute' => 'route.fullRoute'
-//            'value' => function($data){
-//                $route = $data->route;
-//                $return = $route->startCity . ' -';
-//                for($i = 1; $i<9; $i++){
-//                    $attribute = 'route' . $i;
-//                    if($route->$attribute) $return .= '... -';
-//                }
-//                $return .=  ' '.$route->finishCity ;
-//                return $return;
-//            },
         ],
         [
             'label' => 'Информация',
@@ -75,42 +57,41 @@ use yii\bootstrap\Tabs;
             'attribute'=>'shortInfoForClient'
         ],
         [
-            'label' => 'Подходит для Ваших ТС',
-            'format' => 'raw',
-            'value' => function($model){
-                $res = '';
-                $vehicles = \app\models\Vehicle::find()
-                    ->where([
-                        'id_user' => Yii::$app->user->id,
-                        'status' => [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]
-                    ])->all();
-                if(!count($vehicles)) return;
-                foreach ($vehicles as $vehicle) {
-                    if ($vehicle->canOrder($model)) {
-                        $res .= $vehicle->regLicense->reg_number . '<br>';
-                    }
-                }
-                return $res;
-            }
-        ],
-        [
             'label' => 'Заказчик',
             'format' => 'raw',
             'attribute' => 'clientInfo'
         ],
-        'paymentText',
         [
-            'label' => '',
+            'label' => 'Тарифные зоны',
             'format' => 'raw',
-            'value' => function ($model){
-                return Html::a('Принять',Url::to([
-                    '/order/accept-order',
-                    'id_order' => $model->id,
-                    'id_user' => Yii::$app->user->id,
-                ]), ['class' => 'btn btn-primary']);
-            }
+            'attribute' => 'idsPriceZonesWithPriceAndShortInfo'
         ],
-//        ['class' => 'yii\grid\ActionColumn'],
+        'paymentText',
+        'valid_datetime',
+        [
+            'label' => 'Действия',
+            'format' => 'raw',
+            'value' => function($model){
+                if($model->status == Order::STATUS_NEW || $model->status == Order::STATUS_IN_PROCCESSING){
+                    return
+                        Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [
+                                '/order/update',
+                                'id_order' => $model->id,
+                                'redirect' => '/order/client'
+                            ])
+                        . ' '
+                        . Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Отменить заказ']), Url::to([
+                            '/order/canceled-by-client',
+                            'id_order' => $model->id,
+                        ]),
+                            ['data-confirm' => Yii::t('yii',
+                                'Пока заказ не принят водителем, Вы можете отменить его без потери рейтинга. Отменить заказ?'),
+                                'data-method' => 'post'])
+                        ;
+
+                }
+            }
+        ]
     ],
 ]); ?>
 </div>

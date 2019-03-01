@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <?php
-        echo $model->idsPriceZonesWithPriceAndShortInfo;
+        var_dump($model);
 
         $bTypes[1] = $model->getBodyTypies()->one()->id;
         $attributes = \app\models\Vehicle::getArrayAttributes($model->id_vehicle_type,

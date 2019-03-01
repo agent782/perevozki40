@@ -2,7 +2,7 @@ $(document).ready(function () {
 
     endLoading();
 
-    // startLoading();
+    startLoading();
     var lenRoute = 0;
     var nRoutes = 0;
     var myMap;
@@ -62,7 +62,7 @@ $(document).ready(function () {
             SuggestView[i].events.add('select', function (e) {
                 createRoute();
             });
-            // endLoading();
+            endLoading();
         }
 
         function alertObj(o){var s="";for(k in o){s+=k+": "+o[k]+"\r\n";}alert(s);}

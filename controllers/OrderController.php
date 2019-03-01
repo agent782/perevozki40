@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\models\VehicleType;
 use yii\helpers\Url;
 use app\models\Message;
 use app\models\User;
@@ -96,7 +97,7 @@ class OrderController extends Controller
             'dataProvider_newOrders' => $dataProvider_newOrders,
             'dataProvider_in_process' => $dataProvider_in_process,
             'dataProvider_arhive' => $dataProvider_arhive,
-            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
+            'dataProvider_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
@@ -117,7 +118,7 @@ class OrderController extends Controller
             ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids])
         ;
         $dataProvider_expired_and_canceled->query
-            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
+            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED, Order::STATUS_NOT_ACCEPTED]])
             ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids]);
 
         return $this->render('vehicle', [
@@ -212,7 +213,7 @@ class OrderController extends Controller
 //                    return var_dump($modelOrder->getSuitableRates($route->distance));
                     $modelOrder->suitable_rates = $modelOrder->getSuitableRates($route->distance);
                     $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
-                    var_dump($companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name'));
+                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
 
@@ -276,15 +277,29 @@ return 'error';
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id_order, $redirect = '/order/client')
     {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id_service]);
+        $modelOrder = $this->findModel($id_order);
+        if(!$modelOrder){
+            functions::setFlashWarning('Ошибка на сервере');
+            return;
+        }
+        $route = Route::findOne($modelOrder->id_route);
+        if(!$route) $route = new Route();
+        $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+        $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+        if ($modelOrder->load(Yii::$app->request->post()) && $modelOrder->save()) {
+            return $this->redirect(['view', 'id' => $modelOrder->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                'modelOrder' => $modelOrder,
+                'BTypies' => $BTypies,
+                'LTypies' => $LTypies,
+                'TypiesPayment' => $TypiesPayment,
+                'companies' => $companies,
+                'route' => $route
             ]);
         }
     }
@@ -401,6 +416,17 @@ return 'error';
 
         return $this->redirect($redirect);
 
+    }
+
+    public function actionCanceledByClient($id_order, $redirect = '/order/vehicle'){
+        $order = Order::findOne($id_order);
+        if(!$order) {
+            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            return $this->redirect($redirect);
+        }
+
+        $order->changeStatus($order::STATUS_CANCELED, $order->id_user);
+        return $this->redirect($redirect);
     }
 
 }

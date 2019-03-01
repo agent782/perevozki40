@@ -91,8 +91,8 @@ class User extends ActiveRecord implements IdentityInterface
                 'format' => DateBehaviors::FORMAT_DATETIME,
             ],
             'SerializeUnserialize' => [
-                'class' => SerializeAttributesBehavior::class,
-                'convertAttr' => ['push_ids' => 'serialize']
+                'class' => SerializeBehaviors::class,
+                'arrAttributes' => ['push_ids']
             ]
         ];
     }

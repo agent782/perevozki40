@@ -17,7 +17,7 @@ $this->title = 'Уведомления';
 
     <h3>
         <?= Html::encode($this->title) ?>
-        <b class="incube"><?= \app\models\Message::countNewMessage(Yii::$app->user->id)?></b>
+        <b class="incube">+<?= \app\models\Message::countNewMessage(Yii::$app->user->id)?></b>
     </h3>
 <bR>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

@@ -68,11 +68,14 @@ use app\components\widgets\ShowMessageWidget;
     <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, [
         'onchange' => '
             if($(this).find("input:checked").val()  == 3) {
-                $("#companies").show();    
+                $("#companies").show();  
+                  $("#companies").removeAttr("checked");
             } else{
                 $("#companies").hide();
-                $("#companies").find("input").removeAttr("checked");
-            };
+                $("#companies").find("input").each(function(){
+                    $(this).prop("checked", false);
+                });
+            }
         '
     ])?>
 
