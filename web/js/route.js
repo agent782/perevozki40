@@ -1,7 +1,4 @@
 $(document).ready(function () {
-
-    endLoading();
-
     startLoading();
     var lenRoute = 0;
     var nRoutes = 0;
@@ -37,31 +34,37 @@ $(document).ready(function () {
             zoom: 11,
             controls: [],
         });
+        // createRoute();
         var sugS, sugV1, sugV2, sugV3, sugV4, sugV5, sugV6, sugV7, sugV8, sugF;
         var SuggestView = [sugS, sugV1, sugV2, sugV3, sugV4, sugV5, sugV6, sugV7, sugV8, sugF];
         for (var i in SuggestView) {
             var r = Routes[i].attr('id');
-            SuggestView[i] = new ymaps.SuggestView(r, {
-                provider: {
-                    suggest: function (request, options) {
-
-                        return (SuggestView[i].state.get('open') ?
-                            ymaps.suggest(request) : ymaps.vow.resolve([]))
-                            .then(function (res) {
-                                SuggestView[i].events.fire('requestsuccess', {
-                                    target: SuggestView[i],
-                                })
-
-                                return res;
-
-                            });
-                    }
-                }
-            });
+            SuggestView[i] = new ymaps.SuggestView(r
+            //     , {
+            //     provider: {
+            //         suggest: function (request, options) {
+            //
+            //             return (SuggestView[i].state.get('open') ?
+            //                 ymaps.suggest(request) : ymaps.vow.resolve([]))
+            //                 .then(function (res) {
+            //                     SuggestView[i].events.fire('requestsuccess', {
+            //                         target: SuggestView[i],
+            //                     })
+            //
+            //                     return res;
+            //
+            //                 });
+            //         }
+            //     }
+            // }
+            );
             SuggestView[i].state.set('open', true);
             SuggestView[i].events.add('select', function (e) {
+               i
                 createRoute();
             });
+            createRoute();
+
             endLoading();
         }
 
@@ -71,29 +74,37 @@ $(document).ready(function () {
             createRoute();
         });
 
-        $('#addPoint').on('click', function () {
-
-            if (nRoutes < 9) {
-                var inputRoute = Routes[nRoutes + 1];
-                inputRoute.attr({type: 'text'});
+        $('.addPoint').on('click', function () {
+            if(!nRoutes){
+                for(var i = 1; i < 9; i++){
+                    if(Routes[i].val()){
+                        nRoutes = i+1;
+                    }
+                }
+            }
+            if (nRoutes < 10) {
+                var inputRoute = Routes[nRoutes];
+                inputRoute.prop('hidden', false);
                 nRoutes++;
             }
         });
 
         $('#clearAllPoint').on('click', function () {
-            startLoading();
+            // startLoading();
             if(!lenRoute && !nRoutes) return;
 
-            for (var i in Routes) {
+            for (var i = 1; i < 9; i++) {
                 Routes[i].val('');
+                Routes[i].prop('hidden', true);
             }
-            $('#hiddenRoutes').find('input').attr({type: 'hidden'});
+            Routes[0].val('');
+            Routes[9].val('');
             myMap.geoObjects.removeAll();
             lenRoute = 0;
             nRoutes = 0;
             $('#len').text(lenRoute).trigger('change');
             $('#lengthRoute').val(lenRoute);
-            endLoading();
+            // endLoading();
         });
 
 
@@ -107,8 +118,7 @@ $(document).ready(function () {
 
 
         function createRoute() {
-
-
+            startLoading();
             myMap.geoObjects.removeAll();
             lenRoute = 0;
             $('#len').text(lenRoute);
@@ -124,7 +134,7 @@ $(document).ready(function () {
              * Тестовый массив с метками адресов
              */
             if (rStart.val() && rFinish.val()) {
-                startLoading();
+
                 var multiRouteModel = new ymaps.multiRouter.MultiRouteModel(adresses, {
                     //avoidTrafficJams: true,
                     //viaIndexes: [1]
@@ -133,6 +143,8 @@ $(document).ready(function () {
                 // Создаем отображение мультимаршрута на основе модели.
                 var multiRouteView = new ymaps.multiRouter.MultiRoute(multiRouteModel, {
                     boundsAutoApply: true
+                },{
+                    searchControlProvider: 'yandex#search'
                 });
                 myMap.geoObjects.add(multiRouteView);
 
@@ -156,102 +168,29 @@ $(document).ready(function () {
                     .add("requestfail", function (event) {
                         console.log("Ошибка: " + event.get("error").message);
                     });
-                endLoading();
-
-
             }
-
-
+            endLoading();
         }
-
-
-
-
-        function getRates() {
-            $.ajax({
-                type: 'POST',
-                url: '/site/ajax-order',
-                data: {
-                    'key': 'rate',
-                    'longlen': longlen,
-                    'values': data,
-                },
-
-                datatype: 'json',
-                success: function (res) {
-
-                },
-                error: function (res) {
-                    alert('Ошибка');
-                },
-                beforeSend: function () {
-                },
-                complete: function () {
-                }
-            });
-        }
-
-        // ФУНКЦИИ ГЕТТЕРЫ ПОЛЕЙ, ЧЕКБОКСОВ и т.д.
-        function getLoadTypes() {
-            var ltypes = [];
-            ($('#loadingtype').find('input:checkbox:checked').each(function () {
-                ltypes.push(this.value);
-            }));
-            return ltypes;
-        }
-
-        function getLongLength() {
-            var longlen = [];
-            $('#longlenradio').find('input:radio:checked').each(function () {
-                longlen.push(this.value);
-            });
-            return longlen[0];
-        }
-
-        function getBodyTypes() {
-            var btypes = [];
-            ($('#bodytype').find('input:checkbox:checked').each(function () {
-                btypes.push(this.value);
-            }));
-            return btypes;
-        }
-        function arrayDataForAjax(key) {
-           return {
-                'key': key,
-                'vehType' : $('#typeVehChk').val(),
-                'loadTypes' :  getLoadTypes(),
-                'longlen': getLongLength(),
-                'bodyTypes': getBodyTypes(),
-                'length' : $('#length').val(),
-               'wigth' : $('#wigth').val(),
-               'height' : $('#height').val(),
-               'volume' : $('#volume').val(),
-               'palletEP' : $('#palletEP').val(),
-               'palletRP' : $('#palletRP').val(),
-               'palletLP' : $('#palletLP').val(),
-               'distance' : $('#lengthRoute').val(),
-               'dateStart' : $('#dateStart').val(),
-               'dateStartMax' : $('#dateStartMax').val(),
-            };
-        }
-
-
 
         $('#testBut').on('click', function () {
             alert(arrayDataForAjax());
+        });
+
+        $('.points').keypress(function (event) {
+            if (event.which == '13') {
+                event.preventDefault();
+            }
+        });
+        $('.points').on('change', function (event) {
+            lenRoute = 0;
+            $('#len').text(lenRoute).trigger('change');
+            $('#lengthRoute').val(lenRoute);
         });
 
 
     }
 })
 
-// Тип транспорта
-//     $('#typeVehChk').val()
-// Тип погрузки
-//      getLoadTypes()
-// Длинномер 0 или 1
-//      getLongLength()
-// Тип кузова
-//      getBodyTypes()
+
 
 

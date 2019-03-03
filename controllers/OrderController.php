@@ -285,7 +285,8 @@ return 'error';
             return;
         }
         $route = Route::findOne($modelOrder->id_route);
-        if(!$route) $route = new Route();
+        if(!$route)
+            $route = new Route();
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
         $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');

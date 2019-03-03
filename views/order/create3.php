@@ -7,7 +7,6 @@
  */
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
-echo $modelOrder->id_vehicle_type;
 //var_dump($VehicleAttributes);
 ?>
 
