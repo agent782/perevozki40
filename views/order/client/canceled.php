@@ -77,13 +77,12 @@ use yii\bootstrap\Tabs;
                         || $model->status == Order::STATUS_EXPIRED){
 
                         return Html::a('Повторить', Url::to([
-                            '/order/canceled-by-client',
+                            '/order/update',
                             'id_order' => $model->id,
                         ]),
-                            ['data-confirm' => Yii::t('yii',
-                                'Пока заказ не принят водителем, Вы можете отменить его без потери рейтинга. Отменить заказ?'),
+                            [
                                 'data-method' => 'post',
-                                'class' => 'btn btn-warning']);
+                                'class' => 'btn btn-primary']);
                     }
                 }
             ],

@@ -36,9 +36,9 @@ $this->registerJsFile('@web/js/route.js');
             ?>
         </ul>
     </div>
-    <br>
+
     <?= $form->field($route, 'routeFinish', ['inputOptions' => ['id'=>'rFinish','class' => 'points col-xs-12']]);?>
-    <br>
+    <br><br>
     <?= Html::button('Пересчитать', ['id' => 'but', 'class' => 'btn-sm btn-success'])?>
 
     <?= Html::button('Добавить промежуточную точку', ['class' => 'addPoint btn-sm btn-info'])?>

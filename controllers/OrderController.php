@@ -282,13 +282,17 @@ return 'error';
         $modelOrder = $this->findModel($id_order);
         if(!$modelOrder){
             functions::setFlashWarning('Ошибка на сервере');
-            return;
+            return $this->redirect($redirect);
         }
         $route = Route::findOne($modelOrder->id_route);
         if(!$route)
             $route = new Route();
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+        // Для функции  Vehicle::getArrayAttributes() .... для получения атрибутов для спецтехники она выбтрае 1й, а не 0й элемент массива с типами кузовов
+        $tmpBodyTypies[1] =  $modelOrder->body_typies[0];
+
+        $VehicleAttributes = Vehicle::getArrayAttributes($modelOrder->id_vehicle_type, $tmpBodyTypies);
         $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
         $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         if ($modelOrder->load(Yii::$app->request->post()) && $modelOrder->save()) {
@@ -298,6 +302,7 @@ return 'error';
                 'modelOrder' => $modelOrder,
                 'BTypies' => $BTypies,
                 'LTypies' => $LTypies,
+                'VehicleAttributes' => $VehicleAttributes,
                 'TypiesPayment' => $TypiesPayment,
                 'companies' => $companies,
                 'route' => $route
