@@ -55,7 +55,7 @@ class OrderSearch extends Order
             'query' => $query,
             'sort' => [
                 'defaultOrder' => [
-                    'datetime_start' => SORT_ASC
+                    'datetime_start' => SORT_DESC
                 ]
             ]
         ]);
@@ -118,7 +118,7 @@ class OrderSearch extends Order
         $dataProvider->setSort([
 
             'defaultOrder' => [
-                'datetime_start' => SORT_ASC
+                'datetime_start' => SORT_DESC
             ]
         ]);
         $this->load($params);

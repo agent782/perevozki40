@@ -107,7 +107,14 @@ class Order extends \yii\db\ActiveRecord
     public $loading_typies;
     public $suitable_rates;
     public $selected_rates;
+    public $flag_change_pricezones = 0;
 
+    const SCENARIO_UPDATE_TRUCK = 'update_truck';
+    const SCENARIO_UPDATE_PASS = 'update_pass';
+    const SCENARIO_UPDATE_MANIPULATOR = 'update_manipulator';
+    const SCENARIO_UPDATE_DUMP = 'update_dump';
+    const SCENARIO_UPDATE_CRANE = 'update_crane';
+    const SCENARIO_UPDATE_EXCAVATOR = 'update_excavator';
     const SCENARIO_UPDATE_STATUS = 'update_status';
     const SCENARIO_ACCESSING = 'accessing';
     const SCENARIO_NEW_ORDER = 'new_order';
@@ -155,8 +162,32 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_UPDATE_STATUS] = ['status'];
         $scenarios[self::SCENARIO_ACCESSING] = ['id_vehicle', 'id_driver'];
         $scenarios[self::SCENARIO_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
-            'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime', 'type_payment',
+            'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
             'passengers','id_company', 'status', 'create_at', 'update_at'];
+        $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
+            'body_typies', 'loading_typies', 'tonnage', 'selected_rates', 'type_payment',
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+        ];
+        $scenarios[self::SCENARIO_UPDATE_PASS] = [
+            'body_typies', 'passengers', 'cargo', 'selected_rates', 'type_payment',
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+        ];
+        $scenarios[self::SCENARIO_UPDATE_MANIPULATOR] = [
+            'tonnage', 'tonnage_spec', 'selected_rates', 'type_payment',
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+        ];
+        $scenarios[self::SCENARIO_UPDATE_DUMP] = [
+            'tonnage', 'volume', 'selected_rates', 'type_payment',
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+        ];
+        $scenarios[self::SCENARIO_UPDATE_CRANE] = [
+            'tonnage_spec', 'selected_rates', 'type_payment',
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+        ];
+        $scenarios[self::SCENARIO_UPDATE_EXCAVATOR] = [
+            'volume_spec', 'selected_rates', 'type_payment',
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+        ];
         return $scenarios;
     }
 
@@ -356,6 +387,31 @@ class Order extends \yii\db\ActiveRecord
             $this->changeStatus(self::STATUS_NEW, $this->id_user);
 //
         }else {
+            if(count($this->body_typies)) {
+                $this->unlinkAll('bodyTypies', true);
+                foreach ($this->body_typies as $body_type_ld) {
+                    if($body_type_ld) {
+                        $BodyType = BodyType::findOne(['id' => $body_type_ld]);
+                        $this->link('bodyTypies', $BodyType);
+                    }
+                }
+            }
+            if(count($this->loading_typies)) {
+                $this->unlinkAll('loadingTypies', true);
+                foreach ($this->loading_typies as $loading_type_id) {
+                    if ($loading_type_id) { //что бы не сохранялся Любой
+                        $LoadingType = LoadingType::findOne(['id' => $loading_type_id]);
+                        $this->link('loadingTypies', $LoadingType);
+                    }
+                }
+            }
+            if($this->selected_rates) {
+                $this->unlinkAll('priceZones', true);
+                foreach ($this->selected_rates as $selected_rate_id) {
+                    $PriceZone = PriceZone::findOne(['id' => $selected_rate_id]);
+                    $this->link('priceZones', $PriceZone);
+                }
+            }
             parent::afterSave($insert, $changedAttributes);
         }
     }
@@ -882,8 +938,35 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getFullAssignedInfo(){
-
+    public function setScenarioForUpdate(){
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK:
+                $this->scenario = self::SCENARIO_UPDATE_TRUCK;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $this->scenario = self::SCENARIO_UPDATE_PASS;
+                break;
+            case Vehicle::TYPE_SPEC:
+                $tmpBodyTypies = $this->body_typies[0];
+                switch ($tmpBodyTypies){
+                    case Vehicle::BODY_manipulator:
+                        $this->scenario = self::SCENARIO_UPDATE_MANIPULATOR;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $this->scenario = self::SCENARIO_UPDATE_DUMP;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $this->scenario = self::SCENARIO_UPDATE_CRANE;
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $this->scenario = self::SCENARIO_UPDATE_EXCAVATOR;
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $this->scenario = self::SCENARIO_UPDATE_EXCAVATOR;
+                        break;
+                }
+                break;
+        }
     }
 
 
