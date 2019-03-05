@@ -149,11 +149,14 @@ $this->registerJsFile('/js/order.js');
     </div>
     <div class="col-lg-8">
         <?= $this->render('/route/_form', ['route' => $route, 'form' => $form])?>
-
-        <?= $form->field($modelOrder, 'flag_change_pricezones')->hiddenInput(['id' => 'flag_change_pricezones']);?>
     </div>
     <div class="col-lg-11">
-        <?= Html::submitButton('Изменить', ['class' => 'btn btn-success'])?>
+        <?= Html::submitButton('Изменить',
+            [
+                'class' => 'btn btn-success',
+                'name' => 'button',
+                'value' => 'update'
+            ])?>
     </div>
 
 

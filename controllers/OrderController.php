@@ -296,34 +296,49 @@ class OrderController extends Controller
         $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
         $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         $modelOrder->setScenarioForUpdate();
-        if ($modelOrder->load(Yii::$app->request->post()) && $route->load(Yii::$app->request->post())) {
+        $session = Yii::$app->session;
+        switch (Yii::$app->request->post('button')) {
+            case 'update':
+                if ($modelOrder->load(Yii::$app->request->post()) && $route->load(Yii::$app->request->post())) {
 //            return var_dump($modelOrder);
-            $modelOrder->suitable_rates = $modelOrder->getSuitableRates($route->distance);
-            return $this->render('/order/update2', [
-                'modelOrder' => $modelOrder,
-                'route' => $route
-            ]);
-
-            if ($route->save() && $modelOrder->save()) {
-                functions::setFlashSuccess('Заказ №' . $modelOrder->id . ' изменен.');
-            } else {
-                var_dump($modelOrder->getErrors());
-                echo '<br><br><br>';
-                var_dump($route->getErrors());
-                functions::setFlashWarning('Ошибка на сервере');
-            }
-            return $this->redirect($redirect);
-        } else {
-            return $this->render('update', [
-                'modelOrder' => $modelOrder,
-                'BTypies' => $BTypies,
-                'LTypies' => $LTypies,
-                'VehicleAttributes' => $VehicleAttributes,
-                'TypiesPayment' => $TypiesPayment,
-                'companies' => $companies,
-                'route' => $route
-            ]);
+                    $modelOrder->suitable_rates = $modelOrder->getSuitableRates($route->distance);
+                    $session->set('modelOrder', $modelOrder);
+                    $session->set('route', $route);
+                    return $this->render('/order/update2', [
+                        'modelOrder' => $modelOrder,
+                        'route' => $route
+                    ]);
+                }
+                break;
+            case 'update2':
+                $modelOrder = $session->get('modelOrder');
+                $route = $session->get('route');
+                if(!$modelOrder || !$route){
+                    functions::setFlashWarning('Ошибка на сервере');
+                    return $this->redirect($redirect);
+                }
+                if ($modelOrder->load(Yii::$app->request->post())) {
+                    if ($route->save() && $modelOrder->save()) {
+                        functions::setFlashSuccess('Заказ №' . $modelOrder->id . ' изменен.');
+                        $session->remove('modelOrder');
+                        $session->remove('route');
+                    } else {
+                        functions::setFlashWarning('Ошибка на сервере');
+                    }
+                    return $this->redirect($redirect);
+                    break;
+                }
         }
+
+        return $this->render('update', [
+            'modelOrder' => $modelOrder,
+            'BTypies' => $BTypies,
+            'LTypies' => $LTypies,
+            'VehicleAttributes' => $VehicleAttributes,
+            'TypiesPayment' => $TypiesPayment,
+            'companies' => $companies,
+            'route' => $route
+        ]);
     }
 
     /**

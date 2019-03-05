@@ -107,7 +107,6 @@ class Order extends \yii\db\ActiveRecord
     public $loading_typies;
     public $suitable_rates;
     public $selected_rates;
-    public $flag_change_pricezones = 0;
 
     const SCENARIO_UPDATE_TRUCK = 'update_truck';
     const SCENARIO_UPDATE_PASS = 'update_pass';
@@ -923,13 +922,15 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
-    public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false){
+    public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false, $showPriceZones = true){
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
         $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
         $return .= $this->getShortInfoForClient() . ' <br>';
-        $return .= ($showPriceForVehicle)
-            ? 'Тарифная зона №'. $this->id_pricezone_for_vehicle . '. <br>'
-            : 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>';
+        if($showPriceZones) {
+            $return .= ($showPriceForVehicle)
+                ? 'Тарифная зона №' . $this->id_pricezone_for_vehicle . '. <br>'
+                : 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>';
+        }
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
             ?'Заказчик:' . $this->clientInfo . ' <br>'
