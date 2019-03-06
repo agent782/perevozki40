@@ -786,7 +786,21 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_NEW:
-                $title_client = 'Заказ №'.$this->id.' оформлен.';
+                switch ($this->status) {
+                    case self::STATUS_NEW:
+                        $title_client = 'Заказ №' . $this->id . ' изменен.';
+                        $this->deleteEventChangeStatusToExpired();
+                        $this->setEventChangeStatusToExpired();
+                        break;
+                    case self::STATUS_CANCELED: case self::STATUS_EXPIRED:
+                        $title_client = 'Заказ №' . $this->id . ' изменен и добавлен в поиск.';
+                        $this->deleteEventChangeStatusToExpired();
+                        $this->setEventChangeStatusToExpired();
+                        break;
+                    default:
+                        $title_client = 'Заказ №' . $this->id . ' оформлен.';
+                        break;
+                }
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
                     . $this->getFullNewInfo(true);
                 break;

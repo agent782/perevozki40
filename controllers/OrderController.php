@@ -297,6 +297,12 @@ class OrderController extends Controller
         $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         $modelOrder->setScenarioForUpdate();
         $session = Yii::$app->session;
+
+        If($modelOrder->status == Order::STATUS_EXPIRED || $modelOrder->status == Order::STATUS_CANCELED){
+            $modelOrder->datetime_start = null;
+            $modelOrder->valid_datetime = null;
+        }
+
         switch (Yii::$app->request->post('button')) {
             case 'update':
                 if ($modelOrder->load(Yii::$app->request->post()) && $route->load(Yii::$app->request->post())) {
@@ -319,7 +325,8 @@ class OrderController extends Controller
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     if ($route->save() && $modelOrder->save()) {
-                        functions::setFlashSuccess('Заказ №' . $modelOrder->id . ' изменен.');
+                        $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
+
                         $session->remove('modelOrder');
                         $session->remove('route');
                     } else {

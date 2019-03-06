@@ -50,7 +50,7 @@ class CronController extends Controller
                 $Message = new Message([
                     'id_to_user' => $order->id_user,
                     'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
-                    'text' => 'Машина не найдена.',
+                    'text' => 'Вы можете повторить поиск в Личном кабинете в разделе Заказы на вкладке Отмененные.',
                     'url' => Url::to(['/order/view', 'id' => $order->id], true),
                     'push_status' => Message::STATUS_NEED_TO_SEND,
                     'email_status' => Message::STATUS_NEED_TO_SEND,
