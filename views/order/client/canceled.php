@@ -76,7 +76,7 @@ use yii\bootstrap\Tabs;
                     if($model->status == Order::STATUS_CANCELED
                         || $model->status == Order::STATUS_EXPIRED){
 
-                        return Html::a('Повторить', Url::to([
+                        return Html::a('Изменить и повторить поиск', Url::to([
                             '/order/update',
                             'id_order' => $model->id,
                         ]),

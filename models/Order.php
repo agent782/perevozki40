@@ -982,9 +982,27 @@ class Order extends \yii\db\ActiveRecord
                 }
                 break;
         }
+
     }
 
+    public function getFullInfoAboutVehicle($showPhones = true){
+        $return = '';
+        if(!$this->id_vehicle) return false;
+        $vehicle = $this->vehicle;
+        if(!$vehicle) return false;
+        $vehicle_user = $this->vehicle->profile;
+        if($this->id_driver) $driver = Driver::findOne($this->id_driver);
+        $return .= $vehicle->fullInfo . '<br>';
+        if($this->id_driver){
+            if($driver) $return .= 'Водитель: ' . $driver->getFullInfo(true, true, true);
+            $return .= 'Владелец ТС: ' . $vehicle_user->getProfileInfo(true);
+        } else {
+            if($vehicle_user) $return .= 'Водитель: ' . $vehicle_user->getDriverFullInfo(true, true, true);
+        }
 
+
+        return $return;
+    }
 
 }
 

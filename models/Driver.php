@@ -27,7 +27,8 @@ use nickcv\encrypter\behaviors\EncryptionBehavior;
  * @property Passport $passport
  * @property DriverLicense $license
  * @property integer $status
- * @property string statusString
+ * @property string $statusString
+ * @property string $fullInfo
  */
 class Driver extends \yii\db\ActiveRecord
 {
@@ -140,5 +141,16 @@ class Driver extends \yii\db\ActiveRecord
         }
     }
 
+    public function getFullInfo($showPhone = false, $showPassport = false, $showDriveLicense = false){
+        $return = $this->fio . '<br>';
+        if($showPhone) {
+            $return .= 'Телефон: ' . $this->phone;
+            if ($this->phone2) $return .= ' (доп. ' . $this->phone2 . ')';
+            $return .= '. <br>';
+        }
+        if($showPassport) $return .= 'Пасспорт: ' . $this->passport->fullInfo . ' <br>';
+        if($showDriveLicense) $return .= 'ВУ: ' . $this->license->fullInfo . ' <br>';
 
+        return $return;
+    }
 }

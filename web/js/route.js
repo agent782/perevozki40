@@ -183,8 +183,9 @@ $(document).ready(function () {
         });
         $('.points').on('change', function (event) {
             lenRoute = 0;
-            $('#len').text(lenRoute).trigger('change');
-            $('#lengthRoute').val(lenRoute);
+            $('#but, #rStart, #rFinish').trigger('click');
+            // $('#len').text(lenRoute).trigger('change');
+            // $('#lengthRoute').val(lenRoute);
         });
 
 

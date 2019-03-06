@@ -39,9 +39,9 @@ use yii\helpers\Url;
  * @property string $bodyTypeText
  * @property float $description
  * @property float $photo
- * @property array $loadingtypes
+ * @property LoadingType[] $loadingtypes
  * @property array $loadingtypesText
- * @property array $bodyType
+ * @property BodyType[] $bodyType
  * @property string $brand
  * @property string $longlengthIcon
  * @property string $photoHtml
@@ -51,6 +51,7 @@ use yii\helpers\Url;
  * @property Profile $profile
  * @property RegLicense $regLicense
  * @property string $brandAndNumber
+ * @property string $fullInfo
 
 
 
@@ -588,5 +589,53 @@ class Vehicle extends \yii\db\ActiveRecord
 
     public function getBrandAndNumber(){
         return $this->brand . ' ' . $this->regLicense->reg_number;
+    }
+
+    public function getFullInfo(){
+        $return = '<b>'.$this->brandAndNumber . '</b><br>';
+        $return .= 'Тип кузова: ' . $this->bodyTypeText . '. ';
+
+        switch ($this->id_vehicle_type){
+            case self::TYPE_TRUCK;
+                $return .= 'Тип погрузки/выгрузки: ' . $this->loadingtypesText . '. ';
+                $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                $return .= 'Размеры (Д*Ш*В): ' . $this->length . ' * ' . $this->width . ' * ' . $this->height  .'м. ';
+                $return .= 'Объем: ' . $this->volume . 'м3. ';
+                $return .= 'Евро-поддоны(1.2*0.8м): ' . $this->ep . 'шт, ';
+                $return .= 'поддоны(1.2*1м): ' . $this->rp . 'шт, ';
+                $return .= 'поддоны(1.2*1.2м): ' . $this->lp . 'шт. ';
+                $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
+                $return .= 'Груз-длинномер: ' . $this->longlengthIcon . '. <br>';
+                break;
+            case self::TYPE_PASSENGER:
+                $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
+                $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                break;
+            case self::TYPE_SPEC:
+                switch ($this->bodyType[0]->id){
+                    case self::BODY_manipulator:
+                        $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                        $return .= 'Размеры (Д*Ш): ' . $this->length . ' * ' . $this->width  .'м. ';
+                        $return .= 'Грузоподъемность механизма (стрелы): ' . $this->tonnage_spec . 'т. ';
+                        $return .= 'Длина механизма (стрелы): ' . $this->length_spec . 'м. ';
+                        break;
+                    case self::BODY_dump:
+                        $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                        $return .= 'Объем: ' . $this->volume . 'м3. ';
+                        break;
+                    case self::BODY_crane:
+                        $return .= 'Грузоподъемность механизма (стрелы): ' . $this->tonnage_spec . 'т. ';
+                        $return .= 'Длина механизма (стрелы): ' . $this->length_spec . 'м. ';
+                        break;
+                    case self::BODY_excavator:
+                        $return .= 'Объем механизма (ковша): ' . $this->volume_spec . 'м3. ';
+                        break;
+                    case self::BODY_excavator_loader:
+                        $return .= 'Объем механизма (ковша): ' . $this->volume_spec . 'м3. ';
+                        break;
+                }
+                break;
+        }
+        return $return;
     }
 }

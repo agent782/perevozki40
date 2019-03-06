@@ -48,81 +48,42 @@ use yii\bootstrap\Tabs;
                 ],
             ],
             'id',
-//            [
-//                'attribute' => 'statusText',
-//                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
-//
-//            ],
             [
-                'attribute' => 'datetime_start',
-                'options' => [
-//                    'style' =>'width: 100px',
-                ],
-                'contentOptions'=>['style'=>'white-space: normal;']
+                'label' => 'ТС',
+                'format' => 'raw',
+                'attribute' => 'fullInfoAboutVehicle'
             ],
             [
-                'label' => 'Маршрут',
+            'label' => 'Маршрут',
+            'format' => 'raw',
+            'attribute' => 'route.fullRoute'
+            ],
+            [
+                'label' => 'Информация о заказе',
                 'format' => 'raw',
-                'value' => function($data){
-                    $route = $data->route;
-                    $return = $route->startCity . ' -';
-                    for($i = 1; $i<9; $i++){
-                        $attribute = 'route' . $i;
-                        if($route->$attribute) $return .= '... -';
-                    }
-                    $return .=  ' '.$route->finishCity ;
-                    return $return;
-                },
+                'attribute'=>'shortInfoForClient'
             ],
             [
                 'label' => 'Тариф',
                 'format' => 'raw',
-                'value' => function($model){
-                    if($model->id_pricezone_for_vehicle)
-                        return
-                        \app\models\PriceZone::findOne($model->id_pricezone_for_vehicle)
-                        ->getTextWithShowMessageButton($model->route->distance);
-                    ;
-                }
-            ],
-//        'vehicleType.type',
-            [
-                'label' => 'Подходит для Ваших ТС',
-                'format' => 'raw',
-                'value' => function($model){
-                    $res = '';
-                    $vehicles = \app\models\Vehicle::find()
-                        ->where([
-                            'id_user' => Yii::$app->user->id,
-                            'status' => [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]
-                        ])->all();
-                    if(!count($vehicles)) return;
-                    foreach ($vehicles as $vehicle) {
-                        if ($vehicle->canOrder($model)) {
-                            $res .= $vehicle->regLicense->reg_number . '<br>';
-                        }
-                    }
-                    return $res;
+                'attribute' => 'id_pricezone_for_vehicle',
+                'value' => function($modelOrder){
+                    return \app\models\PriceZone::findOne($modelOrder
+                        ->id_pricezone_for_vehicle)
+                        ->getTextWithShowMessageButton($modelOrder->route->distance);
                 }
             ],
             [
-                'label' => '',
+                'label' => 'Заказчик',
                 'format' => 'raw',
-                'value' => function ($model){
-                    $return = '';
-                        $return .= Html::a('Отказаться', Url::to([
-                            '/order/canceled-by-vehicle',
-                            'id_order' => $model->id,
-                            'id_user' => Yii::$app->user->id,
-                        ]),
-                            ['data-confirm' => Yii::t('yii',
-                                'Отказ от заказа может повлиять на Ваш рейтинг! Отказаться от заказа?'),
-                            'data-method' => 'post',
-                            'class' => 'btn btn-warning']);
-                    return $return;
-                },
+                'attribute' => 'clientInfo'
             ],
-//            ['class' => 'yii\grid\ActionColumn'],
-        ],
+            'paymentText',
+            [
+                'label' => 'Действия',
+                'format' => 'raw',
+
+            ],
+        ]
     ]); ?>
 </div>

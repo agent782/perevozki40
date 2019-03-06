@@ -279,6 +279,8 @@ class OrderController extends Controller
      */
     public function actionUpdate($id_order, $redirect = '/order/client')
     {
+        $session = Yii::$app->session;
+
         $modelOrder = $this->findModel($id_order);
         if (!$modelOrder) {
             functions::setFlashWarning('Ошибка на сервере');
@@ -286,8 +288,16 @@ class OrderController extends Controller
         }
 
         $route = Route::findOne($modelOrder->id_route);
-        if (!$route)
-            $route = new Route();
+        if (!$route){
+            functions::setFlashWarning('Ошибка на сервере');
+            return $this->redirect($redirect);
+        }
+        If($modelOrder->status == Order::STATUS_EXPIRED || $modelOrder->status == Order::STATUS_CANCELED){
+            $modelOrder->datetime_start = null;
+            $modelOrder->valid_datetime = null;
+        }
+
+
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
         // Для функции  Vehicle::getArrayAttributes() .... для получения атрибутов для спецтехники она выбтрае 1й, а не 0й элемент массива с типами кузовов
@@ -296,12 +306,6 @@ class OrderController extends Controller
         $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
         $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         $modelOrder->setScenarioForUpdate();
-        $session = Yii::$app->session;
-
-        If($modelOrder->status == Order::STATUS_EXPIRED || $modelOrder->status == Order::STATUS_CANCELED){
-            $modelOrder->datetime_start = null;
-            $modelOrder->valid_datetime = null;
-        }
 
         switch (Yii::$app->request->post('button')) {
             case 'update':
@@ -321,20 +325,34 @@ class OrderController extends Controller
                 $route = $session->get('route');
                 if(!$modelOrder || !$route){
                     functions::setFlashWarning('Ошибка на сервере');
+                    $session->remove('modelOrder');
+                    $session->remove('route');
                     return $this->redirect($redirect);
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     if ($route->save() && $modelOrder->save()) {
                         $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
-
-                        $session->remove('modelOrder');
-                        $session->remove('route');
                     } else {
                         functions::setFlashWarning('Ошибка на сервере');
                     }
+                    $session->remove('modelOrder');
+                    $session->remove('route');
                     return $this->redirect($redirect);
                     break;
                 }
+            case 'back':
+                $modelOrder = $session->get('modelOrder');
+                $route = $session->get('route');
+                return $this->render('update', [
+                    'modelOrder' => $modelOrder,
+                    'BTypies' => $BTypies,
+                    'LTypies' => $LTypies,
+                    'VehicleAttributes' => $VehicleAttributes,
+                    'TypiesPayment' => $TypiesPayment,
+                    'companies' => $companies,
+                    'route' => $route,
+                    'redirect' => $redirect
+                ]);
         }
 
         return $this->render('update', [
@@ -344,7 +362,8 @@ class OrderController extends Controller
             'VehicleAttributes' => $VehicleAttributes,
             'TypiesPayment' => $TypiesPayment,
             'companies' => $companies,
-            'route' => $route
+            'route' => $route,
+            'redirect' => $redirect
         ]);
     }
 

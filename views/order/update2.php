@@ -11,6 +11,7 @@
     use yii\bootstrap\Html;
 /* @var $modelOrder \app\models\Order*/
     $this->title = 'Изменение заказа №' . $modelOrder->id;
+
 ?>
 
 <div class="container">
@@ -50,6 +51,15 @@
         <?= $modelOrder->getFullNewInfo(true,false, false)?>
     </div>
     <div class="col-lg-10">
+        <?=
+        Html::submitButton('Назад',
+            [
+                'class' => 'btn btn-warning',
+                'name' => 'button',
+                'value' => 'back'
+            ]);
+//            Html::a('Назад', ['/order/update', 'id_order' => $modelOrder->id], ['class' => 'btn btn-warning'])
+        ?>
         <?= Html::submitButton('Подтвердить',
             [
                 'class' => 'btn btn-success',
