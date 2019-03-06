@@ -7,6 +7,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Vehicle;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Payment;
 /* @var $this yii\web\View */
 /* @var $modelOrder app\models\Order */
 /* @var $BTypies array*/
@@ -14,51 +15,24 @@ use app\components\widgets\ShowMessageWidget;
 /* @var $VehicleAttributes array*/
 $this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
 $this->registerJsFile('@web/js/route.js');
-var_dump($modelOrder->selected_rates);
 $this->title = 'Изменение заказа №' . $modelOrder->id;
+
+$this->registerJsFile('/js/order.js');
 ?>
 
-<div class="order-update">
+<div class="order-update container">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <br>
     <?php
     \yii\widgets\Pjax::begin(['id' => 'update']);
         $form = ActiveForm::begin([
+            'enableAjaxValidation' => true,
             'validationUrl' => '/order/validate-order'
         ]);
     ?>
 
     <div class="col-lg-4">
-
-        <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие тарифы *.')
-            ->checkboxList($modelOrder->suitable_rates, [
-                'item' => function ($index, $label, $name, $checked, $value) use ($route){
-                    $PriceZone = PriceZone::find()->where(['id' => $value])->one();
-                    $return = '<label>';
-                    $chk = ($checked)?'checked =""':' ';
-                    $return .= '<input type="checkbox" name="' . $name . '"' . 'value="' . $value . '"' . $chk . ' >' . "\n";
-                    $return .= '<i class="fa fa-square-o fa-2x"></i>' . "\n" .
-                        '<i class="fa fa-check-square-o fa-2x"></i>' . "\n";
-//                $return .= '<span>' . ucwords($label) . '</span>' . "\n";
-                    $return .= ' &asymp; ' . $PriceZone->CostCalculation($route->distance);
-                    $return .= ' руб.* ';
-                    $return .= '</label>'
-                        .  ShowMessageWidget::widget([
-                            'helpMessage' => $PriceZone->printHtml(),
-                            'header' => 'Тарифная зона ' . $value,
-                            'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
-                        ])
-                        . '</label><br>'
-                    ;
-
-                    return $return;
-                }
-            ]);
-        ?>    </div>
-
-    <div class="col-lg-4">
-
     <?= $form->field($modelOrder, 'datetime_start',[
         'enableClientValidation' => true
     ])->widget(DateTimePicker::className(),[
@@ -112,13 +86,32 @@ $this->title = 'Изменение заказа №' . $modelOrder->id;
         '
     ])?>
 
-    <div id="companies" hidden>
+    <div id="companies" <?=($modelOrder->type_payment != Payment::TYPE_BANK_TRANSFER)? 'hidden' : '';?>>
         <?= $form->field($modelOrder, 'id_company',[
             'enableAjaxValidation' => true,
         ])->radioList($companies)?>
     </div>
-</div>
-    <div class="col-lg-4">
+
+        <?=
+        ($modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC)
+            ? $form->field($modelOrder, 'body_typies')
+                ->radioList(ArrayHelper::map($BTypies, 'id', 'body'), [ 'itemOptions'=>['disabled' => true]])
+            : $form->field($modelOrder, 'body_typies')
+                ->checkboxList(ArrayHelper::map($BTypies, 'id', 'body'), ['id' => 'chkBodyTypies'])
+        ;
+        ?>
+
+        <?php
+        if($LTypies){
+            echo $form->field($modelOrder, 'loading_typies')->checkboxList(ArrayHelper::map($LTypies, 'id', 'type'),
+                [
+                    'id' => 'chkLoadingTypies',
+                ])->label('Необходимый тип погрузки/выгрузки.')
+//                ->hint('Выбирайте дополнительные типы погрузки только при необходимости!')
+            ;
+        }
+        ?>
+
         <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
             echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
@@ -146,15 +139,24 @@ $this->title = 'Изменение заказа №' . $modelOrder->id;
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
                     'type' => 'tel',
-                    'style' => 'width: 150px'
+                    'style' => 'width: 150px',
+                    'onchange' => 'alert();'
                 ]
             ]);
         }
         ?>
 
     </div>
-    <div class="col-lg-10">
+    <div class="col-lg-8">
         <?= $this->render('/route/_form', ['route' => $route, 'form' => $form])?>
+    </div>
+    <div class="col-lg-11">
+        <?= Html::submitButton('Изменить',
+            [
+                'class' => 'btn btn-success',
+                'name' => 'button',
+                'value' => 'update'
+            ])?>
     </div>
 
 

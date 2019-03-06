@@ -12,7 +12,7 @@ $this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
 $this->registerJsFile('@web/js/route.js');
 ?>
 
-<div id="route"  class="container" >
+<div id="route">
     <h4>Маршрут.</h4>
     <br>
     <?= $form->field($route, 'routeStart', ['inputOptions' => [
@@ -23,14 +23,15 @@ $this->registerJsFile('@web/js/route.js');
     <div id="hiddenRoutes">
         <ul>
             <?= Html::button(Html::icon('plus'), ['class' => 'addPoint btn-xs btn-info', 'title' => 'Добавить точку'])?>
-            Промежуточные точки:
+            Промежуточные точки (не более 8-ми):
              <?php
                 for($i = 1; $i < 9; $i++){
                     $attributePoint = 'route' . $i;
                     echo $form->field($route, $attributePoint, ['inputOptions' => [
                         'id'=>'r'.$i,
                         'class' => 'points col-xs-12',
-                        'hidden' => (!$route->$attributePoint)? true : false
+                        'hidden' => (!$route->$attributePoint)? true : false,
+                        'style' => 'margin: 5px'
                     ]])->label(false);
                 }
             ?>

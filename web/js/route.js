@@ -78,12 +78,12 @@ $(document).ready(function () {
             if(!nRoutes){
                 for(var i = 1; i < 9; i++){
                     if(Routes[i].val()){
-                        nRoutes = i+1;
+                        nRoutes = i;
                     }
                 }
             }
             if (nRoutes < 10) {
-                var inputRoute = Routes[nRoutes];
+                var inputRoute = Routes[nRoutes+1];
                 inputRoute.prop('hidden', false);
                 nRoutes++;
             }
