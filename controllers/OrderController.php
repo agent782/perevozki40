@@ -483,7 +483,7 @@ class OrderController extends Controller
 
     }
 
-    public function actionCanceledByClient($id_order, $redirect = '/order/vehicle')
+    public function actionCanceledByClient($id_order, $id_vehicle = null, $redirect = '/order/client')
     {
         $order = Order::findOne($id_order);
         if (!$order) {
@@ -491,8 +491,40 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
 
-        $order->changeStatus($order::STATUS_CANCELED, $order->id_user);
+        $order->changeStatus($order::STATUS_CANCELED, $order->id_user, $id_vehicle);
         return $this->redirect($redirect);
+    }
+
+    public function actionFinishByVehicle($id_order, $redirect = '/order/vehicle'){
+        $modelOrder = self::findModel($id_order);
+
+        $modelOrder->datetime_finish = date('d.m.Y H:i', time());
+
+        $route = Route::findOne($modelOrder->id_route);
+        $realRoute = $route;
+        if(!$realRoute) $realRoute = new Route();
+        $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+        $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+        $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+//        $modelOrder->setScenarioForFinish();
+
+        if(!$modelOrder){
+            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            return $this->redirect($redirect);
+        }
+
+        return $this->render('/order/finish-by-vehicle',[
+            'modelOrder' => $modelOrder,
+            'realRoute' => $realRoute,
+            'BTypies' => $BTypies,
+            'LTypies' => $LTypies,
+            'VehicleAttributes' => $VehicleAttributes,
+            'TypiesPayment' => $TypiesPayment,
+            'companies' => $companies,
+            'redirect' => $redirect
+        ]);
     }
 
 }

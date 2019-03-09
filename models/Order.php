@@ -72,7 +72,8 @@ use app\components\widgets\ShowMessageWidget;
  * @property string $clientInfo
  * @property string $clientInfoWithoutPhone
  * @property integer $FLAG_SEND_EMAIL_STATUS_EXPIRED
- * @property User $user;
+ * @property User $user
+ * @property Profile $profile
  * @property Vehicle $vehicle
  * @property Route $route
  * @property string $paymentText
@@ -83,6 +84,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property Company $company
  * @property string $idsPriceZonesWithPriceAndShortInfo
  * @property string $idsPriceZones
+ * @property string $vehicleFioAndPhone
  *
  */
 class Order extends \yii\db\ActiveRecord
@@ -151,7 +153,8 @@ class Order extends \yii\db\ActiveRecord
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['paid_status', 'default', 'value' => self::PAID_NO],
-            [['id_vehicle', 'id_driver'], 'required', 'message' => 'Выберите один из вариантов']
+            [['id_vehicle', 'id_driver'], 'required', 'message' => 'Выберите один из вариантов'],
+            ['paid_status', 'default', 'value' => self::PAID_NO]
         ];
     }
 
@@ -352,6 +355,74 @@ class Order extends \yii\db\ActiveRecord
                 if ($priceZone->hasBodyType($body_type))
                     $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
 //                continue;
+            }
+        }
+        return $result;
+    }
+
+    public function getFinishPriceZone($distance){
+        $result = [];
+        $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type]);
+
+        switch ($this->id_vehicle_type) {
+            case Vehicle::TYPE_TRUCK:
+                $priceZones = $priceZones
+                    ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
+                    ->andFilterWhere(['>=', 'volume_max', $this->real_volume])
+                    ->andFilterWhere(['>=', 'length_max', $this->real_length])
+                    ->andFilterWhere(['longlength' => $this->real_longlength])->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])->all()
+                ;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $priceZones = $priceZones
+                    ->andFilterWhere(['>=', 'passengers', $this->real_passengers])
+                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+                    ->all()
+                ;
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($this->body_typies[0]){
+                    case Vehicle::BODY_manipulator:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'tonnage_spec_max', $this->real_tonnage_spec])
+                            ->andFilterWhere(['<=', 'length_spec_max', $this->real_length_spec])
+                            ->andFilterWhere(['<=', 'tonnage_max', $this->real_tonnage])
+                            ->andFilterWhere(['<=', 'length_max', $this->real_length])
+                        ;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
+                            ->andFilterWhere(['>=', 'volume_max', $this->real_volume])
+                        ;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['<=', 'tonnage_spec_min', $this->real_tonnage_spec])
+                            ->andFilterWhere(['<=', 'length_spec_min', $this->real_length_spec])
+                        ;
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'volume_spec', $this->real_volume_spec])
+                        ;
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'volume_spec', $this->real_volume_spec])
+                        ;
+                        break;
+                }
+                $priceZones = $priceZones
+                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+                    ->all()
+                ;
+                break;
+        }
+
+        foreach ($priceZones as $priceZone) {
+            if ($priceZone->hasBodyType($this->vehicle->bodyType->id)){
+                $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
             }
         }
         return $result;
@@ -572,8 +643,8 @@ class Order extends \yii\db\ActiveRecord
         $return = 'Тип ТС: ' . $this->vehicleType->type .'.<br> Тип(ы) кузова: ';
 
         $bTypies = ' (';
-        foreach ($this->bodyTypies as $bodyType) {
-            $bTypies .= $bodyType->body . ', ';
+        foreach ($this->body_typies as $bodyType) {
+            $bTypies .= BodyType::findOne($bodyType)->body . ', ';
         }
         $bTypies = substr($bTypies, 0, -2);
         $return .= $bTypies . '). <br>';
@@ -589,8 +660,8 @@ class Order extends \yii\db\ActiveRecord
                 $return .= ($this->volume)?$this->volume.' м3 ':'-- ';
                 $return .= ($this->longlength)?' Груз-длинномер.<br>':'<br>';
                 $lTypies = 'Погрузка/разгрузка: ';
-                foreach ($this->loadingTypies as $loadingType) {
-                    $lTypies .= $loadingType->type . ', ';
+                foreach ($this->loading_typies as $loadingType) {
+                    $lTypies .= LoadingType::findOne($loadingType)->type . ', ';
                 }
                 $lTypies = substr($lTypies, 0, -2) . '.';
                 $return .= $lTypies;
@@ -658,11 +729,22 @@ class Order extends \yii\db\ActiveRecord
         $return = '';
         $return .= $this->profile->fioFull
             . '<br>'
-            . 'Телефон: <a href="tel:+7'. $this->user->username .'">'. $this->user->username. '</a><br>'
+            . 'Телефон: <a href="tel:+7'. $this->user->username .'">'. $this->user->username. '</a>'
         ;
-        if($this->id_company) $return .= $this->company->name . '<br>';
+        if($this->profile->phone2) $return .= ' (доп. тел.: <a href="tel:+7'. $this->profile->phone2 .'">'. $this->profile->phone2. '</a>)';
+        if($this->id_company) $return .= '<br>' .$this->company->name . '<br>';
 
         return $return;
+    }
+
+    public function getVehicleFioAndPhone(){
+        $return = $this->vehicle->profile->fioFull . '<br>'
+            . 'Телефон: <a href="tel:+7'. $this->vehicle->profile->phone .'">'. $this->vehicle->profile->phone . ' </a>';
+            $return .= ($this->vehicle->profile->phone2)
+                ? '(доп. тел.: <a href="tel:+7'. $this->vehicle->profile->phone2 .'">'. $this->vehicle->profile->phone2 . ') </a>'
+                : ''
+            ;
+            return $return;
     }
 
     public function getClientInfoWithoutPhone(){
@@ -810,17 +892,14 @@ class Order extends \yii\db\ActiveRecord
                 $title_vehicle = 'Вы приняли заказ №'.$this->id.'.';
                 $message_vehicle = 'Вы приняли заказ №'
                     . $this->id
-                    . ' на ТС '
-                    .  $vehicle->brandAndNumber.' <br>'
-                    . 'Водитель: ' . $this->driver->fio
-                    . ' (' . $this->driver->passport->fullInfo . '). <br>'
+                    . $this->getFullInfoAboutVehicle()
+                    . 'Телефоны водителя в разделе Заказы на вкладке "В процессе...". <br><br>'
                     . $this->getFullNewInfo(false, true);
 
                 $message_client = 'ТС: ' . $vehicle->brandAndNumber . ' <br>'
-                    . 'Водитель: ' . $this->driver->fio
-                    . ' (' . $this->driver->passport->fullInfo . '). <br>'
-//                    . 'Тарифная зона № ' . $this->id_pricezone_for_vehicle . '. <br>'
-                    . $this->getFullNewInfo(true, true);
+                    . $this->getFullInfoAboutVehicle()
+                    . '<br> Телефоны водителя в разделе Заказы на вкладке "В процессе...". <br>'
+                    . $this->getFullNewInfo(true,true);
 
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
@@ -847,7 +926,36 @@ class Order extends \yii\db\ActiveRecord
                 if($this->status == self::STATUS_NEW || $this->status == self::STATUS_IN_PROCCESSING){
                     $title_client = 'Заказ №'.$this->id.' отменен.';
                     $message_client = 'Вы отменили Ваш заказ.  <br>'
-                        . $this->getFullNewInfo(true);;
+                        . $this->getFullNewInfo(true);
+                }
+                if(self::STATUS_VEHICLE_ASSIGNED){
+                    if(strtotime($this->valid_datetime) < time()) {
+
+                    } else {
+
+                    }
+                    $title_client = 'Заказ №'.$this->id.'. Вы отменили заказ.';
+                    $title_vehicle = 'Заказ №'.$this->id.' отменен клиентом.';
+                    $message_vehicle = 'Клиент отменил принятый Вами заказ на <br>'
+                        .'ТС: ' .$vehicle->brandAndNumber . '<br>'
+                        . $this->getFullNewInfo(false, true) . '<br>'
+                        .'. <br> При желании Вы можете оценить действие Клиента, что повлияет на его рейтинг клиента.'
+                    ;
+                    $message_client = 'Вы отменили Заказ. Пожалуйста, позвоните водителю и сообщите об отмене заказа <br>'
+                        . $this->vehicleFioAndPhone . '<br>'
+                        . $this->getFullNewInfo(true) . '<br>';
+                    $push_to_vehicle = true;
+                    $email_to_vehicle = true;
+
+                    $message_can_review_vehicle = true;
+                    $vehicle_id_to_review = $id_client;
+                    $vehicle_id_from_review = $vehicle->id_user;
+
+                    $this->id_vehicle = null;
+                    $this->id_driver = null;
+                    $this->id_pricezone_for_vehicle = null;
+
+                    break;
                 }
                 break;
             case self::STATUS_DISPUTE:
@@ -999,11 +1107,41 @@ class Order extends \yii\db\ActiveRecord
         } else {
             if($vehicle_user) $return .= 'Водитель: ' . $vehicle_user->getDriverFullInfo(true, true, true);
         }
-
-
         return $return;
     }
+     public function getArrayAttributesForSetFinishPricezone(){
+        $body_type = Vehicle::findOne($this->id_vehicle)->bodyType;
+        $res = [];
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK;
+                $res = ['tonnage', 'length', 'volume'];
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $res = ['passengers'];
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($body_type->id){
+                    case Vehicle::BODY_manipulator:
+                        $res = ['tonnage','length', 'width', 'tonnage_spec', 'length_spec'];
+                        break;
+                    case Vehicle::BODY_dump:
+                        $res = ['tonnage', 'volume'];
+                        break;
+                    case Vehicle::BODY_crane:
+                        $res = ['tonnage_spec', 'length_spec'];
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $res = ['volume_spec'];
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $res = ['volume_spec'];
+                        break;
+                }
+                break;
+        }
 
+        return $res;
+    }
 }
 
 

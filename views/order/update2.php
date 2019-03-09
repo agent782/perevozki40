@@ -11,7 +11,8 @@
     use yii\bootstrap\Html;
 /* @var $modelOrder \app\models\Order*/
     $this->title = 'Изменение заказа №' . $modelOrder->id;
-
+    var_dump($modelOrder->body_typies);
+    var_dump($modelOrder->loading_typies);
 ?>
 
 <div class="container">

@@ -82,6 +82,20 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Действия',
                 'format' => 'raw',
+                'value' => function($model){
+                    return
+                        Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Отменить заказ']), Url::to([
+                            '/order/canceled-by-client',
+                            'id_order' => $model->id,
+                            'id_vehicle' => $model->id_vehicle
+                        ]),
+                            ['data-confirm' => Yii::t('yii',
+                                'Заказ в процессе выполнения! 
+                                Пожалуйста, перед нажатием кнопки "ОК" позвоните водителю, принявшему Ваш заказ и предупредите об отмене.<br><br> Водитель: ' .
+                                $model->vehicleFioAndPhone)
+                                . '<br><br><i> Водитель имеет возможность оценить корректность Ваших действий, что может повлиять на Ваш рейтинг Клиента.</i>',
+                                'data-method' => 'post'])                    ;
+                }
 
             ],
         ]
