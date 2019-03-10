@@ -101,4 +101,21 @@ class functions
         }
 
     }
+    static public function getModelsNames(){
+        $names = scandir(Yii::getAlias('@app/models'));
+        $res = [];
+        foreach ($names as $name) {
+            if($name != '.' && $name != '..'){
+                $name = strstr($name, '.', true);
+                $res [] = $name;
+            }
+        }
+        return $res;
+    }
+    static public function getAttributesAndPublicAttributes($model){
+        $attributes = get_class_vars(get_class($model));
+        $attributes = array_merge($attributes, $model->getAttributes());
+        $attributes = array_keys($attributes);
+        return $attributes;
+    }
 }

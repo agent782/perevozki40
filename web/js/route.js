@@ -103,7 +103,7 @@ $(document).ready(function () {
             lenRoute = 0;
             nRoutes = 0;
             $('#len').text(lenRoute).trigger('change');
-            $('#lengthRoute').val(lenRoute);
+            $('#lengthRoute').val(lenRoute).trigger('change');
             // endLoading();
         });
 
@@ -119,10 +119,10 @@ $(document).ready(function () {
 
         function createRoute() {
 
-            startLoading();
             myMap.geoObjects.removeAll();
             lenRoute = 0;
             $('#len').text(lenRoute);
+            $('#lengthRoute').val(lenRoute).trigger('change');
             var adresses = [];
             adresses.push(rBase);
             $('#route').find('.points').each(function () {
@@ -135,7 +135,7 @@ $(document).ready(function () {
              * Тестовый массив с метками адресов
              */
             if (rStart.val() && rFinish.val()) {
-
+                startLoading();
                 var multiRouteModel = new ymaps.multiRouter.MultiRouteModel(adresses, {
                     //avoidTrafficJams: true,
                     results: 1
@@ -158,11 +158,11 @@ $(document).ready(function () {
                         // for (var i = 0, l = routes.length; i < l; i++) {
                         //     console.log("Длина маршрута " + (i + 1) + ": " + routes[i].properties.get("distance").text);
                         // }
-                        if(routes[0]) {
+                        if(routes[0] && !lenRoute) {
                             lenRoute = (parseFloat(routes[0].properties.get("distance").value) / 1000);
                             (lenRoute < 1) ? lenRoute = lenRoute.toFixed(1) : lenRoute = lenRoute.toFixed(0);
                             $('#len').text(lenRoute).trigger('change');
-                            $('#lengthRoute').val(lenRoute);
+                            $('#lengthRoute').val(lenRoute).trigger('change');
                         }
                         endLoading();
 
@@ -170,6 +170,7 @@ $(document).ready(function () {
                     .add("requestfail", function (event) {
                         console.log("Ошибка: " + event.get("error").message);
                     });
+
             }
 
         }
@@ -180,8 +181,6 @@ $(document).ready(function () {
 
         $('.points').keypress(function (event) {
             if (event.which === '13') {
-                $('#lengthRoute').val('0');
-                // $('#len').text(lenRoute).trigger('change');
                 event.preventDefault();
             }
         });

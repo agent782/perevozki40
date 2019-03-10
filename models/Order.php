@@ -47,6 +47,8 @@ use app\components\widgets\ShowMessageWidget;
  * @property double $real_length_spec
  * @property double $real_volume_spec
  * @property string $real_cargo
+ * @property float $real_h
+ * @property integer $real_km
  * @property integer $datetime_start
  * @property integer $datetime_finish
  * @property integer $datetime_access
@@ -85,6 +87,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property string $idsPriceZonesWithPriceAndShortInfo
  * @property string $idsPriceZones
  * @property string $vehicleFioAndPhone
+ * @property string $real_datetime_start
  *
  */
 class Order extends \yii\db\ActiveRecord
@@ -140,21 +143,22 @@ class Order extends \yii\db\ActiveRecord
             [['datetime_start', 'valid_datetime', 'type_payment'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
-            [['datetime_access','datetime_finish', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
+            [['datetime_access','datetime_finish', 'real_datetime_start', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
                 'id_pricezone_for_vehicle'],
                 'safe'
             ],
-            [['id',   'suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
+            [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
             [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real',
-                'id_payment', 'status', 'type_payment', 'passengers'], 'integer'],
+                'id_payment', 'status', 'type_payment', 'passengers', 'real_km'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
                 'volume_spec'], 'number'],
-            [['cargo'], 'string'],
+            [['cargo', 'comment_vehicle'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['paid_status', 'default', 'value' => self::PAID_NO],
             [['id_vehicle', 'id_driver'], 'required', 'message' => 'Выберите один из вариантов'],
-            ['paid_status', 'default', 'value' => self::PAID_NO]
+            ['paid_status', 'default', 'value' => self::PAID_NO],
+            ['real_h', 'default', 'value' => 0.5],
         ];
     }
 
@@ -234,7 +238,11 @@ class Order extends \yii\db\ActiveRecord
             'paymentText' => 'Тип оплаты',
             'priceZonesWithInfo' => 'Тарифы',
             'id_vehicle' => 'ТС',
-            'id_driver' => 'Водитель'
+            'id_driver' => 'Водитель',
+            'real_h' => 'Общее время потраченное на разгрузку, погрузку, ожидание (для заказов с пробегом более 120 км), ч. ',
+            'real_km' => 'Фактический пробег (км.)',
+            'comment_vehicle' => 'Комментарий водителя',
+            'real_datetime_start' => 'Фактическое время выезда'
         ];
     }
 

@@ -26,7 +26,7 @@ class ShowMessageWidget extends Widget
             'toggleButton' => $this->ToggleButton,
             'header' => $this->header,
             'closeButton' => ['hidden' => false],
-            'bodyOptions' => ['class' => 'container']
+//            'bodyOptions' => ['class' => 'container'],
         ]);
 
         echo $this->helpMessage;

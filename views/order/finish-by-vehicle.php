@@ -33,7 +33,7 @@ $this->registerJsFile('/js/order.js');
     \yii\widgets\Pjax::begin(['id' => 'update']);
     $form = ActiveForm::begin([
         'enableAjaxValidation' => true,
-        'validationUrl' => '/order/validate-order'
+        'validationUrl' => '/order/validate-order',
     ]);
     ?>
 
@@ -42,7 +42,7 @@ $this->registerJsFile('/js/order.js');
             $modelOrder::PAID_YES => 'Да',
             $modelOrder::PAID_NO => 'Нет'
         ])->label('Заказчик оплатил заказ?');?>
-        <?= $form->field($modelOrder, 'datetime_start',[
+        <?= $form->field($modelOrder, 'real_datetime_start',[
             'enableClientValidation' => true
         ])->widget(DateTimePicker::className(),[
 //                'name' => 'dp_1',
@@ -97,13 +97,13 @@ $this->registerJsFile('/js/order.js');
         <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
             echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
-                    'helpMessage' => '',
+                    'helpMessage' => \app\models\Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,
                     'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                 ])
+//                ,['encode' => true]
             );
         }
         ?>
-        <?= $form->field($realRoute, 'distance');?>
         <?php
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
@@ -115,6 +115,12 @@ $this->registerJsFile('/js/order.js');
         }
         ?>
 
+        <?= $form->field($modelOrder, 'real_km')
+            ->input('tel', ['id' => 'real_distance'])
+            ->label('Реальный пробег')
+        ;?>
+        <?= $form->field($modelOrder, 'real_h')->input('tel')?>
+        <?= $form->field($modelOrder, 'comment_vehicle')->textarea();?>
     </div>
     <div class="col-lg-8">
         <?= $this->render('/route/_form', ['route' => $realRoute, 'form' => $form])?>
@@ -146,6 +152,10 @@ $this->registerJsFile('/js/order.js');
             if (event.which == '13') {
                 event.preventDefault();
             }
+        });
+        $('#lengthRoute').on('change', function () {
+            $('#real_distance').val($(this).val());
+//            alert($('#lengthRoute').val());
         })
     });
 </script>
