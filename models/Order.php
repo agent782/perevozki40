@@ -57,6 +57,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property integer $update_at
  * @property integer $id_route
  * @property integer $id_route_real
+ * @property integer $id_pricezone_for_vehicle
  * @property integer $id_price_zone_real
  * @property integer $id_user
  * @property integer $id_company
@@ -80,7 +81,6 @@ use app\components\widgets\ShowMessageWidget;
  * @property Route $route
  * @property string $paymentText
  * @property string $priceZonesWithInfo
- * @property integer $id_pricezone_for_vehicle
  * @property Driver $driver
  * @property string $fullNewInfo
  * @property Company $company
@@ -144,12 +144,14 @@ class Order extends \yii\db\ActiveRecord
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
             [['datetime_access','datetime_finish', 'real_datetime_start', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
-                'id_pricezone_for_vehicle'],
+                'id_price_zone_for_vehicle'],
                 'safe'
             ],
+            [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
+                'real_length_spec', 'real_volume_spec'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
             [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real',
-                'id_payment', 'status', 'type_payment', 'passengers', 'real_km'], 'integer'],
+                'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
                 'volume_spec'], 'number'],
             [['cargo', 'comment_vehicle'], 'string'],
@@ -368,7 +370,7 @@ class Order extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getFinishPriceZone($distance){
+    public function getFinishPriceZone(){
         $result = [];
         $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type]);
 
@@ -430,10 +432,28 @@ class Order extends \yii\db\ActiveRecord
 
         foreach ($priceZones as $priceZone) {
             if ($priceZone->hasBodyType($this->vehicle->bodyType->id)){
-                $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
+                $result[] = $priceZone;
             }
         }
-        return $result;
+//        return $result;
+        $pricezone_for_vehicle = PriceZone::findOne($this->id_pricezone_for_vehicle);
+        if(!$result) return $pricezone_for_vehicle->id;
+        $real_pricezone = $result[0];
+        $cost_km = $real_pricezone->r_km;
+        $cost_h = $real_pricezone->r_h;
+        foreach ($result as $res){
+            if(($cost_km > $res->r_km || $cost_h > $res->r_h)){
+                $cost_km = $res->r_km;
+                $cost_h = $res->r_h;
+                $real_pricezone = $res;
+            }
+        }
+//        return $real_pricezone->id;
+        if($real_pricezone->r_km < $pricezone_for_vehicle->r_km || $real_pricezone->r_h < $pricezone_for_vehicle->r_h){
+            $real_pricezone = $pricezone_for_vehicle;
+        }
+
+        return $real_pricezone->id;
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -1122,27 +1142,27 @@ class Order extends \yii\db\ActiveRecord
         $res = [];
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK;
-                $res = ['tonnage', 'length', 'volume'];
+                $res = ['real_tonnage', 'real_length', 'real_volume'];
                 break;
             case Vehicle::TYPE_PASSENGER:
-                $res = ['passengers'];
+                $res = ['real_passengers'];
                 break;
             case Vehicle::TYPE_SPEC:
                 switch ($body_type->id){
                     case Vehicle::BODY_manipulator:
-                        $res = ['tonnage','length', 'width', 'tonnage_spec', 'length_spec'];
+                        $res = ['real_tonnage','real_length', 'real_tonnage_spec', 'length_spec'];
                         break;
                     case Vehicle::BODY_dump:
-                        $res = ['tonnage', 'volume'];
+                        $res = ['real_tonnage', 'real_volume'];
                         break;
                     case Vehicle::BODY_crane:
-                        $res = ['tonnage_spec', 'length_spec'];
+                        $res = ['real_tonnage_spec', 'real_length_spec'];
                         break;
                     case Vehicle::BODY_excavator:
-                        $res = ['volume_spec'];
+                        $res = ['real_volume_spec'];
                         break;
                     case Vehicle::BODY_excavator_loader:
-                        $res = ['volume_spec'];
+                        $res = ['real_volume_spec'];
                         break;
                 }
                 break;
@@ -1150,6 +1170,43 @@ class Order extends \yii\db\ActiveRecord
 
         return $res;
     }
+
+    public function copyValueToRealValue(){
+        if(!$this) return false;
+        $body_type = $this->vehicle->bodyType->id;
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK:
+                $this->real_tonnage = $this->tonnage;
+                $this->real_length = $this->length;
+                $this->real_volume = $this->volume;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $this->real_passengers = $this->passengers;
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($body_type){
+                    case Vehicle::BODY_manipulator:
+                        $this->real_tonnage = $this->tonnage;
+                        $this->real_length = $this->length;
+                        $this->real_tonnage_spec = $this->tonnage_spec;
+                        $this->real_length_spec = $this->length_spec;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $this->real_tonnage = $this->tonnage;
+                        $this->real_volume = $this->volume;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $this->real_tonnage_spec = $this->tonnage_spec;
+                        $this->real_length_spec = $this->length_spec;
+                        break;
+                    case Vehicle::BODY_excavator: case Vehicle::BODY_excavator_loader:
+                        $this->real_volume_spec = $this->real_volume_spec;
+                        break;
+                }
+                break;
+        }
+    }
+
 }
 
 

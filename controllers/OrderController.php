@@ -496,24 +496,82 @@ class OrderController extends Controller
     }
 
     public function actionFinishByVehicle($id_order, $redirect = '/order/vehicle'){
+        $sesssion = Yii::$app->session;
         $modelOrder = self::findModel($id_order);
-
-        $modelOrder->datetime_finish = date('d.m.Y H:i', time());
 
         $route = Route::findOne($modelOrder->id_route);
         $realRoute = $route;
         if(!$realRoute) $realRoute = new Route();
-        $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
-        $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
-        $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
-        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
-        $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
 //        $modelOrder->setScenarioForFinish();
 
         if(!$modelOrder){
             functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
             return $this->redirect($redirect);
         }
+
+
+        $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+        $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+        $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+
+
+        switch (Yii::$app->request->post('button')){
+            case 'next':
+
+                if($modelOrder->load(Yii::$app->request->post()) && $realRoute->load(Yii::$app->request->post())) {
+//                    var_dump($modelOrder->getFinishPriceZone());
+//                    var_dump(ArrayHelper::getColumn($modelOrder->getFinishPriceZone(), 'id'));
+//                    return ;
+                    $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
+
+                    if($route == $realRoute){
+                        $modelOrder->id_route_real = $route->id;
+                    } else{
+                        $modelOrder->id_route_real = $realRoute->id;
+                    }
+
+                    return $this->render('/order/finish-by-vehicle2', [
+                        'modelOrder' => $modelOrder,
+                        'realRoute' => $realRoute,
+                        'redirect' => $redirect
+                    ]);
+                }
+                break;
+            case 'back':
+                $modelOrder = $sesssion->get('modelOrder');
+                $realRoute = $sesssion->get('realRoute');
+
+                return $this->render('/order/finish-by-vehicle',[
+                    'modelOrder' => $modelOrder,
+                    'realRoute' => $realRoute,
+                    'BTypies' => $BTypies,
+                    'LTypies' => $LTypies,
+                    'VehicleAttributes' => $VehicleAttributes,
+                    'TypiesPayment' => $TypiesPayment,
+                    'companies' => $companies,
+                    'redirect' => $redirect
+                ]);
+                break;
+            case 'finish':
+                if($modelOrder->load(Yii::$app->request->post()) && $realRoute->load(Yii::$app->request->post())){
+
+                    if($modelOrder->save()){
+                        functions::setFlashSuccess('Заказ №' . $modelOrder->id . ' завепшен.');
+                    } else {
+                        functions::setFlashWarning('Ошибка на сервере');
+                    }
+                    $sesssion->remove('modelOrder');
+                    $sesssion->remove('realRoute');
+                    return $this->redirect($redirect);
+                }
+                break;
+        }
+        $modelOrder->copyValueToRealValue();
+        $modelOrder->real_datetime_start = $modelOrder->datetime_start;
+        $modelOrder->datetime_finish = date('d.m.Y H:i', time());
+
 
         return $this->render('/order/finish-by-vehicle',[
             'modelOrder' => $modelOrder,

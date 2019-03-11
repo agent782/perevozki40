@@ -52,6 +52,7 @@ use yii\helpers\Url;
  * @property RegLicense $regLicense
  * @property string $brandAndNumber
  * @property string $fullInfo
+ * @property PriceZone[] $priceZonesSelect
 
 
 
@@ -579,10 +580,25 @@ class Vehicle extends \yii\db\ActiveRecord
 
     public function getMinRate(Order $Order){
         if(!$this->canOrder($Order)) return false;
-        $cost = 0;
-        $id_rate = null;
-        foreach ($Order->priceZones as $priceZone) {
-            if($cost < $priceZone->r_km) $id_rate = $priceZone->id;
+        $pricezonesForVehicle = [];
+        foreach ($Order->priceZones as $OrderPriceZone) {
+            foreach ($this->priceZonesSelect as $priceZone){
+                if($OrderPriceZone->id == $priceZone->id){
+                    $pricezonesForVehicle[]=$OrderPriceZone;
+                }
+            }
+        }
+        if(!$pricezonesForVehicle) return false;
+        $tmpPriceZone = $pricezonesForVehicle[0];
+        $cost_r = $tmpPriceZone->r_km;
+        $cost_h = $tmpPriceZone->r_h;
+        $id_rate = $tmpPriceZone->id;
+        foreach ($pricezonesForVehicle as $priceZone) {
+            if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
+                $cost_r = $priceZone->r_km;
+                $cost_h = $priceZone->r_h;
+                $id_rate = $priceZone->id;
+            }
         }
         return ($id_rate) ? $id_rate : false;
     }

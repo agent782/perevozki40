@@ -335,8 +335,7 @@ class PriceZone extends \yii\db\ActiveRecord
     public function getTextWithShowMessageButton($distance = null){
         $return = '';
 //        $return .= 'Тариф №' . $this->id;
-        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';
-        $return .= '<br>'
+        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. '
             . '<p style="font-size: x-small; font-style: italic">'
             . '(Тариф №' . $this->id . '. '
             . $this->r_km . ' р/км '

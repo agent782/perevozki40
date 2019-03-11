@@ -20,7 +20,7 @@ $body_typies= \app\models\BodyType::find()->where(['id_type_vehicle' => $model->
     <?= $form->field($model, 'veh_type')->textInput() ?>
 
 <!--    --><?//= $form->field($model, 'body_types')->textInput(['maxlength' => true]) ?>
-    <?= ($model->veh_type != Vehicle::TYPE_SPEC)? $form->field($model, 'body_types[]')->checkboxList(
+    <?= ($model->veh_type != Vehicle::TYPE_SPEC)? $form->field($model, 'body_types')->checkboxList(
         ArrayHelper::map(
         $body_typies, 'id', 'body')):
     $form->field($model, 'body_types')->radioList(

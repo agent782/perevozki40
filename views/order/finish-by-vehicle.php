@@ -38,10 +38,7 @@ $this->registerJsFile('/js/order.js');
     ?>
 
     <div class="col-lg-4">
-        <?= $form->field($modelOrder, 'paid_status')->radioList([
-            $modelOrder::PAID_YES => 'Да',
-            $modelOrder::PAID_NO => 'Нет'
-        ])->label('Заказчик оплатил заказ?');?>
+
         <?= $form->field($modelOrder, 'real_datetime_start',[
             'enableClientValidation' => true
         ])->widget(DateTimePicker::className(),[
@@ -133,7 +130,7 @@ $this->registerJsFile('/js/order.js');
             [
                 'class' => 'btn btn-success',
                 'name' => 'button',
-                'value' => 'update'
+                'value' => 'next'
             ])?>
     </div>
 
