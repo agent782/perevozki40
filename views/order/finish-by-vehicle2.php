@@ -25,7 +25,7 @@ $this->title = 'Фактические данные по заказу №' . $mo
 //var_dump($realRoute);
 ?>
 
-<div class="order-update container">
+<div class="order-finish container">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <br>
@@ -33,35 +33,34 @@ $this->title = 'Фактические данные по заказу №' . $mo
     \yii\widgets\Pjax::begin(['id' => 'update']);
     $form = ActiveForm::begin()
     ?>
-    <?= $modelOrder->real_tonnage;?>
     <div class="col-lg-4">
-        <?= $form->field($modelOrder, 'paid_status')->radioList([
-            $modelOrder::PAID_YES => 'Нет',
-            $modelOrder::PAID_NO => 'Да'
-        ])->label('Заказчик оплатил заказ?');?>
+        <strong>Тарифная зона после изменения данных по заказу: </strong>
 
-        <p>Тарифная зона при принятии заказа: </p>
-        <p>
+        <?= $finishCostText?>
+        <?=  $form->field($modelOrder, 'type_payment')
+                ->radioList($paymrnt_typies);
+        ?>
+       <br><br>
+        <i>Тарифная зона при принятии заказа: </i>
+        <i>
             <?=
-                PriceZone::findOne($modelOrder->id_pricezone_for_vehicle)
-                    ->getTextWithShowMessageButton($modelOrder->route->distance);
+            PriceZone::findOne($modelOrder->id_pricezone_for_vehicle)
+                ->getTextWithShowMessageButton($modelOrder->route->distance);
             ?>
-        </p>
-        <?php if($modelOrder->id_pricezone_for_vehicle != $modelOrder->id_price_zone_real
-            || $modelOrder->id_route != $modelOrder->id_route_real):?>
-        <p>Тарифная зона после изменения данных по заказу: </p>
-        <p>
-            <?=
-            PriceZone::findOne($modelOrder->id_price_zone_real)
-                ->getTextWithShowMessageButton($modelOrder->realRoute->distance);
-            ?>
-        </p>
-        <?php endif;?>
+        </i>
+        <br><br>
+        <?= $form->field($modelOrder, 'comment_vehicle')->textarea();?>
 
     </div>
-    <div class="col-lg-8">
-
+    <div class="col-lg-4">
+        <strong>Завершенный заказ.<br><br>
+        <?= $modelOrder->getFullFinishInfo(true, $realRoute,true, false)?></strong>
     </div>
+    <div class="col-lg-4">
+        <i>Первоначальный заказ.<br><br>
+        <?= $modelOrder->getFullNewInfo(true,true, false)?></i>
+    </div>
+
     <div class="col-lg-11">
         <?=
         Html::submitButton('Назад', [
@@ -70,7 +69,7 @@ $this->title = 'Фактические данные по заказу №' . $mo
             'value' => 'next'
         ])
         ?>
-        <?= Html::submitButton('Далее',
+        <?= Html::submitButton('Подтвердить',
             [
                 'class' => 'btn btn-success',
                 'name' => 'button',

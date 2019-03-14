@@ -85,6 +85,10 @@ class Vehicle extends \yii\db\ActiveRecord
     const BODY_bus = 17;
     const BODY_side_open = 18;
 
+    const LOADING_TYPE_BEHIND = 2;
+    const LOADING_TYPE_OVERHAND = 3;
+    const LOADING_TYPE_SIDEWAYS = 4;
+
     const TYPE_TRUCK = 1;
     const TYPE_PASSENGER = 2;
     const TYPE_SPEC = 3;
@@ -628,7 +632,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
                 break;
             case self::TYPE_SPEC:
-                switch ($this->bodyType[0]->id){
+                switch ($this->body_type){
                     case self::BODY_manipulator:
                         $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
                         $return .= 'Размеры (Д*Ш): ' . $this->length . ' * ' . $this->width  .'м. ';
@@ -653,5 +657,12 @@ class Vehicle extends \yii\db\ActiveRecord
                 break;
         }
         return $return;
+    }
+
+    public function hasLoadingType($id_lType) : bool {
+        foreach ($this->loadingtypes as $loadingType){
+            if($loadingType->id == $id_lType) return true;
+        }
+        return false;
     }
 }

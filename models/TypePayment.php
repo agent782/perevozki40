@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $type
+ * @property string $description
  */
 class TypePayment extends \yii\db\ActiveRecord
 {
@@ -28,6 +29,7 @@ class TypePayment extends \yii\db\ActiveRecord
         return [
             [['type'], 'required'],
             [['type'], 'string', 'max' => 255],
+            ['description', 'string']
         ];
     }
 

@@ -7,6 +7,7 @@ use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
 use app\components\widgets\ShowMessageWidget;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "price_zone".
@@ -230,17 +231,21 @@ class PriceZone extends \yii\db\ActiveRecord
 
         }
     }
+
+    public function getBodyTypies(){
+        return BodyType::find()->where(['in', 'id', $this->body_types])->all();
+    }
+
     public function validateSPEC($attribute){
 
     }
 
     public function getBodiesColumn(){
         $stringBodies = '<ul>';
-//        $body_types = [];
-//        $body_types = unserialize($this->body_types);
-        foreach ($this->body_types as $bType){
-            $stringBodies .= '<li>'.BodyType::find()->where(['id' => $bType])->select(['body'])->one()->body . '</li>';
+        foreach ($this->bodyTypies as $bType){
+            $stringBodies .= '<li>' . $bType->body . '</li>';
         }
+
         $stringBodies .= '</ul>';
         return $stringBodies;
     }
@@ -263,6 +268,7 @@ class PriceZone extends \yii\db\ActiveRecord
             . '<br>'
             . '<p>Это основной тариф для: </p>'
             ;
+
 
         switch ($this->veh_type){
             case Vehicle::TYPE_TRUCK:
@@ -332,11 +338,30 @@ class PriceZone extends \yii\db\ActiveRecord
         return 'Невозможно расчитать стоимость. Неверно задан маршрут!';
     }
 
-    public function getTextWithShowMessageButton($distance = null){
+    public function getTextWithShowMessageButton($distance = null, $html = true){
+        $return = '';
+        $return .= 'Тариф №' . $this->id . '. ';
+        if($distance)$return .= '(&asymp;' . $this->CostCalculation($distance) . 'р.*) ';
+        $return .= '<i style="font-size: x-small; font-style: italic">'
+            . $this->r_km . ' р/км '
+            . ', '
+            . $this->r_h . ' р/час...)';
+        if($html){
+            $return .= ShowMessageWidget::widget([
+                    'helpMessage' => $this->printHtml(),
+                    'header' => 'Тарифная зона ' . $this->id,
+                    'ToggleButton' => ['label' => Html::icon('info-sign'), 'class' => 'btn']
+                ]) . '</i>';
+        }
+
+        return $return;
+    }
+
+    public function getLabelWithShowMessageButton($distance = null){
         $return = '';
 //        $return .= 'Тариф №' . $this->id;
-        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. '
-            . '<p style="font-size: x-small; font-style: italic">'
+        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р.* '
+            . '<i style="font-size: x-small; font-style: italic">'
             . '(Тариф №' . $this->id . '. '
             . $this->r_km . ' р/км '
             . ', '
@@ -344,12 +369,11 @@ class PriceZone extends \yii\db\ActiveRecord
         $return .= ShowMessageWidget::widget([
                 'helpMessage' => $this->printHtml(),
                 'header' => 'Тарифная зона ' . $this->id,
-                'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn']
-            ]) . '</p>';
+                'ToggleButton' => ['label' => Html::icon('info-sign'), 'class' => 'btn']
+            ]) . '</i>';
 
         return $return;
     }
-
     public function getPriceAndShortInfo($distance = null){
         $return = '';
         if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';

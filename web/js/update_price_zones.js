@@ -35,12 +35,13 @@
             },
             dataType:'json',
             success:function (data) {
-                // alert();
+                // alert(data);
 //                data = (data);
                 $('#PriceZones').empty();
                 // alert(data);
                 for(var i in data){
-                   // alert(data[i]);
+                    var n = i;
+                    n++;
                     var res = '<label>';
                     res += '<input type="checkbox" name="Vehicle[Price_zones][]"';
 //                    res += ' checked';
@@ -54,30 +55,31 @@
                     res += ', '
                     res += data[i].r_h + ' р/час'
                     res += ' ...'
-                    res += '<button class="btn" type="button" data-toggle="modal" data-target="#w' + data[i].id + '"><img src="/img/icons/help-25.png"></button>'
+                    res += '<button class="btn" type="button" data-toggle="modal" data-target="#p' + n + '"><img src="/img/icons/help-25.png"></button>'
                     res += '</p>'
-                    res += '<div tabindex="-1" class="fade modal" id="w' + data[i].id + '" role="dialog">'
+                    res += '<div tabindex="-1" class="fade modal" id="p' + n + '" role="dialog" style="display: none;">'
                     res += '<div class="modal-dialog ">'
                     res += '<div class="modal-content">'
                     res += '<div class="modal-header">'
-                    res += '<button class="close" aria-hidden="false" type="button" data-dismiss="modal">×</button>'
+                    res += '<button class="close" aria-hidden="true" type="button" data-dismiss="modal">×</button>'
                     res +='Информация'
                     res +='</div>'
                     res +='<div class="modal-body">'
-                    res +='<p>'
                     res += data[i].helpMes
-                    res +='</p>'
-                    res +='</div> </div> </div> </div>'
+
                     ;
                     $('#PriceZones').append(res);
+                    endLoading();
                 }
 
             },
             error:function () {
                 alert('ERROR');
+                endLoading();
             },
+
         });
-        endLoading();
+
 
     }
 

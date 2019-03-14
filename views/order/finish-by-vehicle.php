@@ -25,9 +25,16 @@ $this->registerJsFile('/js/order.js');
 
 ?>
 
-<div class="order-update container">
+<div class="order-finish container">
 
     <h3><?= Html::encode($this->title) ?></h3>
+    <strong>
+        Перед завершением заказа согласуйте результат с Клиентом по телефону во избежании недопонимания с его стороны,
+        что может привести к задержке оплаты заказа, понижению вашего рейтинга и негативному влиянию на имидж нашего сервиса!
+        Аккуратно заполняйте результаты поездки и проверяйте перед подтверждением.
+        Обращаем внимание, что в результате Тариф не может измениться в меньшую сторону по сравнению с установленным при принятии заказа!
+        Если тариф изменится в большую сторону, поясните коротко в комментариях Клиенту из-за чего...
+    </strong>
     <br>
     <?php
     \yii\widgets\Pjax::begin(['id' => 'update']);
@@ -36,7 +43,10 @@ $this->registerJsFile('/js/order.js');
         'validationUrl' => '/order/validate-order',
     ]);
     ?>
-
+    <div class="col-lg-8">
+        <?= $this->render('/route/_form', ['route' => $realRoute, 'form' => $form])?>
+    </div>
+<br><br>
     <div class="col-lg-4">
 
         <?= $form->field($modelOrder, 'real_datetime_start',[
@@ -80,17 +90,6 @@ $this->registerJsFile('/js/order.js');
             ])
         ?>
 
-        <?php
-        if($LTypies){
-            echo $form->field($modelOrder, 'loading_typies')->checkboxList(ArrayHelper::map($LTypies, 'id', 'type'),
-                [
-                    'id' => 'chkLoadingTypies',
-                ])->label('Необходимый тип погрузки/выгрузки.')
-//                ->hint('Выбирайте дополнительные типы погрузки только при необходимости!')
-            ;
-        }
-        ?>
-
         <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
             echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
@@ -116,12 +115,18 @@ $this->registerJsFile('/js/order.js');
             ->input('tel', ['id' => 'real_distance'])
             ->label('Реальный пробег')
         ;?>
-        <?= $form->field($modelOrder, 'real_h')->input('tel')?>
-        <?= $form->field($modelOrder, 'comment_vehicle')->textarea();?>
+        <div id="real_h_loading">
+            <?= $form->field($modelOrder, 'real_h_loading')->input('tel')?>
+        </div>
+        <?php
+            if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND || Vehicle::LOADING_TYPE_SIDEWAYS)){
+                echo $form->field($modelOrder, 'real_remove_awning')->input('tel');
+            }
+        ?>
+        <?= $form->field($modelOrder,'additional_cost')->input('tel')
+        ->hint('Обязательно распишите в комментариях на след. странице! Потребуются подтверждающие чеки.')?>
     </div>
-    <div class="col-lg-8">
-        <?= $this->render('/route/_form', ['route' => $realRoute, 'form' => $form])?>
-    </div>
+<br><br>
     <div class="col-lg-11">
         <?=
         Html::a('Отмена', $redirect, ['class' => 'btn btn-warning'])
@@ -133,7 +138,6 @@ $this->registerJsFile('/js/order.js');
                 'value' => 'next'
             ])?>
     </div>
-
 
     <?php
     ActiveForm::end();
@@ -150,9 +154,18 @@ $this->registerJsFile('/js/order.js');
                 event.preventDefault();
             }
         });
+
         $('#lengthRoute').on('change', function () {
-            $('#real_distance').val($(this).val());
-//            alert($('#lengthRoute').val());
+            $('#real_distance').val($(this).val()).trigger('change');
+        });
+
+        $('#real_distance').on('change', function () {
+            if($(this).val()>=120){
+                $('#real_h_loading').show();
+            } else {
+                $('#order-real_h_loading').val('');
+                $('#real_h_loading').hide();
+            }
         })
     });
 </script>
