@@ -1392,8 +1392,6 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
     }
-<<<<<<< HEAD
-=======
 
     public function CalculateAndPrintFinishCost(bool $html = true, bool $forVehicle = false) : array {
         $distance = $this->real_km;
@@ -1502,7 +1500,6 @@ class Order extends \yii\db\ActiveRecord
                 : $this->cost;
         }
     }
->>>>>>> dc32e696e63e582a70ccbadbf54c5c68c8a98a5f
 }
 
 
