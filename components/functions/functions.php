@@ -101,4 +101,26 @@ class functions
         }
 
     }
+    static public function getModelsNames(){
+        $names = scandir(Yii::getAlias('@app/models'));
+        $res = [];
+        foreach ($names as $name) {
+            if($name != '.' && $name != '..'){
+                $name = strstr($name, '.', true);
+                $res [] = $name;
+            }
+        }
+        return $res;
+    }
+    static public function getAttributesAndPublicAttributes($model){
+        $attributes = get_class_vars(get_class($model));
+        $attributes = array_merge($attributes, $model->getAttributes());
+        $attributes = array_keys($attributes);
+        return $attributes;
+    }
+
+    static public function getHtmlLinkToPhone(string $phone, $html =true){
+        if(!$html) return $phone;
+        return 'Телефон: <a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
+    }
 }

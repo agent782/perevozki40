@@ -40,7 +40,9 @@
 <br>
 <?= Yii::getAlias('@app')?>
 <br>
-<?= $modelUser->id . " - " . key(Yii::$app->authManager->getRolesByUser($modelUser->id))?>
+<?= $modelUser->id;?>
+<br>
+<?= Yii::$app->user->can('user') . ' '  .key(Yii::$app->authManager->getRolesByUser($modelUser->id))?>
 <!--<?//= $modelUser->profile->getRolesToString()?>-->
     <br>
 <?= $modelUser->username?>

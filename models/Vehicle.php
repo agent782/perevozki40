@@ -39,9 +39,9 @@ use yii\helpers\Url;
  * @property string $bodyTypeText
  * @property float $description
  * @property float $photo
- * @property array $loadingtypes
+ * @property LoadingType[] $loadingtypes
  * @property array $loadingtypesText
- * @property array $bodyType
+ * @property BodyType[] $bodyType
  * @property string $brand
  * @property string $longlengthIcon
  * @property string $photoHtml
@@ -51,6 +51,8 @@ use yii\helpers\Url;
  * @property Profile $profile
  * @property RegLicense $regLicense
  * @property string $brandAndNumber
+ * @property string $fullInfo
+ * @property PriceZone[] $priceZonesSelect
 
 
 
@@ -82,6 +84,10 @@ class Vehicle extends \yii\db\ActiveRecord
     const BODY_pass_minibus = 16;
     const BODY_bus = 17;
     const BODY_side_open = 18;
+
+    const LOADING_TYPE_BEHIND = 2;
+    const LOADING_TYPE_OVERHAND = 3;
+    const LOADING_TYPE_SIDEWAYS = 4;
 
     const TYPE_TRUCK = 1;
     const TYPE_PASSENGER = 2;
@@ -457,6 +463,24 @@ class Vehicle extends \yii\db\ActiveRecord
         $return = substr($return, 0, -2);
         return $return;
     }
+    public function getOrders(){
+        return $this->hasMany(Order::class, ['id_vehicle'=>'id']);
+    }
+public function  hasOrder($statuses_orders) : bool{
+        $orders = $this->orders;
+        if(!$statuses_orders || !$orders) return false;
+
+        foreach ($orders as $order){
+            if(!is_array($statuses_orders)){
+                if($order->status == $statuses_orders) return true;
+            } else {
+                foreach ($statuses_orders as $statuse_order){
+                    if($order->status == $statuse_order) return true;
+                }
+            }
+        }
+        return false;
+    }
 // Массив атрибутов для разных типов транспота и типов кузовов
     static public function getArrayAttributes($id_vehicle_type, $TYPE_BODY){
         $res = [];
@@ -578,15 +602,85 @@ class Vehicle extends \yii\db\ActiveRecord
 
     public function getMinRate(Order $Order){
         if(!$this->canOrder($Order)) return false;
-        $cost = 0;
-        $id_rate = null;
-        foreach ($Order->priceZones as $priceZone) {
-            if($cost < $priceZone->r_km) $id_rate = $priceZone->id;
+        $pricezonesForVehicle = [];
+        foreach ($Order->priceZones as $OrderPriceZone) {
+            foreach ($this->priceZonesSelect as $priceZone){
+                if($OrderPriceZone->id == $priceZone->id){
+                    $pricezonesForVehicle[]=$OrderPriceZone;
+                }
+            }
+        }
+        if(!$pricezonesForVehicle) return false;
+        $tmpPriceZone = $pricezonesForVehicle[0];
+        $cost_r = $tmpPriceZone->r_km;
+        $cost_h = $tmpPriceZone->r_h;
+        $id_rate = $tmpPriceZone->id;
+        foreach ($pricezonesForVehicle as $priceZone) {
+            if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
+                $cost_r = $priceZone->r_km;
+                $cost_h = $priceZone->r_h;
+                $id_rate = $priceZone->id;
+            }
         }
         return ($id_rate) ? $id_rate : false;
     }
 
     public function getBrandAndNumber(){
         return $this->brand . ' ' . $this->regLicense->reg_number;
+    }
+
+    public function getFullInfo(){
+        $return = '<b>'.$this->brandAndNumber . '</b><br>';
+        $return .= 'Тип кузова: ' . $this->bodyTypeText . '. ';
+
+        switch ($this->id_vehicle_type){
+            case self::TYPE_TRUCK;
+                $return .= 'Тип погрузки/выгрузки: ' . $this->loadingtypesText . '. ';
+                $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                $return .= 'Размеры (Д*Ш*В): ' . $this->length . ' * ' . $this->width . ' * ' . $this->height  .'м. ';
+                $return .= 'Объем: ' . $this->volume . 'м3. ';
+                $return .= 'Евро-поддоны(1.2*0.8м): ' . $this->ep . 'шт, ';
+                $return .= 'поддоны(1.2*1м): ' . $this->rp . 'шт, ';
+                $return .= 'поддоны(1.2*1.2м): ' . $this->lp . 'шт. ';
+                $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
+                $return .= 'Груз-длинномер: ' . $this->longlengthIcon . '. <br>';
+                break;
+            case self::TYPE_PASSENGER:
+                $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
+                $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                break;
+            case self::TYPE_SPEC:
+                switch ($this->body_type){
+                    case self::BODY_manipulator:
+                        $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                        $return .= 'Размеры (Д*Ш): ' . $this->length . ' * ' . $this->width  .'м. ';
+                        $return .= 'Грузоподъемность механизма (стрелы): ' . $this->tonnage_spec . 'т. ';
+                        $return .= 'Длина механизма (стрелы): ' . $this->length_spec . 'м. ';
+                        break;
+                    case self::BODY_dump:
+                        $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
+                        $return .= 'Объем: ' . $this->volume . 'м3. ';
+                        break;
+                    case self::BODY_crane:
+                        $return .= 'Грузоподъемность механизма (стрелы): ' . $this->tonnage_spec . 'т. ';
+                        $return .= 'Длина механизма (стрелы): ' . $this->length_spec . 'м. ';
+                        break;
+                    case self::BODY_excavator:
+                        $return .= 'Объем механизма (ковша): ' . $this->volume_spec . 'м3. ';
+                        break;
+                    case self::BODY_excavator_loader:
+                        $return .= 'Объем механизма (ковша): ' . $this->volume_spec . 'м3. ';
+                        break;
+                }
+                break;
+        }
+        return $return;
+    }
+
+    public function hasLoadingType($id_lType) : bool {
+        foreach ($this->loadingtypes as $loadingType){
+            if($loadingType->id == $id_lType) return true;
+        }
+        return false;
     }
 }

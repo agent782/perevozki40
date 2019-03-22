@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    startLoading();
     var lenRoute = 0;
     var nRoutes = 0;
     var myMap;
@@ -24,10 +23,9 @@ $(document).ready(function () {
     // var SuggestView = [sugS, sugV1,sugV2,sugV3,sugV4,sugV5,sugV6,sugV7,sugV8,sugF];
     // Дождёмся загрузки API и готовности DOM.
     ymaps.ready(init);
-
     function init() {
+
         // $('.hidescreen,.load_page').attr(display ='block');
-        // startLoading();
         // $('#loader').click();
         var myMap = new ymaps.Map('map', {
             center: [55.118881, 36.624248],
@@ -60,15 +58,18 @@ $(document).ready(function () {
             );
             SuggestView[i].state.set('open', true);
             SuggestView[i].events.add('select', function (e) {
-               i
                 createRoute();
             });
             createRoute();
-
-            endLoading();
         }
 
-        function alertObj(o){var s="";for(k in o){s+=k+": "+o[k]+"\r\n";}alert(s);}
+        function alertObj(o){
+            var s="";
+            for(k in o){
+                s+=k+": "+o[k]+"\r\n";
+            }
+            alert(s);
+        }
 
         $('#but').on('click', function () {
             createRoute();
@@ -90,7 +91,6 @@ $(document).ready(function () {
         });
 
         $('#clearAllPoint').on('click', function () {
-            // startLoading();
             if(!lenRoute && !nRoutes) return;
 
             for (var i = 1; i < 9; i++) {
@@ -103,7 +103,7 @@ $(document).ready(function () {
             lenRoute = 0;
             nRoutes = 0;
             $('#len').text(lenRoute).trigger('change');
-            $('#lengthRoute').val(lenRoute);
+            $('#lengthRoute').val(lenRoute).trigger('change');
             // endLoading();
         });
 
@@ -118,10 +118,11 @@ $(document).ready(function () {
 
 
         function createRoute() {
-            startLoading();
+
             myMap.geoObjects.removeAll();
             lenRoute = 0;
             $('#len').text(lenRoute);
+            $('#lengthRoute').val(lenRoute).trigger('change');
             var adresses = [];
             adresses.push(rBase);
             $('#route').find('.points').each(function () {
@@ -134,10 +135,10 @@ $(document).ready(function () {
              * Тестовый массив с метками адресов
              */
             if (rStart.val() && rFinish.val()) {
-
+                startLoading();
                 var multiRouteModel = new ymaps.multiRouter.MultiRouteModel(adresses, {
                     //avoidTrafficJams: true,
-                    //viaIndexes: [1]
+                    results: 1
                 });
 
                 // Создаем отображение мультимаршрута на основе модели.
@@ -157,19 +158,21 @@ $(document).ready(function () {
                         // for (var i = 0, l = routes.length; i < l; i++) {
                         //     console.log("Длина маршрута " + (i + 1) + ": " + routes[i].properties.get("distance").text);
                         // }
-                        lenRoute = (parseFloat(routes[0].properties.get("distance").value) / 1000);
-                        (lenRoute < 1) ? lenRoute = lenRoute.toFixed(1) : lenRoute = lenRoute.toFixed(0);
-                        $('#len').text(lenRoute).trigger('change');
-                        $('#lengthRoute').val(lenRoute);
+                        if(routes[0] && !lenRoute) {
+                            lenRoute = (parseFloat(routes[0].properties.get("distance").value) / 1000);
+                            (lenRoute < 1) ? lenRoute = lenRoute.toFixed(1) : lenRoute = lenRoute.toFixed(0);
+                            $('#len').text(lenRoute).trigger('change');
+                            $('#lengthRoute').val(lenRoute).trigger('change');
+                        }
                         endLoading();
-
 
                     })
                     .add("requestfail", function (event) {
                         console.log("Ошибка: " + event.get("error").message);
                     });
+
             }
-            endLoading();
+
         }
 
         $('#testBut').on('click', function () {
@@ -177,14 +180,15 @@ $(document).ready(function () {
         });
 
         $('.points').keypress(function (event) {
-            if (event.which == '13') {
+            if (event.which === '13') {
                 event.preventDefault();
             }
         });
         $('.points').on('change', function (event) {
             lenRoute = 0;
-            $('#len').text(lenRoute).trigger('change');
-            $('#lengthRoute').val(lenRoute);
+            $('#but, #rStart, #rFinish').trigger('click');
+            // $('#len').text(lenRoute).trigger('change');
+            // $('#lengthRoute').val(lenRoute);
         });
 
 

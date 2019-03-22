@@ -16,6 +16,7 @@ use app\models\Profile;
  * @property string $place
  * @property integer $checked
  * @property string $photo
+ * @property string $fullInfo
  *
  * @property Profile[] $profiles
  */
@@ -79,5 +80,9 @@ class DriverLicense extends \yii\db\ActiveRecord
     public function getProfiles()
     {
         return $this->hasMany(Profile::className(), ['id_driver_license' => 'id']);
+    }
+
+    public function getFullInfo(){
+        return $this->number . ' выдано ' . $this->place . ' ' . $this->date  . '. ';
     }
 }

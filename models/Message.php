@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use app\components\DateBehaviors;
+use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "message".
@@ -134,7 +136,7 @@ class Message extends \yii\db\ActiveRecord
                         "id" => $this->idPushall,
                         "key" => $this->keyPushall,
                         "text" => $this->text,
-                        "title" => $this->title,
+                        "title" => 'perevozki40.ru ' . $this->title,
                         'priority' => '1',
                         'url' => $this->url,
                         'uid' => $push_id,

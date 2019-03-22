@@ -1,7 +1,8 @@
 <?php
 
-namespace app\models;
+namespace app\models\setting;
 
+use app\models\SettingClient;
 use Yii;
 
 /**
@@ -15,6 +16,9 @@ use Yii;
  */
 class Setting extends \yii\db\ActiveRecord
 {
+    const TYPE_SETTING = 1;
+    const TYPE_SETTING_CLIENT = 2;
+    const TYPE_SETTING_VEHICLE = 3;
     /**
      * @inheritdoc
      */
@@ -49,5 +53,22 @@ class Setting extends \yii\db\ActiveRecord
 
     public static function getNoPhotoPath(){
         return Setting::find()->one()->noPhotoPath;
+    }
+
+    static public function getSetting($type = self::TYPE_SETTING){
+        $setting = null;
+        switch ($type){
+            case self::TYPE_SETTING:
+                $setting = Setting::find()->limit(1)->one();
+                break;
+            case self::TYPE_SETTING_VEHICLE:
+                $setting = SettingVehicle::find()->limit(1)->one();
+                break;
+            case self::TYPE_SETTING_CLIENT:
+                $setting = SettingClient::find()->limit(1)->one();
+                break;
+        }
+
+
     }
 }

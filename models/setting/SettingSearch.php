@@ -1,11 +1,11 @@
 <?php
 
-namespace app\models;
+namespace app\models\setting;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Setting;
+use app\models\setting\Setting;
 
 /**
  * SettingSearch represents the model behind the search form about `app\models\Setting`.

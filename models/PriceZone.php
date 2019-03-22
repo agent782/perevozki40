@@ -7,6 +7,7 @@ use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
 use app\components\widgets\ShowMessageWidget;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "price_zone".
@@ -230,17 +231,21 @@ class PriceZone extends \yii\db\ActiveRecord
 
         }
     }
+
+    public function getBodyTypies(){
+        return BodyType::find()->where(['in', 'id', $this->body_types])->all();
+    }
+
     public function validateSPEC($attribute){
 
     }
 
     public function getBodiesColumn(){
         $stringBodies = '<ul>';
-//        $body_types = [];
-//        $body_types = unserialize($this->body_types);
-        foreach ($this->body_types as $bType){
-            $stringBodies .= '<li>'.BodyType::find()->where(['id' => $bType])->select(['body'])->one()->body . '</li>';
+        foreach ($this->bodyTypies as $bType){
+            $stringBodies .= '<li>' . $bType->body . '</li>';
         }
+
         $stringBodies .= '</ul>';
         return $stringBodies;
     }
@@ -263,6 +268,7 @@ class PriceZone extends \yii\db\ActiveRecord
             . '<br>'
             . '<p>Это основной тариф для: </p>'
             ;
+
 
         switch ($this->veh_type){
             case Vehicle::TYPE_TRUCK:
@@ -300,44 +306,86 @@ class PriceZone extends \yii\db\ActiveRecord
         }
         return false;
     }
-    public function CostCalculation($distance){
+    public function CostCalculation($distance, $discount = 0){
         if($distance){
             $cost = 0;
-                    if($distance < 20){
-                        $cost = $this->min_r_10 * $this->r_h;
+                if($distance < 20){
+                    $cost = $this->min_r_10 * $this->r_h;
+                }
+                else if ($distance >= 20 && $distance<40){
+                    $cost = $this->min_r_10 * $this->r_h;
+                }
+                else if ($distance >= 40 && $distance<60){
+                    $cost = $this->min_r_10 * $this->r_h;
+                }
+                else if ($distance >= 60 && $distance<80){
+                    $cost = $this->min_r_40 * $this->r_h;
+                }
+                else if ($distance >= 80 && $distance<120){
+                    $cost = $this->min_r_50 * $this->r_h;
+                }
+                else if ($distance >= 120) {
+                    if ($this->veh_type == Vehicle::TYPE_SPEC && !$this->r_km) {
+                        return 'Цена договорная. Обсуждается с водителем.';
+                    } else {
+                        $cost = $this->r_km * $distance;
+                        if ($cost < $this->min_price) $cost = $this->min_price;
                     }
-                    else if ($distance >= 20 && $distance<40){
-                        $cost = $this->min_r_10 * $this->r_h;
-                    }
-                    else if ($distance >= 40 && $distance<60){
-                        $cost = $this->min_r_10 * $this->r_h;
-                    }
-                    else if ($distance >= 60 && $distance<80){
-                        $cost = $this->min_r_40 * $this->r_h;
-                    }
-                    else if ($distance >= 80 && $distance<120){
-                        $cost = $this->min_r_50 * $this->r_h;
-                    }
-                    else if ($distance >= 120) {
-                        if ($this->veh_type == Vehicle::TYPE_SPEC && !$this->r_km) {
-                            return 'Цена договорная. Обсуждается с водителем.';
-                        } else {
-                            $cost = $this->r_km * $distance;
-                            if ($cost < $this->min_price) $cost = $this->min_price;
-                        }
-                    }
-
-            return $cost;
+                }
+            return round($cost - ($cost*$discount/100));
         }
-        return 'Невозможно расчитать стоимость. Неверно задан маршрут!';
+        return 0;
     }
 
-    public function getTextWithShowMessageButton($distance = null){
+    public function CostCalculationWithDiscountHtml($distance = null, $discount = null){
+        $cost = $this->CostCalculation($distance);
+        if(!$cost) return 'Невозможно расчитать стоимость. Неверно задан маршрут!';
+        if(!$discount) return $cost;
+        $return = '<s>'. $cost . '</s> '
+            . '<strong>' . round($cost - ($cost*$discount/100)) . '</strong>';
+
+        return $return;
+
+    }
+
+    public function getTextWithShowMessageButton($distance = null, $html = true, $discount = 0){
+        $return = '';
+        if($discount){
+            $cost = '<s>'. $this->CostCalculation($distance) . '</s> '
+                . '<strong>' . round($this->CostCalculation($distance, $discount)) . '</strong>';
+            $r_km = '<s>'.  $this->r_km . '</s> '
+                . '<strong>' . round($this->r_km - ( $this->r_km*$discount/100)) . '</strong>';
+            $r_h = '<s>'. $this->r_h . '</s> '
+                . '<strong>' . round($this->r_h - ($this->r_h*$discount/100)) . '</strong>';
+        } else{
+            $cost = $this->CostCalculation($distance);
+            $r_km =  $this->r_km;
+            $r_h = $this->r_h ;
+        }
+
+
+        $return .= 'Тариф №' . $this->id . '. ';
+        if($distance)$return .= '(&asymp;' . $cost . 'р.*) ';
+        $return .= '<i style="font-size: x-small; font-style: italic">'
+            . $r_km . ' р/км '
+            . ', '
+            . $r_h . ' р/час...)';
+        if($html){
+            $return .= ShowMessageWidget::widget([
+                    'helpMessage' => $this->printHtml(),
+                    'header' => 'Тарифная зона ' . $this->id,
+                    'ToggleButton' => ['label' => Html::icon('info-sign'), 'class' => 'btn']
+                ]) . '</i>';
+        }
+
+        return $return;
+    }
+
+    public function getLabelWithShowMessageButton($distance = null){
         $return = '';
 //        $return .= 'Тариф №' . $this->id;
-        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';
-        $return .= '<br>'
-            . '<p style="font-size: x-small; font-style: italic">'
+        if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р.* '
+            . '<i style="font-size: x-small; font-style: italic">'
             . '(Тариф №' . $this->id . '. '
             . $this->r_km . ' р/км '
             . ', '
@@ -345,12 +393,11 @@ class PriceZone extends \yii\db\ActiveRecord
         $return .= ShowMessageWidget::widget([
                 'helpMessage' => $this->printHtml(),
                 'header' => 'Тарифная зона ' . $this->id,
-                'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn']
-            ]) . '</p>';
+                'ToggleButton' => ['label' => Html::icon('info-sign'), 'class' => 'btn']
+            ]) . '</i>';
 
         return $return;
     }
-
     public function getPriceAndShortInfo($distance = null){
         $return = '';
         if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';
@@ -360,5 +407,26 @@ class PriceZone extends \yii\db\ActiveRecord
             . ', '
             . $this->r_h . ' р/час...)</p>';
         return $return ;
+    }
+
+    public function getWithDiscount($discount = 0) : PriceZone{
+        if(!$discount) return $this;
+
+        $this->r_km = self::mathDiscount($this->r_km, $discount);
+        $this->r_h = self::mathDiscount($this->r_h, $discount);
+        $this->r_loading = self::mathDiscount($this->r_loading, $discount);
+        $this->min_price = self::mathDiscount($this->min_price, $discount);
+        $this->min_r_10 = self::mathDiscount($this->min_r_10, $discount);
+        $this->min_r_20 = self::mathDiscount($this->min_r_20, $discount);
+        $this->min_r_30 = self::mathDiscount($this->min_r_30, $discount);
+        $this->min_r_40 = self::mathDiscount($this->min_r_40, $discount);
+        $this->min_r_50 = self::mathDiscount($this->min_r_50, $discount);
+        $this->remove_awning = self::mathDiscount($this->remove_awning, $discount);
+
+        return $this;
+    }
+
+    static protected function mathDiscount($value, $discount) : int{
+        return ($value - round($value*$discount/100));
     }
 }

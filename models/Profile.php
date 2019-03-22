@@ -7,6 +7,7 @@ use app\components\DateBehaviors;
 use nickcv\encrypter\behaviors\EncryptionBehavior;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
+use app\components\functions\functions;
 use Yii;
 
 /**
@@ -39,9 +40,13 @@ use Yii;
  * @property string $fioFull
  * @property int $rating
  * @property Passports $idPassport
- * @property DriverLicenses $idDriverLicense
+ * @property DriverLicense $driverLicense
  * @property RegLicenses $idRegLicense
  * @property User $idUser
+ * @property boolean $is_driver
+ * @property string $profileInfo
+ * @property string $driverFullInfo
+ * @property User $user
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -89,6 +94,7 @@ class Profile extends \yii\db\ActiveRecord
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
+            ['is_driver', 'default', 'value' => false],
         ];
     }
 
@@ -163,15 +169,6 @@ class Profile extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDriverLicense()
-    {
-        return DriverLicenses::findOne(id_driver_license);
-//        return $this->hasOne(DriverLicenses::className(), ['id' => 'id_driver_license']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'id_user']);
@@ -207,6 +204,10 @@ class Profile extends \yii\db\ActiveRecord
         return XprofileXcompany::find()->where(['id_profile' => $this->id_user])->count();
     }
 
+    public function getPhone(){
+        return $this->user->username;
+    }
+
     public function getRoles(){
         $roles = [];
         foreach (Yii::$app->authManager->getAssignments($this->id_user) as $role) {
@@ -223,7 +224,9 @@ class Profile extends \yii\db\ActiveRecord
         $string = substr($string, 0, -2);
         return $string;
     }
-
+    public function getDriverLicense(){
+        return $this->hasOne(DriverLicense::class,['id'=>'id_driver_license']);
+    }
 
     public function getMaxCompanies(){
         $countCompsnies = 0;
@@ -306,5 +309,30 @@ class Profile extends \yii\db\ActiveRecord
             }
         }
         return false;
+    }
+
+    public function getDriverFullInfo($showPhone = false, $showPassport = false, $showDriveLicense = false){
+        $return = $this->fioFull . '<br>';
+        if($showPhone) {
+            $return .= 'Телефон: ' . $this->phone;
+            if ($this->phone2) $return .= ' (доп. ' . $this->phone2 . ')';
+            $return .= '. <br>';
+        }
+        if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
+        if($showDriveLicense) $return .= 'ВУ' . $this->driverLicense->fullInfo . '. <br>';
+
+        return $return;
+    }
+
+    public function getProfileInfo($showPhone = false, $showPassport = false){
+        $return = $this->fioFull . '<br>';
+        if($showPhone) {
+            $return .= 'Телефон: ' . functions::getHtmlLinkToPhone($this->phone);
+            if ($this->phone2) $return .= ' (доп. ' . functions::getHtmlLinkToPhone($this->phone2) . ')';
+            $return .= '. <br>';
+        }
+        if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
+
+        return $return;
     }
 }

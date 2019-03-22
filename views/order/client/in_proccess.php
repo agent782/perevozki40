@@ -31,98 +31,77 @@ use yii\bootstrap\Tabs;
         'responsiveWrap' => false,
         'pjax'=>true,
         'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
-
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-//                    return $model->id;
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-            ],
-            'id',
 //            [
-//                'attribute' => 'statusText',
-//                'filter' => Html::activeCheckboxList($searchModel, 'statuses', \app\models\Order::getStatusesArray()),
+//                'class' => 'kartik\grid\ExpandRowColumn',
+//                'value' => function ($model, $key, $index, $column) {
 //
+//                    return GridView::ROW_COLLAPSED;
+//                },
+//                'enableRowClick' => true,
+//                'allowBatchToggle'=>true,
+//                'detail'=>function ($model) {
+////                    return $model->id;
+//                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
+//                },
+//                'detailOptions'=>[
+//                    'class'=> 'kv-state-enable',
+//                ],
 //            ],
+            'id',
+            'datetime_start',
             [
-                'attribute' => 'datetime_start',
-                'options' => [
-//                    'style' =>'width: 100px',
-                ],
-                'contentOptions'=>['style'=>'white-space: normal;']
+                'label' => 'ТС',
+                'format' => 'raw',
+                'attribute' => 'fullInfoAboutVehicle'
             ],
             [
-                'label' => 'Маршрут',
+            'label' => 'Маршрут',
+            'format' => 'raw',
+            'attribute' => 'route.fullRoute'
+            ],
+            [
+                'label' => 'Информация о заказе',
                 'format' => 'raw',
-                'value' => function($data){
-                    $route = $data->route;
-                    $return = $route->startCity . ' -';
-                    for($i = 1; $i<9; $i++){
-                        $attribute = 'route' . $i;
-                        if($route->$attribute) $return .= '... -';
-                    }
-                    $return .=  ' '.$route->finishCity ;
-                    return $return;
-                },
+                'attribute'=>'shortInfoForClient'
             ],
             [
                 'label' => 'Тариф',
                 'format' => 'raw',
-                'value' => function($model){
-                    if($model->id_pricezone_for_vehicle)
-                        return
-                        \app\models\PriceZone::findOne($model->id_pricezone_for_vehicle)
-                        ->getTextWithShowMessageButton($model->route->distance);
-                    ;
-                }
-            ],
-//        'vehicleType.type',
-            [
-                'label' => 'Подходит для Ваших ТС',
-                'format' => 'raw',
-                'value' => function($model){
-                    $res = '';
-                    $vehicles = \app\models\Vehicle::find()
-                        ->where([
-                            'id_user' => Yii::$app->user->id,
-                            'status' => [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]
-                        ])->all();
-                    if(!count($vehicles)) return;
-                    foreach ($vehicles as $vehicle) {
-                        if ($vehicle->canOrder($model)) {
-                            $res .= $vehicle->regLicense->reg_number . '<br>';
-                        }
-                    }
-                    return $res;
+                'attribute' => 'id_pricezone_for_vehicle',
+                'value' => function($modelOrder){
+                    return \app\models\PriceZone::findOne($modelOrder
+                        ->id_pricezone_for_vehicle)
+                        ->getTextWithShowMessageButton($modelOrder->route->distance, true, $modelOrder->discount);
                 }
             ],
             [
-                'label' => '',
+                'label' => 'Заказчик',
                 'format' => 'raw',
-                'value' => function ($model){
-                    $return = '';
-                        $return .= Html::a('Отказаться', Url::to([
-                            '/order/canceled-by-vehicle',
+                'attribute' => 'clientInfo'
+            ],
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
+            ],
+            [
+                'label' => 'Действия',
+                'format' => 'raw',
+                'value' => function($model){
+                    return
+                        Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Отменить заказ']), Url::to([
+                            '/order/canceled-by-client',
                             'id_order' => $model->id,
-                            'id_user' => Yii::$app->user->id,
+                            'id_vehicle' => $model->id_vehicle
                         ]),
                             ['data-confirm' => Yii::t('yii',
-                                'Отказ от заказа может повлиять на Ваш рейтинг! Отказаться от заказа?'),
-                            'data-method' => 'post',
-                            'class' => 'btn btn-warning']);
-                    return $return;
-                },
+                                'Заказ в процессе выполнения! 
+                                Пожалуйста, перед нажатием кнопки "ОК" позвоните водителю, принявшему Ваш заказ и предупредите об отмене.<br><br> Водитель: ' .
+                                $model->vehicleFioAndPhone)
+                                . '<br><br><i> Водитель имеет возможность оценить корректность Ваших действий, что может повлиять на Ваш рейтинг Клиента.</i>',
+                                'data-method' => 'post'])                    ;
+                }
+
             ],
-//            ['class' => 'yii\grid\ActionColumn'],
-        ],
+        ]
     ]); ?>
 </div>

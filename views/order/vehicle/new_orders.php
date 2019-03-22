@@ -98,7 +98,10 @@ use yii\bootstrap\Tabs;
             'format' => 'raw',
             'attribute' => 'clientInfo'
         ],
-        'paymentText',
+        [
+            'attribute' => 'paymentText',
+            'format' => 'raw'
+        ],
         [
             'label' => '',
             'format' => 'raw',

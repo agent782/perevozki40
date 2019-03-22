@@ -3,10 +3,13 @@
 namespace app\controllers;
 
 use app\components\functions\functions;
+use app\models\Order;
 use app\models\Profile;
 use app\models\RegLicense;
 use app\models\VehicleForm;
+use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use function Sabre\Uri\parse;
+use Symfony\Component\CssSelector\Tests\Parser\ReaderTest;
 use Yii;
 use app\models\Vehicle;
 use app\models\PriceZone;
@@ -207,9 +210,18 @@ class VehicleController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $redirect = '/vehicle')
     {
         $model = $this->findModel($id);
+        if(!$model){
+            functions::setFlashWarning('Такого ТС не существует.');
+            return $this->redirect($redirect);
+        }
+        if($model->hasOrder(Order::STATUS_VEHICLE_ASSIGNED)){
+            functions::setFlashWarning('У этого ТС есть незавершенные заказы! Нельзя редактировать это ТС. Прежде завершите заказ.');
+            return $this->redirect($redirect);
+        }
+
         $modelOLD = $model;
         if (!$model)
             throw new HttpException(404, 'ТС не найдено!');
@@ -296,14 +308,14 @@ class VehicleController extends Controller
 //                    return $this->redirect('/vehicle/index');
                 }
                 if(Yii::$app->user->can('admin'))return $this->redirect('/admin/vehicle/index');
-                return $this->redirect('/vehicle/index');
+                return $this->redirect($redirect);
 
             }
 //                return var_dump($model->getErrors());
                 Yii::$app->session->setFlash('warning', 'Ошибка сохранения. Попробуйте позже.');
             if(Yii::$app->user->can('admin'))return $this->redirect('/admin/vehicle/index');
 
-            return $this->redirect('/vehicle/index');
+            return $this->redirect('$redirect');
 //            return 'OK';
             } else {
 
@@ -348,9 +360,10 @@ class VehicleController extends Controller
     public function actionUpdatePricezones(){
         $post = Yii::$app->request->post();
         $id_vehicle = $post['id_vehicle'];
+
         $veh_type = Vehicle::findOne(['id' => $id_vehicle])->id_vehicle_type;
         $body_type = $post['body_type'];
-
+//return $body_type;
         $result = [];
         $priceZones = PriceZone::find();
         switch ($veh_type) {
@@ -423,9 +436,8 @@ class VehicleController extends Controller
                 ;
                 break;
         }
-//        $priceZones = $priceZones->all();
-        foreach ($priceZones as $priceZone){
-            if($priceZone->hasBodyType($body_type))
+        foreach ($priceZones as $priceZone) {
+            if ($priceZone->hasBodyType($body_type)) {
                 $result[] = [
                     'id' => $priceZone->id,
                     'name' => 'Тарифная зона ' . $priceZone->id,
@@ -433,15 +445,19 @@ class VehicleController extends Controller
                     'r_h' => $priceZone->r_h,
                     'helpMes' => $priceZone->printHtml(),
 
-                    ];
+                ];
+            }
         }
-
-        echo json_encode($result);
+        return json_encode($result);
     }
 
-    public function actionDelete($id)
+    public function actionDelete($id, $redirect = '/vehicle')
     {
         $model = $this->findModel($id);
+        if($model->hasOrder(Order::STATUS_VEHICLE_ASSIGNED)){
+            functions::setFlashWarning('У этого ТС есть незавершенные заказы! Нельзя удалить это ТС. Прежде завершите заказ.');
+            return $this->redirect($redirect);
+        }
         $model->scenario = $model::SCENARIO_DELETE;
         $model->status = $model::STATUS_DELETED;
         ($model->save())
@@ -449,7 +465,7 @@ class VehicleController extends Controller
             :Yii::$app->session->setFlash('warning', 'Ошибка удаления ТС. Попробуйте позже.')
         ;
 //        return var_dump($model[errors]);
-            $this->redirect(['index']);
+            $this->redirect([$redirect]);
     }
 
     /**

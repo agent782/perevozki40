@@ -15,18 +15,19 @@ use yii\bootstrap\Modal;
 
 class ShowMessageWidget extends Widget
 {
-    public $ToggleButton = ['label' => '<img src="/img/icons/info-25.png">', 'class' => 'btn'];
+    public $ToggleButton = [];
     public $helpMessage;
     public $header = 'Информация';
 
 
     public function run()
     {
+        $this->ToggleButton = ['label' => Html::icon('info-sign'), 'class' => 'btn'];
         Modal::begin([
             'toggleButton' => $this->ToggleButton,
             'header' => $this->header,
             'closeButton' => ['hidden' => false],
-            'bodyOptions' => ['class' => 'container']
+//            'bodyOptions' => ['class' => 'container'],
         ]);
 
         echo $this->helpMessage;

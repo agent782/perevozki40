@@ -9,6 +9,7 @@
     use yii\bootstrap\Html;
 
 ?>
+<div class="container">
 <div class="col-lg-4">
     <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($OrderModel, 'id_vehicle')->radioList($vehicles
@@ -24,6 +25,6 @@
     ?>
 </div>
 <div class="col-lg-8">
-
+    <?= $OrderModel->getFullNewInfo(true,false, false)?>
 </div>
-
+</div>

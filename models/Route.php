@@ -45,7 +45,7 @@ class Route extends \yii\db\ActiveRecord
             [['routeStart', 'routeFinish'], 'required'],
             [['distance'], 'integer'],
             [['routeStart', 'route1', 'route2', 'route3', 'route4', 'finishCity',
-                'route5', 'route6', 'route7', 'route8', 'routeFinish', 'startCity'], 'string', 'max' => 255],
+                'route5', 'route6', 'route7', 'route8', 'routeFinish', 'startCity'], 'string', 'max' => 2254],
         ];
     }
 

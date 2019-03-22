@@ -1,7 +1,10 @@
 <?php
 
 namespace app\controllers;
+use app\models\Payment;
+use app\models\setting\SettingVehicle;
 use app\models\VehicleType;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use app\models\Message;
 use app\models\User;
@@ -147,11 +150,15 @@ class OrderController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($user_id = null)
     {
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
         if (!$modelOrder) $modelOrder = new Order();
+        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        if(!$user_id) $user = Yii::$app->user->identity;
+        else $user = User::findOne(['id' => $user_id]);
+        $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
         switch (Yii::$app->request->post('button')) {
             case 'next1':
                 if ($modelOrder->load(Yii::$app->request->post())) {
@@ -210,10 +217,11 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($route->load(Yii::$app->request->post())) {
-//                    return var_dump($modelOrder->getSuitableRates($route->distance));
-                    $modelOrder->suitable_rates = $modelOrder->getSuitableRates($route->distance);
-                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
-                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+                    if(!$user_id) $user_id = Yii::$app->user->id;
+//                    $modelOrder->type_payment = Payment::TYPE_CASH ;
+                    $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user->id));
+//                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+//                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
 
@@ -226,8 +234,6 @@ class OrderController extends Controller
                 }
                 break;
             case 'next5':
-
-
                 $modelOrder = $session->get('modelOrder');
                 $route = $session->get('route');
                 if (!$modelOrder || !$route) {
@@ -250,9 +256,6 @@ class OrderController extends Controller
                             $session->remove('modelOrder');
                             return $this->redirect(['client']);
                         }
-//                        var_dump($modelOrder->getErrors());
-//                        return var_dump($modelOrder->getErrors());
-//                        return 'error_save_order';
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     }
 
@@ -264,7 +267,21 @@ class OrderController extends Controller
 
         }
 
-        $session->remove('modelOrder');
+        if(Yii::$app->request->isPjax) {
+            $modelOrder = $session->get('modelOrder');
+            $route = $session->get('route');
+            $modelOrder->type_payment = Yii::$app->request->post('type_payment');
+            $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user->id));
+            if(Yii::$app->request->post('datetime_start'))$modelOrder->datetime_start = Yii::$app->request->post('datetime_start');
+            if(Yii::$app->request->post('valid_datetime'))$modelOrder->valid_datetime = Yii::$app->request->post('valid_datetime');
+            $session->set('modelOrder', $modelOrder);
+            return $this->renderAjax('create5', [
+                'route' => $route,
+                'modelOrder' => $modelOrder,
+                'TypiesPayment' => $TypiesPayment,
+                'companies' => $companies
+            ]);
+        }
         return $this->render('create', [
             'modelOrder' => $modelOrder,
         ]);
@@ -279,29 +296,53 @@ class OrderController extends Controller
      */
     public function actionUpdate($id_order, $redirect = '/order/client')
     {
+        $session = Yii::$app->session;
         $modelOrder = $this->findModel($id_order);
-        if (!$modelOrder) {
+        if (!$modelOrder ) {
             functions::setFlashWarning('Ошибка на сервере');
             return $this->redirect($redirect);
         }
+        if($modelOrder->status == Order::STATUS_VEHICLE_ASSIGNED
+            || $modelOrder->status == Order::STATUS_CONFIRMED_VEHICLE
+            || $modelOrder->status == Order::STATUS_CONFIRMED_CLIENT
+            || $modelOrder->status == Order::STATUS_DISPUTE){
+
+            functions::setFlashWarning('Неверный запрос!');
+            return $this->redirect($redirect);
+        }
+
 
         $route = Route::findOne($modelOrder->id_route);
-        if (!$route)
-            $route = new Route();
+        if (!$route){
+            functions::setFlashWarning('Ошибка на сервере');
+            return $this->redirect($redirect);
+        }
+        If($modelOrder->status == Order::STATUS_EXPIRED || $modelOrder->status == Order::STATUS_CANCELED){
+            $modelOrder->datetime_start = null;
+            $modelOrder->valid_datetime = null;
+        }
+
+
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
         // Для функции  Vehicle::getArrayAttributes() .... для получения атрибутов для спецтехники она выбтрае 1й, а не 0й элемент массива с типами кузовов
         $tmpBodyTypies[1] = $modelOrder->body_typies[0];
         $VehicleAttributes = Vehicle::getArrayAttributes($modelOrder->id_vehicle_type, $tmpBodyTypies);
-        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        $TypiesPayment = TypePayment::find()->all();
+        foreach ($TypiesPayment as $typePayment){
+            $typePayment->type = $typePayment->getTextWithIconDiscount();
+        }
+        $TypiesPayment = ArrayHelper::map($TypiesPayment, 'id', 'type');
+
         $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         $modelOrder->setScenarioForUpdate();
-        $session = Yii::$app->session;
+
         switch (Yii::$app->request->post('button')) {
             case 'update':
                 if ($modelOrder->load(Yii::$app->request->post()) && $route->load(Yii::$app->request->post())) {
-//            return var_dump($modelOrder);
-                    $modelOrder->suitable_rates = $modelOrder->getSuitableRates($route->distance);
+//            return var_dump($modelOrder->suitable_rates);
+                    $modelOrder->suitable_rates = $modelOrder
+                        ->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($modelOrder->id_user));
                     $session->set('modelOrder', $modelOrder);
                     $session->set('route', $route);
                     return $this->render('/order/update2', [
@@ -315,19 +356,34 @@ class OrderController extends Controller
                 $route = $session->get('route');
                 if(!$modelOrder || !$route){
                     functions::setFlashWarning('Ошибка на сервере');
+                    $session->remove('modelOrder');
+                    $session->remove('route');
                     return $this->redirect($redirect);
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     if ($route->save() && $modelOrder->save()) {
-                        functions::setFlashSuccess('Заказ №' . $modelOrder->id . ' изменен.');
-                        $session->remove('modelOrder');
-                        $session->remove('route');
+                        $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
                     } else {
                         functions::setFlashWarning('Ошибка на сервере');
                     }
+                    $session->remove('modelOrder');
+                    $session->remove('route');
                     return $this->redirect($redirect);
                     break;
                 }
+            case 'back':
+                $modelOrder = $session->get('modelOrder');
+                $route = $session->get('route');
+                return $this->render('update', [
+                    'modelOrder' => $modelOrder,
+                    'BTypies' => $BTypies,
+                    'LTypies' => $LTypies,
+                    'VehicleAttributes' => $VehicleAttributes,
+                    'TypiesPayment' => $TypiesPayment,
+                    'companies' => $companies,
+                    'route' => $route,
+                    'redirect' => $redirect
+                ]);
         }
 
         return $this->render('update', [
@@ -337,7 +393,8 @@ class OrderController extends Controller
             'VehicleAttributes' => $VehicleAttributes,
             'TypiesPayment' => $TypiesPayment,
             'companies' => $companies,
-            'route' => $route
+            'route' => $route,
+            'redirect' => $redirect
         ]);
     }
 
@@ -347,11 +404,11 @@ class OrderController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDelete($id, $redirect)
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['client']);
+        return $this->redirect([$redirect]);
     }
 
     /**
@@ -368,11 +425,6 @@ class OrderController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    public function actionAjaxChangePrice_zones()
-    {
-        echo 1;
     }
 
     public function actionValidateOrder()
@@ -409,11 +461,12 @@ class OrderController extends Controller
         foreach ($Vehicles as $vehicle) {
             if ($vehicle->canOrder($OrderModel)) {
                 $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
+                $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
                 $vehicles[$vehicle->id] =
                     $vehicle->brand
                     . ' (' . $vehicle->regLicense->reg_number . ') '
                     . ' <br> '
-                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance);
+                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true);
             }
         }
         if ($vehicles) {
@@ -457,7 +510,7 @@ class OrderController extends Controller
 
     }
 
-    public function actionCanceledByClient($id_order, $redirect = '/order/vehicle')
+    public function actionCanceledByClient($id_order, $id_vehicle = null, $redirect = '/order/client')
     {
         $order = Order::findOne($id_order);
         if (!$order) {
@@ -465,8 +518,128 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
 
-        $order->changeStatus($order::STATUS_CANCELED, $order->id_user);
+        $order->changeStatus($order::STATUS_CANCELED, $order->id_user, $id_vehicle);
         return $this->redirect($redirect);
+    }
+
+    public function actionFinishByVehicle($id_order, $redirect = '/order/vehicle'){
+        $sesssion = Yii::$app->session;
+
+        $modelOrder = self::findModel($id_order);
+
+        if(!$modelOrder){
+            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            return $this->redirect($redirect);
+        }
+        $modelOrder->copyValueToRealValue();
+        $route = $modelOrder->route;
+        $realRoute = new Route();
+        $realRoute->routeStart = $route->routeStart;
+        $realRoute->routeFinish = $route->routeFinish;
+        for($i=1;$i<9;$i++) {
+            $attr = 'route' . $i;
+            $realRoute->$attr = $route->$attr;
+        }
+
+        $modelOrder->real_datetime_start = $modelOrder->datetime_start;
+        $modelOrder->datetime_finish = date('d.m.Y H:i', time());
+
+        $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+        $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+        $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+        $paymrnt_typies = ArrayHelper::map(TypePayment::find()->all(),'id', 'type');
+        $modelOrder->setScenarioForFinish();
+
+        switch (Yii::$app->request->post('button')){
+            case 'next':
+                if($sesssion->get('modelOrder')) $modelOrder = $sesssion->get('modelOrder');
+                if($sesssion->get('realRoute')) $realRoute = $sesssion->get('realRoute');
+                if(!$modelOrder || !$realRoute){
+                    functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+                    return $this->redirect($redirect);
+                }
+                if($modelOrder->load(Yii::$app->request->post()) && $realRoute->load(Yii::$app->request->post())) {
+                    $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
+                    $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
+                    $modelOrder->cost = $costAndDescription['cost'];
+                    $sesssion->set('modelOrder', $modelOrder);
+                    $sesssion->set('realRoute', $realRoute);
+
+                    return $this->render('/order/finish-by-vehicle2', [
+                        'modelOrder' => $modelOrder,
+                        'realRoute' => $realRoute,
+                        'finishCostText' => $costAndDescription ['text'],
+                        'paymrnt_typies' => $paymrnt_typies
+                    ]);
+                }
+                break;
+            case 'back':
+                if($sesssion->get('modelOrder')) $modelOrder = $sesssion->get('modelOrder');
+                if($sesssion->get('realRoute')) $realRoute = $sesssion->get('realRoute');
+                if(!$modelOrder || !$realRoute){
+                    functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+                    return $this->redirect($redirect);
+                }
+//                $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+//                $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+//                $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+//                $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+//                $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+
+
+                return $this->render('/order/finish-by-vehicle',[
+                    'modelOrder' => $modelOrder,
+                    'realRoute' => $realRoute,
+                    'BTypies' => $BTypies,
+                    'LTypies' => $LTypies,
+                    'VehicleAttributes' => $VehicleAttributes,
+                    'TypiesPayment' => $TypiesPayment,
+                    'companies' => $companies,
+                    'redirect' => $redirect
+                ]);
+                break;
+            case 'finish':
+                if($sesssion->get('modelOrder')) $modelOrder = $sesssion->get('modelOrder');
+                if($sesssion->get('realRoute')) $realRoute = $sesssion->get('realRoute');
+                if(!$modelOrder || !$realRoute){
+                    functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+                    return $this->redirect($redirect);
+                }
+                if($modelOrder->load(Yii::$app->request->post())){
+                    if ($realRoute->save()){
+                        $modelOrder->id_route_real = $realRoute->id;
+                        if($modelOrder->save()){
+                            $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
+                        } else {
+                            functions::setFlashWarning('Ошибка на сервере');
+                        }
+                    } else  {
+                        functions::setFlashWarning('Ошибка на сервере');
+                    }
+                    $sesssion->remove('modelOrder');
+                    $sesssion->remove('realRoute');
+                    return $this->redirect($redirect);
+                }
+                break;
+            default:
+                break;
+        }
+
+        $sesssion->set('modelOrder', $modelOrder);
+        $sesssion->set('realRoute', $realRoute);
+
+        return $this->render('/order/finish-by-vehicle',[
+            'modelOrder' => $modelOrder,
+            'realRoute' => $realRoute,
+            'BTypies' => $BTypies,
+            'LTypies' => $LTypies,
+            'VehicleAttributes' => $VehicleAttributes,
+            'TypiesPayment' => $TypiesPayment,
+            'companies' => $companies,
+            'redirect' => $redirect
+        ]);
     }
 
 }

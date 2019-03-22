@@ -65,9 +65,13 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Тарифные зоны',
                 'format' => 'raw',
-                'attribute' => 'idsPriceZonesWithPriceAndShortInfo'
+                'value' => function($model){
+                    return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getDiscount($model->id_user));
+                }            ],
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
             ],
-            'paymentText',
             'valid_datetime',
             [
                 'label' => '',
@@ -76,7 +80,7 @@ use yii\bootstrap\Tabs;
                     if($model->status == Order::STATUS_CANCELED
                         || $model->status == Order::STATUS_EXPIRED){
 
-                        return Html::a('Повторить', Url::to([
+                        return Html::a('Изменить и повторить поиск', Url::to([
                             '/order/update',
                             'id_order' => $model->id,
                         ]),

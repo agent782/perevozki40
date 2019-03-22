@@ -289,6 +289,17 @@ class User extends ActiveRecord implements IdentityInterface
             ->one()['item_name'];
 
     }
+    public function getRoles(){
+        return Yii::$app->authManager->getRolesByUser($this->getId());
+    }
+
+        public function canRole(string $roleName){
+        $userRoles = Yii::$app->authManager->getRolesByUser($this->id);
+        foreach ($userRoles as $userRole){
+            if($userRole->name == $roleName ) return true;
+        }
+        return false;
+    }
 //
     public function delete()
     {

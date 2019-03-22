@@ -16,8 +16,8 @@ use app\models\Payment;
 $this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
 $this->registerJsFile('@web/js/route.js');
 $this->title = 'Изменение заказа №' . $modelOrder->id;
-
 $this->registerJsFile('/js/order.js');
+
 ?>
 
 <div class="order-update container">
@@ -75,6 +75,7 @@ $this->registerJsFile('/js/order.js');
     ?>
 
     <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, [
+        'encode' => false,
         'onchange' => '
             if($(this).find("input:checked").val()  == 3) {
                 $("#companies").show();    
@@ -140,7 +141,6 @@ $this->registerJsFile('/js/order.js');
                 'inputOptions' => [
                     'type' => 'tel',
                     'style' => 'width: 150px',
-                    'onchange' => 'alert();'
                 ]
             ]);
         }
@@ -151,7 +151,10 @@ $this->registerJsFile('/js/order.js');
         <?= $this->render('/route/_form', ['route' => $route, 'form' => $form])?>
     </div>
     <div class="col-lg-11">
-        <?= Html::submitButton('Изменить',
+        <?=
+            Html::a('Отмена', $redirect, ['class' => 'btn btn-warning'])
+        ?>
+        <?= Html::submitButton('Далее',
             [
                 'class' => 'btn btn-success',
                 'name' => 'button',

@@ -39,6 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Завершенные<br>(+' . $dataProvider_arhive->getCount() . ')',
+                'content' => $this->render('client/finished', [
+                    'dataProvider_arhive' => $dataProvider_arhive,
+                    'searchModel' => $searchModel
+                ]),
             ],
             [
                 'label' => 'Отмененные<br>(+' . $dataProvider_canceled->getCount() . ')',

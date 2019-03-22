@@ -3,6 +3,9 @@
 namespace app\models;
 
 use app\components\functions\functions;
+use app\models\setting\Setting;
+use app\models\setting\SettingVehicle;
+use app\models\setting\SettingClient;
 use FontLib\Table\Type\post;
 use Yii;
 use app\components\DateBehaviors;
@@ -47,6 +50,9 @@ use app\components\widgets\ShowMessageWidget;
  * @property double $real_length_spec
  * @property double $real_volume_spec
  * @property string $real_cargo
+ * @property float $real_h_loading
+ * @property integer $real_remove_awning
+ * @property integer $real_km
  * @property integer $datetime_start
  * @property integer $datetime_finish
  * @property integer $datetime_access
@@ -55,12 +61,14 @@ use app\components\widgets\ShowMessageWidget;
  * @property integer $update_at
  * @property integer $id_route
  * @property integer $id_route_real
+ * @property integer $id_pricezone_for_vehicle
  * @property integer $id_price_zone_real
  * @property integer $id_user
  * @property integer $id_company
  * @property integer $id_vehicle
  * @property integer $id_driver
  * @property float $cost
+ * @property integer $discount
  * @property integer $id_payment
  * @property integer $type_payment
  * @property integer $status
@@ -72,17 +80,22 @@ use app\components\widgets\ShowMessageWidget;
  * @property string $clientInfo
  * @property string $clientInfoWithoutPhone
  * @property integer $FLAG_SEND_EMAIL_STATUS_EXPIRED
- * @property User $user;
+ * @property User $user
+ * @property Profile $profile
  * @property Vehicle $vehicle
  * @property Route $route
+ * @property Route $realRoute
  * @property string $paymentText
  * @property string $priceZonesWithInfo
- * @property integer $id_pricezone_for_vehicle
  * @property Driver $driver
  * @property string $fullNewInfo
  * @property Company $company
  * @property string $idsPriceZonesWithPriceAndShortInfo
  * @property string $idsPriceZones
+ * @property string $vehicleFioAndPhone
+ * @property string $real_datetime_start
+ * @property float $real_h
+ * @property integer $additional_cost
  *
  */
 class Order extends \yii\db\ActiveRecord
@@ -114,7 +127,16 @@ class Order extends \yii\db\ActiveRecord
     const SCENARIO_UPDATE_DUMP = 'update_dump';
     const SCENARIO_UPDATE_CRANE = 'update_crane';
     const SCENARIO_UPDATE_EXCAVATOR = 'update_excavator';
+
     const SCENARIO_UPDATE_STATUS = 'update_status';
+
+    const SCENARIO_FINISH_TRUCK = 'finish_truck';
+    const SCENARIO_FINISH_PASS = 'finish_pass';
+    const SCENARIO_FINISH_MANIPULATOR = 'finish_manipulator';
+    const SCENARIO_FINISH_DUMP = 'finish_dump';
+    const SCENARIO_FINISH_CRANE = 'finish_crane';
+    const SCENARIO_FINISH_EXCAVATOR = 'finish_excavator';
+
     const SCENARIO_ACCESSING = 'accessing';
     const SCENARIO_NEW_ORDER = 'new_order';
     /**
@@ -135,23 +157,28 @@ class Order extends \yii\db\ActiveRecord
             [['loading_typies'], 'validateLoadingTypies', 'skipOnEmpty' => false],
             ['tonnage', 'validateTonnage','skipOnEmpty' => false],
             [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов'],
-            [['datetime_start', 'valid_datetime', 'type_payment'], 'required'],
+            [['datetime_start', 'valid_datetime', 'type_payment','datetime_finish', 'real_datetime_start', 'real_km'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
-            [['datetime_access','datetime_finish', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
-                'id_pricezone_for_vehicle'],
+            [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
+                'id_price_zone_for_vehicle', 'discount'],
                 'safe'
             ],
-            [['id',   'suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
-            [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real',
-                'id_payment', 'status', 'type_payment', 'passengers'], 'integer'],
+            [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
+                'real_length_spec', 'real_volume_spec', 'cost'], 'number' ],
+            [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
+            [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
+                'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
                 'volume_spec'], 'number'],
-            [['cargo'], 'string'],
+            [['cargo', 'comment_vehicle'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['paid_status', 'default', 'value' => self::PAID_NO],
-            [['id_vehicle', 'id_driver'], 'required', 'message' => 'Выберите один из вариантов']
+            [['id_vehicle', 'id_driver'], 'required', 'message' => 'Выберите один из вариантов'],
+            ['paid_status', 'default', 'value' => self::PAID_NO],
+            ['real_h_loading', 'default', 'value' => 0],
+            ['real_remove_awning', 'default' , 'value' => 0],
         ];
     }
 
@@ -187,6 +214,30 @@ class Order extends \yii\db\ActiveRecord
             'volume_spec', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
         ];
+        $scenarios[self::SCENARIO_FINISH_TRUCK] = [
+            'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle', 'real_h_loading',
+            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning'
+        ];
+        $scenarios[self::SCENARIO_FINISH_PASS] = [
+            'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
+            'real_passengers'
+        ];
+        $scenarios[self::SCENARIO_FINISH_MANIPULATOR] = [
+            'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
+            'real_tonnage', 'real_length', 'real_tonnage_spec', 'real_length_spec'
+        ];
+        $scenarios[self::SCENARIO_FINISH_DUMP] = [
+            'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
+            'real_tonnage', 'real_volume',
+        ];
+        $scenarios[self::SCENARIO_FINISH_CRANE] = [
+            'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
+            'real_tonnage_spec', 'real_length_spec'
+        ];
+        $scenarios[self::SCENARIO_FINISH_EXCAVATOR] = [
+            'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
+            'real_volume_spec'
+        ];
         return $scenarios;
     }
 
@@ -216,7 +267,7 @@ class Order extends \yii\db\ActiveRecord
             'volume_spec' => 'Объем механизма(ковша).',
             'cargo' => 'Описание груза.',
             'datetime_start' => 'Дата и время подачи ТС.',
-            'datetime_finish' => 'Дата и время завершения заказа.',
+            'datetime_finish' => 'Дата и время возвращения в г.Обнинск после завершения заказа.',
             'datetime_access' => 'Дата и  время подтверждения Заказчиком.',
             'valid_datetime' => 'Выполнять поиск ТС до:',
             'id_route' => 'Id маршруты',
@@ -231,7 +282,22 @@ class Order extends \yii\db\ActiveRecord
             'paymentText' => 'Тип оплаты',
             'priceZonesWithInfo' => 'Тарифы',
             'id_vehicle' => 'ТС',
-            'id_driver' => 'Водитель'
+            'id_driver' => 'Водитель',
+            'real_h' => 'Время работы',
+            'real_km' => 'Фактический пробег (км.)',
+            'comment_vehicle' => 'Комментарий водителя',
+            'real_datetime_start' => 'Фактическое время выезда',
+            'real_tonnage' => 'Фактический вес',
+            'real_length' => 'Требуемая длина кузова',
+            'real_volume' => 'Требуемый объем',
+            'real_h_loading' => 'Общее время потраченное на разгрузку, погрузку, ожидание (для заказов с пробегом более 120 км), ч. ',
+            'real_remove_awning' => 'Количество "растентовок" одной стороны сбоку или сверху',
+            'real_passengers' => 'Количество пассажиров',
+            'real_tonnage_spec' => 'Фактический вес груза (на стреле)',
+            'real_length_spec' => 'Минимальная требуемая длина стрелы',
+            'real_volume_spec' => 'Объем ковша',
+            'additional_cost' => 'Доп. расходы (Помощь грузчика(ов), платные дороги/въезды и т.п.), р.',
+            'cost' => 'Сумма'
         ];
     }
 
@@ -240,7 +306,7 @@ class Order extends \yii\db\ActiveRecord
         return [
             'convertDateTime' => [
                 'class' => 'app\components\DateBehaviors',
-                'dateAttributes' => ['datetime_start', 'datetime_finish','datetime_access' ,'valid_datetime', 'create_at', 'update_at'],
+                'dateAttributes' => ['real_datetime_start', 'datetime_start', 'datetime_finish','datetime_access' ,'valid_datetime', 'create_at', 'update_at'],
                 'format' => DateBehaviors::FORMAT_DATETIME,
             ],
         ];
@@ -311,9 +377,9 @@ class Order extends \yii\db\ActiveRecord
                     case Vehicle::BODY_manipulator:
                         $priceZones = $priceZones
                             ->andFilterWhere(['>=', 'tonnage_spec_max', $this->tonnage_spec])
-                            ->andFilterWhere(['<=', 'length_spec_max', $this->length_spec])
-                            ->andFilterWhere(['<=', 'tonnage_max', $this->tonnage])
-                            ->andFilterWhere(['<=', 'length_max', $this->length])
+                            ->andFilterWhere(['>=', 'length_spec_max', $this->length_spec])
+                            ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
+                            ->andFilterWhere(['>=', 'length_max', $this->length])
                         ;
                         break;
                     case Vehicle::BODY_dump:
@@ -324,8 +390,8 @@ class Order extends \yii\db\ActiveRecord
                         break;
                     case Vehicle::BODY_crane:
                         $priceZones = $priceZones
-                            ->andFilterWhere(['<=', 'tonnage_spec_min', $this->tonnage_spec])
-                            ->andFilterWhere(['<=', 'length_spec_min', $this->length_spec])
+                            ->andFilterWhere(['>=', 'tonnage_spec_max', $this->tonnage_spec])
+                            ->andFilterWhere(['>=', 'length_spec_max', $this->length_spec])
                         ;
                         break;
                     case Vehicle::BODY_excavator:
@@ -355,6 +421,153 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         return $result;
+    }
+
+    public function getSuitableRatesCheckboxList($distance = null, $discount = null){
+        $suitable_rates = $this->getSuitableRates($distance);
+        $return = [];
+        foreach ($suitable_rates as $id => $suitable_rate){
+            $PriceZone = PriceZone::findOne(['id' => $id]);
+            $return[$PriceZone->id] = ' &asymp; ' . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
+                . ' руб.* '
+                . ShowMessageWidget::widget([
+                    'helpMessage' => $PriceZone->printHtml(),
+                    'header' => 'Тарифная зона №' . $id,
+//                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
+                ])
+            ;
+        }
+        return $return;
+    }
+
+    public function getListPriceZonesCostsWithDiscont($distance = null, $discount = null){
+        $rates = $this->priceZones;
+        $return = '<ul>';
+        foreach ($rates as $PriceZone){
+//            $PriceZone = PriceZone::findOne(['id' => $id]);
+            $return .= '<li>';
+            $return .= ' &asymp; ' . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
+                . ' руб.*'
+                . ShowMessageWidget::widget([
+                    'helpMessage' => $PriceZone->printHtml(),
+                    'header' => 'Тарифная зона №' . $PriceZone->id,
+//                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
+                ])
+            ;
+            $return .= '</li>';
+        }
+        return $return . '</ul>';
+    }
+
+    public function getDiscount($user_id){
+        $user = User::findOne(['id' => $user_id]);
+        if(!$user) return false;
+        if(!$this->type_payment) return 0;
+        $type_payment = $this->type_payment;
+        $SettingClient = SettingClient::find()->limit(1)->one();
+        $discount_cash = 0;
+        $discount_card = 0;
+        if($user->canRole('user')) {
+            $discount_cash = $SettingClient->user_discount_cash;
+            $discount_card = $SettingClient->user_discount_card;;
+        }
+        if($user->canRole('client') || $user->canRole('car_owner')) {
+            $discount_cash = $SettingClient->client_discount_cash;
+            $discount_card = $SettingClient->client_discount_card;
+        }
+        if($user->canRole('client') || $user->canRole('vip_car_owner')) {
+            $discount_cash = $SettingClient->vip_client_discount_cash;
+            $discount_card = $SettingClient->vip_client_discount_card;
+        }
+        if($type_payment == Payment::TYPE_CASH) return $discount_cash;
+        if($type_payment == Payment::TYPE_SBERBANK_CARD) return $discount_card;
+        return 0;
+    }
+
+    public function getFinishPriceZone(){
+        $result = [];
+        $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type]);
+
+        switch ($this->id_vehicle_type) {
+            case Vehicle::TYPE_TRUCK:
+                $priceZones = $priceZones
+                    ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
+                    ->andFilterWhere(['>=', 'volume_max', $this->real_volume])
+                    ->andFilterWhere(['>=', 'length_max', $this->real_length])
+                    ->andFilterWhere(['longlength' => $this->real_longlength])->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])->all()
+                ;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $priceZones = $priceZones
+                    ->andFilterWhere(['>=', 'passengers', $this->real_passengers])
+                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+                    ->all()
+                ;
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($this->body_typies[0]){
+                    case Vehicle::BODY_manipulator:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'tonnage_spec_max', $this->real_tonnage_spec])
+                            ->andFilterWhere(['<=', 'length_spec_max', $this->real_length_spec])
+                            ->andFilterWhere(['<=', 'tonnage_max', $this->real_tonnage])
+                            ->andFilterWhere(['<=', 'length_max', $this->real_length])
+                        ;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
+                            ->andFilterWhere(['>=', 'volume_max', $this->real_volume])
+                        ;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['<=', 'tonnage_spec_min', $this->real_tonnage_spec])
+                            ->andFilterWhere(['<=', 'length_spec_min', $this->real_length_spec])
+                        ;
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'volume_spec', $this->real_volume_spec])
+                        ;
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['>=', 'volume_spec', $this->real_volume_spec])
+                        ;
+                        break;
+                }
+                $priceZones = $priceZones
+                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+                    ->all()
+                ;
+                break;
+        }
+
+        foreach ($priceZones as $priceZone) {
+            if ($priceZone->hasBodyType($this->vehicle->bodyType->id)){
+                $result[] = $priceZone;
+            }
+        }
+//        return $result;
+        $pricezone_for_vehicle = PriceZone::findOne($this->id_pricezone_for_vehicle);
+        if(!$result) return $pricezone_for_vehicle->id;
+        $real_pricezone = $result[0];
+        $cost_km = $real_pricezone->r_km;
+        $cost_h = $real_pricezone->r_h;
+        foreach ($result as $res){
+            if(($cost_km > $res->r_km || $cost_h > $res->r_h)){
+                $cost_km = $res->r_km;
+                $cost_h = $res->r_h;
+                $real_pricezone = $res;
+            }
+        }
+//        return $real_pricezone->id;
+        if($real_pricezone->r_km < $pricezone_for_vehicle->r_km || $real_pricezone->r_h < $pricezone_for_vehicle->r_h){
+            $real_pricezone = $pricezone_for_vehicle;
+        }
+
+        return $real_pricezone->id;
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -428,6 +641,8 @@ class Order extends \yii\db\ActiveRecord
         $this->unlinkAll('bodyTypies', true);
         $this->unlinkAll('loadingTypies', true);
         $this->unlinkAll('priceZones', true);
+        $this->unlinkAll('route', true);
+        $this->unlinkAll('realRoute', true);
         $this->deleteEventChangeStatusToExpired();
         return parent::beforeDelete(); // TODO: Change the autogenerated stub
     }
@@ -551,10 +766,10 @@ class Order extends \yii\db\ActiveRecord
            case self::PAID_NO:
                return 'Не оплачен';
                break;
-           case self::PAID_NO:
+           case self::PAID_YES:
                return 'Оплачен';
                break;
-           case self::PAID_NO:
+           case self::PAID_PARTIALLY:
                return 'Частично оплачен';
                break;
        }
@@ -568,68 +783,81 @@ class Order extends \yii\db\ActiveRecord
         return false;
     }
 
-    public function getShortInfoForClient(){
+    public function getShortInfoForClient($finish = false){
         $return = 'Тип ТС: ' . $this->vehicleType->type .'.<br> Тип(ы) кузова: ';
-
-        $bTypies = ' (';
-        foreach ($this->bodyTypies as $bodyType) {
-            $bTypies .= $bodyType->body . ', ';
+        $bTypies =  '';
+        if($finish){
+            $bTypies .= $this->vehicle->bodyTypeText . ', ';
+        } else {
+            foreach ($this->body_typies as $bodyType) {
+                $bTypies .= BodyType::findOne($bodyType)->body . ', ';
+            }
+            $bTypies = substr($bTypies, 0, -2);
         }
-        $bTypies = substr($bTypies, 0, -2);
-        $return .= $bTypies . '). <br>';
-
+        $tonnage = ($finish)? $this->real_tonnage: $this->tonnage;
+        $length = ($finish)? $this->real_length: $this->length;
+        $height= ($finish)? null: $this->height;
+        $width= ($finish)? null: $this->width;
+        $volume= ($finish)? $this->real_volume: $this->volume;
+        $passengers= ($finish)? $this->real_passengers: $this->passengers;
+        $tonnage_spec = ($finish)? $this->real_tonnage_spec: $this->tonnage_spec;
+        $length_spec = ($finish)? $this->real_length_spec: $this->length_spec;
+        $volume_spec = ($finish)? $this->real_volume_spec: $this->volume_spec;
+        $longlength = ($finish)? $this->real_longlength : $this->longlength;
+        $return .= $bTypies . '. <br>';
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
-                $return .= 'Вес: ' . $this->tonnage . ' тонн(ы). ';
-                $return .= ($this->length)?$this->length. 'м * ':'--.  * ';
-                $return .= ($this->height)?$this->height. 'м * ':'-- * ';
-                $return .= ($this->width)?$this->width . 'м ':'-- ';
+                $return .= 'Вес: ' . $tonnage . ' т. ';
+                $return .= ($length)?$length. 'м * ':'--.  * ';
+                $return .= ($height)?$height. 'м * ':'-- * ';
+                $return .= ($width)?$width . 'м ':'-- ';
                 $return .= ' (Д*В*Ш). ';
                 $return .= 'Объем: ';
-                $return .= ($this->volume)?$this->volume.' м3 ':'-- ';
-                $return .= ($this->longlength)?' Груз-длинномер.<br>':'<br>';
+                $return .= ($volume)?$volume.' м3 ':'-- ';
+                $return .= ($longlength)?' Груз-длинномер.<br>':'<br>';
                 $lTypies = 'Погрузка/разгрузка: ';
-                foreach ($this->loadingTypies as $loadingType) {
-                    $lTypies .= $loadingType->type . ', ';
+                foreach ($this->loading_typies as $loadingType) {
+                    $lTypies .= LoadingType::findOne($loadingType)->type . ', ';
                 }
                 $lTypies = substr($lTypies, 0, -2) . '.';
-                $return .= $lTypies;
+                $return .= ($finish)? '' : $lTypies . '. <br>';
                 break;
             case Vehicle::TYPE_PASSENGER:
-                $return .= $this->passengers . ' пассажира(ов)';
+                $return .= $passengers . ' пассажира(ов)';
                 break;
 
             case Vehicle::TYPE_SPEC:
                 switch ($this->bodyTypies[0]->id) {
                     case Vehicle::BODY_manipulator:
-                        $return .= $this->tonnage . ' тонн(ы). ';
+                        $return .= 'Вес: ' . $tonnage . ' т. ';
+                        $return .= ($length)?$length. 'м * ':'--.  * ';
+                        $return .= ($width)?$width . 'м ':'-- ';
+                        $return .= '(Д*Ш). ';
                         $return .= 'Стрела: ';
-                        $return .= ($this->tonnage_spec)?$this->tonnage_spec . ' т., ': '-- т., ';
-                        $return .= ($this->length_spec)?$this->length_spec . ' м.': '-- м.';
+                        $return .= ($tonnage_spec)?$tonnage_spec . ' т., ': '-- т., ';
+                        $return .= ($length_spec)?$length_spec . ' м.': '-- м.';
                         break;
                     case Vehicle::BODY_dump:
-                        $return .= $this->tonnage . ' тонн(ы). ';
-                        $return .= $this->volume . ' м3. ';
+                        $return .= 'Вес: ' . $tonnage . ' т. ';
+                        $return .= 'Объем: ' . $volume . ' м3. ';
                         break;
                     case Vehicle::BODY_crane:
                         $return .= 'Стрела: ';
-                        $return .= ($this->tonnage_spec)?$this->tonnage_spec . ' т., ': '-- т., ';
-                        $return .= ($this->length_spec)?$this->length_spec . ' м.': '-- м.';
+                        $return .= ($tonnage_spec)?$tonnage_spec . ' т., ': '-- т., ';
+                        $return .= ($length_spec)?$length_spec . ' м.': '-- м.';
                         break;
                     case Vehicle::BODY_excavator:
                         $return .= 'Ковш: ';
-                        $return .= ($this->volume_spec)?$this->volume_spec . ' м3. ': '-- м3.';
+                        $return .= ($volume_spec)?$volume_spec . ' м3. ': '-- м3.';
                         break;
                     case Vehicle::BODY_excavator_loader:
                         $return .= 'Ковш: ';
-                        $return .= ($this->volume_spec)?$this->volume_spec . ' м3. ': '-- м3.';
+                        $return .= ($volume_spec)?$volume_spec . ' м3. ': '-- м3.';
                         break;
                 }
                 break;
         }
-        $return .= ($this->cargo)?'<br>Комментарии: ' . $this->cargo : '';
-
-
+        $return .= ($this->cargo && !$finish)?'<br>Комментарии: ' . $this->cargo : '';
         return $return;
     }
 
@@ -640,9 +868,11 @@ class Order extends \yii\db\ActiveRecord
             ->count();
     }
 
-    public function getShortRoute(){
-        $route = $this->route;
-        $return = '(&asymp;' . $route->distance . 'km)* <br>'. $route->startCity . ' <br>';
+    public function getShortRoute(bool $real = false){
+        $route = ($real) ? $this->realRoute : $this->route;
+        $return = '';
+        if(!$real) $return .= '(&asymp;' . $route->distance . 'km)* <br>';
+        $return .= $route->startCity . ' <br>';
         for($i = 1; $i<9; $i++){
             $attribute = 'route' . $i;
             if($route->$attribute) {
@@ -658,11 +888,22 @@ class Order extends \yii\db\ActiveRecord
         $return = '';
         $return .= $this->profile->fioFull
             . '<br>'
-            . 'Телефон: <a href="tel:+7'. $this->user->username .'">'. $this->user->username. '</a><br>'
+            . 'Телефон: <a href="tel:+7'. $this->user->username .'">'. $this->user->username. '</a>'
         ;
-        if($this->id_company) $return .= $this->company->name . '<br>';
+        if($this->profile->phone2) $return .= ' (доп. тел.: <a href="tel:+7'. $this->profile->phone2 .'">'. $this->profile->phone2. '</a>)';
+        if($this->id_company) $return .= '<br>' .$this->company->name . '<br>';
 
         return $return;
+    }
+
+    public function getVehicleFioAndPhone(){
+        $return = $this->vehicle->profile->fioFull . '<br>'
+            . 'Телефон: <a href="tel:+7'. $this->vehicle->profile->phone .'">'. $this->vehicle->profile->phone . ' </a>';
+            $return .= ($this->vehicle->profile->phone2)
+                ? '(доп. тел.: <a href="tel:+7'. $this->vehicle->profile->phone2 .'">'. $this->vehicle->profile->phone2 . ') </a>'
+                : ''
+            ;
+            return $return;
     }
 
     public function getClientInfoWithoutPhone(){
@@ -676,8 +917,11 @@ class Order extends \yii\db\ActiveRecord
     }
 
 
-    public function getPaymentText(){
-        return TypePayment::findOne($this->type_payment)->type;
+    public function getPaymentText($withIconDiscount = true){
+        return ($withIconDiscount)
+                    ? TypePayment::findOne($this->type_payment)->textWithIconDiscount
+                    : TypePayment::findOne($this->type_payment)->type
+            ;
     }
 
     public function getPriceZonesWithInfo(){
@@ -761,7 +1005,7 @@ class Order extends \yii\db\ActiveRecord
                     $title_vehicle = 'Заказ №'.$this->id.'. Вы отказались от заказа';
                     $message_vehicle = 'Вы отказались от ранее принятого заказа. <br>'
                         .'ТС: ' .$vehicle->brandAndNumber . '<br>'
-                        . $this->getFullNewInfo(false, true) . '<br>'
+                        . $this->getFullNewInfo(false, true, false) . '<br>'
                         .'. <br> Клиент при желании может оценить Ваше действие, что повлияет на Ваш рейтинг водителя.'
                     ;
                     $message_client = 'Водитель (ТC: '. $vehicle->brandAndNumber .') отказался от заказа.<br> Поиск ТС продолжится до '
@@ -786,30 +1030,43 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_NEW:
-                $title_client = 'Заказ №'.$this->id.' оформлен.';
+                switch ($this->status) {
+                    case self::STATUS_NEW:
+                        $title_client = 'Заказ №' . $this->id . ' изменен.';
+                        $this->deleteEventChangeStatusToExpired();
+                        $this->setEventChangeStatusToExpired();
+                        break;
+                    case self::STATUS_CANCELED: case self::STATUS_EXPIRED:
+                        $title_client = 'Заказ №' . $this->id . ' изменен и добавлен в поиск.';
+                        $this->deleteEventChangeStatusToExpired();
+                        $this->setEventChangeStatusToExpired();
+                        break;
+                    default:
+                        $title_client = 'Заказ №' . $this->id . ' оформлен.';
+                        break;
+                }
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
                     . $this->getFullNewInfo(true);
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
-                $vehicle = Vehicle::findOne($this->id_vehicle);
+                $vehicle = $this->vehicle;
                 $title_client = 'Заказ №'.$this->id.' принят водителем (' . $vehicle->brandAndNumber . ').';
                 $title_vehicle = 'Вы приняли заказ №'.$this->id.'.';
                 $message_vehicle = 'Вы приняли заказ №'
-                    . $this->id
-                    . ' на ТС '
-                    .  $vehicle->brandAndNumber.' <br>'
-                    . 'Водитель: ' . $this->driver->fio
-                    . ' (' . $this->driver->passport->fullInfo . '). <br>'
-                    . $this->getFullNewInfo(false, true);
+                    . $this->id  . '<br>'
+                    . $this->getFullInfoAboutVehicle() . '<br>'
+                    . $this->getFullNewInfo(false, true, false)
+                    . '<br><strong>Телефоны клиента в разделе Заказы на вкладке "В процессе...". </strong><br>';
 
-                $message_client = 'ТС: ' . $vehicle->brandAndNumber . ' <br>'
-                    . 'Водитель: ' . $this->driver->fio
-                    . ' (' . $this->driver->passport->fullInfo . '). <br>'
-//                    . 'Тарифная зона № ' . $this->id_pricezone_for_vehicle . '. <br>'
-                    . $this->getFullNewInfo(true, true);
+
+                $message_client = $this->getFullInfoAboutVehicle(false, false, false)
+                    . '<br><strong>Телефоны, паспорт и ВУ водителя в разделе Заказы на вкладке "В процессе...". </strong><br><br>'
+                    . $this->getFullNewInfo(true,true, false);
 
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
+
+                $this->discount = $this->getDiscount($id_client);
 
                 $this->deleteEventChangeStatusToExpired();
 
@@ -817,23 +1074,54 @@ class Order extends \yii\db\ActiveRecord
             case self::STATUS_EXPIRED:
                 break;
             case self::STATUS_CONFIRMED_VEHICLE:
-                $title = 'Заказ №' . $this->id . 'подтвержден водителем.';
-                $email_addresses [] = User::findOne($id_client)->email;
-                $email_addresses [] = User::findOne($id_vehicle)->email;
-                functions::setFlashSuccess('Водитель подтвердил завершение заказа.');
+                $title_client = 'Заказ №'.$this->id.' выполнен.';
+                $title_vehicle = 'Заказ №'.$this->id.'. Вы подтвердили выполнение заказа.';
+                $message_vehicle = $this->CalculateAndPrintFinishCost(false)['text'];
+                $message_client = $this->CalculateAndPrintFinishCost(false)['text'];
+                $email_to_vehicle = true;
+                $push_to_vehicle = true;
+
+                if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
+                else $this->paid_status = self::PAID_NO;
+
                 break;
             case self::STATUS_CONFIRMED_CLIENT:
-                $title = 'Заказ №' . $this->id . ' подтвержден клиентом.';
-                $email_addresses [] = User::findOne($id_client)->email;
-                $email_addresses [] = User::findOne($id_vehicle)->email;
-                functions::setFlashSuccess('Клиент подтвердил завершение заказа.');
-                $push_to_vehicle = true;
+
                 break;
             case self::STATUS_CANCELED:
                 if($this->status == self::STATUS_NEW || $this->status == self::STATUS_IN_PROCCESSING){
                     $title_client = 'Заказ №'.$this->id.' отменен.';
                     $message_client = 'Вы отменили Ваш заказ.  <br>'
-                        . $this->getFullNewInfo(true);;
+                        . $this->getFullNewInfo(true);
+                }
+                if(self::STATUS_VEHICLE_ASSIGNED){
+                    if(strtotime($this->valid_datetime) < time()) {
+
+                    } else {
+
+                    }
+                    $title_client = 'Заказ №'.$this->id.'. Вы отменили заказ.';
+                    $title_vehicle = 'Заказ №'.$this->id.' отменен клиентом.';
+                    $message_vehicle = 'Клиент отменил принятый Вами заказ на <br>'
+                        .'ТС: ' .$vehicle->brandAndNumber . '<br>'
+                        . $this->getFullNewInfo(false, true) . '<br>'
+                        .'. <br> При желании Вы можете оценить действие Клиента, что повлияет на его рейтинг клиента.'
+                    ;
+                    $message_client = 'Вы отменили Заказ. Пожалуйста, позвоните водителю и сообщите об отмене заказа <br>'
+                        . $this->vehicleFioAndPhone . '<br>'
+                        . $this->getFullNewInfo(true) . '<br>';
+                    $push_to_vehicle = true;
+                    $email_to_vehicle = true;
+
+                    $message_can_review_vehicle = true;
+                    $vehicle_id_to_review = $id_client;
+                    $vehicle_id_from_review = $vehicle->id_user;
+
+                    $this->id_vehicle = null;
+                    $this->id_driver = null;
+                    $this->id_pricezone_for_vehicle = null;
+
+                    break;
                 }
                 break;
             case self::STATUS_DISPUTE:
@@ -926,11 +1214,27 @@ class Order extends \yii\db\ActiveRecord
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
         $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
         $return .= $this->getShortInfoForClient() . ' <br>';
-        if($showPriceZones) {
-            $return .= ($showPriceForVehicle)
-                ? 'Тарифная зона №' . $this->id_pricezone_for_vehicle . '. <br>'
-                : 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>';
+        $return .= ($showPriceForVehicle) ? 'Тарифная зона №' . $this->id_pricezone_for_vehicle . '. <br>' : '';
+        $return .= ($showPriceZones) ? 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>' :'';
+        $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
+        $return .= ($showClientPhone)
+            ?'Заказчик:' . $this->clientInfo . ' <br>'
+            :'Заказчик:' . $this->clientInfoWithoutPhone . ' <br>';
+
+        return $return;
+    }
+    public function getFullFinishInfo($showClientPhone = false, $realRoute = null){
+        if($this->realRoute) $real_route = $this->realRoute;
+        else {
+            if(!$realRoute) return false;
+            $real_route = $realRoute;
         }
+        $return = 'Заказ №' . $this->id;
+        $return .= '<br>Время выезда: ' .  $this->real_datetime_start .'<br>';
+        $return .= 'Время возвращения: ' .  $this->datetime_finish .'<br>';
+        $return .= 'Маршрут: ' . $real_route->fullRoute . '<br>';
+        $return .= $this->getShortInfoForClient(true) . ' <br>';
+        $return .= 'Тарифная зона №' . $this->id_price_zone_real . '. <br>';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
             ?'Заказчик:' . $this->clientInfo . ' <br>'
@@ -968,7 +1272,237 @@ class Order extends \yii\db\ActiveRecord
                 }
                 break;
         }
+
     }
+
+    public function setScenarioForFinish(){
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK:
+                $this->scenario = self::SCENARIO_FINISH_TRUCK;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $this->scenario = self::SCENARIO_FINISH_PASS;
+                break;
+            case Vehicle::TYPE_SPEC:
+//                $tmpBodyTypies = $this->body_typies[0];
+//                switch ($tmpBodyTypies){
+                switch ($this->vehicle->body_type){
+                    case Vehicle::BODY_manipulator:
+                        $this->scenario = self::SCENARIO_FINISH_MANIPULATOR;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $this->scenario = self::SCENARIO_FINISH_DUMP;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $this->scenario = self::SCENARIO_FINISH_CRANE;
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $this->scenario = self::SCENARIO_FINISH_EXCAVATOR;
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $this->scenario = self::SCENARIO_FINISH_EXCAVATOR;
+                        break;
+                }
+                break;
+        }
+
+    }
+    public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true, $showDriveLicence = true){
+        $return = '';
+        if(!$this->id_vehicle) return false;
+        $vehicle = $this->vehicle;
+        if(!$vehicle) return false;
+        $vehicle_user = $this->vehicle->profile;
+        if($this->id_driver) $driver = Driver::findOne($this->id_driver);
+        $return .= $vehicle->fullInfo . '<br>';
+        if($this->id_driver){
+            if($driver) $return .= 'Водитель: ' . $driver->getFullInfo($showPhones, $showPassport, $showDriveLicence);
+            $return .= 'Владелец ТС: ' . $vehicle_user->getProfileInfo($showPhones);
+        } else {
+            if($vehicle_user) $return .= 'Водитель: ' . $vehicle_user->getDriverFullInfo($showPhones, $showPassport, $showDriveLicence);
+        }
+        return $return;
+    }
+     public function getArrayAttributesForSetFinishPricezone(){
+        $body_type = Vehicle::findOne($this->id_vehicle)->bodyType;
+        $res = [];
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK;
+                $res = ['real_tonnage', 'real_length', 'real_volume'];
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $res = ['real_passengers'];
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($body_type->id){
+                    case Vehicle::BODY_manipulator:
+                        $res = ['real_tonnage','real_length', 'real_tonnage_spec', 'length_spec'];
+                        break;
+                    case Vehicle::BODY_dump:
+                        $res = ['real_tonnage', 'real_volume'];
+                        break;
+                    case Vehicle::BODY_crane:
+                        $res = ['real_tonnage_spec', 'real_length_spec'];
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $res = ['real_volume_spec'];
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $res = ['real_volume_spec'];
+                        break;
+                }
+                break;
+        }
+
+        return $res;
+    }
+
+    public function copyValueToRealValue(){
+        if(!$this) return false;
+        $body_type = $this->vehicle->bodyType->id;
+        switch ($this->id_vehicle_type){
+            case Vehicle::TYPE_TRUCK:
+                $this->real_tonnage = $this->tonnage;
+                $this->real_length = $this->length;
+                $this->real_volume = $this->volume;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $this->real_passengers = $this->passengers;
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($body_type){
+                    case Vehicle::BODY_manipulator:
+                        $this->real_tonnage = $this->tonnage;
+                        $this->real_length = $this->length;
+                        $this->real_tonnage_spec = $this->tonnage_spec;
+                        $this->real_length_spec = $this->length_spec;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $this->real_tonnage = $this->tonnage;
+                        $this->real_volume = $this->volume;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $this->real_tonnage_spec = $this->tonnage_spec;
+                        $this->real_length_spec = $this->length_spec;
+                        break;
+                    case Vehicle::BODY_excavator: case Vehicle::BODY_excavator_loader:
+                        $this->real_volume_spec = $this->real_volume_spec;
+                        break;
+                }
+                break;
+        }
+    }
+<<<<<<< HEAD
+=======
+
+    public function CalculateAndPrintFinishCost(bool $html = true, bool $forVehicle = false) : array {
+        $distance = $this->real_km;
+        $hour = $this->real_h;
+        $real_pz = PriceZone::findOne(['id' => $this->id_price_zone_real]);
+        if($forVehicle) $real_pz = $real_pz->getWithDiscount(9);
+        if(!$real_pz || !$distance) return ['text' => 'Ошибка на сервере', 'cost' => 0];
+        if($distance){
+            $cost = 0;
+            $text = ($html)
+                ? $real_pz->getTextWithShowMessageButton($this->real_km)
+                : 'Тарифная зона №' . $real_pz->id;
+            if($distance < 20){
+                $min_cost = $real_pz->min_r_10 * $real_pz->r_h;
+                $text .= '<br>Мин. оплата при пробеге менее 20км: ' . $real_pz->min_r_10 . 'ч. ';
+            }
+            if ($distance >= 20 && $distance<40){
+                $min_cost = $real_pz->min_r_20 * $real_pz->r_h;
+                $text .= '<br>Мин. оплата при пробеге от 20км до 39км: ' . $real_pz->min_r_20 . 'ч. ';
+            }
+            if ($distance >= 40 && $distance<60){
+                $min_cost = $real_pz->min_r_30 * $real_pz->r_h;
+                $text .= '<br>Мин. оплата при пробеге от 40км до 59км: ' . $real_pz->min_r_30 . 'ч. ';
+            }
+            if ($distance >= 60 && $distance<80){
+                $min_cost = $real_pz->min_r_40 * $real_pz->r_h;
+                $text .= '<br>Мин. оплата при пробеге от 60км до 79км: ' . $real_pz->min_r_40 . 'ч. ';
+            }
+            if ($distance >= 80 && $distance<120){
+                $min_cost = $real_pz->min_r_50 * $real_pz->r_h;
+                $text .= '<br>Мин. оплата при пробеге от 80км до 119км: ' . $real_pz->min_r_50 . 'ч. ';
+            }
+
+            if ($distance >= 120) {
+                $text .= '<br>Фактический пробег: ' . $this->real_km . ' km. (более 120 км). ';
+                if ($this->id_vehicle_type == Vehicle::TYPE_SPEC && !$real_pz->r_km) {
+                    $cost = 0;
+                    $text .= '<br>Для данного типа ТС действует договорная стоимость между Водителем и Клиентом';
+                } else {
+                    $min_cost = $real_pz->min_price;
+                    $real_cost = ($real_pz->r_km * $this->real_km);
+                    $text .= '<br>Стоимость 1 км: ' . $real_pz->r_km . 'р. ';
+//                    $text .= '<br>Фактический пробег: ' . $this->real_km . 'км. ';
+
+                    if($min_cost > $real_cost){
+                        $cost = $min_cost;
+                        $text .= '<br>Минимальная оплата при пробеге более 120км.: ' . $real_pz->min_price;
+                    } else {
+                        $cost = $real_cost;
+                    }
+                    $text .= '<br>Итого за пробег: ' . $cost . 'р. ';
+                    $text .= '<br>Время потраченное на погрузку/разгрузку/ожидание: ' . $this->real_h_loading . 'ч. ';
+                    $text .= '<br>Бесплатное время на погрузку/разгрузку/ожидание: ' . $real_pz->h_loading . 'ч. ';
+                    if($this->real_h_loading && ($this->real_h_loading - $real_pz->h_loading)>0){
+                        $cost += ($this->real_h_loading - $real_pz->h_loading) * $real_pz->r_loading;
+                        $text .= '<br>Стоимость часа (сверх бесплатных) на погрузку/разгрузку/ожидание: ' . $real_pz->r_loading . 'р. ';
+                        $text .= '<br>Итого за лишнее время на погрузку/разгрузку/ожидание: ';
+                        $text .=  $real_pz->r_loading * ($this->real_h_loading - $real_pz->h_loading);
+                        $text .= 'р. ';
+                    }
+//                    $text .= '<br>Время потраченное на погрузку/разгрузку/ожидание: ' . $this->real_h_loading . 'ч. ';
+//                    $text .= '<br>Бесплатное время на погрузку/разгрузку/ожидание: ' . $real_pz->h_loading . 'ч. ';
+//                    $text .= '<br>Стоимость часа (сверх бесплатных) на погрузку/разгрузку/ожидание: ' . $real_pz->r_loading . 'р. ';
+//                    $text .= '<br>Итого за лишнее время на погрузку/разгрузку/ожидание: ';
+//                    $text .=  (($this->real_h_loading - $real_pz->h_loading)>0) ? $real_pz->h_loading * ($this->real_h_loading - $real_pz->h_loading) : '0';
+//                    $text .= 'р. ';
+
+                }
+            } else {
+                $real_cost = $this->real_h * $real_pz->r_h;
+                ($min_cost > $real_cost)? $cost = $min_cost : $cost = $real_cost;
+                $text .= '<br>Время работы (с учетом дороги от/до г.Обнинск): ' . $this->real_h . 'ч. ';
+                $text .= '<br>Стоимость 1 часа: ' . $real_pz->r_h . 'р. ';
+            }
+            if($this->real_remove_awning && $real_pz->remove_awning) {
+                $text .= '<br>Количество "растентовок" сверху или сбоку: ' . $this->real_remove_awning . '. ';
+                $text .= '<br>Стоимость одной "растентовки" одной стороны: ' . $real_pz->remove_awning . 'р. ';
+                $cost += $this->real_remove_awning * $real_pz->remove_awning;
+                $text .= '<br>Итого за "растентовку": ' . $this->real_remove_awning * $real_pz->remove_awning;
+            }
+            if($this->additional_cost){
+                $cost += $this->additional_cost;
+                $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+            }
+            $return['cost'] =  $cost;
+            $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
+            $return['text'] =  $text;
+            return $return;
+        }
+        return ['text' => 'error', 'cost' => 0];
+    }
+
+    public function getReal_h(){
+        if(!$this->real_datetime_start || ! $this->datetime_finish) return false;
+        return ceil((strtotime($this->datetime_finish) - strtotime($this->real_datetime_start))/3600/0.5)*0.5;
+    }
+
+    public function getFinishCost($html = true){
+        if($html){
+            return ($this->discount)
+                ? '<s>' . $this->cost . '</s> ' . '<strong> ' . round($this->cost - ($this->cost*$this->discount/100)) . '</strong>'
+                : $this->cost;
+        } else{
+            return ($this->discount)
+                ? round($this->cost - ($this->cost*$this->discount/100))
+                : $this->cost;
+        }
+    }
+>>>>>>> dc32e696e63e582a70ccbadbf54c5c68c8a98a5f
 }
 
 
