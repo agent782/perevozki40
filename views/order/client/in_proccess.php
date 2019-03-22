@@ -71,7 +71,7 @@ use yii\bootstrap\Tabs;
                 'value' => function($modelOrder){
                     return \app\models\PriceZone::findOne($modelOrder
                         ->id_pricezone_for_vehicle)
-                        ->getTextWithShowMessageButton($modelOrder->route->distance);
+                        ->getTextWithShowMessageButton($modelOrder->route->distance, true, $modelOrder->discount);
                 }
             ],
             [
@@ -79,7 +79,10 @@ use yii\bootstrap\Tabs;
                 'format' => 'raw',
                 'attribute' => 'clientInfo'
             ],
-            'paymentText',
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
+            ],
             [
                 'label' => 'Действия',
                 'format' => 'raw',

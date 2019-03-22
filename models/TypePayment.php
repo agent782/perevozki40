@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\bootstrap\Html;
 
 /**
  * This is the model class for table "typies_payment".
@@ -10,6 +11,7 @@ use Yii;
  * @property integer $id
  * @property string $type
  * @property string $description
+ * @property string $textWithIconDiscount
  */
 class TypePayment extends \yii\db\ActiveRecord
 {
@@ -42,5 +44,11 @@ class TypePayment extends \yii\db\ActiveRecord
             'id' => 'ID',
             'type' => 'Type',
         ];
+    }
+
+    public function getTextWithIconDiscount(){
+        return ($this->id == Payment::TYPE_BANK_TRANSFER)
+                    ? $this->type
+                    : Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) . ' ' . $this->type;
     }
 }

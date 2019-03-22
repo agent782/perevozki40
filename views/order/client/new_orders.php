@@ -5,12 +5,14 @@
  * Date: 05.01.2019
  * Time: 12:28
  */
+/* @var Order $model*/
 use kartik\grid\GridView;
 use app\models\Order;
 use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+
 ?>
 <div>
     <h4>В процессе поиска ТС...</h4>
@@ -22,22 +24,22 @@ use yii\bootstrap\Tabs;
     'responsiveWrap' => false,
     'pjax'=>true,
     'columns' => [
-        [
-            'class' => 'kartik\grid\ExpandRowColumn',
-            'value' => function ($model, $key, $index, $column) {
-
-                return GridView::ROW_COLLAPSED;
-            },
-            'enableRowClick' => true,
-            'allowBatchToggle'=>true,
-            'detail'=>function ($model) {
-//                    return $model->id;
-                return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-            },
-            'detailOptions'=>[
-                'class'=> 'kv-state-enable',
-            ],
-        ],
+//        [
+//            'class' => 'kartik\grid\ExpandRowColumn',
+//            'value' => function ($model, $key, $index, $column) {
+//
+//                return GridView::ROW_COLLAPSED;
+//            },
+//            'enableRowClick' => true,
+//            'allowBatchToggle'=>true,
+//            'detail'=>function ($model) {
+////                    return $model->id;
+//                return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
+//            },
+//            'detailOptions'=>[
+//                'class'=> 'kv-state-enable',
+//            ],
+//        ],
         'id',
         [
             'attribute' => 'datetime_start',
@@ -62,11 +64,16 @@ use yii\bootstrap\Tabs;
             'attribute' => 'clientInfo'
         ],
         [
-            'label' => 'Тарифные зоны',
+            'label' => 'Выбранные тарифы',
             'format' => 'raw',
-            'attribute' => 'idsPriceZonesWithPriceAndShortInfo'
+            'value' => function($model){
+                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getDiscount($model->id_user));
+            }
         ],
-        'paymentText',
+        [
+            'attribute' => 'paymentText',
+            'format' => 'raw'
+        ],
         'valid_datetime',
         [
             'label' => 'Действия',

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use Yii;
 use app\components\DateBehaviors;
 use nickcv\encrypter\behaviors\EncryptionBehavior;
@@ -144,8 +145,8 @@ class Driver extends \yii\db\ActiveRecord
     public function getFullInfo($showPhone = false, $showPassport = false, $showDriveLicense = false){
         $return = $this->fio . '<br>';
         if($showPhone) {
-            $return .= 'Телефон: ' . $this->phone;
-            if ($this->phone2) $return .= ' (доп. ' . $this->phone2 . ')';
+            $return .= 'Телефон: ' . functions::getHtmlLinkToPhone($this->phone);
+            if ($this->phone2) $return .= ' (доп. ' . functions::getHtmlLinkToPhone($this->phone2) . ')';
             $return .= '. <br>';
         }
         if($showPassport) $return .= 'Пасспорт: ' . $this->passport->fullInfo . ' <br>';

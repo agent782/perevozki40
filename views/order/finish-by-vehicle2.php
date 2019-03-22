@@ -35,16 +35,16 @@ $this->title = 'Фактические данные по заказу №' . $mo
     ?>
     <div class="col-lg-4">
         <strong>Тарифная зона после изменения данных по заказу: </strong>
-
         <?= $finishCostText?>
-        <?=  $form->field($modelOrder, 'type_payment')
-                ->radioList($paymrnt_typies);
-        ?>
+        <strong>
+            <p>Способ оплаты: <?= $modelOrder->paymentText?></p>
+        </strong>
        <br><br>
         <i>Тарифная зона при принятии заказа: </i>
         <i>
             <?=
             PriceZone::findOne($modelOrder->id_pricezone_for_vehicle)
+                ->getWithDiscount(\app\models\setting\SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent)
                 ->getTextWithShowMessageButton($modelOrder->route->distance);
             ?>
         </i>
@@ -73,7 +73,10 @@ $this->title = 'Фактические данные по заказу №' . $mo
             [
                 'class' => 'btn btn-success',
                 'name' => 'button',
-                'value' => 'finish'
+                'value' => 'finish',
+                'data-confirm' => Yii::t('yii'
+                    , 'После завершения заказа внести изменения будет нельзя! Завершить заказ?'),
+                'data-method' => 'post'
             ])?>
     </div>
 

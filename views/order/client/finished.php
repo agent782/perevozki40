@@ -40,9 +40,19 @@ use yii\bootstrap\Tabs;
             ],
             'id',
             'real_datetime_start',
-            'cost',
-            'paidText',
-            'paymentText',
+            [
+                'label' => 'Сумма к оплате',
+                'attribute' => 'finishCost',
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'paidText',
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
+            ],
             [
                 'label' => 'Маршрут',
                 'format' => 'raw',
@@ -62,11 +72,30 @@ use yii\bootstrap\Tabs;
                 'format' => 'raw',
                 'attribute' => 'clientInfo'
             ],
-            'paymentText',
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
+            ],
             [
                 'label' => 'Действия',
                 'format' => 'raw',
             ],
+            [
+                'label' => 'Действия',
+                'format' => 'raw',
+                'value' => function($model){
+                        return
+                             Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Удалить заказ']), Url::to([
+                                '/order/delete',
+                                'id' => $model->id,
+                                 'redirect' => '/order/client'
+                            ]),
+                                ['data-confirm' => Yii::t('yii',
+                                    'Удалить безвозвратно?'),
+                                    'data-method' => 'post'])
+                            ;
+                }
+            ]
         ]
     ]); ?>
 </div>

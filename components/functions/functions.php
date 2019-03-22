@@ -118,4 +118,9 @@ class functions
         $attributes = array_keys($attributes);
         return $attributes;
     }
+
+    static public function getHtmlLinkToPhone(string $phone, $html =true){
+        if(!$html) return $phone;
+        return 'Телефон: <a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
+    }
 }

@@ -12,6 +12,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\Vehicle;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Tip;
 use app\models\Payment;
 /* @var $this yii\web\View */
 /* @var $modelOrder app\models\Order */
@@ -93,8 +94,7 @@ $this->registerJsFile('/js/order.js');
         <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
             echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
-                    'helpMessage' => \app\models\Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,
-                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
+                    'helpMessage' => Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,
                 ])
 //                ,['encode' => true]
             );
@@ -123,7 +123,11 @@ $this->registerJsFile('/js/order.js');
                 echo $form->field($modelOrder, 'real_remove_awning')->input('tel');
             }
         ?>
-        <?= $form->field($modelOrder,'additional_cost')->input('tel')
+        <?= $form->field($modelOrder,'additional_cost')->input('tel')->label(
+            'Дополнительные рассходы' . ShowMessageWidget::widget([
+                'helpMessage' => Tip::findOne(['model' => 'Order', 'attribute' =>'additional_cost'])->description
+            ])
+        )
         ->hint('Обязательно распишите в комментариях на след. странице! Потребуются подтверждающие чеки.')?>
     </div>
 <br><br>

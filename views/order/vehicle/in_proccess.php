@@ -10,6 +10,7 @@ use app\models\Order;
 use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
+use app\models\setting\SettingVehicle;
 use yii\bootstrap\Tabs;
 ?>
 <div>
@@ -74,10 +75,14 @@ use yii\bootstrap\Tabs;
                 'value' => function($modelOrder){
                     return \app\models\PriceZone::findOne($modelOrder
                         ->id_pricezone_for_vehicle)
+                        ->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent)
                         ->getTextWithShowMessageButton($modelOrder->route->distance);
                 }
             ],
-            'paymentText',
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
+            ],
             [
                 'label' => 'Действия',
                 'format' => 'raw',

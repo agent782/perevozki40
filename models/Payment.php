@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\bootstrap\Html;
 
 /**
  * This is the model class for table "payment".
@@ -18,8 +19,8 @@ use Yii;
 class Payment extends \yii\db\ActiveRecord
 {
 
-    const TYPE_SBERBANK_CARD = 1;
-    const TYPE_CASH = 2;
+    const TYPE_SBERBANK_CARD = 2;
+    const TYPE_CASH = 1;
     const TYPE_BANK_TRANSFER = 3;
     /**
      * @inheritdoc

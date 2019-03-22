@@ -463,6 +463,24 @@ class Vehicle extends \yii\db\ActiveRecord
         $return = substr($return, 0, -2);
         return $return;
     }
+    public function getOrders(){
+        return $this->hasMany(Order::class, ['id_vehicle'=>'id']);
+    }
+public function  hasOrder($statuses_orders) : bool{
+        $orders = $this->orders;
+        if(!$statuses_orders || !$orders) return false;
+
+        foreach ($orders as $order){
+            if(!is_array($statuses_orders)){
+                if($order->status == $statuses_orders) return true;
+            } else {
+                foreach ($statuses_orders as $statuse_order){
+                    if($order->status == $statuse_order) return true;
+                }
+            }
+        }
+        return false;
+    }
 // Массив атрибутов для разных типов транспота и типов кузовов
     static public function getArrayAttributes($id_vehicle_type, $TYPE_BODY){
         $res = [];

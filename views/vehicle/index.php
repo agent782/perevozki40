@@ -18,6 +18,8 @@ $this->registerJs(
         });
     });'
 );
+
+
 ?>
 <div class="vehicle-index">
 

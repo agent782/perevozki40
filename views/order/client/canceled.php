@@ -65,9 +65,13 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Тарифные зоны',
                 'format' => 'raw',
-                'attribute' => 'idsPriceZonesWithPriceAndShortInfo'
+                'value' => function($model){
+                    return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getDiscount($model->id_user));
+                }            ],
+            [
+                'attribute' => 'paymentText',
+                'format' => 'raw'
             ],
-            'paymentText',
             'valid_datetime',
             [
                 'label' => '',
