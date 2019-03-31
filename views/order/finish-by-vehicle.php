@@ -79,19 +79,19 @@ $this->registerJsFile('/js/order.js');
                 'options' => ['placeholder' => 'Ввод даты/времени...'],
                 'convertFormat' => true,
 
-//                'value'=> date("d.m.Y H:i",time()),
+//                'value'=> '',
                 'pluginOptions' => [
                     'format' => 'dd.MM.yyyy H:i',
                     'autoclose'=>true,
                     'weekStart'=>1, //неделя начинается с понедельника
-//                    'startDate' => date('d.m.Y H:i',  time()), //самая ранняя возможная дата
+//                    'startDate' => date($modelOrder->real_datetime_start), //самая ранняя возможная дата
 //                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
                     'todayBtn'=>true, //снизу кнопка "сегодня"
                 ]
             ])
         ?>
 
-        <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
+        <?php if($longlength) {
             echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
                     'helpMessage' => Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,

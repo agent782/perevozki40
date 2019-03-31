@@ -68,6 +68,10 @@ use app\components\widgets\ShowMessageWidget;
  * @property integer $id_vehicle
  * @property integer $id_driver
  * @property float $cost
+ * @property float $cost_finish
+ * @property float $cost_finish_vehicle
+ * @property float $finishCost
+ * @property float $finishCostForVehicle
  * @property integer $discount
  * @property integer $id_payment
  * @property integer $type_payment
@@ -161,7 +165,7 @@ class Order extends \yii\db\ActiveRecord
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
-                'id_price_zone_for_vehicle', 'discount'],
+                'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle'],
                 'safe'
             ],
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
@@ -1023,7 +1027,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->id_vehicle = null;
                     $this->id_driver = null;
                     $this->id_pricezone_for_vehicle = null;
-
+                    $this->discount = $this->getDiscount($this->id_user);
                     $this->setEventChangeStatusToExpired();
                     break;
                 }
@@ -1047,6 +1051,7 @@ class Order extends \yii\db\ActiveRecord
                 }
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
                     . $this->getFullNewInfo(true);
+                $this->discount = $this->getDiscount($this->id_user);
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
                 $vehicle = $this->vehicle;
@@ -1076,14 +1081,15 @@ class Order extends \yii\db\ActiveRecord
             case self::STATUS_CONFIRMED_VEHICLE:
                 $title_client = 'Заказ №'.$this->id.' выполнен.';
                 $title_vehicle = 'Заказ №'.$this->id.'. Вы подтвердили выполнение заказа.';
-                $message_vehicle = $this->CalculateAndPrintFinishCost(false)['text'];
-                $message_client = $this->CalculateAndPrintFinishCost(false)['text'];
+                $message_vehicle = $this->CalculateAndPrintFinishCost(false, true)['text'];
+                $message_client = $this->CalculateAndPrintFinishCost(false, false, true)['text'];
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
 
                 if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
                 else $this->paid_status = self::PAID_NO;
-
+                $this->cost_finish = $this->getFinishCost(false);
+                $this->cost_finish_vehicle = $this->finishCostForVehicle;
                 break;
             case self::STATUS_CONFIRMED_CLIENT:
 
@@ -1393,7 +1399,7 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
-    public function CalculateAndPrintFinishCost(bool $html = true, bool $forVehicle = false) : array {
+    public function CalculateAndPrintFinishCost(bool $html = true, bool $forVehicle = false, $withDiscount = false) : array {
         $distance = $this->real_km;
         $hour = $this->real_h;
         $real_pz = PriceZone::findOne(['id' => $this->id_price_zone_real]);
@@ -1476,7 +1482,17 @@ class Order extends \yii\db\ActiveRecord
                 $cost += $this->additional_cost;
                 $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
             }
+            if($withDiscount){
+                $cost = $this->getFinishCost(false);
+            }
             $return['cost'] =  $cost;
+            if($withDiscount){
+                $cost = $this->getFinishCost(true);
+            }
+            $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
+            if($this->discount && $withDiscount) {
+                $text .= '<br>Скидка: ' . $this->discount . Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']);
+            }
             $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
             $return['text'] =  $text;
             return $return;
@@ -1499,6 +1515,15 @@ class Order extends \yii\db\ActiveRecord
                 ? round($this->cost - ($this->cost*$this->discount/100))
                 : $this->cost;
         }
+    }
+
+    public function getFinishCostForVehicle(){
+        return round(
+            $this->cost
+            - ($this->cost
+            * SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent
+            / 100)
+        );
     }
 }
 

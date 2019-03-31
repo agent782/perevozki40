@@ -92,6 +92,10 @@ class OrderController extends Controller
         $dataProvider_arhive->query
             ->where(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
             ->andWhere(['id_user' => Yii::$app->user->id]);
+        $dataProvider_arhive->sort->defaultOrder = [
+            'paid_status' => SORT_ASC,
+            'datetime_finish' => SORT_DESC
+        ];
         $dataProvider_expired_and_canceled->query
             ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
             ->andWhere(['id_user' => Yii::$app->user->id]);
@@ -108,11 +112,10 @@ class OrderController extends Controller
     public function actionVehicle()
     {
         $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider_newOrders = $searchModel->searchCanVehicle(Yii::$app->request->queryParams);
         $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider_arhive = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider_in_process->query
             ->where(['in', 'status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
@@ -120,16 +123,16 @@ class OrderController extends Controller
         $dataProvider_arhive->query
             ->where(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
             ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids]);
-        $dataProvider_expired_and_canceled->query
-            ->where(['in', 'status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED, Order::STATUS_NOT_ACCEPTED]])
-            ->andWhere(['in', 'id_vehicle', Yii::$app->user->identity->vehicleids]);
+        $dataProvider_arhive->sort->defaultOrder = [
+            'paid_status' => SORT_ASC,
+            'datetime_finish' => SORT_DESC
+        ];
 
         return $this->render('vehicle', [
             'searchModel' => $searchModel,
             'dataProvider_newOrders' => $dataProvider_newOrders,
             'dataProvider_in_process' => $dataProvider_in_process,
             'dataProvider_arhive' => $dataProvider_arhive,
-            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
@@ -542,8 +545,8 @@ class OrderController extends Controller
         }
 
         $modelOrder->real_datetime_start = $modelOrder->datetime_start;
-        $modelOrder->datetime_finish = date('d.m.Y H:i', time());
-
+//        $modelOrder->datetime_finish = date('d.m.Y H:i', time())
+        $longlength = $modelOrder->vehicle->longlength;
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
         $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
@@ -563,7 +566,7 @@ class OrderController extends Controller
                 if($modelOrder->load(Yii::$app->request->post()) && $realRoute->load(Yii::$app->request->post())) {
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
-                    $modelOrder->cost = $costAndDescription['cost'];
+                    $modelOrder->cost = $modelOrder->CalculateAndPrintFinishCost(false)['cost'];
                     $sesssion->set('modelOrder', $modelOrder);
                     $sesssion->set('realRoute', $realRoute);
 
@@ -597,7 +600,8 @@ class OrderController extends Controller
                     'VehicleAttributes' => $VehicleAttributes,
                     'TypiesPayment' => $TypiesPayment,
                     'companies' => $companies,
-                    'redirect' => $redirect
+                    'redirect' => $redirect,
+                    'longlength' => $longlength
                 ]);
                 break;
             case 'finish':
@@ -638,7 +642,8 @@ class OrderController extends Controller
             'VehicleAttributes' => $VehicleAttributes,
             'TypiesPayment' => $TypiesPayment,
             'companies' => $companies,
-            'redirect' => $redirect
+            'redirect' => $redirect,
+            'longlength' => $longlength
         ]);
     }
 

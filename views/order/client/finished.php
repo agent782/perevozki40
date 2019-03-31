@@ -73,10 +73,6 @@ use yii\bootstrap\Tabs;
                 'attribute' => 'clientInfo'
             ],
             [
-                'attribute' => 'paymentText',
-                'format' => 'raw'
-            ],
-            [
                 'label' => 'Действия',
                 'format' => 'raw',
             ],

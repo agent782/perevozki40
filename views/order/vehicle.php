@@ -37,6 +37,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'label' => 'Завершенные<br>(+' . $dataProvider_arhive->getCount() . ')',
+                    'content' => $this->render('vehicle/finished', [
+                        'dataProvider_arhive' => $dataProvider_arhive,
+                        'searchModel' => $searchModel
+                    ]),
                 ],
             ]
         ]);

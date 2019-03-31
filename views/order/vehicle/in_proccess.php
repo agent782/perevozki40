@@ -31,22 +31,6 @@ use yii\bootstrap\Tabs;
         'responsiveWrap' => false,
         'pjax'=>true,
         'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
-
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-//                    return $model->id;
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-            ],
             'id',
             [
                 'label' => 'ТС',
