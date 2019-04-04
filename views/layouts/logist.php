@@ -51,12 +51,12 @@ AppAsset::register($this);
                 . Html::endForm()
                 . '</li>'
             ),
-            (Yii::$app->user->getId() === 1) ? (
+            (Yii::$app->user->can('admin')) ? (
             ['label' => 'Adminka', 'url' => ['/admin']]
             ) : (
                     ''
             ),
-            (Yii::$app->user->getId() === 1) ? (
+            (Yii::$app->user->can('admin')) ? (
             ['label' => 'Roles', 'url' => ['/admin/roles']]
             ) : (
             ''
@@ -67,9 +67,6 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
         <?= $content ?>
     </div>
 </div>

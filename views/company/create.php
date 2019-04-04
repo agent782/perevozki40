@@ -15,15 +15,36 @@ use yii\widgets\MaskedInput;
 
 $this->title = Html::encode('Регистрация юридического лица.');
 ?>
-
-Спасибо. Вы харегистрировались как клиент сервиса perevozki40.
+<div class="container">
+    <h3><?=$this->title?></h3>
+</div>
+<p>
+    <?= Html::a('Назад', [\yii\helpers\Url::previous()], ['class' => 'btn btn-success']) ?>
+</p>
 <br>
-Для заключения договора осталось добавить юридическое лицо
-Введите ИНН и заполните реквизиты Вашей организации.
-<!--<input id="party" name="party" type="text" size="100"/>-->
+<div class="company-form">
 
+    <?php
+    $form = ActiveForm::begin([
+        'enableAjaxValidation' => true,
+//        'enableClientValidation' => true,
+        'validationUrl' => \yii\helpers\Url::to(['/company/validate-add-company']),
+        'fieldConfig' => [
+//            'template' => "{label}<br>{input}<br>{error}",
+            'labelOptions' => ['class' => 'col-lg-12 control-label'],
+        ],
+    ]);
+    ?>
 <?= $this->render('_form', [
     'modelCompany' => $modelCompany,
     'XcompanyXprofile' => $XcompanyXprofile,
+        'form' => $form
 ]) ?>
+    <div class="form-group">
+        <?= Html::submitButton($modelCompany->isNewRecord ? 'Добавить' : 'Сохранить', ['class' => $modelCompany->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    </div>
+    <?php
+    ActiveForm::end();
+    ?>
+</div>
 

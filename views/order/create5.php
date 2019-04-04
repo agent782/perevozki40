@@ -1,4 +1,5 @@
 <?php
+/* @var \app\models\Order $modelOrder*/
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -12,12 +13,12 @@ use kartik\datetime\DateTimePicker;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 //echo date('d.m.Y H:i');
-var_dump($modelOrder->getDiscount(Yii::$app->user->id))
+//var_dump($modelOrder->getDiscount(Yii::$app->user->id))
 ?>
 
 <h4>Шаг 5 из 5.</h4>
 <div class="container-fluid">
-    <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
+<!--    --><?php //\yii\widgets\Pjax::begin(['id' => 'create5']);?>
 <?php
 
     $form = ActiveForm::begin([
@@ -74,6 +75,7 @@ var_dump($modelOrder->getDiscount(Yii::$app->user->id))
 
     <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, [
         'id' => 'type_payment',
+        'encode' => false,
         'onchange' => '
             if($(this).find("input:checked").val()  == 3) {
                 $("#companies").show();  
@@ -87,21 +89,26 @@ var_dump($modelOrder->getDiscount(Yii::$app->user->id))
             changePriceZones();
         '
     ])?>
-
-    <div id="companies" hidden>
+    <?php
+        $companiesHide = ($modelOrder->id_user) ? '' : 'hidden';
+    ?>
+    <div id="companies" <?= $companiesHide?> >
     <?= $form->field($modelOrder, 'id_company',[
         'enableAjaxValidation' => true,
-    ])->radioList($companies)?>
+    ])->radioList($companies)->label('Юр. лица: ')?>
     </div>
     </div>
     <div class="col-lg-5">
-
+        <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
     <?= $form->field($modelOrder, 'selected_rates[]')->label('Выберите подходящие тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, [
             'id' => 'selected_rates',
             'encode' => false
         ]);
     ?>
+        <?php
+        \yii\widgets\Pjax::end();
+        ?>
     </div>
 
 
@@ -118,7 +125,7 @@ var_dump($modelOrder->getDiscount(Yii::$app->user->id))
 </div>
 <?php
     ActiveForm::end();
-\yii\widgets\Pjax::end();
+//\yii\widgets\Pjax::end();
 ?>
 </div>
 <script>
@@ -127,12 +134,16 @@ var_dump($modelOrder->getDiscount(Yii::$app->user->id))
         var datetime_start = $('#order-datetime_start').val();
         var valid_datetime = $('#order-valid_datetime').val();
         $.pjax.reload({
-            container:"#create5",
+            container: "#create5",
 //            dataType:"JSON",
-            type:"POST", data:{
-                "type_payment":type_payment,
-                "datetime_start":datetime_start,
-                "valid_datetime":valid_datetime
-            }});
+            type: "POST",
+            data: {
+                "type_payment": type_payment,
+                "datetime_start": datetime_start,
+                "valid_datetime": valid_datetime
+            },
+        });
+
     }
+
 </script>

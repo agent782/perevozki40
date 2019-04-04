@@ -2,12 +2,15 @@
 
 namespace app\controllers;
 use app\models\Payment;
+use app\models\Profile;
 use app\models\setting\SettingVehicle;
 use app\models\VehicleType;
+use app\models\XprofileXcompany;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use app\models\Message;
 use app\models\User;
+use app\models\Company;
 use yii\bootstrap\Html;
 use yii\filters\AccessControl;
 use app\components\functions\functions;
@@ -50,7 +53,7 @@ class OrderController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['car_owner', 'client']
+                        'roles' => ['car_owner', 'client', 'admin', 'dispetcher']
                     ]
                 ],
             ]
@@ -155,13 +158,20 @@ class OrderController extends Controller
      */
     public function actionCreate($user_id = null)
     {
+        if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
+//            $this->layout = 'logist';
+        };
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
         if (!$modelOrder) $modelOrder = new Order();
-        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
-        if(!$user_id) $user = Yii::$app->user->identity;
-        else $user = User::findOne(['id' => $user_id]);
-        $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
+        $TypiesPayment = TypePayment::getTypiesPaymentsArray();
+        $companies =[];
+        if($user_id){
+            $user = Yii::$app->user->identity;
+            $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
+        }
+//        else $user = User::findOne(['id' => $user_id]);
+
         switch (Yii::$app->request->post('button')) {
             case 'next1':
                 if ($modelOrder->load(Yii::$app->request->post())) {
@@ -220,9 +230,9 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($route->load(Yii::$app->request->post())) {
-                    if(!$user_id) $user_id = Yii::$app->user->id;
+//                    if(!$user_id) $user_id = Yii::$app->user->id;
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
-                    $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user->id));
+                    $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id));
 //                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
 //                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);
@@ -239,11 +249,37 @@ class OrderController extends Controller
             case 'next5':
                 $modelOrder = $session->get('modelOrder');
                 $route = $session->get('route');
+
                 if (!$modelOrder || !$route) {
                     functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     return $this->redirect('create');
                 }
+
                 if ($modelOrder->load(Yii::$app->request->post())) {
+
+                    //Оформление заказа оператором
+                    if(!$user_id) {
+                        $user = new User();
+                        $profile = new Profile();
+                        $modelCompany = new Company();
+                        $XcompanyXprofile = new XprofileXcompany();
+
+                        $session->set('route', $route);
+                        $session->set('modelOrder', $modelOrder);
+                        $session->set('user', $user);
+                        $session->set('profile', $profile);
+                        $session->set('modelCompany', $modelCompany);
+                        $session->set('XcompanyXprofile', $XcompanyXprofile);
+
+                        return $this->render('@app/modules/logist/views/order/create',[
+                            'modelOrder' => $modelOrder,
+                            'route' => $route,
+                            'user' => $user,
+                            'profile' => $profile,
+                            'modelCompany' => $modelCompany,
+                            'XcompanyXprofile' => $XcompanyXprofile
+                        ]);
+                    }
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
 //                    return  GeoCoder::search($route->routeStart)->one()->getLocality();
@@ -264,25 +300,34 @@ class OrderController extends Controller
 
                     functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                 }
-                var_dump($modelOrder->getErrors());
-                return 'error';
+                functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+//                var_dump($modelOrder->getErrors());
+//                return 'error';
+                break;
+            case 'logist_finish':
+                $session->get('route');
+                $session->get('modelOrder');
+                $session->get('user');
+                $session->get('profile');
+                $session->get('modelCompany');
+                $session->get('XcompanyXprofile');
+
+                return 1111111111;
                 break;
 
         }
+
 
         if(Yii::$app->request->isPjax) {
             $modelOrder = $session->get('modelOrder');
             $route = $session->get('route');
             $modelOrder->type_payment = Yii::$app->request->post('type_payment');
-            $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user->id));
+            $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user_id));
             if(Yii::$app->request->post('datetime_start'))$modelOrder->datetime_start = Yii::$app->request->post('datetime_start');
             if(Yii::$app->request->post('valid_datetime'))$modelOrder->valid_datetime = Yii::$app->request->post('valid_datetime');
             $session->set('modelOrder', $modelOrder);
-            return $this->renderAjax('create5', [
-                'route' => $route,
+            return $this->renderAjax('selectedRates', [
                 'modelOrder' => $modelOrder,
-                'TypiesPayment' => $TypiesPayment,
-                'companies' => $companies
             ]);
         }
         return $this->render('create', [

@@ -15,10 +15,8 @@ $this->title = 'ЗАКАЗЫ';
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Новый заказ', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Новый заказ', ['/order/create'], ['class' => 'btn btn-success']) ?>
     </p>
-<!--    <a class = "btn btn-link left"><h3>В поиске  ( + --><?//= $countNewOrders ?><!--)</h3></a>-->
-    <div id="new_orders">
         <?=
             \yii\bootstrap\Tabs::widget([
                 'encodeLabels' => false,
@@ -37,9 +35,9 @@ $this->title = 'ЗАКАЗЫ';
                         'label' => 'Архив<br>(+' . $dataProvider_arhive->getCount() . ')',
                     ],
                     [
-                        'label' => 'Отмененные <br>(+' . $dataProvider_expired_and_canceled->getCount() . ')' ,
-                        'content' => $this->render('orders/expired_and_canceled_orders',
-                            ['dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled,
+                        'label' => 'Отмененные <br>(+' . $dataProvider_canceled->getCount() . ')' ,
+                        'content' => $this->render('orders/canceled',
+                            ['dataProvider_canceled' => $dataProvider_canceled,
                                 'searchModel' => $searchModel])
                     ],
                 ]

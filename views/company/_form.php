@@ -1,51 +1,18 @@
 <?php
-if($modelCompany->isNewRecord) {
-    $this->registerCssFile("https://cdn.jsdelivr.net/npm/suggestions-jquery@17.10.1/dist/css/suggestions.min.css");
-    $this->registerJsFile("https://cdn.jsdelivr.net/npm/suggestions-jquery@17.10.1/dist/js/jquery.suggestions.min.js");
-    $this->registerJsFile('/js/jquery-dateFormat.js');
-    $this->registerJsFile('/js/addCompany.js');
-}
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
+$this->registerCssFile("https://cdn.jsdelivr.net/npm/suggestions-jquery@17.10.1/dist/css/suggestions.min.css");
+$this->registerJsFile("https://cdn.jsdelivr.net/npm/suggestions-jquery@17.10.1/dist/js/jquery.suggestions.min.js");
+$this->registerJsFile('/js/jquery-dateFormat.js');
+$this->registerJsFile('/js/addCompany.js');
 /* @var $this yii\web\View */
 /* @var $model app\models\Company */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-<br><br>
-<!--<p>-->
-<!--    --><?//= Html::a('К списку организаций', ['index'], ['class' => 'btn btn-success']) ?>
-<!--</p>-->
-<p>
-    <?= Html::a('Назад', [\yii\helpers\Url::previous()], ['class' => 'btn btn-success']) ?>
-</p>
-<br>
-<div class="company-form">
-
-    <?php
-    $form = ActiveForm::begin([
-        'enableAjaxValidation' => true,
-//        'enableClientValidation' => true,
-        'validationUrl' => \yii\helpers\Url::to(['validate-add-company']),
-        'fieldConfig' => [
-//            'template' => "{label}<br>{input}<br>{error}",
-            'labelOptions' => ['class' => 'col-lg-12 control-label'],
-        ],
-    ]);
-    ?>
 
     <?=
-        (!$modelCompany->isNewRecord)
-            ?
-            $form->field($modelCompany, 'name')->input('text', ['id' => 'name', 'placeholder' => 'Ввведите ИНН или название:', 'autofocus' => true,
-            'autocomplete' => 'on']) .
-            "<div id=\"formCompany\">"
-            :
-            "<h5>Ввведите ИНН или название:</h5>" .
-            $form->field($modelCompany, 'name')->input('text', ['id' => 'name', 'placeholder' => 'Ввведите ИНН или название:', 'autofocus' => true,
-            'autocomplete' => 'off'])->label(false) . "<hr>" .
-            "<div id=\"formCompany\" hidden> ";
+            $form->field($modelCompany, 'name')
+                ->input('text', ['id' => 'Label', 'placeholder' => 'Ввведите ИНН или название:', 'autofocus' => true,
+            'autocomplete' => 'on']);
+
     ?>
 
 
@@ -93,14 +60,3 @@ use yii\widgets\ActiveForm;
         <?= $form->field($modelCompany, 'data_type')->hiddenInput(['id' => 'data-type'])->label(false)?>
 
 
-        <?//= Html::submitButton('Добавить') ?>
-        <div class="form-group">
-                <?= Html::submitButton($modelCompany->isNewRecord ? 'Добавить' : 'Сохранить', ['class' => $modelCompany->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-        </div>
-        <?php
-        ActiveForm::end();
-        ?>
-    </div>
-
-
-</div>

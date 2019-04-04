@@ -2,12 +2,18 @@
 
 namespace app\modules\logist\controllers;
 
+use app\models\Company;
+use app\models\Payment;
+use app\models\Profile;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
+use app\models\TypePayment;
 
 /**
  * OrderController implements the CRUD actions for Order model.
@@ -61,11 +67,11 @@ class OrderController extends Controller
 
         return $this->render('index', [
             'searchModel' => $searchModel,
-            'dataProvider_newOrders' => $dataProvider_newOrders,
             'countNewOrders' => $countNewOrders,
+            'dataProvider_newOrders' => $dataProvider_newOrders,
             'dataProvider_in_process' => $dataProvider_in_process,
             'dataProvider_arhive' => $dataProvider_arhive,
-            'dataProvider_expired_and_canceled' => $dataProvider_expired_and_canceled
+            'dataProvider_canceled' => $dataProvider_expired_and_canceled
         ]);
     }
 
@@ -89,14 +95,15 @@ class OrderController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Order();
+        $modelOrder = new Order();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($modelOrder->load(Yii::$app->request->post())) {
+            var_dump($modelOrder->id_user);
+            return;
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'modelOrder' => $modelOrder,
         ]);
     }
 
@@ -155,5 +162,41 @@ class OrderController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionAutocomplete($term){
+        if(Yii::$app->request->isAjax){
+            $profiles = Profile::find()->all();
+            $res = [];
+            foreach ($profiles as $profile) {
+                  if(strpos($profile->phone, $term)!==false || strpos($profile->phone2, $term)!==false){
+                      $res[] = [
+                          'id' => $profile->id_user,
+                          'phone' => $profile->phone,
+                          'phone2' => $profile->phone2,
+                          'email' => $profile->email,
+                          'email2' => $profile->email2,
+                          'name' => $profile->name,
+                          'surname' => $profile->surname,
+                          'patrinimic' => $profile->patrinimic,
+                          'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                          'companies' => ArrayHelper::map($profile->companies, 'id', 'name')
+                      ];
+                  }
+            }
+            echo Json::encode($res);
+//        echo Json::encode([1111,22222,33333,44444]);
+        }
+    }
+
+    public function actionPjaxAddCompany(){
+        if(Yii::$app->request->isPjax) {
+            $id_user = Yii::$app->request->post('id_user');
+            $companies = ArrayHelper::map(Profile::find()->where(['id_user' => $id_user])->one()->companies, 'id', 'name');
+            return $this->renderAjax('@app/modules/logist/views/order/renderCompanies', [
+                'companies' => $companies,
+                'modelOrder' => Yii::$app->session->get('modelOrder')
+            ]);
+        }
     }
 }

@@ -124,6 +124,7 @@ class Order extends \yii\db\ActiveRecord
     public $loading_typies;
     public $suitable_rates;
     public $selected_rates;
+    public $ClientPhone;
 
     const SCENARIO_UPDATE_TRUCK = 'update_truck';
     const SCENARIO_UPDATE_PASS = 'update_pass';
@@ -165,7 +166,8 @@ class Order extends \yii\db\ActiveRecord
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
-                'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle'],
+                'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle',
+                'ClientPhone', 'id_user'],
                 'safe'
             ],
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
@@ -301,7 +303,9 @@ class Order extends \yii\db\ActiveRecord
             'real_length_spec' => 'Минимальная требуемая длина стрелы',
             'real_volume_spec' => 'Объем ковша',
             'additional_cost' => 'Доп. расходы (Помощь грузчика(ов), платные дороги/въезды и т.п.), р.',
-            'cost' => 'Сумма'
+            'cost' => 'Сумма',
+            'ClientPhone' => 'Телефон клиента',
+
         ];
     }
 
@@ -463,25 +467,29 @@ class Order extends \yii\db\ActiveRecord
         return $return . '</ul>';
     }
 
-    public function getDiscount($user_id){
-        $user = User::findOne(['id' => $user_id]);
-        if(!$user) return false;
+    public function getDiscount($user_id = null){
         if(!$this->type_payment) return 0;
         $type_payment = $this->type_payment;
         $SettingClient = SettingClient::find()->limit(1)->one();
         $discount_cash = 0;
         $discount_card = 0;
-        if($user->canRole('user')) {
-            $discount_cash = $SettingClient->user_discount_cash;
-            $discount_card = $SettingClient->user_discount_card;;
-        }
-        if($user->canRole('client') || $user->canRole('car_owner')) {
-            $discount_cash = $SettingClient->client_discount_cash;
-            $discount_card = $SettingClient->client_discount_card;
-        }
-        if($user->canRole('client') || $user->canRole('vip_car_owner')) {
-            $discount_cash = $SettingClient->vip_client_discount_cash;
-            $discount_card = $SettingClient->vip_client_discount_card;
+        if(!$user_id) {
+            $discount_cash = $SettingClient->not_registered_discount_cash;
+            $discount_card = $SettingClient->not_registered_discount_card;
+        } else {
+            $user = User::findOne(['id' => $user_id]);
+            if ($user->canRole('user')) {
+                $discount_cash = $SettingClient->user_discount_cash;
+                $discount_card = $SettingClient->user_discount_card;
+            }
+            if ($user->canRole('client') || $user->canRole('car_owner')) {
+                $discount_cash = $SettingClient->client_discount_cash;
+                $discount_card = $SettingClient->client_discount_card;
+            }
+            if ($user->canRole('client') || $user->canRole('vip_car_owner')) {
+                $discount_cash = $SettingClient->vip_client_discount_cash;
+                $discount_card = $SettingClient->vip_client_discount_card;
+            }
         }
         if($type_payment == Payment::TYPE_CASH) return $discount_cash;
         if($type_payment == Payment::TYPE_SBERBANK_CARD) return $discount_card;

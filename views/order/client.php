@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="order-index">
     <h4><?= Html::encode($this->title) ?></h4>
-    <?= Html::a(Html::icon('plus') . ' Новый заказ', '/order/create', ['class' => 'btn btn-primary']);?>
+    <?= Html::a(Html::icon('plus') . ' Новый заказ', ['/order/create', 'user_id' => Yii::$app->user->id], ['class' => 'btn btn-primary']);?>
     <?=
     Tabs::widget([
         'encodeLabels' => false,

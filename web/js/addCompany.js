@@ -2,7 +2,7 @@
  * Created by Admin on 31.01.2018.
  */
 $(document).ready(function () {
-    $("#name").suggestions({
+    $("#Label").suggestions({
         token: "c53e6a2d52a60943309905a9e6b83c9e5d392eae",
         type: "PARTY",
         count: 5,
@@ -26,7 +26,7 @@ $(document).ready(function () {
             }
             // console.log(suggestion);
             $('#formCompany').attr('hidden', false);
-            $('#name').val(suggestion.value);
+            $('#Label').val(suggestion.value);
             $('#inn').val(suggestion.data.inn);
             if($('#kpp').val()) {
                 $('#kpp').val(suggestion.data.kpp);

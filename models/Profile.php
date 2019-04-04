@@ -9,6 +9,8 @@ use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
 use app\components\functions\functions;
 use Yii;
+use yii\helpers\ArrayHelper;
+use app\models\setting\Setting;
 
 /**
  * This is the model class for table "profile".
@@ -16,7 +18,7 @@ use Yii;
  * @property integer $id_user
  * @property string $phone
  * @property string $phone2
- * @property integer $email
+ * @property string $email
  * @property string $name
  * @property string $surname
  * @property string $patrinimic
@@ -207,7 +209,9 @@ class Profile extends \yii\db\ActiveRecord
     public function getPhone(){
         return $this->user->username;
     }
-
+    public function getEmail(){
+        return $this->user->email;
+    }
     public function getRoles(){
         $roles = [];
         foreach (Yii::$app->authManager->getAssignments($this->id_user) as $role) {
@@ -333,6 +337,19 @@ class Profile extends \yii\db\ActiveRecord
         }
         if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
 
+        return $return;
+    }
+
+    static public function getArrayPhonesFIO():array {
+        $return = [];
+        $profiles = self::find()->all();
+        foreach ($profiles as $profile){
+            $return[] = $profile->phone . ' ' . $profile->fioFull . ' (ID ' . $profile->id_user . ', тел.1)';
+
+            if($profile->phone2) {
+                $return[] = $profile->phone2 . ' ' . $profile->fioFull . ' (ID ' . $profile->id_user . ', тел.2)';
+            }
+        }
         return $return;
     }
 }

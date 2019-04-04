@@ -12,6 +12,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\data\SqlDataProvider;
 use yii\db\ActiveRecord;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -334,6 +335,8 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return $arr;
     }
+
+
 
 
 

@@ -4,7 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\bootstrap\Html;
-
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "typies_payment".
  *
@@ -50,5 +50,14 @@ class TypePayment extends \yii\db\ActiveRecord
         return ($this->id == Payment::TYPE_BANK_TRANSFER)
                     ? $this->type
                     : Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) . ' ' . $this->type;
+    }
+
+    static public function getTypiesPaymentsArray(){
+        $TypiesPayment = self::find()->all();
+        foreach ($TypiesPayment as $item){
+            $item->type = $item->getTextWithIconDiscount();
+        }
+        return ArrayHelper::map($TypiesPayment, 'id', 'type');
+
     }
 }

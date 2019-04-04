@@ -139,17 +139,14 @@ class CompanyController extends Controller
     {
         $modelCompany = new Company();
         $modelProfile = Profile::findOne(Yii::$app->user->getId());
-        $contract = new Document();
         $XcompanyXprofile = new XprofileXcompany();
         if ($modelCompany->load(Yii::$app->request->post()) && $XcompanyXprofile->load(Yii::$app->request->post())){
             if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
                 if ($modelCompany->save()) {
-//                    $contract = $contract->saveContractClient($modelCompany->id);
 
                     $XcompanyXprofile->id_company = $modelCompany->id;
                     $XcompanyXprofile->id_profile = Yii::$app->user->getId();
                     if(!$XcompanyXprofile->save()) return $this->redirect(['create']);
-//                    return 'Create and add';
                     $modelCompany->createDocument(Document::TYPE_CONTRACT_CLIENT);
                     return $this->redirect(['index']);
                 } else return $this->redirect('/');
@@ -292,3 +289,4 @@ class CompanyController extends Controller
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 }
+
