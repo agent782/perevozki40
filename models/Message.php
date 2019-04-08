@@ -148,10 +148,13 @@ class Message extends \yii\db\ActiveRecord
                 curl_close($ch);
 
                 $this->push_status = self::STATUS_SEND;
-                $this->save();
+
 //                return var_dump($this->getErrors());
             }
+        } else {
+            $this->status = self::STATUS_NEED_TO_SEND;
         }
+        $this->save();
     }
 
     public function  changeStatus($newStatus){

@@ -114,6 +114,7 @@ class Order extends \yii\db\ActiveRecord
     const STATUS_DISPUTE = 8;
 //    const STATUS_PAID = 9;
     const STATUS_NOT_ACCEPTED = 9;
+    const STATUS_WAIT = 10;
 
     const PAID_NO = 0;
     const PAID_YES = 1;
@@ -144,6 +145,8 @@ class Order extends \yii\db\ActiveRecord
 
     const SCENARIO_ACCESSING = 'accessing';
     const SCENARIO_NEW_ORDER = 'new_order';
+    const SCENARIO_LOGOST_NEW_ORDER = 'logist_new_order';
+
     /**
      * @inheritdoc
      */
@@ -196,6 +199,9 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
             'passengers','id_company', 'status', 'create_at', 'update_at'];
+        $scenarios[self::SCENARIO_LOGOST_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
+            'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
+            'passengers', 'status', 'create_at', 'update_at'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
@@ -1189,7 +1195,6 @@ class Order extends \yii\db\ActiveRecord
                 'id_order' => $this->id,
                 'id_to_review' => $client_id_to_review,
                 'id_from_review' => $client_id_from_review
-
             ]);
             $Message_to_client->sendPush();
         }

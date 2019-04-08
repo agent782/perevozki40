@@ -261,23 +261,21 @@ class OrderController extends Controller
                     if(!$user_id) {
                         $user = new User();
                         $profile = new Profile();
-                        $modelCompany = new Company();
-                        $XcompanyXprofile = new XprofileXcompany();
+//                        $modelCompany = new Company();
+//                        $XcompanyXprofile = new XprofileXcompany();
 
                         $session->set('route', $route);
                         $session->set('modelOrder', $modelOrder);
                         $session->set('user', $user);
                         $session->set('profile', $profile);
-                        $session->set('modelCompany', $modelCompany);
-                        $session->set('XcompanyXprofile', $XcompanyXprofile);
 
                         return $this->render('@app/modules/logist/views/order/create',[
                             'modelOrder' => $modelOrder,
                             'route' => $route,
                             'user' => $user,
                             'profile' => $profile,
-                            'modelCompany' => $modelCompany,
-                            'XcompanyXprofile' => $XcompanyXprofile
+//                            'modelCompany' => $modelCompany,
+//                            'XcompanyXprofile' => $XcompanyXprofile
                         ]);
                     }
                     $session->set('route', $route);
@@ -304,15 +302,82 @@ class OrderController extends Controller
 //                var_dump($modelOrder->getErrors());
 //                return 'error';
                 break;
-            case 'logist_finish':
-                $session->get('route');
-                $session->get('modelOrder');
-                $session->get('user');
-                $session->get('profile');
-                $session->get('modelCompany');
-                $session->get('XcompanyXprofile');
+            case 'logist_set_user':
+                $route = $session->get('route');
+                $modelOrder = $session->get('modelOrder');
+                $user = $session->get('user');
+                $profile = $session->get('profile');
 
-                return 1111111111;
+                if(!$route || !$modelOrder || !$user || !$profile ){
+                    functions::setFlashWarning('Ошибка на сервере');
+                    return $this->redirect('/logist/order/create');
+                }
+                if($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())){
+
+                    if(User::find()->where(['username' => $user->username])->one()){
+                        $tmpUser = User::findOne(['username' => $user->username]);
+                        $tmpUser->email = $user->email;
+                        $tmpProfile = $tmpUser->profile;
+                        $tmpProfile->name = $profile->name;
+                        $tmpProfile->surname = $profile->surname;
+                        $tmpProfile->patrinimic = $profile->patrinimic;
+                        $tmpProfile->phone2 = $profile->phone2;
+                        $tmpProfile->email2 = $profile->email2;
+
+                        $user = $tmpUser;
+                        $profile = $tmpProfile;
+                    } else {
+                        $user->setPassword(rand(10000000, 99999999));
+                        $user->generateAuthKey();
+                    }
+                    $user->scenario = $user::SCENARIO_SAVE;
+                    $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
+
+                    if ($route->save() && $user->save()) {
+                        $profile->id_user = $user->id;
+                        $profile->save();
+                        $modelOrder->id_route = $route->id;
+                        $modelOrder->id_user = $user->id;
+                        $modelOrder->scenario = Order::SCENARIO_LOGOST_NEW_ORDER;
+                        if ($modelOrder->save()) {
+// Создание myaql события на изменение статуса заказа на просрочен при достижении времени valid_datetime
+                            $modelOrder->setEventChangeStatusToExpired();
+
+                            $session->remove('route');
+                            $session->remove('modelOrder');
+                            if($modelOrder->type_payment != Payment::TYPE_BANK_TRANSFER){
+                                return var_dump($modelOrder->type_payment);
+                                return $this->redirect('/logist/order');
+                            } else {
+                                return $this->redirect(Url::to(['/logist/order/add-company', 'id_order' => $modelOrder->id]));
+//                                $modelCompany = new Company();
+//                                $XcompanyXprofile = new XprofileXcompany();
+//
+//                                $session->remove('route');
+//                                $session->remove('modelOrder');
+//                                $session->remove('user');
+//                                $session->remove('profile');
+//
+//                                return $this->render('@app/modules/logist/views/order/addCompany', [
+//                                    'modelOrder' => $modelOrder,
+//                                    'modelCompany' => $modelCompany,
+//                                    'XcompanyXprofile' => $XcompanyXprofile,
+//
+//                                ]);
+                            }
+                        }
+                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                        return var_dump($modelOrder->getErrors());
+                        return $this->redirect('/logist/order');
+                    }
+
+
+                    return var_dump($profile->getErrors());
+                }
+
+                break;
+            case 'logist_set_company':
+
                 break;
 
         }

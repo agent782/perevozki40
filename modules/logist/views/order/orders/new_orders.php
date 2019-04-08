@@ -61,7 +61,26 @@ use yii\bootstrap\Tabs;
         [
             'label' => 'Заказчик',
             'format' => 'raw',
-            'attribute' => 'clientInfo'
+//            'attribute' => 'clientInfo',
+            'value' => function ($model){
+                $return = $model->clientInfo;
+                $company = \app\models\Company::findOne($model->id_company);
+                if(!$company){
+
+                        $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn btn-primary']),
+                                ['/logist/order/add-company', 'id_order' => $model->id]);
+                }
+
+                if($model->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER
+                    && (XprofileXcompany::find()
+                            ->where(['id_company' => $model->id_company])
+                            ->andWhere(['id_profile' => $model->id_user])
+                            ->one()->STATUS_POA == XprofileXcompany::STATUS_POWER_OF_ATTORNEY_SIGNED)
+                ){
+
+                }
+                return $return;
+            }
         ],
         [
             'label' => 'Выбранные тарифы',

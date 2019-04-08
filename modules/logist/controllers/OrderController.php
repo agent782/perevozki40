@@ -2,6 +2,7 @@
 
 namespace app\modules\logist\controllers;
 
+use app\components\functions\functions;
 use app\models\Company;
 use app\models\Payment;
 use app\models\Profile;
@@ -162,6 +163,21 @@ class OrderController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionAddCompany($id_order){
+        $modelOrder = Order::findOne($id_order);
+        if(!$modelOrder){
+            functions::setFlashWarning('Нет такого заказа!');
+        }
+        $companies = ArrayHelper::map(
+            Profile::findOne($modelOrder->id_user)->companies, 'id', 'name'
+        );
+
+        return $this->render('addCompany', [
+            'modelOrder' => $modelOrder,
+            'companies' => $companies
+        ]);
     }
 
     public function actionAutocomplete($term){

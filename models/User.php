@@ -106,7 +106,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['username', 'unique', 'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
             ['username', 'required', 'message' => 'Введите номер телефона', 'message' => 'Введите Ваш номер телефона'],
-
+            ['email', 'email'],
 //            ['username', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['username', 'validateLengthPhone'],
 //                'message' => 'Неверный формат номера','tooLong' => 'Неверный формат номера','tooShort' => 'Неверный формат номера'

@@ -135,7 +135,7 @@ class CompanyController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($user_id = null)
     {
         $modelCompany = new Company();
         $modelProfile = Profile::findOne(Yii::$app->user->getId());
@@ -146,17 +146,20 @@ class CompanyController extends Controller
 
                     $XcompanyXprofile->id_company = $modelCompany->id;
                     $XcompanyXprofile->id_profile = Yii::$app->user->getId();
-                    if(!$XcompanyXprofile->save()) return $this->redirect(['create']);
+                    if($user_id) $XcompanyXprofile->id_profile = $user_id;
+                    if(!$XcompanyXprofile->save()) {
+                        return $this->redirect(['create']);
+                    }
                     $modelCompany->createDocument(Document::TYPE_CONTRACT_CLIENT);
                     return $this->redirect(['index']);
                 } else return $this->redirect('/');
             }else {
                 $modelCompany = Company::find()->where(['inn' => $modelCompany->inn])->one();
-                if(XprofileXcompany::find()->where(['id_profile' => Yii::$app->user->getId()])->andWhere(['id_company' => $modelCompany->id])->count()){
+                if(!$user_id) $$user_id = Yii::$app->user->id;
+                if(XprofileXcompany::find()->where(['id_profile' => $user_id])->andWhere(['id_company' => $modelCompany->id])->count()){
 //                    return 'Уже добавлено';
                     return $this->redirect(['index']);
                 }else {
-//                    $modelProfile = Profile::findOne(Yii::$app->user->getId());
                     $modelCompany->link('profiles', $modelProfile);
 //   //                 return 'Add company to Profile';
                     return $this->redirect(['index']);
