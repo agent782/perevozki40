@@ -6,15 +6,18 @@ use app\components\functions\functions;
 use app\models\Company;
 use app\models\Payment;
 use app\models\Profile;
+use app\models\XprofileXcompany;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
+use yii\bootstrap\Html;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\models\TypePayment;
+use app\models\Document;
 
 /**
  * OrderController implements the CRUD actions for Order model.
@@ -165,18 +168,25 @@ class OrderController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionAddCompany($id_order){
+    public function actionAddCompany($id_order, $redirect = '/logist/order'){
         $modelOrder = Order::findOne($id_order);
-        if(!$modelOrder){
-            functions::setFlashWarning('Нет такого заказа!');
-        }
+        $modelOrder->scenario = $modelOrder::SCENARIO_ADD_ID_COMPANY;
         $companies = ArrayHelper::map(
             Profile::findOne($modelOrder->id_user)->companies, 'id', 'name'
         );
+        if($modelOrder->load(Yii::$app->request->post())){
+            if($modelOrder->save()){
+                functions::setFlashSuccess('Плательщик добавлен к заказу');
+            } else {
+//                return var_dump($modelOrder->getErrors());
+                functions::setFlashWarning('Ошибка на сервере при добавлении плательщика');
+            }
+            return $this->redirect($redirect);
+        }
 
         return $this->render('addCompany', [
             'modelOrder' => $modelOrder,
-            'companies' => $companies
+            'companies' => $companies,
         ]);
     }
 
@@ -214,5 +224,13 @@ class OrderController extends Controller
                 'modelOrder' => Yii::$app->session->get('modelOrder')
             ]);
         }
+    }
+
+    public function actionPjaxCompanyInfo(){
+        if(Yii::$app->request->isPjax){
+            $company = Company::findOne(Yii::$app->request->post('id_company'));
+            return 'ID ' . $company->id;
+        }
+        return $this->redirect('/logist/order');
     }
 }

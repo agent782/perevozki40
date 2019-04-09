@@ -18,6 +18,7 @@ use app\models\XprofileXcompany;
 use yii\widgets\MaskedInput;
 use kartik\alert\AlertBlock;
 use yii\bootstrap\Alert;
+use app\models\Document;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CompanySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -64,25 +65,27 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>function($data, $model, $modelDocument){
                     $modelDocument = \app\models\Document::findOne(['id_company' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]);
                     if(!$modelDocument){
+//                        $modelDocument = $data->createDocument(Document::TYPE_CONTRACT_CLIENT);
+
                         return '1. Скачайте заполненный бланк.<br>
                                 2. Распечатайте, подпишите и заверьте печатью.<br>
                                 3. Отсканируйте и отправьте Договор на проверку.<br><br>'
                             . Html::a('Скачать бланк',
                                 \yii\helpers\Url::to(['download-document', 'idCompany' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]),
                                 ['class'=>'btn btn-info', 'data-toggle' => 'tooltip', 'title' => 'Инфорсация'])
-                            . '<br><br>'
-                            . \app\components\widgets\ButtonUpload::widget([
-                                    'model' => $modelDocument,
-                                    'typeDocument' => \app\models\Document::TYPE_CONTRACT_CLIENT,
-                                    'completeRedirect' => '/company/index',
-                                    'action' => \yii\helpers\Url::to([
-                                        'document/upload',
-                                        'id' => $modelDocument->id,
-                                        'completeRedirect' => '/company/index',
-                                        'type' => \app\models\Document::TYPE_CONTRACT_CLIENT,
-                                    ])
-
-                            ])
+//                            . '<br><br>'
+//                            . \app\components\widgets\ButtonUpload::widget([
+//                                    'model' => $modelDocument,
+//                                    'typeDocument' => \app\models\Document::TYPE_CONTRACT_CLIENT,
+//                                    'completeRedirect' => '/company/index',
+//                                    'action' => \yii\helpers\Url::to([
+//                                        'document/upload',
+//                                        'id' => $modelDocument->id,
+//                                        'completeRedirect' => '/company/index',
+//                                        'type' => \app\models\Document::TYPE_CONTRACT_CLIENT,
+//                                    ])
+//
+//                            ])
                             ;
                     }
                     if ($modelDocument->url_upload && $modelDocument->status === \app\models\Document::STATUS_SIGNED){

@@ -49,8 +49,7 @@ var_dump($modelOrder->type_payment);
 //                          type: "POST", 
 //                        data: {  
 //                              "id_user" : ui.item.id 
-//                         }
-//                         
+//                         }                       
 //                       });
             }'),
             'response' => new JsExpression('function(event, ui) {

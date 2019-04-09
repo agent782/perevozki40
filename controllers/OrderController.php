@@ -338,7 +338,7 @@ class OrderController extends Controller
                         $profile->save();
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = $user->id;
-                        $modelOrder->scenario = Order::SCENARIO_LOGOST_NEW_ORDER;
+                        $modelOrder->scenario = Order::SCENARIO_LOGIST_NEW_ORDER;
                         if ($modelOrder->save()) {
 // Создание myaql события на изменение статуса заказа на просрочен при достижении времени valid_datetime
                             $modelOrder->setEventChangeStatusToExpired();
@@ -367,7 +367,7 @@ class OrderController extends Controller
                             }
                         }
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
-                        return var_dump($modelOrder->getErrors());
+//                        return var_dump($modelOrder->getErrors());
                         return $this->redirect('/logist/order');
                     }
 

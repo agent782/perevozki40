@@ -67,6 +67,48 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
+        <?php if(Yii::$app->session->hasFlash('success')): ?>
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <?= Yii::$app->session->getFlash('success')?>
+            </div>
+        <?php endif; ?>
+
+        <?php if(Yii::$app->session->hasFlash('info')): ?>
+            <div class="container alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <?= Yii::$app->session->getFlash('info')?>
+            </div>
+        <?php endif; ?>
+
+        <?php if(Yii::$app->session->hasFlash('warning')): ?>
+            <div class="container alert alert-warning alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <?= Yii::$app->session->getFlash('warning')?>
+            </div>
+        <?php endif; ?>
+        <!--индикация загрузки-->
+        <div class="dm-overlay" id="loader">
+            <div class="dm-table">
+                <div class="dm-cell">
+                    <div class="dm-modal">
+                        <a href="#close" class="close"></a>
+                        <h3>perevozki40.ru</h3>
+                        <div class="pl-left">
+                            <div class="bubblingG">
+	                        <span id="bubblingG_1">
+	                        </span>
+                                <span id="bubblingG_2">
+	                        </span>
+                                <span id="bubblingG_3">
+	                        </span>
+                            </div>
+                        </div>
+                        <p hidden>Текстовое содержание....</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?= $content ?>
     </div>
 </div>

@@ -12,6 +12,7 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use \app\models\XprofileXcompany;
 
 ?>
 <div>
@@ -71,14 +72,14 @@ use yii\bootstrap\Tabs;
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
                 }
 
-                if($model->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER
-                    && (XprofileXcompany::find()
-                            ->where(['id_company' => $model->id_company])
-                            ->andWhere(['id_profile' => $model->id_user])
-                            ->one()->STATUS_POA == XprofileXcompany::STATUS_POWER_OF_ATTORNEY_SIGNED)
-                ){
-
-                }
+//                if($model->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER
+//                    && (XprofileXcompany::find()
+//                            ->where(['id_company' => $model->id_company])
+//                            ->andWhere(['id_profile' => $model->id_user])
+//                            ->one()->STATUS_POA == XprofileXcompany::STATUS_POWER_OF_ATTORNEY_SIGNED)
+//                ){
+//
+//                }
                 return $return;
             }
         ],

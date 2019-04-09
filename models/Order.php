@@ -145,7 +145,8 @@ class Order extends \yii\db\ActiveRecord
 
     const SCENARIO_ACCESSING = 'accessing';
     const SCENARIO_NEW_ORDER = 'new_order';
-    const SCENARIO_LOGOST_NEW_ORDER = 'logist_new_order';
+    const SCENARIO_LOGIST_NEW_ORDER = 'logist_new_order';
+    const SCENARIO_ADD_ID_COMPANY = 'add_id_company';
 
     /**
      * @inheritdoc
@@ -167,7 +168,10 @@ class Order extends \yii\db\ActiveRecord
             [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов'],
             [['datetime_start', 'valid_datetime', 'type_payment','datetime_finish', 'real_datetime_start', 'real_km'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
-            [['id_company'], 'validateConfirmCompany', 'skipOnEmpty' => false],
+            [['id_company'],
+//                'validateConfirmCompany', 'skipOnEmpty' => false
+                    'safe'
+            ],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
                 'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle',
                 'ClientPhone', 'id_user'],
@@ -199,7 +203,7 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
             'passengers','id_company', 'status', 'create_at', 'update_at'];
-        $scenarios[self::SCENARIO_LOGOST_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
+        $scenarios[self::SCENARIO_LOGIST_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
             'passengers', 'status', 'create_at', 'update_at'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
@@ -250,6 +254,7 @@ class Order extends \yii\db\ActiveRecord
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
             'real_volume_spec'
         ];
+        $scenarios[self::SCENARIO_ADD_ID_COMPANY] = ['id_company'];
         return $scenarios;
     }
 
