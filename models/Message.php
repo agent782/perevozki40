@@ -152,7 +152,7 @@ class Message extends \yii\db\ActiveRecord
 //                return var_dump($this->getErrors());
             }
         } else {
-            $this->status = self::STATUS_NEED_TO_SEND;
+            $this->push_status = self::STATUS_NEED_TO_SEND;
         }
         $this->save();
     }

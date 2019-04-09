@@ -346,7 +346,7 @@ class OrderController extends Controller
                             $session->remove('route');
                             $session->remove('modelOrder');
                             if($modelOrder->type_payment != Payment::TYPE_BANK_TRANSFER){
-                                return var_dump($modelOrder->type_payment);
+//                                return var_dump($modelOrder->type_payment);
                                 return $this->redirect('/logist/order');
                             } else {
                                 return $this->redirect(Url::to(['/logist/order/add-company', 'id_order' => $modelOrder->id]));
@@ -420,7 +420,7 @@ class OrderController extends Controller
             || $modelOrder->status == Order::STATUS_CONFIRMED_CLIENT
             || $modelOrder->status == Order::STATUS_DISPUTE){
 
-            functions::setFlashWarning('Неверный запрос!');
+            functions::setFlashWarning('Нельзя изменить этот заказ!');
             return $this->redirect($redirect);
         }
 

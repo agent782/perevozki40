@@ -1119,7 +1119,7 @@ class Order extends \yii\db\ActiveRecord
                     $message_client = 'Вы отменили Ваш заказ.  <br>'
                         . $this->getFullNewInfo(true);
                 }
-                if(self::STATUS_VEHICLE_ASSIGNED){
+                if($this->status == self::STATUS_VEHICLE_ASSIGNED){
                     if(strtotime($this->valid_datetime) < time()) {
 
                     } else {
