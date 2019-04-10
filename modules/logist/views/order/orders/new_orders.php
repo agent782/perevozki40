@@ -101,7 +101,12 @@ use \app\models\XprofileXcompany;
             'value' => function($model){
                 if($model->status == Order::STATUS_NEW || $model->status == Order::STATUS_IN_PROCCESSING){
                     return
-                        Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [
+                        Html::a(Html::icon('ok-sign', ['class' => 'btn-lg','title' => 'Назначить машину']), Url::to([
+                            '/logist/order/find-vehicle',
+                            'id_order' => $model->id,
+                        ]))
+                        . ' '
+                        . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [
                                 '/order/update',
                                 'id_order' => $model->id,
                                 'redirect' => '/order/client'

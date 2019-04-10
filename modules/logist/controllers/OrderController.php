@@ -6,6 +6,7 @@ use app\components\functions\functions;
 use app\models\Company;
 use app\models\Payment;
 use app\models\Profile;
+use app\models\User;
 use app\models\XprofileXcompany;
 use Yii;
 use app\models\Order;
@@ -56,6 +57,10 @@ class OrderController extends Controller
             ->where(['status' => Order::STATUS_NEW])
             ->orWhere(['status' => Order::STATUS_IN_PROCCESSING])
         ;
+        $dataProvider_newOrders->sort->defaultOrder = [
+            'valid_datetime' => SORT_ASC,
+            'datetime_start' => SORT_ASC
+        ];
         $dataProvider_in_process->query
             ->where(['status' => Order::STATUS_VEHICLE_ASSIGNED])
             ->orWhere(['status' => Order::STATUS_DISPUTE]);
@@ -206,7 +211,8 @@ class OrderController extends Controller
                           'surname' => $profile->surname,
                           'patrinimic' => $profile->patrinimic,
                           'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
-                          'companies' => ArrayHelper::map($profile->companies, 'id', 'name')
+                          'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
+                          'vehicles' => ArrayHelper::getColumn($profile->user->vehicles, 'id'),
                       ];
                   }
             }
@@ -232,5 +238,67 @@ class OrderController extends Controller
             return 'ID ' . $company->id;
         }
         return $this->redirect('/logist/order');
+    }
+
+    public function actionFindVehicle($id_order){
+        $user = new User();
+        $profile = new Profile();
+        return $this->render('find-vehicle',[
+            'user' => $user,
+            'profile' => $profile
+        ]);
+    }
+
+    public function actionAcceptOrder($id_order,  $redirect = '/logist/order')
+    {
+        $OrderModel = Order::findOne($id_order);
+        if ($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+            functions::setFlashWarning('Заказ был принят другим водителем.');
+            return $this->redirect($redirect);
+        }
+        if (!$OrderModel) {
+            functions::setFlashWarning('Ошибка на сервере');
+            $this->redirect($redirect);
+        }
+//        if (!$UserModel->getDrivers()->count()) {
+//            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
+//            return $this->redirect($redirect);
+//        }
+//        $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+//        $vehicles = [];
+//        $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+//        foreach ($Vehicles as $vehicle) {
+//            if ($vehicle->canOrder($OrderModel)) {
+//                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
+//                $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
+//                $vehicles[$vehicle->id] =
+//                    $vehicle->brand
+//                    . ' (' . $vehicle->regLicense->reg_number . ') '
+//                    . ' <br> '
+//                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true);
+//            }
+//        }
+//        if ($vehicles) {
+//            $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
+//        }
+        if ($OrderModel->load(Yii::$app->request->post())) {
+//            $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
+//                ->getMinRate($OrderModel);
+//            if ($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+////                $OrderModel->id_vehicle = $id_user;
+//                $OrderModel->changeStatus(
+//                    Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
+//            } else  functions::setFlashWarning('Заказ только что был принят другим водителем.');
+//
+//            return $this->redirect($redirect);
+        }
+
+        return $this->render('accept-order', [
+            'OrderModel' => $OrderModel,
+//            'UserModel' => $UserModel,
+//            'drivers' => $driversArr,
+//            'vehicles' => $vehicles,
+            'redirect' => $redirect
+        ]);
     }
 }

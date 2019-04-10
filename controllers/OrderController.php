@@ -552,7 +552,7 @@ class OrderController extends Controller
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 
-    public function actionAcceptOrder($id_order, $id_user, $redirect = '/order/vehicle')
+    public function actionAcceptOrder($id_order, $id_user = null, $redirect = '/order/vehicle')
     {
         $OrderModel = Order::findOne($id_order);
         if ($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING) {

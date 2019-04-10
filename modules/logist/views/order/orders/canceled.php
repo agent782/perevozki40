@@ -83,6 +83,7 @@ use yii\bootstrap\Tabs;
                         return Html::a('Изменить и повторить поиск', Url::to([
                             '/order/update',
                             'id_order' => $model->id,
+                            'redirect' => '/logist/order'
                         ]),
                             [
                                 'data-method' => 'post',
