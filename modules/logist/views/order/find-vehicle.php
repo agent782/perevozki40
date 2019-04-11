@@ -1,88 +1,59 @@
 <?php
-
-use yii\bootstrap\ActiveForm;
+/**
+ * Created by PhpStorm.
+ * User: Admin
+ * Date: 10.04.2019
+ * Time: 13:56
+ */
 use yii\bootstrap\Html;
-use yii\jui\AutoComplete;
-use yii\helpers\Url;
-use yii\web\JsExpression;
-use app\components\widgets\AddCompany;
-use yii\widgets\Pjax;
-use app\models\Payment;
+echo Html::radioList('a', $vehicles);
+use app\models\PriceZone;
+use app\models\setting\SettingVehicle;
 
-/* @var $user \app\models\User */
+/* @var $modelOrder \app\models\Order*/
 
-$this->title = 'Поиск ТС';
 ?>
+<?= Html::a('Назад', '/logist/order', ['class' => 'btn btn-success'])?>
+<h2>Заказ №<?=$modelOrder->id?></h2>
+<?= $modelOrder->fullNewInfo?>
+<?php
+echo \kartik\grid\GridView::widget([
+    'dataProvider' => $dataProvider,
+//    'pjax' => true,
+    'striped' => true,
+    'hover' => true,
+//    'panel' => ['type' => 'primary', 'heading' => 'Grid Grouping Example'],
+    'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+    'columns' => [
+        ['class' => 'kartik\grid\SerialColumn'],
+        [
+            'attribute' => 'id_user',
+            'group' => true,
+            'format' => 'raw',
+            'value' => function($model){
+                return $model->profile->fioFull . ' (ID ' . $model->profile->id_user . ')';
+            },
+//            'groupedRow' => true,
+//            'groupOddCssClass' => 'kv-grouped-row',  // configure odd group cell css class
+//            'groupEvenCssClass' => 'kv-grouped-row', // configure even group cell css class
 
-<div class="find-vehicle">
-
-    <h3><?= Html::encode($this->title) ?></h3>
-    <label>Поиск ТС:</label>
-    <?=
-    AutoComplete::widget([
-        'clientOptions' => [
-            'source' => Url::to(['/logist/order/autocomplete']),
-            'autoFill' => true,
-            'minLength' => '0',
-            'select' => new JsExpression('function(event, ui) {               
-               $("#label").html("Клиент");
-               $("#id").val(ui.item.id);
-//               alert($(this).val());
-               $("#username").val(ui.item.phone);
-               $("#phone2").val(ui.item.phone2);
-               $("#email").val(ui.item.email);
-               $("#email2").val(ui.item.email2);
-               $("#name").val(ui.item.name);
-               $("#surname").val(ui.item.surname);
-               $("#patrinimic").val(ui.item.patrinimic);
-               
-//               $.pjax.reload({
-//                          url : "/logist/order/pjax-add-company",
-//                          container: "#companies",
-////                          dataType:"json",
-//                          type: "POST", 
-//                        data: {  
-//                              "id_user" : ui.item.id 
-//                         }                       
-//                       });
-            }'),
-            'response' => new JsExpression('function(event, ui) {
-               $("#username").val($(this).val());
-            }'),
-            'change' => new JsExpression('function(event, ui) {
-                if(!ui.item) {
-                     $("#label").html("Новый влыделец ТС");
-
-                }
-            }'),
         ],
-        'options' => [
-            'id' => 'search',
-            'class' => 'form-control',
-            'placeholder' => Yii::t('app', 'Введите номер телефона')
+        [
+            'attribute' => 'fullInfo',
+            'format' => 'raw'
+        ],
+        [
+            'label' => 'Тариф',
+            'format' => 'raw',
+            'value' => function($model) use ($modelOrder){
+                $rate = PriceZone::findOne($model->getMinRate($modelOrder));
+                $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
+
+                return $rate->getTextWithShowMessageButton($modelOrder->route->distance, true);
+            }
         ]
-    ])
-    ?>
-    <br><br>
-    <label id="label-form">Новый владелец ТС</label>
-    <?php
-        $form = ActiveForm::begin();
-    ?>
-    <div class="col-lg-4">
-        <?= $form->field($user, 'id')->hiddenInput(['id' => 'id_user'])->label(false)?>
-        <?= $form->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
-        <?= $form->field($profile, 'name')->input('text',  ['id' => 'name'])?>
-        <?= $form->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
-        <?= $form->field($user, 'username')->input('tel',  ['id' => 'username', 'readonly' => true])?>
-        <?= $form->field($user, 'email')->input('email',  ['id' => 'email'])?>
-        <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
-        <?= $form->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
-    </div>
-    <div class="col-lg-8" id="info">
+    ]
+]);
+?>
+<?= Html::a('Назад', '/logist/order', ['class' => 'btn btn-success'])?>
 
-    </div>
-    <?php
-        $form::end();
-    ?>
-
-</div>

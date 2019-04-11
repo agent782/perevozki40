@@ -38,6 +38,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-left'],
         'items' => [
             ['label' => 'Заказы', 'url' => '/logist/order'],
+            ['label' => 'Машины', 'url' => '/logist/vehicle'],
 
             Yii::$app->user->isGuest ? (
                 ['label' => 'Войти', 'url' => ['/default/login']]

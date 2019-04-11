@@ -9,26 +9,23 @@ use app\components\widgets\AddCompany;
 use yii\widgets\Pjax;
 use app\models\Payment;
 
+/* @var $user \app\models\User */
 
-/* @var $modelOrder app\models\Order */
-
-
-$this->title = 'Оформлление заказа';
-var_dump($modelOrder->type_payment);
+$this->title = 'Поиск пользователя';
 ?>
 
-<div class="order-create">
+<div class="find-vehicle">
 
     <h3><?= Html::encode($this->title) ?></h3>
-    <label>Поиск клиента:</label>
+<!--    <label>Поиск ТС:</label>-->
     <?=
     AutoComplete::widget([
         'clientOptions' => [
-            'source' => Url::to(['/logist/order/autocomplete']),
+            'source' => Url::to(['/user/autocomplete']),
             'autoFill' => true,
             'minLength' => '0',
-            'select' => new JsExpression('function(event, ui) {
-               $("#label").html("Клиент");
+            'select' => new JsExpression('function(event, ui) {               
+               $("#label").html("Пользователь");
                $("#id").val(ui.item.id);
 //               alert($(this).val());
                $("#username").val(ui.item.phone);
@@ -38,10 +35,11 @@ var_dump($modelOrder->type_payment);
                $("#name").val(ui.item.name);
                $("#surname").val(ui.item.surname);
                $("#patrinimic").val(ui.item.patrinimic);
-               var id = ui.item.id;
+               $("#info").html(ui.item.info);
+               
 //               $.pjax.reload({
-//                          url : "/logist/order/pjax-add-company",
-//                          container: "#companies",
+//                          url : "/logist/order/pjax-info-vehicle",
+//                          container: "#info",
 ////                          dataType:"json",
 //                          type: "POST", 
 //                        data: {  
@@ -54,8 +52,8 @@ var_dump($modelOrder->type_payment);
             }'),
             'change' => new JsExpression('function(event, ui) {
                 if(!ui.item) {
-                     $("#label").html("Новый клиент");
-                       $("#id").val("");
+                     $("#label").html("Новый пользователь");
+                     $("#id").val("");
 //                       $("#username").val("");
                        $("#phone2").val("");
                        $("#email").val("");
@@ -63,8 +61,8 @@ var_dump($modelOrder->type_payment);
                        $("#name").val("");
                        $("#surname").val("");
                        $("#patrinimic").val("");
+                       $("#info").html("");
                        $("#surname").focus();
-                        
                 }
             }'),
         ],
@@ -75,4 +73,36 @@ var_dump($modelOrder->type_payment);
         ]
     ])
     ?>
-    <br><br>
+    <br>
+
+    <?php
+        $form = ActiveForm::begin();
+    ?>
+    <div class="col-lg-12">
+        <?= Html::submitButton('Далее', ['class' => 'btn btn-success'])?>
+    </div>
+    <br><br><br>
+    <label id="label">Новый пользователь</label>
+    <br>
+    <div class="col-lg-4">
+        <?= $form->field($user, 'id')->hiddenInput(['id' => 'id_user'])->label(false)?>
+        <?= $form->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
+        <?= $form->field($profile, 'name')->input('text',  ['id' => 'name'])?>
+        <?= $form->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
+        <?= $form->field($user, 'username')->input('tel',  ['id' => 'username', 'readonly' => true])?>
+        <?= $form->field($user, 'email')->input('email',  ['id' => 'email'])?>
+        <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
+        <?= $form->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
+    </div>
+    <div class="col-lg-8" id="info">
+
+    </div>
+    <div class="col-lg-12">
+        <?= Html::submitButton('Далее', ['class' => 'btn btn-success'])?>
+    </div>
+    <?php
+        $form::end();
+    ?>
+    <br>
+
+</div>

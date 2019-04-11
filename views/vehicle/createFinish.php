@@ -13,38 +13,35 @@
     use app\models\Vehicle;
 $this->registerJsFile('/js/signup.js');
 $this->title = Html::encode('Регистрационные данные транспортного средства.');
-$Vehicles = Vehicle::find()
-    ->where(['id_user' => Yii::$app->user->id])
-    ->all()
-;
-$reg_numbers = [];
-foreach ($Vehicles as $vehicle){
-    $reg_numbers[] = $vehicle->regLicense->reg_number;
-}
+//$Vehicles = Vehicle::find()
+//    ->where(['id_user' => Yii::$app->user->id])
+//    ->all()
+//;
+//$reg_numbers = [];
+//foreach ($Vehicles as $vehicle){
+//    $reg_numbers[] = $vehicle->regLicense->reg_number;
+//}
 
 ?>
 <div class="container-fluid">
 <?php
     $form = ActiveForm::begin([
         'enableAjaxValidation' => true,
+        'enableClientValidation' => true,
         'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form') // без этого не работает валидация  уникальности гос номера
     ]);
-
-//echo '1' . \app\components\functions\functions::saveImage($VehicleForm, 'photo', Yii::getAlias('@photo_vehicle/'), '1');
+echo $form->field($modelRegLicense, 'id_user')->hiddenInput();
 
 $classiferVehicleIds = [];
 $brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->orderBy(['brand' => SORT_ASC])->all(), 'id', 'brand');
-//var_dump($VehicleForm);
-//var_dump(\yii\web\UploadedFile::getInstance($VehicleForm, 'photo'));
+
 ?>
 <h4><?= $this->title?></h4>
 <br>
 <div class="row">
 
     <div class="col-lg-4">
-<!--        --><?//= $form->field($VehicleForm, 'ClassiferVehicleIds[]')->checkboxList($VehicleForm->getPriceZones())?>
         <?=
-//        $PZones = $VehicleForm->getPriceZones();
         $form->field($VehicleForm, 'price_zones[]')->checkboxList($VehicleForm->getPriceZones(), [
         'item' => function ($index, $label, $name, $checked, $value){
             $PriceZone = PriceZone::find()->where(['id' => $value])->one();

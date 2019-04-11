@@ -350,20 +350,7 @@ class OrderController extends Controller
                                 return $this->redirect('/logist/order');
                             } else {
                                 return $this->redirect(Url::to(['/logist/order/add-company', 'id_order' => $modelOrder->id]));
-//                                $modelCompany = new Company();
-//                                $XcompanyXprofile = new XprofileXcompany();
 //
-//                                $session->remove('route');
-//                                $session->remove('modelOrder');
-//                                $session->remove('user');
-//                                $session->remove('profile');
-//
-//                                return $this->render('@app/modules/logist/views/order/addCompany', [
-//                                    'modelOrder' => $modelOrder,
-//                                    'modelCompany' => $modelCompany,
-//                                    'XcompanyXprofile' => $XcompanyXprofile,
-//
-//                                ]);
                             }
                         }
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');

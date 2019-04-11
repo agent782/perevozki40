@@ -103,7 +103,9 @@ use \app\models\XprofileXcompany;
                     return
                         Html::a(Html::icon('ok-sign', ['class' => 'btn-lg','title' => 'Назначить машину']), Url::to([
                             '/logist/order/find-vehicle',
+                            'redirect' => '/order/accept-order',
                             'id_order' => $model->id,
+                            'redirectError' => '/logist/order'
                         ]))
                         . ' '
                         . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [

@@ -354,7 +354,7 @@ class PriceZone extends \yii\db\ActiveRecord
             $cost = '<s>'. $this->CostCalculation($distance) . '</s> '
                 . '<strong>' . round($this->CostCalculation($distance, $discount)) . '</strong>';
             $r_km = '<s>'.  $this->r_km . '</s> '
-                . '<strong>' . round($this->r_km - ( $this->r_km*$discount/100)) . '</strong>';
+                . '<strong>' . round($this->r_km - ( $this->r_km*$discount/100),1) . '</strong>';
             $r_h = '<s>'. $this->r_h . '</s> '
                 . '<strong>' . round($this->r_h - ($this->r_h*$discount/100)) . '</strong>';
         } else{
@@ -426,7 +426,7 @@ class PriceZone extends \yii\db\ActiveRecord
         return $this;
     }
 
-    static protected function mathDiscount($value, $discount) : int{
-        return ($value - round($value*$discount/100));
+    static public function mathDiscount($value, $discount) : float {
+        return ($value - round($value*$discount/100, 1));
     }
 }
