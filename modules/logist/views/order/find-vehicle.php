@@ -9,6 +9,7 @@ use yii\bootstrap\Html;
 echo Html::radioList('a', $vehicles);
 use app\models\PriceZone;
 use app\models\setting\SettingVehicle;
+use yii\helpers\Url;
 
 /* @var $modelOrder \app\models\Order*/
 
@@ -50,6 +51,20 @@ echo \kartik\grid\GridView::widget([
                 $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
 
                 return $rate->getTextWithShowMessageButton($modelOrder->route->distance, true);
+            }
+        ],
+        [
+            'label' => 'Действия',
+            'format' => 'raw',
+            'value' => function ($model) use ($modelOrder){
+                return Html::a('Принять',Url::to([
+                        '/order/accept-order',
+                        'id_order' => $modelOrder->id,
+                        'id_user' => $model->id_user,
+                        'redirect' => '/logist/order',
+                        'id_vehicle' => $model->id,
+                    ]), ['class' => 'btn btn-primary'])
+                    ;
             }
         ]
     ]

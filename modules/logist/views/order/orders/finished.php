@@ -12,6 +12,7 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 ?>
+
 <div>
     <h4>В процессе выполнения...</h4>
     <?= GridView::widget([
@@ -71,10 +72,6 @@ use yii\bootstrap\Tabs;
                 'label' => 'Заказчик',
                 'format' => 'raw',
                 'attribute' => 'clientInfo'
-            ],
-            [
-                'label' => 'Действия',
-                'format' => 'raw',
             ],
             [
                 'label' => 'Действия',

@@ -539,7 +539,7 @@ class OrderController extends Controller
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 
-    public function actionAcceptOrder($id_order, $id_user = null, $redirect = '/order/vehicle')
+    public function actionAcceptOrder($id_order, $id_user = null, $redirect = '/order/vehicle', $id_vehicle = null)
     {
         $OrderModel = Order::findOne($id_order);
         if ($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
@@ -586,9 +586,11 @@ class OrderController extends Controller
 
         return $this->render('/order/accept-order', [
             'OrderModel' => $OrderModel,
-            'UserModel' => $UserModel,
+//            'UserModel' => $UserModel,
             'drivers' => $driversArr,
             'vehicles' => $vehicles,
+            'id_vehicle' => $id_vehicle,
+            'id_user' => $id_user,
             'redirect' => $redirect
         ]);
     }
@@ -610,7 +612,7 @@ class OrderController extends Controller
 
     }
 
-    public function actionCanceledByClient($id_order, $id_vehicle = null, $redirect = '/order/client')
+    public function actionCanceledByClient($id_order, $id_vehicle = null, $redirect = '/logist/order')
     {
         $order = Order::findOne($id_order);
         if (!$order) {

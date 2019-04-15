@@ -43,11 +43,16 @@ use \app\models\XprofileXcompany;
 //        ],
         'id',
         [
-            'attribute' => 'datetime_start',
-            'options' => [
-//                    'style' =>'width: 100px',
-            ],
-            'contentOptions'=>['style'=>'white-space: normal;']
+            'label' => 'Дата/время',
+            'format' => 'raw',
+            'value' => function($model){
+                return
+                    $model->datetime_start
+                    . '<br><i>('
+                    . $model->valid_datetime
+                    . ')</i>'
+                    ;
+            }
         ],
         [
             'label' => 'Маршрут',
@@ -84,7 +89,14 @@ use \app\models\XprofileXcompany;
             }
         ],
         [
-            'label' => 'Выбранные тарифы',
+            'label' => 'Выбранные тарифы для водителя',
+            'format' => 'raw',
+            'value' => function($model){
+                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getVehicleProcentPrice());
+            }
+        ],
+        [
+            'label' => 'Выбранные тарифы для Клиента',
             'format' => 'raw',
             'value' => function($model){
                 return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getDiscount($model->id_user));
@@ -94,7 +106,6 @@ use \app\models\XprofileXcompany;
             'attribute' => 'paymentText',
             'format' => 'raw'
         ],
-        'valid_datetime',
         [
             'label' => 'Действия',
             'format' => 'raw',

@@ -70,13 +70,15 @@ class OrderController extends Controller
             ->where(['status' => Order::STATUS_VEHICLE_ASSIGNED])
             ->orWhere(['status' => Order::STATUS_DISPUTE]);
         $dataProvider_arhive->query
-            ->where(['status' => Order::STATUS_CONFIRMED_VEHICLE])
-            ->orWhere(['status' => Order::STATUS_CONFIRMED_CLIENT]);
+            ->where(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
         $dataProvider_expired_and_canceled->query
             ->where(['status' => Order::STATUS_EXPIRED])
             ->orWhere(['status' => Order::STATUS_CANCELED])
             ->orWhere(['status' => Order::STATUS_NOT_ACCEPTED]);
-
+        $dataProvider_arhive->sort->defaultOrder = [
+            'paid_status' => SORT_ASC,
+            'datetime_finish' => SORT_DESC
+        ];
         $countNewOrders = Order::getCountNewOrders();
 
         return $this->render('index', [

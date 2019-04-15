@@ -459,20 +459,23 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getListPriceZonesCostsWithDiscont($distance = null, $discount = null){
+    public function getListPriceZonesCostsWithDiscont($distance = null, $discount = null, $html = true){
         $rates = $this->priceZones;
         $return = '<ul>';
         foreach ($rates as $PriceZone){
 //            $PriceZone = PriceZone::findOne(['id' => $id]);
+            if($discount)
+//                $PriceZone = $PriceZone->getWithDiscount($discount);
             $return .= '<li>';
-            $return .= ' &asymp; ' . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
-                . ' руб.*'
-                . ShowMessageWidget::widget([
-                    'helpMessage' => $PriceZone->printHtml(),
-                    'header' => 'Тарифная зона №' . $PriceZone->id,
+            $return .= $PriceZone->getTextWithShowMessageButton($this->route->distance, $html, $discount);
+//            $return .= ' &asymp; ' . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
+//                . ' руб.*'
+//                . ShowMessageWidget::widget([
+//                    'helpMessage' => $PriceZone->printHtml(),
+//                    'header' => 'Тарифная зона №' . $PriceZone->id,
 //                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
-                ])
-            ;
+//                ])
+//            ;
             $return .= '</li>';
         }
         return $return . '</ul>';
@@ -1542,6 +1545,12 @@ class Order extends \yii\db\ActiveRecord
             * SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent
             / 100)
         );
+    }
+
+    public function getVehicleProcentPrice(){
+        return ($this->vehicle)
+            ? $this->vehicle->getVehicleProcentPrice()
+            : \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
     }
 }
 

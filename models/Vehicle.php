@@ -683,4 +683,9 @@ public function  hasOrder($statuses_orders) : bool{
         }
         return false;
     }
+
+    public function getVehicleProcentPrice(){
+        // Пока что у всех 9%
+        return \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
+    }
 }

@@ -7,6 +7,7 @@
  */
     use yii\bootstrap\ActiveForm;
     use yii\bootstrap\Html;
+    use yii\helpers\Url;
 
 ?>
 <div class="container">
@@ -14,10 +15,26 @@
     <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($OrderModel, 'id_vehicle')->radioList($vehicles
         ,[
-            'encode' => false
+            'encode' => false,
+            'value' => $id_vehicle
         ]
     )->label('Выберите ТС')?>
-    <?= $form->field($OrderModel, 'id_driver')->radioList($drivers, [])->label('Выберите водителя'); ?>
+
+    <?= $form->field($OrderModel, 'id_driver')->radioList($drivers, [])
+        ->label('Выберите водителя ' . Html::a(Html::icon('plus', [
+                'class' => 'btn btn-info',
+                'title' => 'Добавить водителя'
+            ]), ['/driver/create',
+                'id_car_owner' => $id_user,
+                'redirect' => Url::to([
+                    '/order/accept-order',
+                    'id_order' => $OrderModel->id,
+                    'id_vehicle' => $id_vehicle,
+                    'id_user' => $id_user,
+                    'redirect' => $redirect,
+                ])
+            ])); ?>
+
     <?= Html::a('Отменить', $redirect, ['class' => 'btn btn-warning'])?>
     <?= Html::submitButton('Принять и позвонить', ['class' => 'btn btn-primary'])?>
     <?php
