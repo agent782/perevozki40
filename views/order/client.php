@@ -23,14 +23,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'encodeLabels' => false,
         'items' => [
             [
-                'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->getCount() . ')',
+                'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->totalCount . ')',
                 'content' => $this->render('client/new_orders', [
                     'dataProvider_newOrders' => $dataProvider_newOrders,
                     'searchModel' => $searchModel
                 ])
             ],
             [
-                'label' => 'В процессе... <br>(+' . $dataProvider_in_process->getCount() . ')' ,
+                'label' => 'В процессе... <br>(+' . $dataProvider_in_process->totalCount . ')' ,
                 'content' => $this->render('client/in_proccess', [
                     'dataProvider_in_process' => $dataProvider_in_process,
                     'searchModel' => $searchModel
@@ -38,14 +38,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'active' => ($dataProvider_in_process->count)?true:false,
             ],
             [
-                'label' => 'Завершенные<br>(+' . $dataProvider_arhive->getCount() . ')',
+                'label' => 'Завершенные<br>(+' . $dataProvider_arhive->totalCount . ')',
                 'content' => $this->render('client/finished', [
                     'dataProvider_arhive' => $dataProvider_arhive,
                     'searchModel' => $searchModel
                 ]),
             ],
             [
-                'label' => 'Отмененные<br>(+' . $dataProvider_canceled->getCount() . ')',
+                'label' => 'Отмененные<br>(+' . $dataProvider_canceled->totalCount . ')',
                 'content' => $this->render('client/canceled', [
                     'dataProvider_canceled' => $dataProvider_canceled,
                     'searchModel' => $searchModel

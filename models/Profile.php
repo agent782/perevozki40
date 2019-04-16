@@ -339,14 +339,15 @@ class Profile extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getProfileInfo($showPhone = false, $showPassport = false){
+    public function getProfileInfo($showPhone = false, $showPassport = false, $showEmail = false){
         $return = $this->fioFull . '<br>';
         if($showPhone) {
-            $return .= 'Телефон: ' . functions::getHtmlLinkToPhone($this->phone);
+            $return .=  functions::getHtmlLinkToPhone($this->phone);
             if ($this->phone2) $return .= ' (доп. ' . functions::getHtmlLinkToPhone($this->phone2) . ')';
             $return .= '. <br>';
         }
         if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
+        if($showEmail) $return .= 'Email: ' . $this->email . ' (' . $this->email2 . ') <br>';
 
         return $return;
     }

@@ -17,6 +17,7 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
+        $this->layout = 'finance';
         parent::init();
 
         // custom initialization code goes here
@@ -31,7 +32,7 @@ class Module extends \yii\base\Module
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin']
+                        'roles' => ['admin', 'finance', 'dispetcher']
                     ]
                 ]
             ]

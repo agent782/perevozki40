@@ -126,6 +126,7 @@ class Order extends \yii\db\ActiveRecord
     public $suitable_rates;
     public $selected_rates;
     public $ClientPhone;
+    public $ClientPaidCash;
 
     const SCENARIO_UPDATE_TRUCK = 'update_truck';
     const SCENARIO_UPDATE_PASS = 'update_pass';
@@ -177,6 +178,7 @@ class Order extends \yii\db\ActiveRecord
                 'ClientPhone', 'id_user'],
                 'safe'
             ],
+            ['ClientPaidCash', 'default', 'value' => '0'],
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
                 'real_length_spec', 'real_volume_spec', 'cost'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
@@ -192,6 +194,10 @@ class Order extends \yii\db\ActiveRecord
             ['paid_status', 'default', 'value' => self::PAID_NO],
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
+            [['number_invoice_payment', 'number_certificate_completion', 'date_invoice_payment', 'date_certificate_completion'], integer],
+            [['url_invoice_payment', 'url_certificate_completion'], 'string', 'max' => 255],
+
+
         ];
     }
 
@@ -232,27 +238,27 @@ class Order extends \yii\db\ActiveRecord
         ];
         $scenarios[self::SCENARIO_FINISH_TRUCK] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle', 'real_h_loading',
-            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning'
+            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_FINISH_PASS] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_passengers'
+            'real_passengers', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_FINISH_MANIPULATOR] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_tonnage', 'real_length', 'real_tonnage_spec', 'real_length_spec'
+            'real_tonnage', 'real_length', 'real_tonnage_spec', 'real_length_spec', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_FINISH_DUMP] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_tonnage', 'real_volume',
+            'real_tonnage', 'real_volume', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_FINISH_CRANE] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_tonnage_spec', 'real_length_spec'
+            'real_tonnage_spec', 'real_length_spec', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_FINISH_EXCAVATOR] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_volume_spec'
+            'real_volume_spec', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_ADD_ID_COMPANY] = ['id_company'];
         return $scenarios;

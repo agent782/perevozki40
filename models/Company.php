@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\behaviors\TimestampBehavior;
 use app\components\DateBehaviors;
+use app\components\functions\functions;
 /**
  * This is the model class for table "company".
  *
@@ -241,6 +242,18 @@ class Company extends \yii\db\ActiveRecord
 
     public function getConfirmDoc(){
         return Document::findOne(['id_company' => $this->id, 'type' => Document::TYPE_CONTRACT_CLIENT]);
+    }
+
+    public function getCompanyInfo($showPhone = true,  $showEmail = true){
+        $return = $this->name . '<br>';
+        if($showPhone) {
+            $return .=  functions::getHtmlLinkToPhone($this->phone);
+            if ($this->phone2) $return .= ' (доп. ' . functions::getHtmlLinkToPhone($this->phone2) . ')';
+            $return .= '. <br>';
+        }
+        if($showEmail) $return .= 'Email: ' . $this->email . ' (' . $this->email2 . ') <br>';
+
+        return $return;
     }
 
 }

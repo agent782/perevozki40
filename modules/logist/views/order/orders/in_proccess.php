@@ -88,7 +88,16 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'attribute' => 'clientInfo'
+//            'attribute' => 'clientInfo',
+                'value' => function ($model){
+                    $return = $model->clientInfo;
+                    $company = \app\models\Company::findOne($model->id_company);
+                    if(!$company){
+                        $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+                                ['/logist/order/add-company', 'id_order' => $model->id]);
+                    }
+                    return $return;
+                }
             ],
             [
                 'attribute' => 'paymentText',
@@ -99,7 +108,12 @@ use yii\bootstrap\Tabs;
                 'format' => 'raw',
                 'value' => function($model){
                     return
-                        Html::a('Отменить', Url::to([
+                        Html::a('Заказ выполнен', Url::to([
+                                '/order/finish-by-vehicle',
+                                'id_order' => $model->id,
+                                'redirect' => '/logist/order'
+                            ]),['class' => 'btn btn-sm btn-success']) . '<br><br>'
+                        . Html::a('Отменить', Url::to([
                             '/order/canceled-by-client',
                             'id_order' => $model->id,
                             'id_vehicle' => $model->id_vehicle

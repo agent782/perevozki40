@@ -71,21 +71,24 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'attribute' => 'clientInfo'
+                'value' => function ($model){
+                    $return = $model->clientInfo;
+                    $return .= '<br>' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+                            ['/logist/order/add-company', 'id_order' => $model->id]);
+
+                    return $return;
+                }
             ],
             [
                 'label' => 'Действия',
                 'format' => 'raw',
                 'value' => function($model){
                         return
-                             Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Удалить заказ']), Url::to([
-                                '/order/delete',
-                                'id' => $model->id,
-                                 'redirect' => '/order/client'
-                            ]),
-                                ['data-confirm' => Yii::t('yii',
-                                    'Удалить безвозвратно?'),
-                                    'data-method' => 'post'])
+                            Html::a('Изменить результат', Url::to([
+                                '/order/finish-by-vehicle',
+                                'id_order' => $model->id,
+                                'redirect' => '/logist/order'
+                            ]),['class' => 'btn btn-sm btn-success'])
                             ;
                 }
             ]

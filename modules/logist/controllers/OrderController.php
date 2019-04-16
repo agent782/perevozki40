@@ -24,6 +24,7 @@ use app\models\TypePayment;
 use app\models\Document;
 use app\models\PriceZone;
 use app\models\setting\SettingVehicle;
+use yii\filters\AccessControl;
 
 /**
  * OrderController implements the CRUD actions for Order model.
@@ -42,6 +43,15 @@ class OrderController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin', 'dispetcher']
+                    ],
+                ],
+            ]
         ];
     }
 
@@ -76,8 +86,8 @@ class OrderController extends Controller
             ->orWhere(['status' => Order::STATUS_CANCELED])
             ->orWhere(['status' => Order::STATUS_NOT_ACCEPTED]);
         $dataProvider_arhive->sort->defaultOrder = [
-            'paid_status' => SORT_ASC,
-            'datetime_finish' => SORT_DESC
+//            'paid_status' => SORT_ASC,
+            'real_datetime_start' => SORT_DESC
         ];
         $countNewOrders = Order::getCountNewOrders();
 
