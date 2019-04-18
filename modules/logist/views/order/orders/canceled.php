@@ -16,6 +16,7 @@ use yii\bootstrap\Tabs;
     <h4>Отмененные и просроченные.</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_canceled,
+//        'filterModel' => $searchModel,
         'options' => [
             'class' => 'minRoute'
         ],

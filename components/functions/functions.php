@@ -27,22 +27,23 @@ class functions
         return User::find()->all();
     }
 
-    static public function saveImage($model, string $attribute, string $savePath, string $filename)
+    static public function saveImage($model, string $attribute, string $savePath, string $filename) : string
     {
         $image = UploadedFile::getInstance($model, $attribute);
         if(!$image) {
 //            \Yii::$app->session->setFlash('warning', 'Ошибка сохранения изображения. Фотография не выбрана.');
-            return false;
+            return '';
         }
+
         self::createDirectory($savePath);
         $model->$attribute = $image;
         $filename = $filename . '.' . $image->extension;
         if ($image->saveAs($savePath . $filename)) {
-            \Yii::$app->session->setFlash('warning', 'Файл ' . $image . ' успешно сохранен.');
+            \Yii::$app->session->setFlash('success', 'Файл ' . $image . ' успешно сохранен.');
             return $filename;
         }
         \Yii::$app->session->setFlash('warning', 'Ошибка сохранения изображения.');
-        return false;
+        return '';
     }
 
     static public function createDirectory($path)
@@ -122,5 +123,13 @@ class functions
     static public function getHtmlLinkToPhone(string $phone, $html =true){
         if(!$html) return $phone;
         return 'Телефон: <a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
+    }
+
+    static public function DownloadFile(string $pathToFile, string $redirect){
+        if(file_exists($pathToFile) && is_file($pathToFile)){
+            return Yii::$app->response->sendFile($pathToFile);
+        }
+        self::setFlashWarning('Ошибка скачивания!');
+        return Yii::$app->controller->redirect($redirect);
     }
 }

@@ -246,10 +246,11 @@ class CompanyController extends Controller
 
     }
 
-    public function actionDownloadDocument($idCompany, $type)
+    public function actionDownloadDocument($idCompany, $type,$redirect = '/company/index')
     {
 //       echo $idCompany;
-        $modelCompany = Company::findOne($idCompany, $redirect = '/company/index');
+        $modelCompany = Company::findOne($idCompany);
+        if(!$modelCompany) $this->redirect($redirect);
        switch ($type){
            case Document::TYPE_CONTRACT_CLIENT:
                $document = Document::findOne(['id_company' => $idCompany, 'type' => $type]);

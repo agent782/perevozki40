@@ -10,8 +10,10 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer $id
  * @property string $type
+ * @property string $min_text
  * @property string $description
  * @property string $textWithIconDiscount
+ * @property string $minTextWithIconDiscount
  */
 class TypePayment extends \yii\db\ActiveRecord
 {
@@ -30,7 +32,7 @@ class TypePayment extends \yii\db\ActiveRecord
     {
         return [
             [['type'], 'required'],
-            [['type'], 'string', 'max' => 255],
+            [['type', 'min_text'], 'string', 'max' => 255],
             ['description', 'string']
         ];
     }
@@ -50,6 +52,12 @@ class TypePayment extends \yii\db\ActiveRecord
         return ($this->id == Payment::TYPE_BANK_TRANSFER)
                     ? $this->type
                     : Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) . ' ' . $this->type;
+    }
+
+    public function getMinTextWithIconDiscount(){
+        return ($this->id == Payment::TYPE_BANK_TRANSFER)
+            ? $this->min_text
+            : Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) . ' ' . $this->type;
     }
 
     static public function getTypiesPaymentsArray(){

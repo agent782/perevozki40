@@ -100,7 +100,9 @@ use app\components\widgets\ShowMessageWidget;
  * @property string $real_datetime_start
  * @property float $real_h
  * @property integer $additional_cost
- *
+ * @property Invoice $invoice
+ * @property Invoice $certificate
+
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -194,8 +196,6 @@ class Order extends \yii\db\ActiveRecord
             ['paid_status', 'default', 'value' => self::PAID_NO],
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
-            [['number_invoice_payment', 'number_certificate_completion', 'date_invoice_payment', 'date_certificate_completion'], integer],
-            [['url_invoice_payment', 'url_certificate_completion'], 'string', 'max' => 255],
 
 
         ];
@@ -331,7 +331,8 @@ class Order extends \yii\db\ActiveRecord
         return [
             'convertDateTime' => [
                 'class' => 'app\components\DateBehaviors',
-                'dateAttributes' => ['real_datetime_start', 'datetime_start', 'datetime_finish','datetime_access' ,'valid_datetime', 'create_at', 'update_at'],
+                'dateAttributes' => ['real_datetime_start', 'datetime_start', 'datetime_finish','datetime_access' ,
+                    'valid_datetime', 'create_at', 'update_at'],
                 'format' => DateBehaviors::FORMAT_DATETIME,
             ],
         ];
@@ -687,7 +688,12 @@ class Order extends \yii\db\ActiveRecord
     public function getVehicleType(){
         return $this->hasOne(VehicleType::className(), ['id' => 'id_vehicle_type']);
     }
-
+    public function getInvoice(){
+        return $this->hasOne(Invoice::class, ['id_order' => 'id'])->andFilterWhere(['type' => Invoice::TYPE_INVOICE]);
+    }
+    public function getCertificate(){
+        return $this->hasOne(Invoice::class, ['id_order' => 'id'])->andFilterWhere(['type' => Invoice::TYPE_CERTIFICATE]);
+    }
     public function getBodyTypies(){
         return $this->hasMany(BodyType::className(), ['id' => 'id_bodytype'])
             ->viaTable('XorderXtypebody', ['id_order' => 'id']);
@@ -948,14 +954,18 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-
     public function getPaymentText($withIconDiscount = true){
         return ($withIconDiscount)
                     ? TypePayment::findOne($this->type_payment)->textWithIconDiscount
                     : TypePayment::findOne($this->type_payment)->type
             ;
     }
-
+    public function getPaymentMinText($withIconDiscount = true){
+        return ($withIconDiscount)
+            ? TypePayment::findOne($this->type_payment)->minTextWithIconDiscount
+            : TypePayment::findOne($this->type_payment)->min_text
+            ;
+    }
     public function getPriceZonesWithInfo(){
         $return = '';
         foreach ($this->priceZones as $priceZone){

@@ -13,19 +13,25 @@ use yii\data\ArrayDataProvider;
  */
 class OrderSearch extends Order
 {
+    public $type_payments = [Payment::TYPE_BANK_TRANSFER];
 
     public $statuses = [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING, Order::STATUS_VEHICLE_ASSIGNED,
         Order::STATUS_CONFIRMED_CLIENT, Order::STATUS_CONFIRMED_VEHICLE];
     public $paid_statuses = [Order::PAID_NO];
+
+    public $invoiceNumber;
+    public $certificateNumber;
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'id_vehicle_type', 'longlength', 'passengers', 'ep', 'rp', 'lp', 'datetime_start', 'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real'], 'integer'],
+            [['id', 'id_vehicle_type', 'longlength', 'passengers', 'ep', 'rp', 'lp', 'datetime_start',
+                'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real','type_payment'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
-            [['cargo', 'statuses', 'paid_statuses'], 'safe'],
+            [['cargo', 'statuses', 'paid_statuses', 'type_payments'], 'safe'],
+            [['invoiceNumber', 'certificateNumber'], 'safe']
         ];
     }
 
@@ -48,7 +54,6 @@ class OrderSearch extends Order
     public function search($params)
     {
         $query = Order::find();
-
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -71,29 +76,13 @@ class OrderSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'id_vehicle_type' => $this->id_vehicle_type,
-            'tonnage' => $this->tonnage,
-            'length' => $this->length,
-            'width' => $this->width,
-            'height' => $this->height,
-            'volume' => $this->volume,
-            'longlength' => $this->longlength,
-            'passengers' => $this->passengers,
-            'ep' => $this->ep,
-            'rp' => $this->rp,
-            'lp' => $this->lp,
-            'tonnage_spec' => $this->tonnage_spec,
-            'length_spec' => $this->length_spec,
-            'volume_spec' => $this->volume_spec,
-            'datetime_start' => $this->datetime_start,
-            'datetime_finish' => $this->datetime_finish,
-            'datetime_access' => $this->datetime_access,
-            'valid_datetime' => $this->valid_datetime,
-            'id_route' => $this->id_route,
-            'id_route_real' => $this->id_route_real,
+//            'invoice.number' => $this->invoiceNumber
+//            'type_payment' => $this->type_payment
         ]);
+//        $query->andFilterWhere(['OR LIKE', 'type_payment', $this->type_payment]);
+        $query->andFilterWhere(['IN', 'type_payment', $this->type_payments]);
 
-        $query->andFilterWhere(['like', 'cargo', $this->cargo]);
+
 
         return $dataProvider;
     }
@@ -133,32 +122,8 @@ class OrderSearch extends Order
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'id_vehicle_type' => $this->id_vehicle_type,
-            'tonnage' => $this->tonnage,
-            'length' => $this->length,
-            'width' => $this->width,
-            'height' => $this->height,
-            'volume' => $this->volume,
-            'longlength' => $this->longlength,
-            'passengers' => $this->passengers,
-            'ep' => $this->ep,
-            'rp' => $this->rp,
-            'lp' => $this->lp,
-            'tonnage_spec' => $this->tonnage_spec,
-            'length_spec' => $this->length_spec,
-            'volume_spec' => $this->volume_spec,
-            'datetime_start' => $this->datetime_start,
-            'datetime_finish' => $this->datetime_finish,
-            'datetime_access' => $this->datetime_access,
-            'valid_datetime' => $this->valid_datetime,
-            'id_route' => $this->id_route,
-            'id_route_real' => $this->id_route_real,
+
         ]);
-
-
-        $query->andFilterWhere(['OR LIKE', 'paid_status', $this->paid_statuses]);
-//        $query->andFilterWhere(['like', 'cargo', $this->cargo]);
-        $query->andFilterWhere((['OR LIKE', 'status', $this->statuses]));
 
         return $dataProvider;
     }
@@ -205,8 +170,8 @@ class OrderSearch extends Order
 
 
         // grid filtering conditions
-//        $query->andFilterWhere([
-//            'id' => $this->id,
+        $query->andFilterWhere([
+            'id' => $this->id,
 //            'id_vehicle_type' => $this->id_vehicle_type,
 //            'tonnage' => $this->tonnage,
 //            'length' => $this->length,
@@ -227,7 +192,7 @@ class OrderSearch extends Order
 //            'valid_datetime' => $this->valid_datetime,
 //            'id_route' => $this->id_route,
 //            'id_route_real' => $this->id_route_real,
-//        ]);
+        ]);
 //
 //
 //        $query->andFilterWhere(['OR LIKE', 'paid_status', $this->paid_statuses]);
