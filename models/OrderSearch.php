@@ -82,8 +82,23 @@ class OrderSearch extends Order
 //        $query->andFilterWhere(['OR LIKE', 'type_payment', $this->type_payment]);
         $query->andFilterWhere(['IN', 'type_payment', $this->type_payments]);
 
-
-
+//        if($this->invoiceNumber != '') $query->andWhere(['LIKE', 'invoice.number', $this->invoiceNumber]);
+// Если фильтр пуст, показывать такде все заказы, которые не имеют счет
+        if($this->invoiceNumber) {
+//            $query->joinWith(['invoice']);
+//            $query->andWhere(['invoice.number LIKE "%' . $this->invoiceNumber . '%" AND invoice.type = ' . Invoice::TYPE_INVOICE]);
+            $query->joinWith(['invoice' => function ($q) {
+                $q->andWhere('invoice.number LIKE "%' . $this->invoiceNumber . '%"');
+            }]);
+        }
+//         Если фильтр пуст, показывать такде все заказы, которые не имеют акт
+        if($this->certificateNumber) {
+//            $query->joinWith(['certificate']);
+//            $query->andWhere('invoice.number LIKE "%' . $this->certificateNumber . '%" AND invoice.type = ' . Invoice::TYPE_CERTIFICATE);
+            $query->joinWith(['certificate' => function ($q) {
+                $q->andWhere('invoice.number LIKE "%' . $this->certificateNumber . '%"');
+            }]);
+        }
         return $dataProvider;
     }
 
@@ -170,8 +185,8 @@ class OrderSearch extends Order
 
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
+//        $orders->andFilterWhere([
+//            'id' => $this->id,
 //            'id_vehicle_type' => $this->id_vehicle_type,
 //            'tonnage' => $this->tonnage,
 //            'length' => $this->length,
@@ -192,7 +207,7 @@ class OrderSearch extends Order
 //            'valid_datetime' => $this->valid_datetime,
 //            'id_route' => $this->id_route,
 //            'id_route_real' => $this->id_route_real,
-        ]);
+//        ]);
 //
 //
 //        $query->andFilterWhere(['OR LIKE', 'paid_status', $this->paid_statuses]);

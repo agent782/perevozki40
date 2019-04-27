@@ -84,14 +84,15 @@ use \app\models\XprofileXcompany;
             'label' => 'Выбранные тарифы для водителя',
             'format' => 'raw',
             'value' => function($model){
-                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getVehicleProcentPrice());
+                return $model->getListPriceZonesCostsForVehicle(null, $model->route->distance);
+//                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getVehicleProcentPrice(), false);
             }
         ],
         [
             'label' => 'Выбранные тарифы для Клиента',
             'format' => 'raw',
             'value' => function($model){
-                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getDiscount($model->id_user));
+                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->discount);
             }
         ],
         [

@@ -21,7 +21,6 @@ $this->title = Html::encode('Регистрационные данные тра�
 //foreach ($Vehicles as $vehicle){
 //    $reg_numbers[] = $vehicle->regLicense->reg_number;
 //}
-
 ?>
 <div class="container-fluid">
 <?php
@@ -43,8 +42,11 @@ $brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->or
     <div class="col-lg-4">
         <?=
         $form->field($VehicleForm, 'price_zones[]')->checkboxList($VehicleForm->getPriceZones(), [
-        'item' => function ($index, $label, $name, $checked, $value){
-            $PriceZone = PriceZone::find()->where(['id' => $value])->one();
+        'item' => function ($index, $label, $name, $checked, $value) use ($id_user){
+            $PriceZone = PriceZone::find()
+                ->where(['id' => $value, 'status' => PriceZone::STATUS_ACTIVE])
+                ->one()
+                ->getPriceZoneForCarOwner($id_user);
         $return = '<label>';
             $return .= '<input type="checkbox" name="' . $name . '"' . 'value="' . $value . '"' . ' >' . "\n";
             $return .= '<i class="fa fa-square-o fa-2x"></i>' . "\n" .

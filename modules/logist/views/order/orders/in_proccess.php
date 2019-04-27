@@ -69,8 +69,8 @@ use yii\bootstrap\Tabs;
                 'format' => 'raw',
                 'attribute' => 'id_pricezone_for_vehicle',
                 'value' => function($modelOrder){
-                    return \app\models\PriceZone::findOne($modelOrder
-                        ->id_pricezone_for_vehicle)
+                    return \app\models\PriceZone::findOne(['unique_index' => $modelOrder
+                        ->id_pricezone_for_vehicle])
                         ->getTextWithShowMessageButton($modelOrder->route->distance, true, $modelOrder->discount);
                 }
             ],

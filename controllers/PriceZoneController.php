@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\functions\functions;
 use app\models\Vehicle;
 use Yii;
 use app\models\PriceZone;
@@ -38,8 +39,11 @@ class PriceZoneController extends Controller
     {
         $searchModel = new PriceZoneSearch();
         $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, PriceZone::SORT_TRUCK);
+        $dataProviderTruck->query->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
         $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, PriceZone::SORT_PASS);
+        $dataProviderPass->query->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
         $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, PriceZone::SORT_SPEC);
+        $dataProviderSpec->query->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProviderTruck' => $dataProviderTruck,
@@ -145,14 +149,26 @@ class PriceZoneController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-
+        $modelOld = $this->findModel($id);
+        $model = new PriceZone();
+        $model->attributes = $modelOld->attributes;
         if ($model->load(Yii::$app->request->post()) ) {
-            if(!is_array($model->body_types)) $model->body_types = str_split($model->body_types, strlen($model->body_types));//Строка полученная тз радиолист привращается в массив
-
-            if( $model->save()) {
+            if($model == $modelOld){
+                functions::setFlashSuccess('Тариф обновлен');
                 return $this->redirect(['index']);
             }
+            if(!is_array($model->body_types)) $model->body_types = str_split($model->body_types, strlen($model->body_types));//Строка полученная тз радиолист привращается в массив
+            $modelOld->status = $modelOld::STATUS_OLD;
+            $modelOld->updated_at = date('d.m.Y', time());
+            if( $modelOld->save()) {
+                if($model->save()){
+                functions::setFlashSuccess('Тариф обновлен');
+                return $this->redirect(['index']);
+                }
+                $modelOld->id = $model->id;
+                $modelOld->status = $modelOld::STATUS_ACTIVE;
+            }
+            functions::setFlashWarning('Ошибка обновления тарифа');
         }
         return $this->render('update', [
             'model' => $model,

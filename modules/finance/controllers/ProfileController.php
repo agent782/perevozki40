@@ -2,19 +2,17 @@
 
 namespace app\modules\finance\controllers;
 
-use app\models\Company;
 use Yii;
-use app\models\Order;
-use app\models\OrderSearch;
-use yii\helpers\ArrayHelper;
+use app\models\Profile;
+use app\models\ProfileSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * OrderController implements the CRUD actions for Order model.
+ * ProfileController implements the CRUD actions for Profile model.
  */
-class OrderController extends Controller
+class ProfileController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -32,30 +30,22 @@ class OrderController extends Controller
     }
 
     /**
-     * Lists all Order models.
+     * Lists all Profile models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new OrderSearch();
+        $searchModel = new ProfileSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
-        $dataProvider->sort->defaultOrder = [
-            'paid_status' => SORT_ASC,
-        ];
-        $companies = ArrayHelper::map(
-            Company::find()->all(),
-            'id', 'name'
-        );
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'companies' => $companies
         ]);
     }
 
     /**
-     * Displays a single Order model.
+     * Displays a single Profile model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -68,16 +58,16 @@ class OrderController extends Controller
     }
 
     /**
-     * Creates a new Order model.
+     * Creates a new Profile model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Order();
+        $model = new Profile();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id_user]);
         }
 
         return $this->render('create', [
@@ -86,7 +76,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Updates an existing Order model.
+     * Updates an existing Profile model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -97,7 +87,7 @@ class OrderController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id_user]);
         }
 
         return $this->render('update', [
@@ -106,7 +96,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Deletes an existing Order model.
+     * Deletes an existing Profile model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -120,15 +110,15 @@ class OrderController extends Controller
     }
 
     /**
-     * Finds the Order model based on its primary key value.
+     * Finds the Profile model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Order the loaded model
+     * @return Profile the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Order::findOne($id)) !== null) {
+        if (($model = Profile::findOne($id)) !== null) {
             return $model;
         }
 

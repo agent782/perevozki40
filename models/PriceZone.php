@@ -3,6 +3,8 @@
 namespace app\models;
 
 use app\components\SerializeBehaviors;
+use app\models\setting\SettingVehicle;
+use function Couchbase\fastlzCompress;
 use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
@@ -11,7 +13,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "price_zone".
- *
+ * @property integer unique_index
  * @property integer $id
  * @property integer $veh_type
  * @property string $body_types
@@ -65,6 +67,8 @@ class PriceZone extends \yii\db\ActiveRecord
     const SCENARIO_EXCAVATOR_LOADER = Vehicle::BODY_excavator_loader;
 
     const STATUS_NEW = 0;
+    const STATUS_ACTIVE = 1;
+    const STATUS_OLD = 2;
 
     const SORT_TRUCK = [
         'enableMultiSort' => true,
@@ -124,7 +128,7 @@ class PriceZone extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['r_km'], 'required'],
+            [['id', 'unique_index', 'r_km'], 'required'],
             [['veh_type', 'body_types'], 'required', 'message' => 'Выберите хотя бы один из вариантов'],
 //            [['veh_type', 'passengers'], 'integer'],
 //            [[], 'validateTRUCK', 'skipOnEmpty' => false],
@@ -139,8 +143,7 @@ class PriceZone extends \yii\db\ActiveRecord
                 'tonnage_min', 'tonnage_max', 'volume_min', 'volume_max', 'length_min', 'length_max', 'tonnage_long_min', 'tonnage_long_max',
                 'length_long_min', 'length_long_max', 'tonnage_spec_min', 'tonnage_spec_max', 'length_spec_min', 'length_spec_max', 'volume_spec',
             ], 'default', 'value' => null],
-
-            ['status', 'default', 'value' => self::STATUS_NEW],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
             [['created_at', 'updated_at'], 'default','value' => date('d.m.Y H:m')],
             [['bodiesColumn','longlength','remove_awning', 'created_at', 'updated_at', 'history'], 'safe'],
 
@@ -233,7 +236,9 @@ class PriceZone extends \yii\db\ActiveRecord
     }
 
     public function getBodyTypies(){
-        return BodyType::find()->where(['in', 'id', $this->body_types])->all();
+        if($this->body_types){
+            return BodyType::find()->where(['in', 'id', $this->body_types])->all();
+        } return false;
     }
 
     public function validateSPEC($attribute){
@@ -241,6 +246,7 @@ class PriceZone extends \yii\db\ActiveRecord
     }
 
     public function getBodiesColumn(){
+        if(!$this->bodyTypies) return false;
         $stringBodies = '<ul>';
         foreach ($this->bodyTypies as $bType){
             $stringBodies .= '<li>' . $bType->body . '</li>';
@@ -306,7 +312,7 @@ class PriceZone extends \yii\db\ActiveRecord
         }
         return false;
     }
-    public function CostCalculation($distance, $discount = 0){
+    public function CostCalculation($distance, $discount = null){
         if($distance){
             $cost = 0;
                 if($distance < 20){
@@ -348,7 +354,7 @@ class PriceZone extends \yii\db\ActiveRecord
 
     }
 
-    public function getTextWithShowMessageButton($distance = null, $html = true, $discount = 0){
+    public function getTextWithShowMessageButton($distance = null, bool $infoButton = true, $discount = null){
         $return = '';
         if($discount){
             $cost = '<s>'. $this->CostCalculation($distance) . '</s> '
@@ -362,7 +368,7 @@ class PriceZone extends \yii\db\ActiveRecord
             $r_km =  $this->r_km;
             $r_h = $this->r_h ;
         }
-
+//        return $cost;
 
         $return .= 'Тариф №' . $this->id . '. ';
         if($distance)$return .= '(&asymp;' . $cost . 'р.*) ';
@@ -370,7 +376,7 @@ class PriceZone extends \yii\db\ActiveRecord
             . $r_km . ' р/км '
             . ', '
             . $r_h . ' р/час...)';
-        if($html){
+        if($infoButton){
             $return .= ShowMessageWidget::widget([
                     'helpMessage' => $this->printHtml(),
                     'header' => 'Тарифная зона ' . $this->id,
@@ -411,22 +417,30 @@ class PriceZone extends \yii\db\ActiveRecord
 
     public function getWithDiscount($discount = 0) : PriceZone{
         if(!$discount) return $this;
+        $returnPZ = new PriceZone();
+        $returnPZ->attributes = $this->attributes;
 
-        $this->r_km = self::mathDiscount($this->r_km, $discount);
-        $this->r_h = self::mathDiscount($this->r_h, $discount);
-        $this->r_loading = self::mathDiscount($this->r_loading, $discount);
-        $this->min_price = self::mathDiscount($this->min_price, $discount);
-        $this->min_r_10 = self::mathDiscount($this->min_r_10, $discount);
-        $this->min_r_20 = self::mathDiscount($this->min_r_20, $discount);
-        $this->min_r_30 = self::mathDiscount($this->min_r_30, $discount);
-        $this->min_r_40 = self::mathDiscount($this->min_r_40, $discount);
-        $this->min_r_50 = self::mathDiscount($this->min_r_50, $discount);
-        $this->remove_awning = self::mathDiscount($this->remove_awning, $discount);
+        $returnPZ->r_km = self::mathDiscount($this->r_km, $discount);
+        $returnPZ->r_h = self::mathDiscount($this->r_h, $discount);
+        $returnPZ->r_loading = self::mathDiscount($this->r_loading, $discount);
+        $returnPZ->min_price = self::mathDiscount($this->min_price, $discount);
+        $returnPZ->min_r_10 = self::mathDiscount($this->min_r_10, $discount);
+        $returnPZ->min_r_20 = self::mathDiscount($this->min_r_20, $discount);
+        $returnPZ->min_r_30 = self::mathDiscount($this->min_r_30, $discount);
+        $returnPZ->min_r_40 = self::mathDiscount($this->min_r_40, $discount);
+        $returnPZ->min_r_50 = self::mathDiscount($this->min_r_50, $discount);
+        $returnPZ->remove_awning = self::mathDiscount($this->remove_awning, $discount);
 
-        return $this;
+        return $returnPZ;
     }
 
     static public function mathDiscount($value, $discount) : float {
         return ($value - round($value*$discount/100, 1));
+    }
+
+
+    public function getPriceZoneForCarOwner($id_car_owner){
+        //можно добавить возможность менять процент в зависимости от роли, рейтинга и тд
+        return $this->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
     }
 }

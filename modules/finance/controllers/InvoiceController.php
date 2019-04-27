@@ -165,17 +165,22 @@ class InvoiceController extends Controller
                 case Invoice::TYPE_INVOICE:
                     $modelInvoice->type = Invoice::TYPE_INVOICE;
                     $path = Yii::getAlias('@invoices/');
-                    $filename = 'perevozki40_schet_' . $modelInvoice->number;
+                    $filename = 'perevozki40_schet_';
                     break;
                 case Invoice::TYPE_CERTIFICATE:
                     $modelInvoice->type = Invoice::TYPE_CERTIFICATE;
                     $path = Yii::getAlias('@certificates/');
-                    $filename = 'perevozki40_akt_' . $modelInvoice->number;
+                    $filename = 'perevozki40_akt_';
                     break;
                 default:
                     functions::setFlashWarning('Ошибка. Неверный тип документв.');
                     return $this->redirect($redirect);
             }
+            $filename .= $modelInvoice->number
+                . '_'
+                . str_replace('.', '', $modelInvoice->date )
+                . '_' . functions::translit($modelOrder->company->name)
+            ;
             if(file_exists($path . $modelInvoice->url) && is_file($path . $modelInvoice->url)){
                 unlink($path . $modelInvoice->url);
             }

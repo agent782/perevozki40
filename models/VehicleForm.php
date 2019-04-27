@@ -12,6 +12,7 @@ namespace  app\models;
 use app\components\functions\functions;
 use yii\base\Model;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 class VehicleForm extends Model
 {
@@ -146,7 +147,7 @@ class VehicleForm extends Model
 
     public function getPriceZones(){
         $result = [];
-        $priceZones = PriceZone::find();
+        $priceZones = PriceZone::find()->where(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($this->vehicleTypeId){
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
@@ -179,7 +180,7 @@ class VehicleForm extends Model
 //        $priceZones = $priceZones->all();
         foreach ($priceZones as $priceZone){
             if($priceZone->hasBodyType($this->bodyTypeId))
-            $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
+                $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
         }
         return $result;
     }

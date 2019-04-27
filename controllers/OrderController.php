@@ -276,7 +276,7 @@ class OrderController extends Controller
                 if ($route->load(Yii::$app->request->post())) {
 //                    if(!$user_id) $user_id = Yii::$app->user->id;
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
-                    $modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id));
+                    ($modelOrder->suitable_rates = $modelOrder->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id)));
 //                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
 //                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);
@@ -300,7 +300,7 @@ class OrderController extends Controller
                 }
 
                 if ($modelOrder->load(Yii::$app->request->post())) {
-
+//                    return var_dump($modelOrder->selected_rates);
                     //Оформление заказа оператором
                     if(!$user_id) {
                         $user = new User();
@@ -376,7 +376,6 @@ class OrderController extends Controller
                     }
                     $user->scenario = $user::SCENARIO_SAVE;
                     $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
-
                     if ($route->save() && $user->save()) {
                         $profile->id_user = $user->id;
                         $profile->save();
@@ -384,6 +383,7 @@ class OrderController extends Controller
                         $modelOrder->id_user = $user->id;
                         $modelOrder->scenario = Order::SCENARIO_LOGIST_NEW_ORDER;
                         if ($modelOrder->save()) {
+
 // Создание myaql события на изменение статуса заказа на просрочен при достижении времени valid_datetime
                             $modelOrder->setEventChangeStatusToExpired();
 
@@ -402,6 +402,8 @@ class OrderController extends Controller
                         return $this->redirect('/logist/order');
                     }
 
+                    functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                    return $this->redirect('/logist/order');
 
                     return var_dump($profile->getErrors());
                 }
@@ -604,8 +606,8 @@ class OrderController extends Controller
         $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
         foreach ($Vehicles as $vehicle) {
             if ($vehicle->canOrder($OrderModel)) {
-                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
-                $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
+                $rate = PriceZone::findOne(['id' => $vehicle->getMinRate($OrderModel)->id, 'status' => PriceZone::STATUS_ACTIVE]);
+                $rate = $rate->getPriceZoneForCarOwner($vehicle->id_user);
                 $vehicles[$vehicle->id] =
                     $vehicle->brand
                     . ' (' . $vehicle->regLicense->reg_number . ') '
@@ -613,12 +615,16 @@ class OrderController extends Controller
                     . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true);
             }
         }
-        if ($vehicles) {
-            $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
-        }
+//        if ($vehicles) {
+//            $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
+//        }
         if ($OrderModel->load(Yii::$app->request->post())) {
+            if ($vehicles) {
+                $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
+            }
+//            return $OrderModel->id_vehicle;
             $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
-                ->getMinRate($OrderModel);
+                ->getMinRate($OrderModel)->unique_index;
             if ($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
 //                $OrderModel->id_vehicle = $id_user;
                 $OrderModel->changeStatus(

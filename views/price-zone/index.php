@@ -19,11 +19,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Добавить тариф', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <h2>Грузовой транспорт</h2>
+    <div class="col-lg-12">
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
         'filterModel' => $searchModel,
         'options' => [
-            'style' => 'vertical-align: top'
+                'class' => 'wrap'
+//            'style' => 'vertical-align: top'
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -115,12 +117,14 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+
     <h2>Пассажирский транспорт</h2>
     <?= GridView::widget([
         'dataProvider' => $dataProviderPass,
         'filterModel' => $searchModel,
         'options' => [
-            'style' => 'vertical-align: top'
+                'class' => 'wrap',
+//            'style' => 'vertical-align: top'
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -128,6 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'bodiesColumn',
                 'format' => 'html',
             ],
+            'id',
             'passengers',
             'r_km',
             'h_loading',
@@ -139,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'min_r_30',
             'min_r_40',
             'min_r_50',
-            'remove_awning',
+//            'remove_awning',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
@@ -224,5 +229,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
-
+    </div>
 </div>

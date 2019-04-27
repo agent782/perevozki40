@@ -135,6 +135,7 @@ class VehicleController extends Controller
                     return $this->render('createFinish', [
                         'modelRegLicense' => $modelRegLicense,
                         'VehicleForm' => $VehicleForm,
+                        'id_user' => $id_user
                     ]);
                 } else return 'no';
                 break;
@@ -361,12 +362,12 @@ class VehicleController extends Controller
     public function actionUpdatePricezones(){
         $post = Yii::$app->request->post();
         $id_vehicle = $post['id_vehicle'];
-
-        $veh_type = Vehicle::findOne(['id' => $id_vehicle])->id_vehicle_type;
+        $vehicle = Vehicle::findOne(['id' => $id_vehicle]);
+        $veh_type = $vehicle->id_vehicle_type;
         $body_type = $post['body_type'];
 //return $body_type;
         $result = [];
-        $priceZones = PriceZone::find();
+        $priceZones = PriceZone::find()->where(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($veh_type) {
             case Vehicle::TYPE_TRUCK:
                 $tonnage = $post['tonnage'];
@@ -439,13 +440,13 @@ class VehicleController extends Controller
         }
         foreach ($priceZones as $priceZone) {
             if ($priceZone->hasBodyType($body_type)) {
+                $priceZone = $priceZone->getPriceZoneForCarOwner($vehicle->id_user);
                 $result[] = [
                     'id' => $priceZone->id,
                     'name' => 'Тарифная зона ' . $priceZone->id,
                     'r_km' => $priceZone->r_km,
                     'r_h' => $priceZone->r_h,
                     'helpMes' => $priceZone->printHtml(),
-
                 ];
             }
         }

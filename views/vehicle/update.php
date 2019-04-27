@@ -60,7 +60,11 @@ $this->registerJsFile('/js/update_price_zones.js');
 //            var_dump($thisPriceZones);
             echo $form->field($model, 'Price_zones[]')->checkboxList($thisPriceZones, [
                 'item' => function ($index, $label, $name, $checked, $value)use($model){
-                    $PriceZone = PriceZone::find()->where(['id' => $value])->one();
+                    $PriceZone = PriceZone::find()
+                        ->where(['id' => $value])
+                        ->andWhere(['status' => PriceZone::STATUS_ACTIVE])
+                        ->one()
+                        ->getPriceZoneForCarOwner($model->id_user);
                     $return = '<label>';
                     $return .= '<input type="checkbox" name="' . $name . '"';
                     foreach ($model->price_zones as $price_zone){

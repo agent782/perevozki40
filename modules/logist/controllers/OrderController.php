@@ -269,7 +269,10 @@ class OrderController extends Controller
 
         $vehicles =[];
         $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->orderBy('id_user')->all();
-
+//        return
+//            var_dump(
+//            Vehicle::findOne(['body_type' => Vehicle::BODY_manipulator])->priceZonesSelect);
+//        ;
         foreach ($Vehicles as $vehicle) {
             if (!$vehicle->canOrder($modelOrder)) {
                 ArrayHelper::removeValue($Vehicles, $vehicle);
