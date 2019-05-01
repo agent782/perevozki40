@@ -42,9 +42,11 @@ use yii\bootstrap\Tabs;
             'id',
             'real_datetime_start',
             [
-                'label' => 'Сумма к оплате',
-                'attribute' => 'finishCost',
-                'format' => 'raw'
+                'label' => 'Сумма',
+                'format' => 'raw',
+                'value' => function($model){
+                    return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
+                },
             ],
             [
                 'attribute' => 'paidText',

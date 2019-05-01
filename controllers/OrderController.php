@@ -200,7 +200,7 @@ class OrderController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($user_id = null)
+    public function actionCreate($user_id)
     {
         if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
 //            $this->layout = 'logist';
@@ -214,7 +214,6 @@ class OrderController extends Controller
             $user = Yii::$app->user->identity;
             $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
         }
-//        else $user = User::findOne(['id' => $user_id]);
 
         switch (Yii::$app->request->post('button')) {
             case 'next1':
@@ -401,11 +400,8 @@ class OrderController extends Controller
 //                        return var_dump($modelOrder->getErrors());
                         return $this->redirect('/logist/order');
                     }
-
                     functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     return $this->redirect('/logist/order');
-
-                    return var_dump($profile->getErrors());
                 }
 
                 break;
@@ -761,11 +757,13 @@ class OrderController extends Controller
                     return $this->redirect($redirect);
                 }
                 if($modelOrder->load(Yii::$app->request->post())){
+//                    return $modelOrder->ClientPaidCash . $modelOrder->cost_finish;
                     if ($realRoute->save()){
                         $modelOrder->id_route_real = $realRoute->id;
                         if($modelOrder->ClientPaidCash){
                             $modelOrder->paid_status = Order::PAID_YES;
                             $modelOrder->type_payment = Payment::TYPE_CASH;
+                            $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                         }
                         if($modelOrder->save()){
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);

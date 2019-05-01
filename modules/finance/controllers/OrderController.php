@@ -41,7 +41,7 @@ class OrderController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
         $dataProvider->sort->defaultOrder = [
-            'paid_status' => SORT_ASC,
+//            'paid_status' => SORT_ASC,
         ];
         $companies = ArrayHelper::map(
             Company::find()->all(),

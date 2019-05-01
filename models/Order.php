@@ -585,7 +585,7 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 //        return $result;
-        $pricezone_for_vehicle = PriceZone::findOne($this->id_pricezone_for_vehicle);
+        $pricezone_for_vehicle = PriceZone::findOne(['unique_index' => $this->id_pricezone_for_vehicle]);
         if(!$result) return $pricezone_for_vehicle->id;
         $real_pricezone = $result[0];
         $cost_km = $real_pricezone->r_km;
@@ -602,7 +602,7 @@ class Order extends \yii\db\ActiveRecord
             $real_pricezone = $pricezone_for_vehicle;
         }
 
-        return $real_pricezone->id;
+        return $real_pricezone->unique_index;
     }
 
     public function afterSave($insert, $changedAttributes)
@@ -1089,6 +1089,7 @@ class Order extends \yii\db\ActiveRecord
                     case self::STATUS_CANCELED: case self::STATUS_EXPIRED:
                         $title_client = 'Заказ №' . $this->id . ' изменен и добавлен в поиск.';
                         $this->deleteEventChangeStatusToExpired();
+                        $this->discount = $this->getDiscount($this->id_user);
                         $this->setEventChangeStatusToExpired();
                         break;
                     default:
@@ -1447,7 +1448,7 @@ class Order extends \yii\db\ActiveRecord
     public function CalculateAndPrintFinishCost(bool $html = true, bool $forVehicle = false, $withDiscount = false) : array {
         $distance = $this->real_km;
         $hour = $this->real_h;
-        $real_pz = PriceZone::findOne(['id' => $this->id_price_zone_real]);
+        $real_pz = PriceZone::findOne(['unique_index' => $this->id_price_zone_real]);
         if($forVehicle) $real_pz = $real_pz->getWithDiscount(9);
         if(!$real_pz || !$distance) return ['text' => 'Ошибка на сервере', 'cost' => 0];
         if($distance){
@@ -1573,6 +1574,13 @@ class Order extends \yii\db\ActiveRecord
 
     public function getVehicleProcentPrice(){
         return \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
+    }
+    public function getArrayPaidStatuses(){
+        return [
+            self::PAID_YES => 'Оплачен',
+            self::PAID_NO => 'Не оплачен',
+            self::PAID_YES_AVANS => 'Частично оплачен'
+        ];
     }
 }
 

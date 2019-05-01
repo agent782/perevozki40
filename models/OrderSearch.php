@@ -17,10 +17,11 @@ class OrderSearch extends Order
 
     public $statuses = [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING, Order::STATUS_VEHICLE_ASSIGNED,
         Order::STATUS_CONFIRMED_CLIENT, Order::STATUS_CONFIRMED_VEHICLE];
-    public $paid_statuses = [Order::PAID_NO];
+
 
     public $invoiceNumber;
     public $certificateNumber;
+    public $companyName;
     /**
      * @inheritdoc
      */
@@ -30,8 +31,8 @@ class OrderSearch extends Order
             [['id', 'id_vehicle_type', 'longlength', 'passengers', 'ep', 'rp', 'lp', 'datetime_start',
                 'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real','type_payment'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
-            [['cargo', 'statuses', 'paid_statuses', 'type_payments'], 'safe'],
-            [['invoiceNumber', 'certificateNumber'], 'safe']
+            [['cargo', 'statuses', 'type_payments'], 'safe'],
+            [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status'], 'safe']
         ];
     }
 
@@ -62,6 +63,9 @@ class OrderSearch extends Order
                 'defaultOrder' => [
                     'datetime_start' => SORT_DESC
                 ]
+            ],
+            'pagination' => [
+                'pageSize' => 20
             ]
         ]);
 
@@ -75,30 +79,25 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-//            'invoice.number' => $this->invoiceNumber
-//            'type_payment' => $this->type_payment
+            Order::tableName().'.id' => $this->id,
         ]);
-//        $query->andFilterWhere(['OR LIKE', 'type_payment', $this->type_payment]);
         $query->andFilterWhere(['IN', 'type_payment', $this->type_payments]);
-
-//        if($this->invoiceNumber != '') $query->andWhere(['LIKE', 'invoice.number', $this->invoiceNumber]);
+        $query->andFilterWhere(['IN', 'paid_status', $this->paid_status]);
 // Если фильтр пуст, показывать такде все заказы, которые не имеют счет
         if($this->invoiceNumber) {
-//            $query->joinWith(['invoice']);
-//            $query->andWhere(['invoice.number LIKE "%' . $this->invoiceNumber . '%" AND invoice.type = ' . Invoice::TYPE_INVOICE]);
             $query->joinWith(['invoice' => function ($q) {
                 $q->andWhere('invoice.number LIKE "%' . $this->invoiceNumber . '%"');
             }]);
         }
 //         Если фильтр пуст, показывать такде все заказы, которые не имеют акт
         if($this->certificateNumber) {
-//            $query->joinWith(['certificate']);
-//            $query->andWhere('invoice.number LIKE "%' . $this->certificateNumber . '%" AND invoice.type = ' . Invoice::TYPE_CERTIFICATE);
             $query->joinWith(['certificate' => function ($q) {
                 $q->andWhere('invoice.number LIKE "%' . $this->certificateNumber . '%"');
             }]);
         }
+        $query->joinWith(['company' => function($q){
+            $q->andWhere('company.name LIKE "%' . $this->companyName . '%"');
+        }]);
         return $dataProvider;
     }
 

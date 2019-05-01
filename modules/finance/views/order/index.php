@@ -18,12 +18,14 @@ $this->title = 'Журнал заказов';
 <div class="order-index">
 
     <h3><?= Html::encode($this->title) ?></h3>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
 //        'pjax' => true,
+//        'pjaxSettings' => [
+//            'options' => ['id' => 'grid-orders']
+//        ],
         'options' => [
             'class' => 'minRoute container',
         ],
@@ -135,7 +137,8 @@ $this->title = 'Журнал заказов';
                 'format' => 'raw',
                 'value' => function($model){
                     return $model->paidText;
-                }
+                },
+                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses())
             ],
             [
                 'attribute' =>'type_payment',
@@ -154,22 +157,26 @@ $this->title = 'Журнал заказов';
             [
 //                'attribute' => 'company.companyInfo',
                 'label' => 'Плательщик',
+                'attribute' => 'companyName',
                 'format' => 'raw',
                 'value' => function($model, $index, $value){
                     $company = $model->company;
                     if (!$company) return null;
                     return Html::a($company->name, Url::to(['/finance/company/view', 'id' => $company->id]));
                 },
-                'filter' => \kartik\select2\Select2::widget([
+                'filter' => \yii\jui\AutoComplete::widget([
                     'model' => $searchModel,
-                    'attribute' => 'id_company',
-                    'data' => $companies,
-                    'pluginOptions' => [
-                        'allowClear' => true,
-                        'change' => 'alert();'
-                    ],
+                    'attribute' => 'companyName',
+                    'clientOptions' => [
+                        'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
+                        'autoFill' => true,
+                        'select' => new \yii\web\JsExpression('
+                            function(){
+//                                $.pjax.reload({container:"#grid-orders"});
+                            }
+                        ')
+                    ]
                 ])
-//                'attribute' => 'company.companyInfo'
             ],
             [
                 'label' => 'Заказчик',
