@@ -3,6 +3,7 @@
 namespace app\modules\finance\controllers;
 
 use app\models\Company;
+use kartik\grid\EditableColumnAction;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -19,6 +20,25 @@ class OrderController extends Controller
     /**
      * {@inheritdoc}
      */
+    public function actions() {
+
+        return ArrayHelper::merge ( parent::actions () , [
+            'pru' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+                    return $model->paidText;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
+            ]
+
+        ]);
+    }
+
+
+
     public function behaviors()
     {
         return [
@@ -47,6 +67,23 @@ class OrderController extends Controller
             Company::find()->all(),
             'id', 'name'
         );
+
+        if(Yii::$app->request->post('hasEditable')){
+            $id_order = Yii::$app->request->post('editableKey');
+//            $out = Json::encode(['output'=>'','message'=>'']);
+            $Order = Order::findOne($id_order);
+            if(!$Order) return 1;
+            $load = Yii::$app->request->post('Order');
+//            $Order->scenario = $Order::SCENARIO_UPDATE_PAID_STATUS;
+            if($Order->load($load)){
+                if($Order->save()){
+//                    echo $out;
+                    return 1;
+                }
+            }
+            return Yii::$app->request->post('editableKey');
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,

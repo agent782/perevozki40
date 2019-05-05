@@ -131,14 +131,27 @@ $this->title = 'Журнал заказов';
                     return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
                 },
             ],
+//            [
+//                'attribute' => 'paid_status',
+//                'label' => 'Оплата',
+//                'format' => 'raw',
+//                'value' => function($model){
+//                    return $model->paidText;
+//                },
+//                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses())
+//            ],
             [
+                'class' => \kartik\grid\EditableColumn::class,
                 'attribute' => 'paid_status',
-                'label' => 'Оплата',
-                'format' => 'raw',
-                'value' => function($model){
-                    return $model->paidText;
-                },
-                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses())
+                'value' => 'paidText',
+                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses()),
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'data' => $searchModel->getArrayPaidStatuses(),
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/pru' ])
+                    ]
+                ],
             ],
             [
                 'attribute' =>'type_payment',

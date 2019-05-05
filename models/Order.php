@@ -136,7 +136,7 @@ class Order extends \yii\db\ActiveRecord
     const SCENARIO_UPDATE_DUMP = 'update_dump';
     const SCENARIO_UPDATE_CRANE = 'update_crane';
     const SCENARIO_UPDATE_EXCAVATOR = 'update_excavator';
-
+    const SCENARIO_UPDATE_PAID_STATUS = 'update_paid_status';
     const SCENARIO_UPDATE_STATUS = 'update_status';
 
     const SCENARIO_FINISH_TRUCK = 'finish_truck';
@@ -261,6 +261,7 @@ class Order extends \yii\db\ActiveRecord
             'real_volume_spec', 'ClientPaidCash'
         ];
         $scenarios[self::SCENARIO_ADD_ID_COMPANY] = ['id_company'];
+        $scenarios[self::SCENARIO_UPDATE_PAID_STATUS] = ['paid_status'];
         return $scenarios;
     }
 
