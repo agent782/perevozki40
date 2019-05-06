@@ -46,7 +46,6 @@
         "keygenqt/yii2-autocomplete-ajax": "@dev",
         "kartik-v/yii2-editable": "dev-master"
 
-
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",

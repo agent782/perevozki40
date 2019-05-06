@@ -4,13 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "hash": "5dcbf9ab01a79f920cba40beca869c66",
-    "content-hash": "a8648f63526832059f845891c9dd883f",
-=======
-    "hash": "c6a12454a292ed1f8747adf566801db2",
-    "content-hash": "da0b19bcdf263f1805083146c2b6fd7e",
->>>>>>> 44835a0140163a24811875486a27379d13048019
+    "hash": "1ef3a70bc70601c3ce5fe380c4bb2b2a",
+    "content-hash": "3f08266cf3a1e49fe0cc5e917c5f1749",
     "packages": [
         {
             "name": "3ch3r46/bootui-datetimepicker",
@@ -105,7 +100,7 @@
             "version": "3.3.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
+                "url": "git@github.com:jquery/jquery-dist.git",
                 "reference": "9e8ec3d10fad04748176144f108d7355662ae75e"
             },
             "dist": {
@@ -881,6 +876,107 @@
             "time": "2018-10-04 08:55:01"
         },
         {
+            "name": "kartik-v/php-date-formatter",
+            "version": "v1.3.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/php-date-formatter.git",
+                "reference": "d842e1c4e6a8d6108017b726321c305bb5ae4fb5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/php-date-formatter/zipball/d842e1c4e6a8d6108017b726321c305bb5ae4fb5",
+                "reference": "d842e1c4e6a8d6108017b726321c305bb5ae4fb5",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "kartik\\plugins\\dateformatter\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "A Javascript datetime formatting and manipulation library using PHP date-time formats.",
+            "homepage": "https://github.com/kartik-v/php-date-formatter",
+            "keywords": [
+                "date",
+                "datetime",
+                "formatter",
+                "javascript",
+                "php",
+                "php-date-formatter.js",
+                "time"
+            ],
+            "time": "2018-07-13 06:56:46"
+        },
+        {
+            "name": "kartik-v/yii2-datecontrol",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-datecontrol.git",
+                "reference": "bbef99c63808f5f87b80eab674387a90dd33e137"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-datecontrol/zipball/bbef99c63808f5f87b80eab674387a90dd33e137",
+                "reference": "bbef99c63808f5f87b80eab674387a90dd33e137",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/php-date-formatter": ">1.3",
+                "kartik-v/yii2-krajee-base": ">=1.9"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "kartik\\datecontrol\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "Date control module allowing separation of formats for View and Model for Yii Framework 2.0",
+            "homepage": "https://github.com/kartik-v/yii2-datecontrol",
+            "keywords": [
+                "control",
+                "date",
+                "extension",
+                "format",
+                "yii",
+                "yii2"
+            ],
+            "time": "2018-11-05 10:58:03"
+        },
+        {
             "name": "kartik-v/yii2-dialog",
             "version": "v1.0.5",
             "source": {
@@ -990,21 +1086,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-grid.git",
-<<<<<<< HEAD
-                "reference": "61c60dd7339972e8bace73a7679f9fc8db3307c6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/61c60dd7339972e8bace73a7679f9fc8db3307c6",
-                "reference": "61c60dd7339972e8bace73a7679f9fc8db3307c6",
-=======
                 "reference": "6744723ac538a8f525fd39bbadcbe86a2a442817"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/kartik-v/yii2-grid/zipball/6744723ac538a8f525fd39bbadcbe86a2a442817",
                 "reference": "6744723ac538a8f525fd39bbadcbe86a2a442817",
->>>>>>> 44835a0140163a24811875486a27379d13048019
                 "shasum": ""
             },
             "require": {
@@ -1043,11 +1130,7 @@
                 "widget",
                 "yii2"
             ],
-<<<<<<< HEAD
-            "time": "2019-04-03 02:09:14"
-=======
             "time": "2019-04-28 13:33:04"
->>>>>>> 44835a0140163a24811875486a27379d13048019
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -2503,11 +2586,7 @@
         },
         {
             "name": "symfony/process",
-<<<<<<< HEAD
-            "version": "v3.4.24",
-=======
             "version": "v3.4.27",
->>>>>>> 44835a0140163a24811875486a27379d13048019
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -4493,16 +4572,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "4.2.1",
+            "version": "4.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "3095910f0f0fb155ac4021fc51a4a7a39ac04e8a"
+                "reference": "f2a2c8e1c97c11ace607a7a667d73d47c19fe404"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/3095910f0f0fb155ac4021fc51a4a7a39ac04e8a",
-                "reference": "3095910f0f0fb155ac4021fc51a4a7a39ac04e8a",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/f2a2c8e1c97c11ace607a7a667d73d47c19fe404",
+                "reference": "f2a2c8e1c97c11ace607a7a667d73d47c19fe404",
                 "shasum": ""
             },
             "require": {
@@ -4542,7 +4621,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2019-04-25 07:55:20"
+            "time": "2019-05-05 09:05:15"
         },
         {
             "name": "sebastian/exporter",
@@ -4948,11 +5027,7 @@
         },
         {
             "name": "symfony/browser-kit",
-<<<<<<< HEAD
-            "version": "v4.2.5",
-=======
             "version": "v4.2.8",
->>>>>>> 44835a0140163a24811875486a27379d13048019
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
@@ -5009,18 +5084,6 @@
         },
         {
             "name": "symfony/console",
-<<<<<<< HEAD
-            "version": "v4.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/console.git",
-                "reference": "24206aff3efe6962593297e57ef697ebb220e384"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/24206aff3efe6962593297e57ef697ebb220e384",
-                "reference": "24206aff3efe6962593297e57ef697ebb220e384",
-=======
             "version": "v4.2.8",
             "source": {
                 "type": "git",
@@ -5031,7 +5094,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/console/zipball/e2840bb38bddad7a0feaf85931e38fdcffdb2f81",
                 "reference": "e2840bb38bddad7a0feaf85931e38fdcffdb2f81",
->>>>>>> 44835a0140163a24811875486a27379d13048019
                 "shasum": ""
             },
             "require": {
@@ -5090,11 +5152,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-<<<<<<< HEAD
-            "time": "2019-04-01 07:32:59"
-=======
             "time": "2019-04-08 14:23:48"
->>>>>>> 44835a0140163a24811875486a27379d13048019
         },
         {
             "name": "symfony/contracts",
@@ -5166,11 +5224,7 @@
         },
         {
             "name": "symfony/css-selector",
-<<<<<<< HEAD
-            "version": "v4.2.5",
-=======
             "version": "v4.2.8",
->>>>>>> 44835a0140163a24811875486a27379d13048019
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
@@ -5223,11 +5277,7 @@
         },
         {
             "name": "symfony/dom-crawler",
-<<<<<<< HEAD
-            "version": "v4.2.5",
-=======
             "version": "v4.2.8",
->>>>>>> 44835a0140163a24811875486a27379d13048019
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
@@ -5284,18 +5334,6 @@
         },
         {
             "name": "symfony/event-dispatcher",
-<<<<<<< HEAD
-            "version": "v4.2.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "ca5af306fbc37f3cf597e91bc9cfa0c7d3f33544"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/ca5af306fbc37f3cf597e91bc9cfa0c7d3f33544",
-                "reference": "ca5af306fbc37f3cf597e91bc9cfa0c7d3f33544",
-=======
             "version": "v4.2.8",
             "source": {
                 "type": "git",
@@ -5306,7 +5344,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/fbce53cd74ac509cbe74b6f227622650ab759b02",
                 "reference": "fbce53cd74ac509cbe74b6f227622650ab759b02",
->>>>>>> 44835a0140163a24811875486a27379d13048019
                 "shasum": ""
             },
             "require": {
@@ -5357,19 +5394,11 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-<<<<<<< HEAD
-            "time": "2019-03-30 15:58:42"
-        },
-        {
-            "name": "symfony/finder",
-            "version": "v4.2.5",
-=======
             "time": "2019-04-06 13:51:08"
         },
         {
             "name": "symfony/finder",
             "version": "v4.2.8",
->>>>>>> 44835a0140163a24811875486a27379d13048019
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -5535,11 +5564,7 @@
         },
         {
             "name": "symfony/yaml",
-<<<<<<< HEAD
-            "version": "v4.2.5",
-=======
             "version": "v4.2.8",
->>>>>>> 44835a0140163a24811875486a27379d13048019
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
@@ -5897,6 +5922,7 @@
         "kartik-v/yii2-widget-select2": 20,
         "keygenqt/yii2-autocomplete-ajax": 20,
         "kartik-v/yii2-editable": 20,
+        "kartik-v/yii2-datecontrol": 20,
         "yiisoft/yii2": 0
     },
     "prefer-stable": false,

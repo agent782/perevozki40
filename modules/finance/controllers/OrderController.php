@@ -20,23 +20,23 @@ class OrderController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions() {
-
-        return ArrayHelper::merge ( parent::actions () , [
-            'pru' => [
-                'class' => EditableColumnAction::class ,
-                'modelClass' => Order::class ,
-                'outputValue' => function ($model , $attribute , $key , $index) {
-                    return $model->paidText;
-                } ,
-                'outputMessage' => function($model , $attribute , $key , $index) {
-                    return '';
-                } ,
-            ]
-
-        ]);
-    }
-
+//    public function actions() {
+//
+//        return ArrayHelper::merge ( parent::actions () , [
+//            'pru' => [
+//                'class' => EditableColumnAction::class ,
+//                'modelClass' => Order::class ,
+//                'outputValue' => function ($model , $attribute , $key , $index) {
+//                    return $model->paidText;
+//                } ,
+//                'outputMessage' => function($model , $attribute , $key , $index) {
+//                    return '';
+//                } ,
+//            ]
+//
+//        ]);
+//    }
+//
 
 
     public function behaviors()
