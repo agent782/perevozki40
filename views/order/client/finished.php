@@ -76,22 +76,7 @@ use yii\bootstrap\Tabs;
                 'label' => 'Действия',
                 'format' => 'raw',
             ],
-            [
-                'label' => 'Действия',
-                'format' => 'raw',
-                'value' => function($model){
-                        return
-                             Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Удалить заказ']), Url::to([
-                                '/order/delete',
-                                'id' => $model->id,
-                                 'redirect' => '/order/client'
-                            ]),
-                                ['data-confirm' => Yii::t('yii',
-                                    'Удалить безвозвратно?'),
-                                    'data-method' => 'post'])
-                            ;
-                }
-            ]
+
         ]
     ]); ?>
 </div>

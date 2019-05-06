@@ -12,6 +12,7 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 ?>
+
 <div>
     <h4>В процессе выполнения...</h4>
     <?= GridView::widget([
@@ -41,9 +42,11 @@ use yii\bootstrap\Tabs;
             'id',
             'real_datetime_start',
             [
-                'label' => 'Сумма к оплате',
-                'attribute' => 'finishCost',
-                'format' => 'raw'
+                'label' => 'Сумма',
+                'format' => 'raw',
+                'value' => function($model){
+                    return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
+                },
             ],
             [
                 'attribute' => 'paidText',
@@ -70,25 +73,24 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'attribute' => 'clientInfo'
-            ],
-            [
-                'label' => 'Действия',
-                'format' => 'raw',
+                'value' => function ($model){
+                    $return = $model->clientInfo;
+                    $return .= '<br>' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+                            ['/logist/order/add-company', 'id_order' => $model->id]);
+
+                    return $return;
+                }
             ],
             [
                 'label' => 'Действия',
                 'format' => 'raw',
                 'value' => function($model){
                         return
-                             Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Удалить заказ']), Url::to([
-                                '/order/delete',
-                                'id' => $model->id,
-                                 'redirect' => '/order/client'
-                            ]),
-                                ['data-confirm' => Yii::t('yii',
-                                    'Удалить безвозвратно?'),
-                                    'data-method' => 'post'])
+                            Html::a('Изменить результат', Url::to([
+                                '/order/finish-by-vehicle',
+                                'id_order' => $model->id,
+                                'redirect' => '/logist/order'
+                            ]),['class' => 'btn btn-sm btn-success'])
                             ;
                 }
             ]

@@ -5,8 +5,9 @@ use yii\bootstrap\Html;
 use yii\jui\AutoComplete;
 use yii\helpers\Url;
 use yii\web\JsExpression;
-use app\components\widgets\AddCompanyWidget;
+use app\components\widgets\AddCompany;
 use yii\widgets\Pjax;
+use app\models\Payment;
 
 /* @var $this yii\web\View */
 /* @var $modelOrder app\models\Order */
@@ -16,8 +17,9 @@ use yii\widgets\Pjax;
 /* @var $profile \app\models\Profile*/
 
 $this->title = 'Оформлление заказа';
-//var_dump($route);
+var_dump($modelOrder->type_payment);
 ?>
+
 <div class="order-create">
 
     <h3><?= Html::encode($this->title) ?></h3>
@@ -39,17 +41,16 @@ $this->title = 'Оформлление заказа';
                $("#name").val(ui.item.name);
                $("#surname").val(ui.item.surname);
                $("#patrinimic").val(ui.item.patrinimic);
-               var id = ui.item.id
-               $.pjax.reload({
-                          url : "/logist/order/pjax-add-company",
-                          container: "#companies",
-//                          dataType:"json",
-                          type: "POST", 
-                        data: {  
-                              "id_user" : ui.item.id 
-                         }
-                         
-                       });
+               var id = ui.item.id;
+//               $.pjax.reload({
+//                          url : "/logist/order/pjax-add-company",
+//                          container: "#companies",
+////                          dataType:"json",
+//                          type: "POST", 
+//                        data: {  
+//                              "id_user" : ui.item.id 
+//                         }                       
+//                       });
             }'),
             'response' => new JsExpression('function(event, ui) {
                $("#username").val($(this).val());
@@ -66,8 +67,7 @@ $this->title = 'Оформлление заказа';
                        $("#surname").val("");
                        $("#patrinimic").val("");
                        $("#surname").focus();
-                       
-                       
+                        
                 }
             }'),
         ],
@@ -80,48 +80,38 @@ $this->title = 'Оформлление заказа';
     ?>
     <br><br>
     <h2 id="label">Новый клиент</h2>
-    <?php $form = ActiveForm::begin([
-        'enableAjaxValidation' => true,
-        'validationUrl' => \yii\helpers\Url::to(['/company/validate-add-company']),
+    <?php $formFinishOrder = ActiveForm::begin([
+        'action' => '/order/create',
+//        'enableAjaxValidation' => true,
+//        'validationUrl' => \yii\helpers\Url::to(['/company/validate-add-company']),
         'fieldConfig' => [
             'labelOptions' => ['class' => 'col-lg-12 control-label'],
         ],
     ]);?>
 
     <div class="col-lg-4">
-    <?= $form->field($profile, 'id_user')->hiddenInput(['id' => 'id_user'])->label(false)?>
-    <?= $form->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
-    <?= $form->field($profile, 'name')->input('text',  ['id' => 'name'])?>
-    <?= $form->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
+    <?= $formFinishOrder->field($user, 'id')->hiddenInput(['id' => 'id_user'])->label(false)?>
+    <?= $formFinishOrder->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
+    <?= $formFinishOrder->field($profile, 'name')->input('text',  ['id' => 'name'])?>
+    <?= $formFinishOrder->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
     </div>
     <div class="col-lg-4">
-        <?= $form->field($user, 'username')->input('tel',  ['id' => 'username'])?>
-        <?= $form->field($user, 'email')->input('email',  ['id' => 'email'])?>
-        <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
-        <?= $form->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
+        <?= $formFinishOrder->field($user, 'username')->input('tel',  ['id' => 'username', 'readonly' => true])?>
+        <?= $formFinishOrder->field($user, 'email')->input('email',  ['id' => 'email'])?>
+        <?= $formFinishOrder->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
+        <?= $formFinishOrder->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
     </div>
-    <?php Pjax::begin(['id' => 'companies',
-    ])?>
+
 
     <div class="col-lg-12">
-<!--        --><?//= ($modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER)
-//            ? $this->render('@app/views/company/_form', [
-//                'form' => $form,
-//                'modelCompany' => $modelCompany,
-//                'XcompanyXprofile' => $XcompanyXprofile
-//            ])
-//            : '';
-//        ?>
+    <?php
+        $bank = ($modelOrder->type_payment == Payment::TYPE_BANK_TRANSFER);
+        echo Html::submitButton(
+                (!$bank)?'Оформить заказ':'Выбрать плательщика',
+                ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_set_user']);
+    ?>
+
     </div>
-<?php Pjax::end()?>
-    <div class="col-lg-12">
-    <?= Html::submitButton('Оформить заказ', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_finish'])?>
-    </div>
-    <?php $form::end()?>
+    <?php $formFinishOrder::end()?>
 
 </div>
-<script>
-    $(function () {
-
-    });
-</script>

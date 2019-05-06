@@ -277,7 +277,9 @@ class Vehicle extends \yii\db\ActiveRecord
     public function getPrice_zones()
     {
         return $this->hasMany(PriceZone::className(), ['id' => 'id_price_zone'])
-            ->viaTable('XvehicleXpricezone', ['id_vehicle' => 'id']);
+            ->viaTable('XvehicleXpricezone', ['id_vehicle' => 'id'])
+            ->andFilterWhere([PriceZone::tableName().'.status' => PriceZone::STATUS_ACTIVE])
+            ;
     }
 
     public function getIdRates()
@@ -330,13 +332,14 @@ class Vehicle extends \yii\db\ActiveRecord
     //Выбранные тарифы
     public function getPriceZonesSelect(){
         return $this->hasMany(PriceZone::className(),['id' => 'id_price_zone'])
-            ->viaTable('XvehicleXpricezone', ['id_vehicle' => 'id']);
+            ->viaTable('XvehicleXpricezone', ['id_vehicle' => 'id'])
+            ->andWhere([PriceZone::tableName().'.status' => PriceZone::STATUS_ACTIVE]);
     }
 // Подходящие тарифы
     public static function getPriceZones($modelVehicle, $idVehicleType)
     {
         $result = [];
-        $priceZones = PriceZone::find()->where(['veh_type' => $idVehicleType]);
+        $priceZones = PriceZone::find()->where(['veh_type' => $idVehicleType])->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($idVehicleType) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
@@ -466,7 +469,7 @@ class Vehicle extends \yii\db\ActiveRecord
     public function getOrders(){
         return $this->hasMany(Order::class, ['id_vehicle'=>'id']);
     }
-public function  hasOrder($statuses_orders) : bool{
+    public function  hasOrder($statuses_orders) : bool{
         $orders = $this->orders;
         if(!$statuses_orders || !$orders) return false;
 
@@ -561,12 +564,12 @@ public function  hasOrder($statuses_orders) : bool{
                             return true;
                         break;
                     case Vehicle::BODY_manipulator:
-                        if(
-                            $this->tonnage >= $Order->tonnage
-                            && $this->length >= $Order->length
-                            && $this->tonnage_spec >= $Order->tonnage_spec
-                            && $this->length_spec >= $Order->length_spec
-                        )
+//                        if(
+//                            $this->tonnage >= $Order->tonnage
+//                            && $this->length >= $Order->length
+//                            && $this->tonnage_spec >= $Order->tonnage_spec
+//                            && $this->length_spec >= $Order->length_spec
+//                        )
                             return true;
                         break;
                     case Vehicle::BODY_excavator:
@@ -600,8 +603,8 @@ public function  hasOrder($statuses_orders) : bool{
         return true;
     }
 
-    public function getMinRate(Order $Order){
-        if(!$this->canOrder($Order)) return false;
+    public function getMinRate(Order $Order) : PriceZone{
+        if(!$this->canOrder($Order)) return null;
         $pricezonesForVehicle = [];
         foreach ($Order->priceZones as $OrderPriceZone) {
             foreach ($this->priceZonesSelect as $priceZone){
@@ -611,18 +614,21 @@ public function  hasOrder($statuses_orders) : bool{
             }
         }
         if(!$pricezonesForVehicle) return false;
-        $tmpPriceZone = $pricezonesForVehicle[0];
+        $tmpPriceZone = new PriceZone();
+        $tmpPriceZone->attributes = $pricezonesForVehicle[0]->attributes;
         $cost_r = $tmpPriceZone->r_km;
         $cost_h = $tmpPriceZone->r_h;
-        $id_rate = $tmpPriceZone->id;
+//        $id_rate = $tmpPriceZone->id;
         foreach ($pricezonesForVehicle as $priceZone) {
             if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
                 $cost_r = $priceZone->r_km;
                 $cost_h = $priceZone->r_h;
-                $id_rate = $priceZone->id;
+//                $id_rate = $priceZone->id;
+                $tmpPriceZone->attributes = $priceZone->attributes;
             }
         }
-        return ($id_rate) ? $id_rate : false;
+        return ($tmpPriceZone) ? $tmpPriceZone : null;
+//        return ($id_rate) ? $id_rate : false;
     }
 
     public function getBrandAndNumber(){
@@ -682,5 +688,10 @@ public function  hasOrder($statuses_orders) : bool{
             if($loadingType->id == $id_lType) return true;
         }
         return false;
+    }
+
+    public function getVehicleProcentPrice(){
+        // Пока что у всех 9%
+        return \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
     }
 }

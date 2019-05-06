@@ -20,6 +20,8 @@ use kartik\file\FileInput;
 class ButtonUpload extends Widget
 {
     public $model;
+    public $attribute = 'upload_file';
+    public $multiple = true;
     public $typeDocument;
     public $header = 'Отправка подписанного Договора';
     public $ToggleButton = ['label' => 'Отправить подписанный скан', 'class' => 'btn btn-success'];
@@ -41,8 +43,8 @@ class ButtonUpload extends Widget
 
 
         echo
-        $form->field($this->model, 'upload_file')
-            ->fileInput(['multiple' => true])
+        $form->field($this->model, $this->attribute)
+            ->fileInput(['multiple' => $this->multiple])
             ->label(false)
         ;
         echo  Html::submitButton('Загрузить');

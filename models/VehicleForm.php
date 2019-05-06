@@ -12,6 +12,7 @@ namespace  app\models;
 use app\components\functions\functions;
 use yii\base\Model;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 class VehicleForm extends Model
 {
@@ -146,7 +147,7 @@ class VehicleForm extends Model
 
     public function getPriceZones(){
         $result = [];
-        $priceZones = PriceZone::find();
+        $priceZones = PriceZone::find()->where(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($this->vehicleTypeId){
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
@@ -179,15 +180,16 @@ class VehicleForm extends Model
 //        $priceZones = $priceZones->all();
         foreach ($priceZones as $priceZone){
             if($priceZone->hasBodyType($this->bodyTypeId))
-            $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
+                $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;
         }
         return $result;
     }
 
-    public function saveVehicle($reg_licence_ID){
+    public function saveVehicle($reg_licence_ID, $id_user){
         if(!$this->id){
             $modelVehicle = new Vehicle(['scenario' => Vehicle::SCENARIO_CREATE]);
             $modelVehicle->id_user = Yii::$app->user->id;
+            $modelVehicle->id_user = $id_user;
             if(!$modelVehicle->id_user) return false;
             $modelVehicle->create_at = date('d.m.Y');
         }
@@ -220,11 +222,13 @@ class VehicleForm extends Model
                 $loadingType = LoadingType::find()->where(['id' => $loadingTypeId])->one();
                 $modelVehicle->link('loadingtypes', $loadingType);
             }
-            foreach ($this->price_zones as $price_zone){
-                $PriceZone = PriceZone::find()->where(['id' => $price_zone])->one();
-                $modelVehicle->link('price_zones', $PriceZone);
+            $price_zones = $this->price_zones;
+            if($price_zones) {
+                foreach ($price_zones as $price_zone) {
+                    $PriceZone = PriceZone::find()->where(['id' => $price_zone])->one();
+                    if ($PriceZone) $modelVehicle->link('price_zones', $PriceZone);
+                }
             }
-
             $modelVehicle->photo = functions::saveImage($this, 'photo', Yii::getAlias('@photo_vehicle/'), $modelVehicle->id);
 
             if($modelVehicle->save()) {

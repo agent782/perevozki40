@@ -36,7 +36,8 @@ class Driver extends \yii\db\ActiveRecord
 
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 1;
-    const STAUS_ARHIVE = 2;
+    const STATUS_ARHIVE = 2;
+
 
     public $statuses = [
         'Удален',

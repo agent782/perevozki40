@@ -12,6 +12,7 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use \app\models\XprofileXcompany;
 
 ?>
 <div>
@@ -42,11 +43,16 @@ use yii\bootstrap\Tabs;
 //        ],
         'id',
         [
-            'attribute' => 'datetime_start',
-            'options' => [
-//                    'style' =>'width: 100px',
-            ],
-            'contentOptions'=>['style'=>'white-space: normal;']
+            'label' => 'Дата/время',
+            'format' => 'raw',
+            'value' => function($model){
+                return
+                    $model->datetime_start
+                    . '<br><i>('
+                    . $model->valid_datetime
+                    . ')</i>'
+                    ;
+            }
         ],
         [
             'label' => 'Маршрут',
@@ -61,27 +67,52 @@ use yii\bootstrap\Tabs;
         [
             'label' => 'Заказчик',
             'format' => 'raw',
-            'attribute' => 'clientInfo'
+//            'attribute' => 'clientInfo',
+            'value' => function ($model){
+                $return = $model->clientInfo;
+                $company = \app\models\Company::findOne($model->id_company);
+                if(!$company){
+
+                        $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+                                ['/logist/order/add-company', 'id_order' => $model->id]);
+                }
+
+                return $return;
+            }
         ],
         [
-            'label' => 'Выбранные тарифы',
+            'label' => 'Выбранные тарифы для водителя',
             'format' => 'raw',
             'value' => function($model){
-                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getDiscount($model->id_user));
+                return $model->getListPriceZonesCostsForVehicle(null, $model->route->distance);
+//                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->getVehicleProcentPrice(), false);
+            }
+        ],
+        [
+            'label' => 'Выбранные тарифы для Клиента',
+            'format' => 'raw',
+            'value' => function($model){
+                return $model->getListPriceZonesCostsWithDiscont($model->route->distance, $model->discount);
             }
         ],
         [
             'attribute' => 'paymentText',
             'format' => 'raw'
         ],
-        'valid_datetime',
         [
             'label' => 'Действия',
             'format' => 'raw',
             'value' => function($model){
                 if($model->status == Order::STATUS_NEW || $model->status == Order::STATUS_IN_PROCCESSING){
                     return
-                        Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [
+                        Html::a(Html::icon('ok-sign', ['class' => 'btn-lg','title' => 'Назначить машину']), Url::to([
+                            '/logist/order/find-vehicle',
+                            'redirect' => '/order/accept-order',
+                            'id_order' => $model->id,
+                            'redirectError' => '/logist/order'
+                        ]))
+                        . ' '
+                        . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [
                                 '/order/update',
                                 'id_order' => $model->id,
                                 'redirect' => '/order/client'

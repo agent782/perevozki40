@@ -4,6 +4,8 @@ namespace app\modules\finance\controllers;
 
 use app\models\Document;
 use yii\web\Controller;
+use app\models\DocumentSearch;
+use Yii;
 
 /**
  * Default controller for the `finance` module

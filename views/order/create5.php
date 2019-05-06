@@ -13,7 +13,7 @@ use kartik\datetime\DateTimePicker;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 //echo date('d.m.Y H:i');
-//var_dump($modelOrder->getDiscount(Yii::$app->user->id))
+//var_dump($companies);
 ?>
 
 <h4>Шаг 5 из 5.</h4>
@@ -90,7 +90,7 @@ use app\components\widgets\ShowMessageWidget;
         '
     ])?>
     <?php
-        $companiesHide = ($modelOrder->id_user) ? '' : 'hidden';
+        $companiesHide = ($companies && $modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER) ? '' : 'hidden';
     ?>
     <div id="companies" <?= $companiesHide?> >
     <?= $form->field($modelOrder, 'id_company',[
@@ -114,7 +114,7 @@ use app\components\widgets\ShowMessageWidget;
 
 <div class="col-lg-12">
     <?=
-        Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
+        Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])
     ?>
 
     <?= Html::submitButton('Оформить заказ', [

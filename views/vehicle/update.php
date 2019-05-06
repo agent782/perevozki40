@@ -31,12 +31,9 @@ $descBTs = ArrayHelper::map(BodyType::find()->asArray()->all(), 'id', 'descripti
 $imgLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'image');
 $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'description');
 
-
-
 $classiferVehicleIds = [];
 $brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->orderBy(['brand' => SORT_ASC])->all(), 'id', 'brand');
 $this->registerJsFile('/js/update_price_zones.js');
-
 
 ?>
 <!--</script>-->
@@ -48,8 +45,11 @@ $this->registerJsFile('/js/update_price_zones.js');
     <?php
         $form = \yii\bootstrap\ActiveForm::begin([
             'enableAjaxValidation' => true,
-            'validationUrl' => [Url::to('/vehicle/validate-vehicle')]
+            'validationUrl' => [Url::to('/vehicle/validate-vehicle-form')]
         ]);
+//     Нужен для валидации на уникальность рег номера
+    echo $form->field($modelRegLicense, 'id_user')->hiddenInput()->label(false);
+
     ?>
         <h2><?= Html::encode($this->title) ?></h2>
     <div class="row">
@@ -60,7 +60,11 @@ $this->registerJsFile('/js/update_price_zones.js');
 //            var_dump($thisPriceZones);
             echo $form->field($model, 'Price_zones[]')->checkboxList($thisPriceZones, [
                 'item' => function ($index, $label, $name, $checked, $value)use($model){
-                    $PriceZone = PriceZone::find()->where(['id' => $value])->one();
+                    $PriceZone = PriceZone::find()
+                        ->where(['id' => $value])
+                        ->andWhere(['status' => PriceZone::STATUS_ACTIVE])
+                        ->one()
+                        ->getPriceZoneForCarOwner($model->id_user);
                     $return = '<label>';
                     $return .= '<input type="checkbox" name="' . $name . '"';
                     foreach ($model->price_zones as $price_zone){
@@ -204,6 +208,9 @@ $this->registerJsFile('/js/update_price_zones.js');
     <div class="row">
 
         <div class="col-lg-4">
+<!--            Нужен для валидации на уникальность рег номера-->
+            <?= $form->field($modelRegLicense, 'id')->hiddenInput()?>
+
             <?= $form->field($modelRegLicense, 'country')->dropDownList(\yii\helpers\ArrayHelper::map(
                 (($q = new \yii\db\Query())
                     ->select(['id_country', 'name'])
@@ -335,8 +342,9 @@ $this->registerJsFile('/js/update_price_zones.js');
 
     <div class="row">
         <div class="col-lg-12">
-            <?=Html::submitButton(($model->status != Vehicle::STATUS_DELETED)?'Сохранить':'Восстановить и сохранить', ['class' => 'btn btn-success'])?>
             <?=Html::a('Отмена', Url::to(Yii::$app->user->can('admin')? ' /admin/vehicle':'/vehicle'), ['class' => 'btn btn-warning']) ?>
+
+            <?=Html::submitButton(($model->status != Vehicle::STATUS_DELETED)?'Сохранить':'Восстановить и сохранить', ['class' => 'btn btn-success'])?>
         </div>
     </div>
 </div>

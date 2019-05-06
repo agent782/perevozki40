@@ -27,22 +27,23 @@ class functions
         return User::find()->all();
     }
 
-    static public function saveImage($model, string $attribute, string $savePath, string $filename)
+    static public function saveImage($model, string $attribute, string $savePath, string $filename) : string
     {
         $image = UploadedFile::getInstance($model, $attribute);
         if(!$image) {
 //            \Yii::$app->session->setFlash('warning', 'Ошибка сохранения изображения. Фотография не выбрана.');
-            return false;
+            return '';
         }
+
         self::createDirectory($savePath);
         $model->$attribute = $image;
         $filename = $filename . '.' . $image->extension;
         if ($image->saveAs($savePath . $filename)) {
-            \Yii::$app->session->setFlash('warning', 'Файл ' . $image . ' успешно сохранен.');
+            \Yii::$app->session->setFlash('success', 'Файл ' . $image . ' успешно сохранен.');
             return $filename;
         }
         \Yii::$app->session->setFlash('warning', 'Ошибка сохранения изображения.');
-        return false;
+        return '';
     }
 
     static public function createDirectory($path)
@@ -122,5 +123,26 @@ class functions
     static public function getHtmlLinkToPhone(string $phone, $html =true){
         if(!$html) return $phone;
         return 'Телефон: <a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
+    }
+
+    static public function DownloadFile(string $pathToFile, string $redirect){
+        if(file_exists($pathToFile) && is_file($pathToFile)){
+            return Yii::$app->response->sendFile($pathToFile);
+        }
+        self::setFlashWarning('Ошибка скачивания!');
+        return Yii::$app->controller->redirect($redirect);
+    }
+
+    static public function translit($s) {
+        $s = (string) $s; // преобразуем в строковое значение
+        $s = strip_tags($s); // убираем HTML-теги
+        $s = str_replace(array("\n", "\r"), " ", $s); // убираем перевод каретки
+        $s = preg_replace("/\s+/", ' ', $s); // удаляем повторяющие пробелы
+        $s = trim($s); // убираем пробелы в начале и конце строки
+        $s = function_exists('mb_strtolower') ? mb_strtolower($s) : strtolower($s); // переводим строку в нижний регистр (иногда надо задать локаль)
+        $s = strtr($s, array('а'=>'a','б'=>'b','в'=>'v','г'=>'g','д'=>'d','е'=>'e','ё'=>'e','ж'=>'j','з'=>'z','и'=>'i','й'=>'y','к'=>'k','л'=>'l','м'=>'m','н'=>'n','о'=>'o','п'=>'p','р'=>'r','с'=>'s','т'=>'t','у'=>'u','ф'=>'f','х'=>'h','ц'=>'c','ч'=>'ch','ш'=>'sh','щ'=>'shch','ы'=>'y','э'=>'e','ю'=>'yu','я'=>'ya','ъ'=>'','ь'=>''));
+        $s = preg_replace("/[^0-9a-z-_ ]/i", "", $s); // очищаем строку от недопустимых символов
+        $s = str_replace(" ", "-", $s); // заменяем пробелы знаком минус
+        return $s; // возвращаем результат
     }
 }

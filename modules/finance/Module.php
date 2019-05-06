@@ -17,25 +17,26 @@ class Module extends \yii\base\Module
      */
     public function init()
     {
+        $this->layout = 'finance';
         parent::init();
 
         // custom initialization code goes here
     }
 
-    public function behaviors()
-    {
-        return [
-            // Доступ к модулю только роли admin
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['admin']
-                    ]
-                ]
-            ]
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            // Доступ к модулю только роли admin
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'rules' => [
+//                    [
+//                        'allow' => true,
+//                        'roles' => ['admin', 'finance', 'dispetcher']
+//                    ]
+//                ]
+//            ]
+//        ];
+//    }
 
 }

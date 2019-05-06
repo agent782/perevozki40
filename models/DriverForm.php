@@ -117,7 +117,7 @@ class DriverForm extends Model
         return $this;
     }
 
-    public function save($modelDriver){
+    public function save($modelDriver, $id_car_owner){
         $modelPassport = $modelDriver->passport;
         if(!$modelPassport) $modelPassport = new Passport();
 
@@ -131,7 +131,7 @@ class DriverForm extends Model
         $modelDriver->address = $this->address;
         $modelDriver->phone = $this->phone;
         $modelDriver->phone2 = $this->phone2;
-        $modelDriver->id_car_owner = Yii::$app->user->id;
+        $modelDriver->id_car_owner = $id_car_owner;
 
         if($modelDriver->save()){
             $this->photo = UploadedFile::getInstance($this, 'photo');

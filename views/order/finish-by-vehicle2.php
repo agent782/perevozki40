@@ -62,6 +62,11 @@ $this->title = 'Фактические данные по заказу №' . $mo
     </div>
 
     <div class="col-lg-11">
+        <?php if ($modelOrder->type_payment !== Payment::TYPE_CASH){
+            echo $form->field($modelOrder, 'ClientPaidCash')->checkbox(['label' => 'Клиент оплатил наличными или на банковскую карту']);
+    }?>
+    </div>
+    <div class="col-lg-11">
         <?=
         Html::submitButton('Назад', [
             'class' => 'btn btn-warning',

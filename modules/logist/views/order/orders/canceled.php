@@ -16,6 +16,7 @@ use yii\bootstrap\Tabs;
     <h4>Отмененные и просроченные.</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_canceled,
+//        'filterModel' => $searchModel,
         'options' => [
             'class' => 'minRoute'
         ],
@@ -83,6 +84,7 @@ use yii\bootstrap\Tabs;
                         return Html::a('Изменить и повторить поиск', Url::to([
                             '/order/update',
                             'id_order' => $model->id,
+                            'redirect' => '/logist/order'
                         ]),
                             [
                                 'data-method' => 'post',

@@ -135,38 +135,42 @@ class CompanyController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($user_id = null, $redirect = 'index')
     {
+        if(!$user_id) $user_id = Yii::$app->user->id;
         $modelCompany = new Company();
-        $modelProfile = Profile::findOne(Yii::$app->user->getId());
+        $modelProfile = Profile::findOne($user_id);
         $XcompanyXprofile = new XprofileXcompany();
         if ($modelCompany->load(Yii::$app->request->post()) && $XcompanyXprofile->load(Yii::$app->request->post())){
             if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
                 if ($modelCompany->save()) {
 
                     $XcompanyXprofile->id_company = $modelCompany->id;
-                    $XcompanyXprofile->id_profile = Yii::$app->user->getId();
-                    if(!$XcompanyXprofile->save()) return $this->redirect(['create']);
-                    $modelCompany->createDocument(Document::TYPE_CONTRACT_CLIENT);
-                    return $this->redirect(['index']);
-                } else return $this->redirect('/');
+                    $XcompanyXprofile->id_profile = $user_id;
+                    if(!$XcompanyXprofile->save()) {
+                        return $this->redirect($redirect);
+                    }
+//                    $modelCompany->createDocument(Document::TYPE_CONTRACT_CLIENT);
+                    return $this->redirect($redirect);
+                } else {
+                    return $this->redirect($redirect);
+                }
             }else {
                 $modelCompany = Company::find()->where(['inn' => $modelCompany->inn])->one();
-                if(XprofileXcompany::find()->where(['id_profile' => Yii::$app->user->getId()])->andWhere(['id_company' => $modelCompany->id])->count()){
+                if(XprofileXcompany::find()->where(['id_profile' => $user_id])->andWhere(['id_company' => $modelCompany->id])->count()){
 //                    return 'Уже добавлено';
-                    return $this->redirect(['index']);
+                    return $this->redirect([$redirect]);
                 }else {
-//                    $modelProfile = Profile::findOne(Yii::$app->user->getId());
                     $modelCompany->link('profiles', $modelProfile);
 //   //                 return 'Add company to Profile';
-                    return $this->redirect(['index']);
+                    return $this->redirect($redirect);
                 }
             }
         }
-        if($modelProfile->getMaxCompanies() <= $modelProfile->getCountCompanies()){
-            Yii::$app->session->setFlash('warning', FAQ::getFAQ(Yii::$app->user->getId(), FAQ::FAQ_MAX_COMPANIES));
-            return $this->redirect('index');
-        }
+//        if($modelProfile->getMaxCompanies() <= $modelProfile->getCountCompanies()){
+//            Yii::$app->session->setFlash('warning', FAQ::getFAQ(Yii::$app->user->getId(), FAQ::FAQ_MAX_COMPANIES));
+//            return $this->redirect('index');
+//        }
         return $this->render('create', compact(['modelCompany', 'XcompanyXprofile']));
 
 
@@ -242,39 +246,41 @@ class CompanyController extends Controller
 
     }
 
-    public function actionDownloadDocument($idCompany, $type)
+    public function actionDownloadDocument($idCompany, $type,$redirect = '/company/index')
     {
 //       echo $idCompany;
         $modelCompany = Company::findOne($idCompany);
+        if(!$modelCompany) $this->redirect($redirect);
        switch ($type){
            case Document::TYPE_CONTRACT_CLIENT:
                $document = Document::findOne(['id_company' => $idCompany, 'type' => $type]);
 
                if(!$document){
                    if (!$modelCompany -> createDocument($document->type)){
-                       return $this->redirect('/company/index');
+                       return $this->redirect($redirect);
                    }
                }
 
                if($document->url_download){
                    $path = Yii::getAlias('@client_contracts_forms/' .$document->url_download);
 
-                   if(!file_exists($path)) {
+                   if(file_exists($path)) {
                        $document->delete();
-                       $modelCompany->createDocument($type);
+
                    }
+                   $modelCompany->createDocument($type);
                    return Yii::$app->response->sendFile($path);
                }
                  else {
                    $document->delete();
-                   $modelCompany->createDocument($type);
+                   $document = $modelCompany->createDocument($type);
                    $path = Yii::getAlias('@client_contracts_forms/' .$document->url_download);
                    return Yii::$app->response->sendFile($path);
                }
-               return $this->redirect('/company/index');
+               return $this->redirect($redirect);
                break;
            default:
-               return $this->redirect('/company/index');
+               return $this->redirect($redirect);
        }
     }
     public function actionValidateDate()

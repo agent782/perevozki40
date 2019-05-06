@@ -45,7 +45,7 @@ class VehicleController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['car_owner']
+                        'roles' => ['car_owner', 'admin', 'dispetcher']
                     ]
                 ],
             ]
@@ -92,11 +92,12 @@ class VehicleController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($id_user, $redirect = '/vehicle/index')
     {
         $modelVehicle = new Vehicle(['scenario' => Vehicle::SCENARIO_CREATE]);
         $VehicleForm = new VehicleForm();
         $modelRegLicense = new RegLicense();
+
         $session = Yii::$app->session;
         switch (Yii::$app->request->post('button')){
             case 'create_next1':
@@ -112,7 +113,7 @@ class VehicleController extends Controller
                 break;
             case 'create_back1':
                 $session->remove('VehicleForm');
-                return $this->redirect('/vehicle');
+                return $this->redirect($redirect);
                 break;
             case 'create_back3':
                 if($session['VehicleForm']){
@@ -129,16 +130,17 @@ class VehicleController extends Controller
 
                 if($VehicleForm->load(Yii::$app->request->post())) {
 
-                    $modelRegLicense = new RegLicense();
+                    $modelRegLicense = new RegLicense(['id_user' => $id_user]);
                     $session->set('VehicleForm', $VehicleForm);
                     return $this->render('createFinish', [
                         'modelRegLicense' => $modelRegLicense,
-                        'VehicleForm' => $VehicleForm
+                        'VehicleForm' => $VehicleForm,
+                        'id_user' => $id_user
                     ]);
                 } else return 'no';
                 break;
             case 'create_finish':
-                if($session['VehicleForm'])$VehicleForm=$session->get('VehicleForm');
+                if($session->get('VehicleForm'))$VehicleForm=$session->get('VehicleForm');
                 if($VehicleForm->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
                     $session->set('VehicleForm', $VehicleForm);
                     $session->set('modelRegLicense', $modelRegLicense);
@@ -162,7 +164,7 @@ class VehicleController extends Controller
                             $modelRegLicense->id . '_2'
                         );
                         $modelRegLicense->save();
-                        if ($modelVehicle = $VehicleForm->saveVehicle($modelRegLicense->id)) {
+                        if ($modelVehicle = $VehicleForm->saveVehicle($modelRegLicense->id, $id_user)) {
                             $session->remove('VehicleForm');
 
                             functions::setFlashSuccess('ТС создано и отправлено на модерацию.');
@@ -185,13 +187,12 @@ class VehicleController extends Controller
                               ]
                             );
 
-                            return $this->redirect('/vehicle/index');
+                            return $this->redirect($redirect);
                         }
 //                        return var_dump($VehicleForm);
                     }
                     functions::setFlashWarning('Ощибка сервера. ВУ не сохранено.');
-                    return $this->redirect('/vehicle/index');
-                    return var_dump($modelVehicle->getErrors());
+                    return $this->redirect($redirect);
                 }
 
                 break;
@@ -253,6 +254,7 @@ class VehicleController extends Controller
                 break;
         }
         $modelRegLicense = $model->regLicense;
+        $modelRegLicense->id_user = $model->id_user;
         $modelRegLicenseOLD = $modelRegLicense;
         if (!$modelRegLicense) $modelRegLicense = new RegLicense();
 
@@ -360,12 +362,12 @@ class VehicleController extends Controller
     public function actionUpdatePricezones(){
         $post = Yii::$app->request->post();
         $id_vehicle = $post['id_vehicle'];
-
-        $veh_type = Vehicle::findOne(['id' => $id_vehicle])->id_vehicle_type;
+        $vehicle = Vehicle::findOne(['id' => $id_vehicle]);
+        $veh_type = $vehicle->id_vehicle_type;
         $body_type = $post['body_type'];
 //return $body_type;
         $result = [];
-        $priceZones = PriceZone::find();
+        $priceZones = PriceZone::find()->where(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($veh_type) {
             case Vehicle::TYPE_TRUCK:
                 $tonnage = $post['tonnage'];
@@ -438,13 +440,13 @@ class VehicleController extends Controller
         }
         foreach ($priceZones as $priceZone) {
             if ($priceZone->hasBodyType($body_type)) {
+                $priceZone = $priceZone->getPriceZoneForCarOwner($vehicle->id_user);
                 $result[] = [
                     'id' => $priceZone->id,
                     'name' => 'Тарифная зона ' . $priceZone->id,
                     'r_km' => $priceZone->r_km,
                     'r_h' => $priceZone->r_h,
                     'helpMes' => $priceZone->printHtml(),
-
                 ];
             }
         }
@@ -502,8 +504,11 @@ class VehicleController extends Controller
 
 //            $model = new VehicleForm();
             $model = new Vehicle();
+            $model2 = new RegLicense();
             if($model->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model);
+            if($model2->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model2);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }

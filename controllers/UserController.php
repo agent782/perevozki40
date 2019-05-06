@@ -19,6 +19,8 @@ use app\models\signUpClient\SignUpClientFormStart;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\web\UploadedFile;
+use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
 
 class UserController extends Controller
 {
@@ -111,5 +113,85 @@ class UserController extends Controller
         }
         functions::setFlashWarning('Ошибка на сервере.');
         return $this->redirect('/user');
+    }
+
+    public function actionFindUser($redirect, $id_order = null, $id_user = null, $redirect2 = null){
+        $user = new User();
+        $profile = new Profile();
+        if($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+
+            if (User::find()->where(['username' => $user->username])->one()) {
+                $tmpUser = User::findOne(['username' => $user->username]);
+                $tmpUser->email = $user->email;
+                $tmpProfile = $tmpUser->profile;
+                $tmpProfile->name = $profile->name;
+                $tmpProfile->surname = $profile->surname;
+                $tmpProfile->patrinimic = $profile->patrinimic;
+                $tmpProfile->phone2 = $profile->phone2;
+                $tmpProfile->email2 = $profile->email2;
+
+                $user = $tmpUser;
+                $profile = $tmpProfile;
+                $user->scenario = $user::SCENARIO_SAVE;
+                $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
+                if ($user->save() && $profile->save()) {
+                    functions::setFlashSuccess('Пользовватель сохранен.');
+                } else {
+                    functions::setFlashWarning('Ошибка при сохранении пользователя');
+                }
+            } else {
+                $user->setPassword(rand(10000000, 99999999));
+                $user->generateAuthKey();
+
+                $user->scenario = $user::SCENARIO_SAVE;
+                $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
+
+                if ($user->save()) {
+                    $profile->id_user = $user->id;
+                    if($profile->save()){
+                        functions::setFlashSuccess('Пользовватель добавлен.');
+                    }else {
+                        functions::setFlashWarning('Ошибка при сохранении пользователя');
+                    }
+                }else {
+                    functions::setFlashWarning('Ошибка при сохранении пользователя');
+                }
+            }
+            return $this->redirect([$redirect,
+                'id_user' => $user->id,
+                'id_order' => $id_order,
+                'redirect' => $redirect2
+            ]);
+        }
+        return $this->render('find-user',[
+            'user' => $user,
+            'profile' => $profile
+        ]);
+    }
+
+    public function actionAutocomplete($term){
+        if(Yii::$app->request->isAjax){
+            $profiles = Profile::find()->all();
+            $res = [];
+            foreach ($profiles as $profile) {
+                if(strpos($profile->phone, $term)!==false || strpos($profile->phone2, $term)!==false){
+                    $res[] = [
+                        'id' => $profile->id_user,
+                        'phone' => $profile->phone,
+                        'phone2' => $profile->phone2,
+                        'email' => $profile->email,
+                        'email2' => $profile->email2,
+                        'name' => $profile->name,
+                        'surname' => $profile->surname,
+                        'patrinimic' => $profile->patrinimic,
+                        'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                        'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
+                        'info' => $profile->profileInfo . ' ' . $profile->getRating()
+                    ];
+                }
+            }
+            echo Json::encode($res);
+//        echo Json::encode([1111,22222,33333,44444]);
+        }
     }
 }

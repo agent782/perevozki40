@@ -63,6 +63,7 @@ class DownloadPOA extends Widget
                 ],
                 'mask' => '99.99.9999',
                 'options' => [
+                    'id' => 'mask_' . rand(),
                     'type' => 'tel',
                     'autocorrect' => 'off',
                     'autocomplete' => 'date',

@@ -65,19 +65,19 @@ class DriverController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($redirect = 'index', $id_car_owner)
     {
         $DriverForm = new DriverForm();
         $model = new Driver();
 
 
         if ($DriverForm->load(Yii::$app->request->post())) {
-            if($DriverForm = $DriverForm->save($model)){
+            if($DriverForm = $DriverForm->save($model, $id_car_owner)){
                 Yii::$app->session->setFlash('success', 'Водитель добавлен.');
             }else {
                 Yii::$app->session->setFlash('warning', 'Ошибка соединения. Попробуйте позже.');
             }
-            return $this->redirect(['index']);
+            return $this->redirect($redirect);
         } else {
             return $this->render('create', [
                 'DriverForm' => $DriverForm,
