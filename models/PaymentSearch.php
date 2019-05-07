@@ -17,7 +17,7 @@ class PaymentSearch extends Payment
     public function rules()
     {
         return [
-            [['id', 'type', 'date', 'id_payer_user', 'id_recipient_user', 'id_payer_company', 'id_recipient_company', 'status', 'create_at', 'update_at'], 'integer'],
+            [['id', 'type', 'date', 'id_user', 'id_implementer', 'id_company', 'id_our_company', 'status', 'create_at', 'update_at'], 'integer'],
             [['cost'], 'number'],
             [['comments', 'sys_info'], 'safe'],
         ];
@@ -63,10 +63,6 @@ class PaymentSearch extends Payment
             'cost' => $this->cost,
             'type' => $this->type,
             'date' => $this->date,
-            'id_payer_user' => $this->id_payer_user,
-            'id_recipient_user' => $this->id_recipient_user,
-            'id_payer_company' => $this->id_payer_company,
-            'id_recipient_company' => $this->id_recipient_company,
             'status' => $this->status,
             'create_at' => $this->create_at,
             'update_at' => $this->update_at,

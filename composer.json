@@ -16,7 +16,7 @@
     "require": {
         "php": ">=5.4.0",
         "yiisoft/yii2-bootstrap": "@stable",
-        "kartik-v/yii2-widget-datepicker": "@dev",
+        "kartik-v/yii2-widget-datepicker": "*",
         "twbs/bootstrap": "@stable",
         "nirvana-msu/yii2-showloading": "1.0.*@dev",
         "yii2tech/ar-linkmany": "^1.0",

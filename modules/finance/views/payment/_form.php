@@ -10,13 +10,13 @@ use yii\web\JsExpression;
 /* @var $this yii\web\View */
 /* @var $model app\models\Payment */
 /* @var $form yii\widgets\ActiveForm */
-$label_user = ($model->direction == $model::CREDIT) ? 'Пользователь (получатель):': 'Пользователь (плательщик)';
-$label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (получатель):': 'Юрю лицо (плательщик)';
+$label_user = ($model->direction == $model::DEBIT) ? 'Пользователь (получатель):': 'Пользователь (плательщик)';
+$label_company = ($model->direction == $model::DEBIT) ? 'Юр. лицо (получатель):': 'Юр. лицо (плательщик)';
 ?>
 
-<div class="payment-form container">
+<div class="payment-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([]); ?>
 
     <?= $form->field($model, 'direction')->radioList([1=>'Дебет',0=>'Кредит'], [
         'onchange' => '
@@ -24,19 +24,19 @@ $label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (пол
         '
     ])
     ?>
-
+    <?= $form->field($model, 'type')->radioList(\app\models\TypePayment::getTypiesPaymentsArray(), ['encode' => false]) ?>
     <?= $form->field($model, 'cost')->input('tel') ?>
 
-    <?= $form->field($model, 'type')->radioList(\app\models\TypePayment::getTypiesPaymentsArray(), ['encode' => false]) ?>
-    <?= $form->field($model, 'date')->widget(DatePicker::class,[
-        'dateFormat' => 'php: d.m.Y',
-        'value' => date('d.m.Y')
-    ]) ?>
+    <?=
+        $form->field($model,'date')->widget(DatePicker::class, [
+            'dateFormat' => 'dd.MM.yyyy'
+        ]);
 
+    ?>
     <label><?= $label_user?> </label>
     <?= \yii\jui\AutoComplete::widget([
             'clientOptions' => [
-                'source' => Url::to(['/user/autocomplete']),
+                'source' => $profiles,
                 'autoFill' => true,
                 'minLength' => '1',
                 'select' => new JsExpression('function(event, ui) {               
@@ -50,36 +50,38 @@ $label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (пол
     ])?>
 
     <label><?= $label_company?> </label>
+    <br>
     <?= \yii\jui\AutoComplete::widget([
         'clientOptions' => [
-            'source' => \app\models\Company::find()->select(['name as value', 'name_full as label', 'id as id' ])->asArray()->all(),
+            'source' => $companies,
             'autoFill' => true,
             'select' => new \yii\web\JsExpression('function(event, ui){
                 $("#payer_company").val(ui.item.id);
             }')
+        ],
+        'options' => [
+            'class' => 'form-control',
+            'placeholder' => Yii::t('app', 'Название организации или ИНН')
         ]
     ])?>
 
-    <?= $form->field($model, 'id_payer_user')->hiddenInput(['id' => 'payer_user'])->label(false) ?>
+    <?= $form->field($model, 'id_user')->hiddenInput(['id' => 'payer_user'])->label(false) ?>
 
-    <?= $form->field($model, 'id_recipient_user')->hiddenInput(['id' => 'recipient_user'])->label(false) ?>
+    <?= $form->field($model, 'id_implementer')->hiddenInput(['id' => 'recipient_user'])->label(false) ?>
 
-    <?= $form->field($model, 'id_payer_company')->hiddenInput(['id' => 'payer_company'])->label(false) ?>
+    <?= $form->field($model, 'id_company')->hiddenInput(['id' => 'payer_company'])->label(false) ?>
 
-    <?= $form->field($model, 'id_recipient_company')->hiddenInput(['id' => 'recipient_company'])->label(false) ?>
+    <?= $form->field($model, 'id_our_company')->hiddenInput(['id' => 'recipient_company'])->label(false) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?= $form->field($model, 'status')->radioList([
+        $model::STATUS_WAIT => 'В очереди', $model::STATUS_SUCCESS => 'Выполнен'
+    ]) ?>
 
     <?= $form->field($model, 'comments')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'sys_info')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'create_at')->textInput() ?>
-
-    <?= $form->field($model, 'update_at')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Провести', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

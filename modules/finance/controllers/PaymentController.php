@@ -2,6 +2,8 @@
 
 namespace app\modules\finance\controllers;
 
+use app\models\Company;
+use app\models\Profile;
 use Yii;
 use app\models\Payment;
 use app\models\PaymentSearch;
@@ -65,7 +67,12 @@ class PaymentController extends Controller
     public function actionCreate()
     {
         $model = new Payment();
-
+        $model->date = date('d.m.Y');
+        $model->status = $model::STATUS_SUCCESS;
+        $model->direction = $model::DEBIT;
+        $model->type = Payment::TYPE_BANK_TRANSFER;
+        $companies = Company::getArrayForAutoComplete();
+        $profiles = Profile::getArrayForAutoComplete();
         if ($model->load(Yii::$app->request->post())) {
             return var_dump($model);
             return $this->redirect(['view', 'id' => $model->id]);
@@ -73,6 +80,8 @@ class PaymentController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'companies' => $companies,
+            'profiles' => $profiles
         ]);
     }
 

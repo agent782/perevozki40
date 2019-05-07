@@ -3,8 +3,6 @@
 ?>
 
 <?php
-
-
     if(Yii::$app->user->can('user')):
 ?>
 

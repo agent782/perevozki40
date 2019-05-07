@@ -61,7 +61,7 @@ class TypePayment extends \yii\db\ActiveRecord
     }
 
     static public function getTypiesPaymentsArray(){
-        $TypiesPayment = self::find()->all();
+        $TypiesPayment = self::find()->orderBy('type')->all();
         foreach ($TypiesPayment as $item){
             $item->type = $item->getTextWithIconDiscount();
         }

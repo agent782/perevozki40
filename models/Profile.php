@@ -371,4 +371,27 @@ class Profile extends \yii\db\ActiveRecord
             ->andWhere(['id_profile' => $this->id_user])
             ->one()->STATUS_POA == XprofileXcompany::STATUS_POWER_OF_ATTORNEY_SIGNED);
     }
+
+    static public function getArrayForAutoComplete(){
+        $return = [];
+        foreach (self::find()->all() as $profile){
+            $return[] = [
+                'id' => $profile->id_user,
+                'phone' => $profile->phone,
+                'phone2' => $profile->phone2,
+                'email' => $profile->email,
+                'email2' => $profile->email2,
+                'name' => $profile->name,
+                'surname' => $profile->surname,
+                'patrinimic' => $profile->patrinimic,
+                'value' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
+                'info' => $profile->profileInfo . ' ' . $profile->getRating()
+            ];
+        }
+
+        return $return;
+    }
 }
+

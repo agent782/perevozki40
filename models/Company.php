@@ -256,4 +256,17 @@ class Company extends \yii\db\ActiveRecord
         return $return;
     }
 
+    static public function getArrayForAutoComplete(){
+        $return = [];
+        foreach (self::find()->all() as $company){
+            $return[] = [
+                'value' => $company->name . '(' . $company->inn . ')',
+                'label' => $company->name . '(' . $company->inn . ')',
+                'id' => $company->id
+            ];
+        }
+
+        return $return;
+    }
+
 }

@@ -184,6 +184,7 @@ class UserController extends Controller
                         'name' => $profile->name,
                         'surname' => $profile->surname,
                         'patrinimic' => $profile->patrinimic,
+                        'value' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
                         'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
                         'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
                         'info' => $profile->profileInfo . ' ' . $profile->getRating()
