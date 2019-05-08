@@ -2,6 +2,7 @@
 
 namespace app\modules\finance\controllers;
 
+use app\components\functions\functions;
 use app\models\Company;
 use app\models\Profile;
 use Yii;
@@ -74,8 +75,12 @@ class PaymentController extends Controller
         $companies = Company::getArrayForAutoComplete();
         $profiles = Profile::getArrayForAutoComplete();
         if ($model->load(Yii::$app->request->post())) {
-            return var_dump($model);
-            return $this->redirect(['view', 'id' => $model->id]);
+            if($model->save()){
+                functions::setFlashSuccess('Платеж проведен.');
+            } else {
+                functions::setFlashWarning('Платеж не проведен.');
+            }
+            return $this->redirect(['index', 'id' => $model->id]);
         }
 
         return $this->render('create', [
@@ -112,12 +117,12 @@ class PaymentController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
+//    public function actionDelete($id)
+//    {
+//        $this->findModel($id)->delete();
+//
+//        return $this->redirect(['index']);
+//    }
 
     /**
      * Finds the Payment model based on its primary key value.

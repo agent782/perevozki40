@@ -48,7 +48,7 @@ $this->registerJsFile('/js/addCompany.js');
         <?= $form->field($modelCompany, 'okpo')->hiddenInput(['id' => 'okpo'])->label(false)?>
         <?= $form->field($modelCompany, 'citizenship')->hiddenInput(['id' => 'citizenship'])->label(false)?>
         <?= $form->field($modelCompany, 'name_full')->hiddenInput(['id' => 'name-full'])->label(false)?>
-        <?= $form->field($modelCompany, 'name_short')->hiddenInput(['id' => 'name.short'])->label(false)?>
+        <?= $form->field($modelCompany, 'name_short')->hiddenInput(['id' => 'name-short'])->label(false)?>
         <?= $form->field($modelCompany, 'address_value')->hiddenInput(['id' => 'address-value'])->label(false)?>
         <?= $form->field($modelCompany, 'branch_type')->hiddenInput(['id' => 'branch_type'])->label(false)?>
         <?= $form->field($modelCompany, 'capital')->hiddenInput(['id' => 'capital'])->label(false)?>

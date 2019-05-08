@@ -4,7 +4,6 @@ namespace app\models;
 
 use Yii;
 use app\components\DateBehaviors;
-
 /**
  * This is the model class for table "payment".
  *
@@ -50,6 +49,7 @@ class Payment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+//            [['date', 'cost', '']]
             [['cost'], 'number'],
             [['type','id_user', 'id_implementer', 'id_company',
                 'id_our_company', 'status', 'direction'], 'integer'],
@@ -88,7 +88,7 @@ class Payment extends \yii\db\ActiveRecord
             'convertDate' => [
                 'class' => DateBehaviors::class,
                 'dateAttributes' => ['date', 'create_at', 'update_at'],
-                'format' => DateBehaviors::FORMAT_DATETIME,
+                'format' => DateBehaviors::FORMAT_DATE,
             ]
         ];
     }
@@ -100,6 +100,22 @@ class Payment extends \yii\db\ActiveRecord
             self::STATUS_CANCELED => 'Отменен',
             self::STATUS_ERROR => 'Ошибка'
         ];
+    }
+
+    public function getProfile(){
+        return $this->hasOne(Profile::class, ['id_user' => 'id_user']);
+    }
+
+    public function getCompany(){
+        return $this->hasOne(Company::class, ['id' => 'id_company']);
+    }
+
+    public function getOurCompany(){
+        return $this->hasOne(Company::class, ['id' => 'id_our_company']);
+    }
+
+    public function getTypePayment(){
+        return $this->hasOne(TypePayment::class, ['id' => 'type']);
     }
 
 }

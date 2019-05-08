@@ -53,7 +53,7 @@ $(document).ready(function () {
             $('#okpo').val(suggestion.data.okpo);
             $('#citizenship').val(suggestion.data.citizenship);
             $('#name-full').val(suggestion.data.name.full);
-            $('#name.short').val(suggestion.data.name.short);
+            $('#name-short').val(suggestion.data.name.short);
             $('#address-value').val(suggestion.data.address.value);
             $('#branch_type').val(suggestion.data.branch_type);
             $('#capital').val(suggestion.data.capital);

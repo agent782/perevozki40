@@ -11,6 +11,7 @@ use app\models\Payment;
  */
 class PaymentSearch extends Payment
 {
+    public $companyName;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +20,7 @@ class PaymentSearch extends Payment
         return [
             [['id', 'type', 'date', 'id_user', 'id_implementer', 'id_company', 'id_our_company', 'status', 'create_at', 'update_at'], 'integer'],
             [['cost'], 'number'],
-            [['comments', 'sys_info'], 'safe'],
+            [['comments', 'sys_info', 'companyName'], 'safe'],
         ];
     }
 
@@ -70,7 +71,13 @@ class PaymentSearch extends Payment
 
         $query->andFilterWhere(['like', 'comments', $this->comments])
             ->andFilterWhere(['like', 'sys_info', $this->sys_info]);
-
+        $query->joinWith(['company' => function($q){
+            $q->andWhere('company.name LIKE "%'
+                . $this->companyName
+                . '%" OR company.name_short LIKE "%'
+                . $this->companyName
+                . '%"');
+        }]);
         return $dataProvider;
     }
 }
