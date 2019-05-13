@@ -38,7 +38,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-left'],
         'items' => [
             ['label' => 'Журнал заказов', 'url' => '/finance/order'],
-            ['label' => 'Расчеты', 'url' => '/finance/payment'],
+            ['label' => 'Платежи', 'url' => '/finance/payment'],
             ['label' => 'Машины', 'url' => '/logist/vehicle'],
 
             Yii::$app->user->isGuest ? (

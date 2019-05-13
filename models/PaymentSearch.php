@@ -12,6 +12,7 @@ use app\models\Payment;
 class PaymentSearch extends Payment
 {
     public $companyName;
+    public $type_payments;
     /**
      * {@inheritdoc}
      */
@@ -20,7 +21,7 @@ class PaymentSearch extends Payment
         return [
             [['id', 'type', 'date', 'id_user', 'id_implementer', 'id_company', 'id_our_company', 'status', 'create_at', 'update_at'], 'integer'],
             [['cost'], 'number'],
-            [['comments', 'sys_info', 'companyName'], 'safe'],
+            [['comments', 'sys_info', 'companyName', 'type_payments'], 'safe'],
         ];
     }
 
@@ -61,14 +62,15 @@ class PaymentSearch extends Payment
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'id_user' => $this->id_user,
             'cost' => $this->cost,
-            'type' => $this->type,
-            'date' => $this->date,
+//            'type' => $this->type,
+//            'date' => $this->date,
             'status' => $this->status,
-            'create_at' => $this->create_at,
-            'update_at' => $this->update_at,
+//            'create_at' => $this->create_at,
+//            'update_at' => $this->update_at,
         ]);
-
+        $query->andFilterWhere(['IN', 'type', $this->type_payments]);
         $query->andFilterWhere(['like', 'comments', $this->comments])
             ->andFilterWhere(['like', 'sys_info', $this->sys_info]);
         $query->joinWith(['company' => function($q){

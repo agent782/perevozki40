@@ -12,7 +12,7 @@ use app\components\DateBehaviors;
  * @property int $type Тип платежа
  * @property int $date Дата
  * @property int $id_user Пользователь (плательщик)
- * @property int $id_id_implementer Пользователь (получатель)
+ * @property int $id_implementer Пользователь (получатель)
  * @property int $id_company Юр. лицо (плательщик
  * @property int $id_our_company Юр.лицо (получатель)
  * @property int $status Статус
@@ -21,12 +21,16 @@ use app\components\DateBehaviors;
  * @property int $create_at
  * @property int $update_at
  * @property int $direction
+ * @property int $calculation_with
  */
 class Payment extends \yii\db\ActiveRecord
 {
     const TYPE_CASH = 1;
     const TYPE_SBERBANK_CARD = 2;
     const TYPE_BANK_TRANSFER = 3;
+
+    const CALCULATION_WITH_CLIENT = 1;
+    const CALCULATION_WITH_CAR_OWNER = 2;
 
     const CREDIT = 0;
     const DEBIT = 1;
@@ -52,7 +56,7 @@ class Payment extends \yii\db\ActiveRecord
 //            [['date', 'cost', '']]
             [['cost'], 'number'],
             [['type','id_user', 'id_implementer', 'id_company',
-                'id_our_company', 'status', 'direction'], 'integer'],
+                'id_our_company', 'status', 'direction', 'calculation_with'], 'integer'],
             [['comments', 'sys_info'], 'string'],
             [['date', 'create_at', 'update_at'], 'default', 'value' => date('d.m.Y')],
             [['date', 'create_at', 'update_at'], 'date', 'format' => 'php: d.m.Y'],
@@ -99,6 +103,13 @@ class Payment extends \yii\db\ActiveRecord
             self::STATUS_SUCCESS => 'Выполнен',
             self::STATUS_CANCELED => 'Отменен',
             self::STATUS_ERROR => 'Ошибка'
+        ];
+    }
+
+    public function getArrayCalculationWith(){
+        return[
+            self::CALCULATION_WITH_CLIENT => 'С клиентом',
+            self::CALCULATION_WITH_CAR_OWNER => 'С водителем'
         ];
     }
 

@@ -164,8 +164,7 @@ $this->title = 'Журнал заказов';
                     ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
                     )
                     ,
-                'filterOptions' => ['class' => 'minRoute']
-
+                'filterOptions' => ['class' => 'minRoute'],
             ],
             [
 //                'attribute' => 'company.companyInfo',

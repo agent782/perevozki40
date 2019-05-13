@@ -372,7 +372,7 @@ class Profile extends \yii\db\ActiveRecord
             ->one()->STATUS_POA == XprofileXcompany::STATUS_POWER_OF_ATTORNEY_SIGNED);
     }
 
-    static public function getArrayForAutoComplete(){
+    static public function getArrayForAutoComplete($search = false){
         $return = [];
         foreach (self::find()->all() as $profile){
             $return[] = [
@@ -384,7 +384,9 @@ class Profile extends \yii\db\ActiveRecord
                 'name' => $profile->name,
                 'surname' => $profile->surname,
                 'patrinimic' => $profile->patrinimic,
-                'value' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                'value' => ($search)
+                    ?$profile->id_user
+                    :$profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
                 'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
                 'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
                 'info' => $profile->profileInfo . ' ' . $profile->getRating()

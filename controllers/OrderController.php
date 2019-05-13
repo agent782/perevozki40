@@ -506,9 +506,14 @@ class OrderController extends Controller
         $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
         $vehicles = [];
         $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+//        return var_dump($Vehicles);
+
         foreach ($Vehicles as $vehicle) {
             if ($vehicle->canOrder($OrderModel)) {
-                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
+//                return $vehicle->getMinRate($OrderModel)->id;
+
+                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel)->unique_index);
+//                return $rate;
                 $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
                 $vehicles[$vehicle->id] =
                     $vehicle->brand
@@ -520,14 +525,17 @@ class OrderController extends Controller
         if ($vehicles) {
             $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
         }
+
         if ($OrderModel->load(Yii::$app->request->post())) {
             $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
-                ->getMinRate($OrderModel);
+                ->getMinRate($OrderModel)->unique_index;
+
             if ($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
-//                $OrderModel->id_vehicle = $id_user;
+//                return var_dump($OrderModel->id_vehicle);
                 $OrderModel->changeStatus(
                     Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
             } else  functions::setFlashWarning('Заказ только что был принят другим водителем.');
+
 
             return $this->redirect($redirect);
         }
@@ -537,7 +545,8 @@ class OrderController extends Controller
             'UserModel' => $UserModel,
             'drivers' => $driversArr,
             'vehicles' => $vehicles,
-            'redirect' => $redirect
+            'redirect' => $redirect,
+            'id_user' => $id_user
         ]);
     }
 

@@ -16,7 +16,7 @@
     <?= $form->field($OrderModel, 'id_vehicle')->radioList($vehicles
         ,[
             'encode' => false,
-            'value' => $id_vehicle
+//            'value' => $id_vehicle
         ]
     )->label('Выберите ТС')?>
 
@@ -29,7 +29,7 @@
                 'redirect' => Url::to([
                     '/order/accept-order',
                     'id_order' => $OrderModel->id,
-                    'id_vehicle' => $id_vehicle,
+//                    'id_vehicle' => $id_vehicle,
                     'id_user' => $id_user,
                     'redirect' => $redirect,
                 ])

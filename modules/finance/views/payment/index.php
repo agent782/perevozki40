@@ -3,12 +3,12 @@
 use yii\grid\GridView;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
-
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Расчеты';
+$this->title = 'Платежи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="payment-index">
@@ -45,11 +45,21 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Пользователь',
+                'attribute' => 'id_user',
                 'format' => 'raw',
                 'value' => function($model){
                     $profile = $model->profile;
                     return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
-                }
+                },
+                'filter' => \yii\jui\AutoComplete::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'id_user',
+                    'clientOptions' => [
+                        'source' => \app\models\Profile::getArrayForAutoComplete(true),
+                        'autoFill' => true,
+                    ]
+                ]),
+                'headerOptions' => ['id' => 'header']
             ],
             [
                 'label' => 'Юр. лицо',
@@ -72,18 +82,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Тип платежа',
-                'attribute' =>'typePayment.min_text'
+                'attribute' =>'type_payments',
+                'value' => function($model){
+                    return $model->typePayment->min_text;
+                },
+                'filter' =>
+                    Html::activeCheckboxList($searchModel, 'type_payments',
+                        ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    )
+                ,
+                'filterOptions' => ['class' => 'minRoute']
             ],
-//            'id_payer_user',
-            //'id_recipient_user',
-            //'id_payer_company',
-            //'id_recipient_company',
-            //'status',
-            'comments:ntext',
-            //'sys_info:ntext',
-            //'create_at',
-            //'update_at',
-
+//
 //            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

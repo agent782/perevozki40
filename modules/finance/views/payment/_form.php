@@ -31,6 +31,7 @@ $label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (пол
         '
     ])
     ?>
+    <?= $form->field($model,'calculation_with')->radioList($model->getArrayCalculationWith())?>
     <?= $form->field($model, 'type')->radioList(\app\models\TypePayment::getTypiesPaymentsArray(), [
         'encode' => false,
     ]) ?>
@@ -88,9 +89,8 @@ $label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (пол
 
     <?= $form->field($model, 'comments')->textarea(['rows' => 6]) ?>
 
-
     <div class="form-group">
-        <?= Html::submitButton('Провести', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Отметить заказы', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'select']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

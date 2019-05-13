@@ -25,6 +25,9 @@ class Invoice extends \yii\db\ActiveRecord
     const TYPE_CERTIFICATE = 2;
 
     const STATUS_NEW = 1;
+    const STATUS_PAID = 2;
+    const STATUS_AVANS = 3;
+    const STATUS_CANCELED = 4;
 
 
     public $upload_file;
