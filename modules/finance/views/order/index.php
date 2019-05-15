@@ -31,6 +31,15 @@ $this->title = 'Журнал заказов';
         ],
         'columns' => [
             [
+                'attribute' => 'id',
+                'label' => '№ заказа',
+                'format' => 'raw',
+                'value' => function($model){
+                    return Html::a($model->id, Url::to(['/finance/order/view', 'id' => $model->id]));
+                }
+            ],
+            'datetime_finish',
+            [
                 'label' => 'Счет',
                 'attribute' => 'invoiceNumber',
                 'format' => 'raw',
@@ -131,15 +140,6 @@ $this->title = 'Журнал заказов';
                     return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
                 },
             ],
-//            [
-//                'attribute' => 'paid_status',
-//                'label' => 'Оплата',
-//                'format' => 'raw',
-//                'value' => function($model){
-//                    return $model->paidText;
-//                },
-//                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses())
-//            ],
             [
                 'class' => \kartik\grid\EditableColumn::class,
                 'attribute' => 'paid_status',
@@ -182,11 +182,6 @@ $this->title = 'Журнал заказов';
                     'clientOptions' => [
                         'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
                         'autoFill' => true,
-                        'select' => new \yii\web\JsExpression('
-                            function(){
-//                                $.pjax.reload({container:"#grid-orders"});
-                            }
-                        ')
                     ]
                 ])
             ],
@@ -199,14 +194,27 @@ $this->title = 'Журнал заказов';
                 }
             ],
             [
-                'attribute' => 'id',
-                'label' => '№ заказа',
+                'label' => 'Водитель',
                 'format' => 'raw',
                 'value' => function($model){
-                    return Html::a($model->id, Url::to(['/finance/order/view', 'id' => $model->id]));
+                    $profile = $model->carOwner;
+                    if($profile)
+                        return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
                 }
             ],
-            'datetime_finish',
+            [
+                'class' => \kartik\grid\EditableColumn::class,
+                'attribute' => 'paid_car_owner_status',
+                'value' => 'paidCarOwnerText',
+                'filter' => Html::activeCheckboxList($searchModel, 'paid_car_owner_status', $searchModel->getArrayPaidStatuses()),
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'data' => $searchModel->getArrayPaidStatuses(),
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaidCarOwnerStatus' ])
+                    ]
+                ],
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

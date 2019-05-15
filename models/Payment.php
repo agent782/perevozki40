@@ -53,7 +53,8 @@ class Payment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-//            [['date', 'cost', '']]
+            [['date', 'cost', 'type','id_user','status', 'direction', 'calculation_with', 'comments'], 'required'],
+            [['id_company', 'id_our_company'], 'validateTypeBankTransfer', 'skipOnEmpty' => false],
             [['cost'], 'number'],
             [['type','id_user', 'id_implementer', 'id_company',
                 'id_our_company', 'status', 'direction', 'calculation_with'], 'integer'],
@@ -73,16 +74,17 @@ class Payment extends \yii\db\ActiveRecord
             'cost' => 'Сумма',
             'type' => 'Тип оплаты',
             'date' => 'Дата',
-            'id_user' => 'Пользователь (плательщик)',
+            'id_user' => 'Пользователь',
             'id_implementer' => 'Пользователь (получатель)',
-            'id_company' => 'Юр. лицо (плательщик)',
-            'id_our_company' => 'Юр. лицо (получатель)',
+            'id_company' => 'Контрагент',
+            'id_our_company' => 'Наше юр. лицо',
             'status' => 'Статус',
             'comments' => 'Информация',
             'sys_info' => 'Sys Info',
             'create_at' => 'Create At',
             'update_at' => 'Update At',
-            'direction' => 'Дебет / кредит'
+            'direction' => 'Дебет / кредит',
+            'calculation_with' => 'Расчет с',
         ];
     }
 
@@ -95,6 +97,11 @@ class Payment extends \yii\db\ActiveRecord
                 'format' => DateBehaviors::FORMAT_DATE,
             ]
         ];
+    }
+
+    public function validateTypeBankTransfer($attribute){
+        if($this->type == self::TYPE_BANK_TRANSFER && !$this->$attribute)$this->addError($attribute, 'Ошибка');
+        return;
     }
 
     public function getArrayStatuses(){

@@ -9,7 +9,6 @@ use yii\helpers\ArrayHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Платежи';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="payment-index">
 
@@ -49,7 +48,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function($model){
                     $profile = $model->profile;
-                    return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    if($profile) {
+                        return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    }
                 },
                 'filter' => \yii\jui\AutoComplete::widget([
                     'model' => $searchModel,
@@ -63,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'label' => 'Юр. лицо',
-                'attribute' => 'companyName',
+//                'attribute' => 'companyName',
                 'format' => 'raw',
                 'value' => function($model, $index, $value){
                     $company = $model->company;
@@ -75,7 +76,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute' => 'companyName',
                     'clientOptions' => [
                         'source' => \app\models\Company::getArrayForAutoComplete(true),
-//                        'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
                         'autoFill' => true,
                     ]
                 ])

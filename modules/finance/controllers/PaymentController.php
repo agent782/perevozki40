@@ -10,6 +10,7 @@ use app\models\setting\SettingFinance;
 use Yii;
 use app\models\Payment;
 use app\models\PaymentSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -42,7 +43,7 @@ class PaymentController extends Controller
     {
         $searchModel = new PaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+//        $dataProvider->query->andWhere(['id_user' => 73]);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -72,61 +73,28 @@ class PaymentController extends Controller
         $model = new Payment();
         $model->date = date('d.m.Y');
         $model->id_implementer = Yii::$app->user->id;
-//        $model->id_our_company = SettingFinance::getIdDefaultCompany();
+        $model->id_our_company = SettingFinance::find()->one()->id_default_company;
 //        $model->status = $model::STATUS_SUCCESS;
 //        $model->calculation_with = $model::CALCULATION_WITH_CLIENT;
 //        $model->direction = $model::DEBIT;
 //        $model->type = Payment::TYPE_BANK_TRANSFER;
         $companies = Company::getArrayForAutoComplete();
         $profiles = Profile::getArrayForAutoComplete();
-//        if ($model->load(Yii::$app->request->post())) {
-//            if($model->save()){
-//                functions::setFlashSuccess('Платеж проведен.');
-//            } else {
-//                functions::setFlashWarning('Платеж не проведен.');
-//            }
-//            return $this->redirect(['index', 'id' => $model->id]);
-//        }
-        switch (Yii::$app->request->post('button')){
-            case 'select':
-                if($model->load(Yii::$app->request->post())) {
-                    $searchModel = new OrderSearch();
-                    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-                    $visiblePaid = false;
-                    $visiblePaidCarOwner = false;
-                    $visibleInvoice = false;
-                    switch ($model->calculation_with){
-                        case $model::CALCULATION_WITH_CLIENT:
-                            $visiblePaid = true;
-                            $visibleInvoice = true;
-                            $dataProvider->query->andWhere(['id_user' => $model->id_user]);
-
-                            break;
-                        case $model::CALCULATION_WITH_CAR_OWNER:
-                            $visiblePaidCarOwner = true;
-
-                            $dataProvider->query->andWhere(['id_car_owner' => $model->id_user]);
-                            break;
-                    }
-
-                    return $this->render('select_orders', [
-                        'dataProvider' => $dataProvider,
-                        'searchModel' => $searchModel,
-                        'visiblePaid' => $visiblePaid,
-                        'visiblePaidCarOwner' => $visiblePaidCarOwner,
-                        'visibleInvoice' => $visibleInvoice
-                    ]);
-                }
-                break;
-            case 'save':
-                break;
-
+        $our_companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                functions::setFlashSuccess('Платеж проведен.');
+            } else {
+                functions::setFlashWarning('Платеж не проведен.');
+            }
+            return $this->redirect('index');
         }
 
         return $this->render('create', [
             'model' => $model,
             'companies' => $companies,
-            'profiles' => $profiles
+            'profiles' => $profiles,
+            'our_companies' => $our_companies
         ]);
     }
 
@@ -178,5 +146,17 @@ class PaymentController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionValidatePayment()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model = new Payment();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 }

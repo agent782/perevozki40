@@ -32,6 +32,16 @@ class OrderController extends Controller
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';
                 } ,
+            ],
+            'changePaidCarOwnerStatus' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+                    return $model->paidCarOwnerText;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
             ]
 
         ]);

@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property int $id_default_company
  */
-class SettingFinance extends Setting
+class SettingFinance extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -40,9 +40,5 @@ class SettingFinance extends Setting
             'id' => 'ID',
             'id_default_company' => 'Id Default Company',
         ];
-    }
-
-    static public function getIdDefaultCompany(){
-        return self::findOne()->id_our_company;
     }
 }

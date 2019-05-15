@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\functions\functions;
 use app\models\Document;
 use app\models\DownloadPoaForm;
 use app\models\FAQ;
@@ -142,7 +143,7 @@ class CompanyController extends Controller
         $modelProfile = Profile::findOne($user_id);
         $XcompanyXprofile = new XprofileXcompany();
         if ($modelCompany->load(Yii::$app->request->post()) && $XcompanyXprofile->load(Yii::$app->request->post())){
-            return var_dump($modelCompany);
+//            return var_dump($modelCompany);
             if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
                 if ($modelCompany->save()) {
 
@@ -152,17 +153,22 @@ class CompanyController extends Controller
                         return $this->redirect($redirect);
                     }
 //                    $modelCompany->createDocument(Document::TYPE_CONTRACT_CLIENT);
+                    functions::setFlashSuccess('Юр. лицо создано и добавлено в Ваш список.');
                     return $this->redirect($redirect);
                 } else {
+                    functions::setFlashWarning('Ошибка. Попробуйте позже.');
                     return $this->redirect($redirect);
                 }
             }else {
                 $modelCompany = Company::find()->where(['inn' => $modelCompany->inn])->one();
                 if(XprofileXcompany::find()->where(['id_profile' => $user_id])->andWhere(['id_company' => $modelCompany->id])->count()){
+                    functions::setFlashSuccess('Это юр. лицо уже есть в Вашем списке.');
 //                    return 'Уже добавлено';
                     return $this->redirect([$redirect]);
                 }else {
                     $modelCompany->link('profiles', $modelProfile);
+                    functions::setFlashSuccess('Юр. лицо добавлено в Ваш список.');
+
 //   //                 return 'Add company to Profile';
                     return $this->redirect($redirect);
                 }

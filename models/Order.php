@@ -754,6 +754,9 @@ class Order extends \yii\db\ActiveRecord
     public function getCompany(){
         return $this->hasOne(Company::class, ['id' => 'id_company']);
     }
+    public function getCarOwner(){
+        return $this->hasOne(Profile::class, ['id_user' => 'id_car_owner']);
+    }
     public function getVehicle(){
         if($this->id_vehicle){
             return $this->hasOne(Vehicle::className(), ['id'=> 'id_vehicle']);

@@ -19,7 +19,7 @@ class PaymentSearch extends Payment
     public function rules()
     {
         return [
-            [['id', 'type', 'date', 'id_user', 'id_implementer', 'id_company', 'id_our_company', 'status', 'create_at', 'update_at'], 'integer'],
+            [['id', 'type', 'date', 'id_user', 'id_implementer', 'id_company', 'id_our_company', 'status'], 'integer'],
             [['cost'], 'number'],
             [['comments', 'sys_info', 'companyName', 'type_payments'], 'safe'],
         ];
@@ -73,13 +73,13 @@ class PaymentSearch extends Payment
         $query->andFilterWhere(['IN', 'type', $this->type_payments]);
         $query->andFilterWhere(['like', 'comments', $this->comments])
             ->andFilterWhere(['like', 'sys_info', $this->sys_info]);
-        $query->joinWith(['company' => function($q){
-            $q->andWhere('company.name LIKE "%'
-                . $this->companyName
-                . '%" OR company.name_short LIKE "%'
-                . $this->companyName
-                . '%"');
-        }]);
+        if($this->companyName) {
+            $query->joinWith(['company' => function ($q) {
+                $q->andWhere('company.inn = '
+                    . $this->companyName
+                );
+            }]);
+        }
         return $dataProvider;
     }
 }

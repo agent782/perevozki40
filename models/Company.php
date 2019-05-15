@@ -262,9 +262,11 @@ class Company extends \yii\db\ActiveRecord
         foreach (self::find()->all() as $company){
             $return[] = [
                 'label' => $company->name . '(' . $company->inn . ')',
-                'value' => ($forSearch)
-                    ? $company->name_short
-                    : $company->name . '(' . $company->inn . ')',
+                'value' =>
+                    ($forSearch)
+                    ? $company->inn
+                    : $company->name . '(' . $company->inn . ')'
+                ,
                 'id' => $company->id
             ];
         }

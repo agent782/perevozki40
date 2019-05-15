@@ -10,25 +10,27 @@ use yii\web\JsExpression;
 /* @var $this yii\web\View */
 /* @var $model app\models\Payment */
 /* @var $form yii\widgets\ActiveForm */
-$label_user = ($model->direction == $model::CREDIT) ? 'Пользователь (получатель):': 'Пользователь (плательщик)';
-$label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (получатель):': 'Юр. лицо (плательщик)';
+
 ?>
 
 <div class="payment-form">
 
-    <?php $form = ActiveForm::begin([]); ?>
+    <?php $form = ActiveForm::begin([
+        'enableAjaxValidation' => true,
+        'validationUrl' => 'validate-payment'
+    ]); ?>
 
     <?= $form->field($model, 'direction')->radioList([1=>'Дебет',0=>'Кредит'], [
-        'onchange' => '
-            if($(this).find("input:checked").val() == 0){
-                $("#label_user").html("Пользователь (получатель):");
-                $("#label_company").html("Юр. лицо (получатель)");
-            }
-            if($(this).find("input:checked").val() == 1){
-                $("#label_user").html("Пользователь (плательщик)");
-                $("#label_company").html("Юр. лицо (плательщик)");            
-            }
-        '
+//        'onchange' => '
+//            if($(this).find("input:checked").val() == 0){
+//                $("#label_user").html("Пользователь (получатель):");
+//                $("#label_company").html("Юр. лицо (получатель)");
+//            }
+//            if($(this).find("input:checked").val() == 1){
+//                $("#label_user").html("Пользователь (плательщик)");
+//                $("#label_company").html("Юр. лицо (плательщик)");
+//            }
+//        '
     ])
     ?>
     <?= $form->field($model,'calculation_with')->radioList($model->getArrayCalculationWith())?>
@@ -43,7 +45,8 @@ $label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (пол
         ]);
 
     ?>
-    <label id="label_user"><?= $label_user?> </label>
+    <?= $form->field($model, 'id_user')->hiddenInput(['id' => 'payer_user', 'readonly' => true]) ?>
+
     <?= \yii\jui\AutoComplete::widget([
             'clientOptions' => [
                 'source' => $profiles,
@@ -51,37 +54,45 @@ $label_company = ($model->direction == $model::CREDIT) ? 'Юр. лицо (пол
                 'minLength' => '1',
                 'select' => new JsExpression('function(event, ui) {               
                     $("#payer_user").val(ui.item.id);
-                }')
+                }'),
+                'change' => new JsExpression('function(event, ui) {               
+                    if(!ui.item) {
+                        $("#payer_user").val("");
+                    }
+                }'),
             ],
             'options' => [
                 'class' => 'form-control',
                 'placeholder' => Yii::t('app', 'Номер телефона или ФИО')
             ]
     ])?>
-<div id="company">
-    <label id="label_company"><?= $label_company?> </label>
-    <br>
+
+    <div id="company">
+        <?= $form->field($model, 'id_company')->hiddenInput(['id' => 'payer_company'])?>
+        
     <?= \yii\jui\AutoComplete::widget([
         'clientOptions' => [
             'source' => $companies,
             'autoFill' => true,
             'select' => new \yii\web\JsExpression('function(event, ui){
                 $("#payer_company").val(ui.item.id);
-            }')
+            }'),
+            'change' => new JsExpression('function(event, ui) {               
+                    if(!ui.item) {
+                        $("#payer_company").val("");
+                    }
+                }'),
         ],
         'options' => [
             'class' => 'form-control',
             'placeholder' => Yii::t('app', 'Название организации или ИНН')
         ]
     ])?>
-</div>
-    <?= $form->field($model, 'id_user')->hiddenInput(['id' => 'payer_user'])->label(false) ?>
 
-    <?= $form->field($model, 'id_implementer')->hiddenInput(['id' => 'recipient_user'])->label(false) ?>
+    </div>
+    <?= $form->field($model, 'id_implementer')->hiddenInput(['id' => 'implementer'])->label(false) ?>
 
-    <?= $form->field($model, 'id_company')->hiddenInput(['id' => 'payer_company'])->label(false) ?>
-
-    <?= $form->field($model, 'id_our_company')->hiddenInput(['id' => 'recipient_company'])->label(false) ?>
+    <?= $form->field($model, 'id_our_company')->dropDownList($our_companies)?>
 
     <?= $form->field($model, 'status')->radioList([
         $model::STATUS_WAIT => 'В очереди', $model::STATUS_SUCCESS => 'Выполнен'

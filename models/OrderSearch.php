@@ -32,7 +32,7 @@ class OrderSearch extends Order
                 'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real','type_payment'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
             [['cargo', 'statuses', 'type_payments'], 'safe'],
-            [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status'], 'safe']
+            [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status', 'paid_car_owner_status'], 'safe']
         ];
     }
 
@@ -83,6 +83,8 @@ class OrderSearch extends Order
         ]);
         $query->andFilterWhere(['IN', 'type_payment', $this->type_payments]);
         $query->andFilterWhere(['IN', 'paid_status', $this->paid_status]);
+        $query->andFilterWhere(['IN', 'paid_car_owner_status', $this->paid_car_owner_status]);
+
 // Если фильтр пуст, показывать такде все заказы, которые не имеют счет
         if($this->invoiceNumber) {
             $query->joinWith(['invoice' => function ($q) {
