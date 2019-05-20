@@ -46,6 +46,7 @@ $this->title = 'Выбор юр. лица';
                 ')
             ])->label('Выберите юр. лицо');
             echo Html::submitButton();
+
             $form::end();
 //        Pjax::end();
         ?>

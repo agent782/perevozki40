@@ -17,7 +17,7 @@ use app\models\Payment;
 /* @var $profile \app\models\Profile*/
 
 $this->title = 'Оформлление заказа';
-var_dump($modelOrder->type_payment);
+//var_dump($modelOrder->type_payment);
 ?>
 
 <div class="order-create">
@@ -83,7 +83,7 @@ var_dump($modelOrder->type_payment);
     <?php $formFinishOrder = ActiveForm::begin([
         'action' => '/order/create',
 //        'enableAjaxValidation' => true,
-//        'validationUrl' => \yii\helpers\Url::to(['/company/validate-add-company']),
+//        'validationUrl' => \yii\helpers\Url::to(['/user/']),
         'fieldConfig' => [
             'labelOptions' => ['class' => 'col-lg-12 control-label'],
         ],
@@ -100,15 +100,20 @@ var_dump($modelOrder->type_payment);
         <?= $formFinishOrder->field($user, 'email')->input('email',  ['id' => 'email'])?>
         <?= $formFinishOrder->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
         <?= $formFinishOrder->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
+        <?= $formFinishOrder->field($profile, 'sex')->radioList(['Мужскеой', 'Женский'])?>
     </div>
 
 
     <div class="col-lg-12">
     <?php
-        $bank = ($modelOrder->type_payment == Payment::TYPE_BANK_TRANSFER);
         echo Html::submitButton(
-                (!$bank)?'Оформить заказ':'Выбрать плательщика',
-                ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_set_user']);
+                'Выбрать плательщика',
+                ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_add_company']);
+    if(!$modelOrder->type_payment == Payment::TYPE_BANK_TRANSFER) {
+        echo Html::submitButton(
+            'Оформить заказ',
+            ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_finish']);
+    }
     ?>
 
     </div>
