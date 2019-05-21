@@ -21,6 +21,7 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\Sms;
+use yii\web\Session;
 
 //use yii\web\Controller;
 
@@ -92,11 +93,12 @@ class DefaultController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-        return $this->goHome();
+        return $this->redirect('/default/login');
     }
 
     //Регистрация
     public function actionSignup(){
+
         $modelUser = new User();
         $modelProfile = new Profile();
         $modelVerifyPhone = new VerifyPhone();
@@ -127,7 +129,19 @@ class DefaultController extends Controller
                 $session->remove('modelVerifyPhone');
 
                 if ($modelUser->load(Yii::$app->request->post())) {
+
+                    if($session->get('timeout_new_code') > time()) {
+//                        return 1 . $session->get('timeout_new_code');
+                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 5 минут');
+                        return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
+                    }
                     $modelVerifyPhone->generateCode();
+
+                    $session->set('timeout_new_code', time()+300);
+//                    $modelVerifyPhone->generateCode();
+
+//                    $session->set('timeout_new_code', time()+30);
+
                     $session->set('modelVerifyPhone', $modelVerifyPhone);
                     $session->set('modelUser', $modelUser);
                     return $this->render('signup3', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
@@ -138,15 +152,16 @@ class DefaultController extends Controller
                 if(!$session->has('modelProfile')
                     || !$session->has('modelUser')
                     || !$session->has('modelVerifyPhone')) break;
+
                 $modelVerifyPhone = $session->get('modelVerifyPhone');
                 $modelUser = $session->get('modelUser');
                 //отправить код по смс
 
-                    if ($modelVerifyPhone->load(Yii::$app->request->post())) {
-                        $session->set('modelUser', $modelUser);
-
-                        return $this->render('signup4', compact(['modelVerifyPhone', 'modelProfile', 'modelUser', 'modelSignupUserForm']));
-                    }
+                if ($modelVerifyPhone->load(Yii::$app->request->post())) {
+                    $session->set('modelUser', $modelUser);
+//
+                    return $this->render('signup4', compact(['modelVerifyPhone', 'modelProfile', 'modelUser', 'modelSignupUserForm']));
+                }
 
                 return $this->render('signup3', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                 break;
@@ -163,7 +178,12 @@ class DefaultController extends Controller
                             $modelProfile->id_user = $modelUser->id;
                             if ($modelProfile->save()) {
 //                                $session->removeAll();
-                                return $this->redirect('/user');
+                                functions::setFlashSuccess('Поздравляем с успешной регистрацией!');
+                                $session->remove('modelUser');
+                                $session->remove('modelProfile');
+                                $session->remove('modelVerifyKey');
+                                $session->remove('modelSignupUserForm');
+                                return $this->redirect('/');
                             }
                             functions::setFlashWarning('ОШИБКА НА СЕРВЕРЕ. Попробуйте позже.');
 
@@ -171,15 +191,8 @@ class DefaultController extends Controller
                         }
                     }
                     functions::setFlashWarning('ОШИБКА НА СЕРВЕРЕ. Попробуйте позже.');
-                    $session->remove('modelUser');
-                    $session->remove('modelProfile');
-                    $session->remove('modelVerifyKey');
-                    $session->remove('modelSignupUserForm');
-                    return $this->redirect('/default/signup');
-                    return var_dump($modelUser->getErrors());
 
-//                        'ОШИБКА НА СЕРВЕРЕ. Попробуйте позже. <a href = "/">На главную</a>';
-//                    return $this->render('signup4', compact(['modelProfile', 'modelUser']));
+                    return $this->redirect('/default/signup');
                 }
                 break;
             default:

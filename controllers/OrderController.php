@@ -328,8 +328,8 @@ class OrderController extends Controller
                     if(!$findUser){
                         $user->setPassword(rand(11111111, 99999999));
                         $user->generateAuthKey();
+                        $user->status = User::STATUS_WAIT_ACTIVATE;
                         if($user->save()){
-
                             $profile->id_user = $user->id;
                             $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
                             if(!$profile->save()){

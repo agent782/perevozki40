@@ -43,7 +43,7 @@ $form = ActiveForm::begin([
     'enableClientValidation' => true
 ])->widget(\yii\captcha\Captcha::className(), ['options' => ['style' => 'width: 100px;']])?>
 
-<?= Html::submitButton('Подтвердить', [
+<?= Html::submitButton('Получить смс-код', [
     'class' => 'btn btn-primary',
     'name' => 'button',
     'value' => 'signup2'

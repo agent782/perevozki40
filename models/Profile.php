@@ -52,6 +52,8 @@ use app\models\setting\Setting;
  */
 class Profile extends \yii\db\ActiveRecord
 {
+    const STATUS_WAIT_ACTIVATE = 4;
+
     const STATUS_NOT_CLIENT = 0;
     const STATUS_CLIENT_USER = 1;
     const STATUS_CLIENT = 2;
@@ -62,7 +64,6 @@ class Profile extends \yii\db\ActiveRecord
     const STATUS_VEHICLE = 2;
     const STATUS_VIP_VEHICLE = 3;
 
-    const ROLE_WAIT_ACTIVATE = 'wait_activate';
     const ROLE_ADMIN = 'admin';
     const ROLE_USER = 'user';
     const ROLE_CLIENT = 'client';

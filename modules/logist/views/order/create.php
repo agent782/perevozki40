@@ -107,8 +107,7 @@ $this->title = 'Оформлление заказа';
         echo Html::submitButton(
                 'Оформить заказ',
                 ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_add_company']);
-
-
+    ?>
     </div>
     <?php $formFinishOrder::end()?>
 

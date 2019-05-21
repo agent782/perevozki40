@@ -32,7 +32,7 @@ class SignUpClientFormStart extends Model
     public function rules()
     {
         return [
-            ['bithday', 'required'],
+            [['bithday'], 'required'],
 //            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
             ['country', 'safe'],
@@ -41,7 +41,12 @@ class SignUpClientFormStart extends Model
             [['photo'], 'image', 'extensions' => 'jpg'],
             [['passport_number', 'reg_address'], 'string', 'max' => 255],
             ['email2', 'email'],
-            [['bithday', 'passport_date'], 'date', 'format' => 'php:d.m.Y'],
+            [['bithday', 'passport_date'], 'date', 'format' => 'php:d.m.Y',
+                'max' => (time() - 60*60*24*365*18), 'min' => (time() - 60*60*24*365*100),
+                'tooBig' => 'Вам должно быть не менее 18 лет',
+                'tooSmall' => 'Максимальный возраст - 100 лет'],
+//            ['bithday', 'date', 'max' => (time() - 60*60*24*365*18)],
+
         ];
     }
 

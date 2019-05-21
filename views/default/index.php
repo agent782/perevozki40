@@ -8,16 +8,16 @@
 
         <div class="row" id="homeContentForUser">
             <div class="col-lg-3" id="regClient">
-                РЕГИСТРАЦИЯ КЛИЕНТА<br>
-                <a href="/user/signup-client"><button class="btn btn-primary">РЕГИСТРАЦИЯ</button></a>
+                ЗАВЕРШИТЬ РЕГИСТРАЦИЮ КЛИЕНТА<br>
+                <a href="/user/signup-client"><button class="btn btn-primary">ЗАВЕРШИТЬ</button></a>
             </div>
             <div class="col-lg-5" id="newOrder">
-                СДЕЛАТЬ ЗАКАЗ<br>
-                <button class="btn btn-success">СДЕЛАТЬ ЗАКАЗ</button>
+                СДЕЛАТЬ НОВЫЙ ЗАКАЗ<br>
+                <a href="/user/signup-client"><button class="btn btn-success">ЗАКАЗАТЬ</button></a>
             </div>
             <div class="col-lg-3" id="regVehicle">
-                РЕГИСТРАЦИЯ ВОДИТЕЛЯ<br>
-                <a href="/car-owner/create"> <button class="btn btn-primary">РЕГИСТРАЦИЯ</button></a>
+                ЗАВЕРШИТЬ РЕГИСТРАЦИЮ ВОДИТЕЛЯ<br>
+                <a href="/car-owner/create"> <button class="btn btn-primary">ЗАВЕРШИТЬ</button></a>
             </div>
         </div>
 

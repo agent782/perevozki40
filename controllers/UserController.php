@@ -50,10 +50,12 @@ class UserController extends Controller
         if($modelStart->load(Yii::$app->request->post())){
             if ($modelProfile = $modelStart->saveProfile()) {
 //                return $this->render('signupClient2', compact(['modelProfile']));
-                return $this->redirect('/client/addcompany');
+                functions::setFlashSuccess('Спасибо, ' . $modelProfile->name . ' ' . $modelProfile->patrinimic
+                    . '! Надеемся на долгосрочное сотрудничество!');
+                return $this->redirect('/');
             }
             else {
-//                return 1;
+                functions::setFlashWarning('Ошибка на сервере. Попробуйте позже...');
                 return $this->render('signupClientStart', compact(['modelStart', 'modelProfile','modelPassport']));
             }
         }
