@@ -55,4 +55,8 @@ class RolesController extends Controller
 
         return $this->render('index', compact(['auth', 'dataProvider', 'model_auth_item']));
     }
+
+    public function actionUpdate($id){
+
+    }
 }

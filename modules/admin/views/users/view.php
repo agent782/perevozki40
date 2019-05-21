@@ -11,7 +11,8 @@ $this->title = Html::encode('Информация о профиле');
 ?>
 <br>
 <?php
-    echo DetailView::widget([
+foreach ($model->roles as $role) echo $role->name . ' ';
+echo DetailView::widget([
         'model' => $profile,
     ]);
    echo DetailView::widget([

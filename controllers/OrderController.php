@@ -329,7 +329,9 @@ class OrderController extends Controller
                         $user->setPassword(rand(11111111, 99999999));
                         $user->generateAuthKey();
                         if($user->save()){
+
                             $profile->id_user = $user->id;
+                            $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
                             if(!$profile->save()){
                                 functions::setFlashWarning('Ошибка на сервере. Профиль не создан. Попробуйте позже.');
                                 return $this->redirect('/logist/order');
