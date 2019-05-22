@@ -104,7 +104,7 @@ class Profile extends \yii\db\ActiveRecord
             [['sex'], 'string', 'max' => 1],
             [['photo'], 'string', 'max' => 255],
 //            [['id_passport'], 'exist', 'skipOnError' => true, 'targetClass' => Passport::className(), 'targetAttribute' => ['id_passport' => 'id']],
-            [['id_driver_license'], 'exist', 'skipOnError' => true, 'targetClass' => DriverLicense::className(), 'targetAttribute' => ['id_driver_license' => 'id']],
+//            [['id_driver_license'], 'exist', 'skipOnError' => true, 'targetClass' => DriverLicense::className(), 'targetAttribute' => ['id_driver_license' => 'id']],
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
@@ -161,15 +161,6 @@ class Profile extends \yii\db\ActiveRecord
         ];
     }
 
-//Перед сохранением переводим в инт
-//    public function beforeSave($insert)
-//    {
-//        if (parent::beforeSave($insert)){
-//            $this->bithday = strtotime($this->bithday);
-//            return true;
-//        }
-//        return false;
-//    }
 
 
     /**
