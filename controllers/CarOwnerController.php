@@ -8,6 +8,7 @@
 
 namespace app\controllers;
 
+use app\components\functions\emails;
 use app\components\functions\functions;
 use app\models\DriverLicense;
 use Yii;
@@ -58,6 +59,7 @@ class CarOwnerController extends Controller
                 if(!$modelProfile->is_driver){
                     return $this->redirect('/driver');
                 }
+                emails::sendAfterCarOwnerRegistration($modelProfile->id_user);
                 return $this->redirect('/vehicle');
             }
             functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');

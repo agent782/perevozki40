@@ -7,9 +7,13 @@
  */
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-$this->title = 'Подтверждение номера телефона';
-?>
 
+$this->title = 'Подтверждение номера телефона (3/4)';
+
+?>
+<div>
+
+<h4><?= $this->title?></h4>
 <?php
 $form = ActiveForm::begin([
 //    'enableAjaxValidation' => true,
@@ -23,7 +27,7 @@ $form = ActiveForm::begin([
     'autocorrect' => 'off',
     'autocomplete' => 'off',
 //    'onchange' => 'alert();'
-]])->input('text')
+]])->input('tel')
 ?>
 
     <?= Yii::$app->session->getFlash('errorCode')?>
@@ -36,6 +40,6 @@ $form = ActiveForm::begin([
 <?php
 ActiveForm::end();
 ?>
-
+</div>
 
 КОД<?= var_dump($modelVerifyPhone->getVerifyCode())?><br>

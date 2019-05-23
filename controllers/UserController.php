@@ -8,6 +8,7 @@
 
 namespace app\controllers;
 
+use app\components\functions\emails;
 use app\models\Company;
 use app\models\OrderOLD;
 use app\models\Passport;
@@ -52,7 +53,8 @@ class UserController extends Controller
 //                return $this->render('signupClient2', compact(['modelProfile']));
                 functions::setFlashSuccess('Спасибо, ' . $modelProfile->name . ' ' . $modelProfile->patrinimic
                     . '! Надеемся на долгосрочное сотрудничество!');
-                return $this->redirect('/');
+                emails::sendAfterClientRegistration($modelProfile->id_user);
+                return $this->redirect('/order/client');
             }
             else {
                 functions::setFlashWarning('Ошибка на сервере. Попробуйте позже...');

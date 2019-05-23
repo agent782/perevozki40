@@ -7,6 +7,7 @@
  */
 
 namespace app\controllers;
+use app\components\functions\emails;
 use app\components\functions\functions;
 use app\models\LoginForm;
 use app\models\Profile;
@@ -183,6 +184,7 @@ class DefaultController extends Controller
                                 $session->remove('modelProfile');
                                 $session->remove('modelVerifyKey');
                                 $session->remove('modelSignupUserForm');
+                                emails::sendAfterUserRegistration($modelProfile->id_user);
                                 return $this->redirect('/');
                             }
                             functions::setFlashWarning('ОШИБКА НА СЕРВЕРЕ. Попробуйте позже.');

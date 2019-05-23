@@ -38,7 +38,7 @@ class SignUpClientFormStart extends Model
             ['country', 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
-            [['photo'], 'image', 'extensions' => 'jpg'],
+            [['photo'], 'image', 'extensions' => 'jpg', 'maxSize' => 4100000],
             [['passport_number', 'reg_address'], 'string', 'max' => 255],
             ['email2', 'email'],
             [['bithday'], 'date', 'format' => 'php:d.m.Y',
@@ -47,7 +47,9 @@ class SignUpClientFormStart extends Model
                 'tooSmall' => 'Максимальный возраст - 100 лет'],
             [['passport_date'], 'date', 'format' => 'php:d.m.Y',
                 'min' => (time() - 60*60*24*365*50),
-                'tooSmall' => 'Проверьте дату.'],
+                'max' => time(),
+                'tooSmall' => 'Проверьте дату.',
+                'tooBig' => 'Вы из будущего?)'],
 //            ['bithday', 'date', 'max' => (time() - 60*60*24*365*18)],
 
         ];

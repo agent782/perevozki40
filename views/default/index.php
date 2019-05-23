@@ -1,7 +1,6 @@
 <?php
     use yii\bootstrap\Html;
 ?>
-
 <?php
     if(Yii::$app->user->can('user')):
 ?>
