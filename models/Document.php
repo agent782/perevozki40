@@ -115,6 +115,7 @@ class Document extends \yii\db\ActiveRecord
     //создается договор для организации и возвращается $this
     public function createPdfContractClient($idCompany){
         $modelCompany = Company::findOne(['id' => $idCompany]);
+        if(!$modelCompany) return false;
         $phpword =  new PhpWord();
 
         $doc = $phpword->loadTemplate('documents/templates/client_contract.docx');

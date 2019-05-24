@@ -40,39 +40,35 @@ class ClientController extends Controller
 
     public function actionIndex()
     {
-
         return $this->render('index', compact([]));
     }
 
-    public function actionAddcompany(){
-        $modelCompany = new Company();
-        $modelProfile = Profile::findOne(Yii::$app->user->getId());
+//    public function actionAddcompany(){
+//        $modelCompany = new Company();
+//        $modelProfile = Profile::findOne(Yii::$app->user->getId());
+//
+//        if ($modelCompany->load(Yii::$app->request->post())){
+//            if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
+//                if ($modelCompany->save()) {
+//                    $modelCompany->link('profiles', $modelProfile);
+//                    return 'Create and add';
+//                }else return 'ERROR';
+//            }else {
+//                $modelCompany = Company::find()->where(['inn' => $modelCompany->inn])->one();
+//                if(XprofileXcompany::find()->where(['id_profile' => Yii::$app->user->getId()])->andWhere(['id_company' => $modelCompany->id])->count()){
+//                    return 'Уже добавлено';
+//                }else {
+////                    $modelProfile = Profile::findOne(Yii::$app->user->getId());
+//                    $modelCompany->link('profiles', $modelProfile);
+//                    return 'Add company to Profile';
+//                }
+//            }
+//        return 'ERROR';
+////            return $this->render('test', compact(['modelCompany']));
+//        }
+//        return $this->render('addcompany', compact(['modelCompany']));
+//    }
 
-        if ($modelCompany->load(Yii::$app->request->post())){
-            if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
-                if ($modelCompany->save()) {
-                    $modelCompany->link('profiles', $modelProfile);
-                    return 'Create and add';
-                }else return 'ERROR';
-            }else {
-                $modelCompany = Company::find()->where(['inn' => $modelCompany->inn])->one();
-                if(XprofileXcompany::find()->where(['id_profile' => Yii::$app->user->getId()])->andWhere(['id_company' => $modelCompany->id])->count()){
-                    return 'Уже добавлено';
-                }else {
-//                    $modelProfile = Profile::findOne(Yii::$app->user->getId());
-                    $modelCompany->link('profiles', $modelProfile);
-                    return 'Add company to Profile';
-                }
-            }
-        return 'ERROR';
-//            return $this->render('test', compact(['modelCompany']));
-        }
-        return $this->render('addcompany', compact(['modelCompany']));
-    }
-
-    public function actionCompanies(){
-
-    }
 
     public function actionValidateAddCompany()
     {

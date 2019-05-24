@@ -41,7 +41,10 @@ $this->title = Html::encode('Регистрация юридического л�
         'form' => $form
 ]) ?>
     <div class="form-group">
-        <?= Html::submitButton($modelCompany->isNewRecord ? 'Добавить' : 'Сохранить', ['class' => $modelCompany->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($modelCompany->isNewRecord ? 'Добавить' : 'Сохранить',
+            [
+                'class' => $modelCompany->isNewRecord ? 'btn btn-success' : 'btn btn-primary',
+            ]) ?>
     </div>
     <?php
     ActiveForm::end();
