@@ -17,7 +17,7 @@ use app\models\Payment;
 /* @var $profile \app\models\Profile*/
 
 $this->title = 'Оформлление заказа';
-var_dump($modelOrder->type_payment);
+//var_dump($modelOrder->type_payment);
 ?>
 
 <div class="order-create">
