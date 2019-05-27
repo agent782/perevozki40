@@ -1026,7 +1026,7 @@ class Order extends \yii\db\ActiveRecord
                 . ';
                     UPDATE setting 
                     SET FLAG_EXPIRED_ORDER = 0;
-                  ropertyException: Getting   END;'
+                    END;'
             )
                 ->query()
             ;
