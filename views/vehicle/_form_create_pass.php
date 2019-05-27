@@ -36,7 +36,7 @@ $descBTs = ArrayHelper::map(BodyType::find()->asArray()->all(), 'id', 'descripti
             'id' => 'tonnage',
             'type' => 'tel',
             'autofocus' => true
-        ]])->label('Общая грузоподъемность(пассажиры и груз).');
+        ]])->label('Общая грузоподъемность(пассажиры и груз). тонн(ы).');
         echo $form->field($VehicleForm, 'passengers', ['inputOptions' => [
             'id' => 'passengers',
             'type' => 'tel',
@@ -46,7 +46,7 @@ $descBTs = ArrayHelper::map(BodyType::find()->asArray()->all(), 'id', 'descripti
             'id' => 'volume',
             'type' => 'tel',
             'autofocus' => true
-        ]]) ->label('Объем багажника.');
+        ]]) ->label('Объем багажника. м3');
         ?>
     </div>
     <br>

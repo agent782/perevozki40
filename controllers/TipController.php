@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\functions\functions;
+use function foo\func;
 use Yii;
 use app\models\Tip;
 use app\models\TipSearch;
@@ -66,9 +67,19 @@ class TipController extends Controller
     public function actionCreate()
     {
         $model = new Tip();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())){
+            $exist_tip = Tip::findOne(['model' => $model->model, 'attribute' => $model->attribute]);
+            if(!$exist_tip) {
+                if ($model->save()) {
+                    functions::setFlashSuccess('Подсказка добавлена.');
+                    return $this->redirect(['index', 'id' => $model->id]);
+                } else {
+                    functions::setFlashWarning('Ошибка при сохранении');
+                }
+            } else{
+                functions::setFlashInfo('Подсказка существует. Вы можете ее отредактировать.');
+                return $this->redirect(['/tip/update', 'id' => $exist_tip->id]);
+            }
         }
 
         return $this->render('create', [
@@ -88,7 +99,7 @@ class TipController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index', 'id' => $model->id]);
         }
 
         return $this->render('update', [

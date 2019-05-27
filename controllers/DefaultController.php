@@ -178,13 +178,14 @@ class DefaultController extends Controller
                         if (Yii::$app->getUser()->login($modelUser)) {
                             $modelProfile->id_user = $modelUser->id;
                             if ($modelProfile->save()) {
+                                emails::sendAfterUserRegistration($modelProfile->id_user);
+//                                emails::sendAfterUserRegistration(73);
 //                                $session->removeAll();
                                 functions::setFlashSuccess('Поздравляем с успешной регистрацией!');
                                 $session->remove('modelUser');
                                 $session->remove('modelProfile');
                                 $session->remove('modelVerifyKey');
                                 $session->remove('modelSignupUserForm');
-                                emails::sendAfterUserRegistration($modelProfile->id_user);
                                 return $this->redirect('/');
                             }
                             functions::setFlashWarning('ОШИБКА НА СЕРВЕРЕ. Попробуйте позже.');

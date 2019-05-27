@@ -40,7 +40,8 @@ class SignupCarOwnerForm extends Model
     {
         return [
             [['bithday', 'country', 'passport_number', 'passport_place', 'passport_date',
-                'reg_address', 'assignAgreement', 'is_driver'], 'required'],
+                'reg_address', 'assignAgreement'], 'required'],
+            [['is_driver'], 'required', 'message' => 'Выберите один из вариантов'],
 //            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
             [['passport_place','driver_licence_place'], 'string', 'length' => [10, 100]],
@@ -154,8 +155,7 @@ class SignupCarOwnerForm extends Model
             $auth->revokeAll($modelProfile->id_user);
             $auth->assign($role, $modelProfile->id_user);
         }
-
-//        return $modelProfile;
+//        return $modelProfile->getErrors();
         return false;
     }
     public function savePassport($id)

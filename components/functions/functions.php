@@ -108,7 +108,7 @@ class functions
         foreach ($names as $name) {
             if($name != '.' && $name != '..'){
                 $name = strstr($name, '.', true);
-                $res [] = $name;
+                $res [$name] = $name;
             }
         }
         return $res;
@@ -117,6 +117,11 @@ class functions
         $attributes = get_class_vars(get_class($model));
         $attributes = array_merge($attributes, $model->getAttributes());
         $attributes = array_keys($attributes);
+        $res = [];
+        foreach ($attributes as $attribute){
+            $res[$attribute] = $attribute;
+        }
+        return $res;
         return $attributes;
     }
 

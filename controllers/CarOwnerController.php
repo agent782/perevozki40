@@ -46,7 +46,7 @@ class CarOwnerController extends Controller
 //            $modelStart->country = $modelProfile->passport->country;
 //            $modelStart->passport_date = $modelProfile->passport->date;
 //            $modelStart->passport_place = $modelProfile->passport->place;
-
+            $modelStart->is_driver = $modelProfile->is_driver;
             $modelStart->reg_address = $modelProfile->reg_address;
             $modelStart->photo = $modelProfile->photo;
 
@@ -54,8 +54,9 @@ class CarOwnerController extends Controller
         if(!$modelProfile) $modelProfile = new Profile();
         if($modelStart->load(\Yii::$app->request->post())){
             if ($modelProfile = $modelStart->saveProfile()) {
+
                 functions::setFlashSuccess('Поздравляем с успешной регистрацией. 
-                   Добавьте тпвнспортное средство в личном кабинете и получайте заказы!');
+                   Добавьте транспортное средство в личном кабинете и получайте заказы!');
                 if(!$modelProfile->is_driver){
                     return $this->redirect('/driver');
                 }
@@ -63,8 +64,8 @@ class CarOwnerController extends Controller
                 return $this->redirect('/vehicle');
             }
             functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
-
         }
+        if(!$modelProfile) $modelProfile = new Profile();
         return $this->render('create', [
             'modelStart' => $modelStart,
             'modelProfile' => $modelProfile,

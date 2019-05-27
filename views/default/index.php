@@ -1,5 +1,6 @@
 <?php
     use yii\bootstrap\Html;
+//    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 ?>
 <?php
     if(Yii::$app->user->can('user')):

@@ -1,21 +1,38 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
+use kartik\checkbox\CheckboxX;
 use yii\grid\GridView;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\DriverSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $modelProfile \app\models\Profile */
+/* @var $modelDriverLicense \app\models\DriverLicense */
 
 $this->title = 'Мои водители.';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="driver-index">
 
-    <h2><?= Html::encode($this->title) ?></h2>
+    <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <?php
+        $form = \kartik\form\ActiveForm::begin();
+    ?>
+    <?=$form->field($modelProfile, 'is_driver')->widget(CheckboxX::class,[
+        'id' => 'chk_is_driver',
+        'labelSettings' => ['position' => CheckboxX::LABEL_RIGHT],
+        'pluginOptions' => [
+            'threeState' => false
+        ]
+    ])
+        ->label('Я водитель', ['class' => 'h3'])
+    ?>
+    <?php
+        $form::end();
+    ?>
     <p>
         <?= Html::a('Добавить водителя.', ['/driver/create', 'id_car_owner' => Yii::$app->user->id], ['class' => 'btn btn-success']) ?>
     </p>

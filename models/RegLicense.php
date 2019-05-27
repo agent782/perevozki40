@@ -63,11 +63,14 @@ class RegLicense extends \yii\db\ActiveRecord
             [['reg_number'], 'string', 'max' => 16],
             [['id_user'], 'safe'],
             [['number', 'place', 'country'], 'string', 'max' => 255],
-            [['image1', 'image2'], 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 2200000],
+            [['image1', 'image2'], 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 5200000],
             ['reg_number', 'uniqueRegNumber'],
-            ['brand_id', 'required']
-
-//            [['date'], 'date', 'format' => 'Php: d.m.Y']
+            ['brand_id', 'required'],
+            ['date', 'date', 'format' => 'php: d.m.Y',
+                'min' => (time() - 60*60*24*365*40),
+                'max' => time(),
+                'tooSmall' => 'Проверьте дату.',
+                'tooBig' => 'Вы из будущего?)'],
         ];
     }
 

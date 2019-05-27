@@ -120,6 +120,7 @@ class UserController extends Controller
     }
 
     public function actionFindUser($redirect, $id_order = null, $id_user = null, $redirect2 = null){
+        $this->layout = '@app/views/layouts/logist';
         $user = new User();
         $profile = new Profile();
         if($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
@@ -144,16 +145,32 @@ class UserController extends Controller
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }
             } else {
-                $user->setPassword(rand(10000000, 99999999));
+                if(!$user->email) $user->email=null;
+                if($user->email && User::findOne(['email' => $user->email])){
+                    functions::setFlashWarning('Пользователь с таким email уже существует');
+                    return $this->render('find-user',[
+                        'user' => $user,
+                        'profile' => $profile
+                    ]);
+                }
+//                $user->setPassword(rand(10000000, 99999999));
+                $user->setPassword('123456');
                 $user->generateAuthKey();
 
                 $user->scenario = $user::SCENARIO_SAVE;
+                $user->status = User::STATUS_WAIT_ACTIVATE;
                 $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
 
                 if ($user->save()) {
                     $profile->id_user = $user->id;
                     if($profile->save()){
+                        emails::sendAfterUserRegistration($user->id);
                         functions::setFlashSuccess('Пользовватель добавлен.');
+                        return $this->redirect([$redirect,
+                            'id_user' => $user->id,
+                            'id_order' => $id_order,
+                            'redirect' => $redirect2
+                        ]);
                     }else {
                         functions::setFlashWarning('Ошибка при сохранении пользователя');
                     }
@@ -161,11 +178,6 @@ class UserController extends Controller
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }
             }
-            return $this->redirect([$redirect,
-                'id_user' => $user->id,
-                'id_order' => $id_order,
-                'redirect' => $redirect2
-            ]);
         }
         return $this->render('find-user',[
             'user' => $user,

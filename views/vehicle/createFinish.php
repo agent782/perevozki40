@@ -29,7 +29,7 @@ $this->title = Html::encode('Регистрационные данные тра�
         'enableClientValidation' => true,
         'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form') // без этого не работает валидация  уникальности гос номера
     ]);
-echo $form->field($modelRegLicense, 'id_user')->hiddenInput();
+echo $form->field($modelRegLicense, 'id_user')->hiddenInput()->label(false);
 
 $classiferVehicleIds = [];
 $brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->orderBy(['brand' => SORT_ASC])->all(), 'id', 'brand');
@@ -178,9 +178,7 @@ $brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->or
 
 </div>
     <div class="col-lg-12">
-<!--        --><?//= Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])?>
         <?= Html::submitButton('Назад', ['class' => 'btn btn-warning', 'name' => 'button', 'value' => 'create_back3']) ?>
-
         <?= Html::submitButton('Далее', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'create_finish']) ?>
     </div>
 <?php

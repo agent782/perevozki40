@@ -6,19 +6,33 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\Tip */
 /* @var $form yii\widgets\ActiveForm */
+$this->registerJs('
+    $(function(){
+//        getAttributesForModel();
+    })
+')
+
 ?>
 
 <div class="tip-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin();?>
 
-    <?= $form->field($model, 'model')->dropDownList(\app\components\functions\functions::getModelsNames(), [
+    <?= $form->field($model, 'model')->dropDownList( \app\components\functions\functions::getModelsNames(), [
         'prompt' => 'Выберите модель',
         'id' => 'model_name',
         'onchange' => 'getAttributesForModel()'
     ])?>
-
-    <?= $form->field($model, 'attribute')->dropDownList([], [
+    <?php
+        if($model->model) {
+            $modelName = '\\app\\models\\' . $model->model;
+            $attributes = \app\components\functions\functions::getAttributesAndPublicAttributes($modelName::find()->one());
+        } else {
+            $attributes = [];
+        }
+    ?>
+    <?= $form->field($model, 'attribute')->dropDownList(
+        $attributes, [
         'id' => 'attributes',
     ]) ?>
 

@@ -117,7 +117,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['updated_at', 'default', 'value' => date('d.m.Y h:i')],
             ['active_at', 'default', 'value' => date('d.m.Y h:i')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+//            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
             [['push_ids'], 'safe']
         ];
@@ -151,7 +151,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id]);
     }
 
     /**
