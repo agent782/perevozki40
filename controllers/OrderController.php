@@ -64,16 +64,16 @@ class OrderController extends Controller
      * Lists all Order models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new OrderSearch();
-        $dataProvider = $searchModel->searchForClient(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+//    public function actionIndex()
+//    {
+//        $searchModel = new OrderSearch();
+//        $dataProvider = $searchModel->searchForClient(Yii::$app->request->queryParams);
+//
+//        return $this->render('index', [
+//            'searchModel' => $searchModel,
+//            'dataProvider' => $dataProvider,
+//        ]);
+//    }
 
     public function actionClient()
     {
@@ -261,23 +261,21 @@ class OrderController extends Controller
                     if(!$user_id) {
                         $user = new User();
                         $profile = new Profile();
-                        $modelCompany = new Company();
-                        $XcompanyXprofile = new XprofileXcompany();
 
                         $session->set('route', $route);
                         $session->set('modelOrder', $modelOrder);
                         $session->set('user', $user);
                         $session->set('profile', $profile);
-                        $session->set('modelCompany', $modelCompany);
-                        $session->set('XcompanyXprofile', $XcompanyXprofile);
+//                        $session->set('modelCompany', $modelCompany);
+//                        $session->set('XcompanyXprofile', $XcompanyXprofile);
 
                         return $this->render('@app/modules/logist/views/order/create',[
                             'modelOrder' => $modelOrder,
                             'route' => $route,
                             'user' => $user,
                             'profile' => $profile,
-                            'modelCompany' => $modelCompany,
-                            'XcompanyXprofile' => $XcompanyXprofile
+//                            'modelCompany' => $modelCompany,
+//                            'XcompanyXprofile' => $XcompanyXprofile
                         ]);
                     }
                     $session->set('route', $route);
@@ -304,17 +302,117 @@ class OrderController extends Controller
 //                var_dump($modelOrder->getErrors());
 //                return 'error';
                 break;
-            case 'logist_finish':
-                $session->get('route');
-                $session->get('modelOrder');
-                $session->get('user');
-                $session->get('profile');
-                $session->get('modelCompany');
-                $session->get('XcompanyXprofile');
 
-                return 1111111111;
+            case 'logist_add_company':
+                if (!$session->has('route')
+                    ||!$session->has('modelOrder')
+                    ||!$session->has('user')
+                    ||!$session->has('profile'))
+                {
+                    functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                    return $this->redirect('/logist/order');
+                }
+
+                $modelOrder = $session->get('modelOrder');
+                $route = $session->get('route');
+                $user = $session->get('user');
+                $profile = $session->get('profile');
+                $modelCompany = new Company();
+                $XcompanyXprofile = new XprofileXcompany();
+
+                if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+                    $findUser = User::findOne(['username' => $user->username]);
+
+                    $companies = ArrayHelper::map($profile->companies, 'id', 'name');
+                    $user->scenario = User::SCENARIO_SAVE;
+                    if(!$findUser){
+                        $user->setPassword(rand(11111111, 99999999));
+                        $user->generateAuthKey();
+                        $user->status = User::STATUS_WAIT_ACTIVATE;
+                        if($user->save()){
+                            $profile->id_user = $user->id;
+                            $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
+                            if(!$profile->save()){
+                                functions::setFlashWarning('Ошибка на сервере. Профиль не создан. Попробуйте позже.');
+                                return $this->redirect('/logist/order');
+                            }
+                        } else{
+                            functions::setFlashWarning('Ошибка на сервере. Пользователь не создан. Попробуйте позже.');
+                            return $this->redirect('/logist/order');
+                        }
+                    } else{
+                        $findUser->email = $user->email;
+                        $findUser->scenario = User::SCENARIO_SAVE;
+                        $findProfile = $findUser->profile;
+                        if(!$findProfile){
+                            $profile->id_user = $findUser->id;
+                            if(!$profile->save()){
+                                functions::setFlashWarning('Ошибка на сервере. Профиль не сохранен. Попробуйте позже.');
+                                return $this->redirect('/logist/order');
+                            }
+                        }else{
+                            $findProfile->name = $profile->name;
+                            $findProfile->surname = $profile->surname;
+                            $findProfile->patrinimic = $profile->patrinimic;
+                            $findProfile->phone2 = $profile->phone2;
+                            $findProfile->email2 = $profile->email2;
+                            $findProfile->sex = $profile->sex;
+                        }
+                        if(!$findUser->save()){
+                            functions::setFlashWarning('Ошибка на сервере. Пользователь не сохранен. Попробуйте позже.');
+                            return $this->redirect('/logist/order');
+                        }
+                        if(!$findProfile->save()){
+                            functions::setFlashWarning('Ошибка на сервере. Профиль не сохранен. Попробуйте позже.');
+                            return $this->redirect('/logist/order');
+                        }
+                        $user = User::findOne(['id' => $findUser->id]);
+
+                    }
+                    if(!$route->save()){
+                        functions::setFlashWarning('Ошибка на сервере. Маршрут не сохранен. Попробуйте позже.');
+                        return $this->redirect('/logist/order');
+                    }
+                    $modelOrder->id_route = $route->id;
+                    $modelOrder->id_user = $user->id;
+                    $modelOrder->scenario = Order::SCENARIO_NEW_ORDER;
+//                    return var_dump($user->id);
+                    if($modelOrder->save()){
+//                            return var_dump($modelOrder->id);
+                        $session->remove('route');
+                        $session->remove('modelOrder');
+                        functions::setFlashSuccess('Заказ офорилен.');
+
+                    } else {
+                        functions::setFlashWarning('Ошибка на сервере. Заказ не сохранен. Попробуйте позже.');
+                    }
+                    return $this->redirect(['/logist/order/add-company', 'id_order' => $modelOrder->id]);
+
+                }
+
+                return $this->render('@app/modules/logist/views/order/create',[
+                    'modelOrder' => $modelOrder,
+                    'route' => $route,
+                    'user' => $user,
+                    'profile' => $profile,
+                ]);
                 break;
-
+//            case 'logist_finish':
+//                $route = $session->get('route');
+//                $modelOrder = $session->get('modelOrder');
+//                $user = $session->get('user');
+//                $profile = $session->get('profile');
+//                $modelCompany = new Company();
+//                $XcompanyXprofile = new XprofileXcompany();
+//                if($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())){
+//
+//                }
+//
+//                $session->get('modelCompany');
+//                $session->get('XcompanyXprofile');
+//
+//                return 222222;
+//                break;
         }
 
 
@@ -382,7 +480,7 @@ class OrderController extends Controller
         }
         $TypiesPayment = ArrayHelper::map($TypiesPayment, 'id', 'type');
 
-        $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+        $companies = ArrayHelper::map(Profile::findOne(['id_user' => $modelOrder->id_user])->companies, 'id', 'name');
         $modelOrder->setScenarioForUpdate();
 
         switch (Yii::$app->request->post('button')) {

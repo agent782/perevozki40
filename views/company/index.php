@@ -72,20 +72,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 3. Отсканируйте и отправьте Договор на проверку.<br><br>'
                             . Html::a('Скачать бланк',
                                 \yii\helpers\Url::to(['download-document', 'idCompany' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]),
-                                ['class'=>'btn btn-info', 'data-toggle' => 'tooltip', 'title' => 'Инфорсация'])
-//                            . '<br><br>'
-//                            . \app\components\widgets\ButtonUpload::widget([
-//                                    'model' => $modelDocument,
-//                                    'typeDocument' => \app\models\Document::TYPE_CONTRACT_CLIENT,
-//                                    'completeRedirect' => '/company/index',
-//                                    'action' => \yii\helpers\Url::to([
-//                                        'document/upload',
-//                                        'id' => $modelDocument->id,
-//                                        'completeRedirect' => '/company/index',
-//                                        'type' => \app\models\Document::TYPE_CONTRACT_CLIENT,
-//                                    ])
-//
-//                            ])
+                                ['class'=>'btn btn-info', 'data-toggle' => 'tooltip', 'title' => 'Инфорсация', 'id' => 'create-contract'])
+
                             ;
                     }
                     if ($modelDocument->url_upload && $modelDocument->status === \app\models\Document::STATUS_SIGNED){
@@ -222,45 +210,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
 
             ],
-//            'xprofileXcompany.sTATUS_POWER_OF_ATTORNEY',
-//            'address',
-//            'address_real',
-            // 'address_post',
-            // 'value',
-            // 'address_value',
-            // 'branch_type',
-            // 'capital',
-            // 'email:email',
-            // 'email2:email',
-            // 'email3:email',
-            // 'kpp',
-            // 'management_name',
-            // 'management_post',
-            // 'name_full',
-            // 'name_short',
-            // 'ogrn',
-            // 'ogrn_date',
-            // 'okpo',
-            // 'okved',
-            // 'opf_short',
-            // 'phone',
-            // 'phone2',
-            // 'phone3',
-            // 'citizenship',
-            // 'state_actuality_date',
-            // 'state_registration_date',
-            // 'state_liquidation_date',
-            // 'state_status',
-            // 'data_type',
-            // 'status',
-            // 'raiting',
-            // 'created_at',
-            // 'updated_at',
-            // 'FIO_contract',
-            // 'basis_contract',
-            // 'job_contract',
-
-//            ['class' => 'yii\grid\ActionColumn'],
             [
                 'class' => \yii\grid\ActionColumn::className(),
 
@@ -279,3 +228,9 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
 </div>
+
+<script>
+    $('#create-contract').on('click', function () {
+        setTimeout(function() {window.location.reload();}, 5000);
+    })
+</script>

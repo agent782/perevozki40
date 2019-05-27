@@ -89,8 +89,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 <!--        <div class="col-xs-1">1111111111</div>-->
         <div class="col-xs-2">
             <?php
+
 //                widgets\Pjax::begin(['id' => 'pjax_message']);
-                if(Message::countNewMessage(Yii::$app->user->id)){
+            if(Yii::$app->user->id) {
+                if (Message::countNewMessage(Yii::$app->user->id)) {
                     echo Html::a(
                         Html::img('/img/icons/message-48.png'
                         ) . '(+' . Message::countNewMessage(Yii::$app->user->id) . ')'
@@ -99,8 +101,9 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                 } else {
                     echo Html::a(
                         Html::img('/img/icons/message-48.png')
-                    ,Url::to(['/message']));
+                        , Url::to(['/message']));
                 }
+            }
 //                widgets\Pjax::end();
             ?>
         </div>
@@ -130,6 +133,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Пользователи',
                             'url' => '/admin/users',
+                            'visible' => Yii::$app->user->can('admin'),
+                        ],
+                        [
+                            'label' => 'Подсказки',
+                            'url' => '/tip',
                             'visible' => Yii::$app->user->can('admin'),
                         ],
                         [

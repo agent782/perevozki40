@@ -8,6 +8,9 @@
 
 namespace app\controllers;
 
+use app\components\functions\emails;
+use app\components\functions\functions;
+use app\models\DriverLicense;
 use Yii;
 use app\models\Profile;
 use app\models\SignupCarOwnerForm;
@@ -43,28 +46,29 @@ class CarOwnerController extends Controller
 //            $modelStart->country = $modelProfile->passport->country;
 //            $modelStart->passport_date = $modelProfile->passport->date;
 //            $modelStart->passport_place = $modelProfile->passport->place;
-
+            $modelStart->is_driver = $modelProfile->is_driver;
             $modelStart->reg_address = $modelProfile->reg_address;
             $modelStart->photo = $modelProfile->photo;
 
         }
         if(!$modelProfile) $modelProfile = new Profile();
-        if($modelStart->load(\Yii::$app->request->post()) && $modelStart->assignAgreement){
+        if($modelStart->load(\Yii::$app->request->post())){
             if ($modelProfile = $modelStart->saveProfile()) {
-//                return $this->render('signupClient2', compact(['modelProfile']));
-                return $this->redirect('/');
+
+                functions::setFlashSuccess('Поздравляем с успешной регистрацией. 
+                   Добавьте транспортное средство в личном кабинете и получайте заказы!');
+                if(!$modelProfile->is_driver){
+                    return $this->redirect('/driver');
+                }
+                emails::sendAfterCarOwnerRegistration($modelProfile->id_user);
+                return $this->redirect('/vehicle');
             }
-            else {
-                return $this->render('create', [
-                    'modelStart' => $modelStart,
-                    'modelProfile' =>$modelProfile
-                ]);
-            }
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
         }
-        if(!$modelStart->assignAgreement) Yii::$app->session->setFlash('warning', 'Ознакомьтесь с Соглашением об использовании сервиcа perevozki40.ru');
+        if(!$modelProfile) $modelProfile = new Profile();
         return $this->render('create', [
-           'modelStart' => $modelStart,
-            'modelProfile' => $modelProfile
+            'modelStart' => $modelStart,
+            'modelProfile' => $modelProfile,
         ]);
     }
 

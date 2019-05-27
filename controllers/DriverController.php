@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\DriverForm;
 use app\models\DriverLicense;
 use app\models\Passport;
+use app\models\Profile;
 use Yii;
 use app\models\Driver;
 use app\models\DriverSearch;
@@ -37,14 +38,28 @@ class DriverController extends Controller
      * Lists all Driver models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($id_user = null, $redirect = null)
     {
+        if(!$id_user) $id_user = Yii::$app->user->id;
+        $modelProfile = Profile::findOne(['id_user' => $id_user]);
+        if(!$modelProfile) return $this->redirect($redirect);
+
+        $modelDriverLicense = $modelProfile->driverLicense;
+        if(!$modelDriverLicense) $modelDriverLicense = new DriverLicense();
+
         $searchModel = new DriverSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->where(['id_car_owner' => Yii::$app->user->id]);
+        $dataProvider->query->where(['id_car_owner' => $id_user]);
+
+        if($modelProfile->load(Yii::$app->request->post()) && $modelDriverLicense->load(Yii::$app->request->post())){
+            return 1;
+        }
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'modelProfile' => $modelProfile,
+            'modelDriverLicense' => $modelDriverLicense
         ]);
     }
 

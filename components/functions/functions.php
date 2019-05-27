@@ -68,7 +68,7 @@ class functions
     }
 
     static public function sendEmail($to, $from, string $sub, array $params, $views = null, $layouts = null){
-        if(!$from) $from = Yii::$app->params['robotEmail'];
+        if(!$from) $from = [Yii::$app->params['robotEmail'] => 'perevozki40.ru'];
         if(!$views) $views = [
             'html' => 'views/empty_html',
             'text' => 'views/empty_text',
@@ -87,7 +87,7 @@ class functions
 
         $mes = Yii::$app->mailer
             ->compose($views, $params)
-            ->setFrom($from['email'])
+            ->setFrom([$from['email'] => 'perevozki40.ru'])
             ->setSubject($sub);
 
         if(is_array($to)){
@@ -108,7 +108,7 @@ class functions
         foreach ($names as $name) {
             if($name != '.' && $name != '..'){
                 $name = strstr($name, '.', true);
-                $res [] = $name;
+                $res [$name] = $name;
             }
         }
         return $res;
@@ -117,6 +117,11 @@ class functions
         $attributes = get_class_vars(get_class($model));
         $attributes = array_merge($attributes, $model->getAttributes());
         $attributes = array_keys($attributes);
+        $res = [];
+        foreach ($attributes as $attribute){
+            $res[$attribute] = $attribute;
+        }
+        return $res;
         return $attributes;
     }
 

@@ -10,8 +10,9 @@ use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 $this->title = 'Выбор юр. лица';
 ?>
+<?php echo Html::a('Перейти к списку заказов', $redirect, ['class' => 'btn btn-info']);?>
 <div>
-    <h3><?=$this->title?></h3>
+    <h3><?=$this->title?> </h3>
 
 
         <?= Html::a(Html::icon('plus'),
@@ -45,7 +46,9 @@ $this->title = 'Выбор юр. лица';
                     })
                 ')
             ])->label('Выберите юр. лицо');
-            echo Html::submitButton();
+            echo Html::submitButton('Добавить плательщика',['class' => 'btn-sm btn-success']). '<br><br>';
+
+
             $form::end();
 //        Pjax::end();
         ?>

@@ -29,7 +29,7 @@ class OrderSearch extends Order
     {
         return [
             [['id', 'id_vehicle_type', 'longlength', 'passengers', 'ep', 'rp', 'lp', 'datetime_start',
-                'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real','type_payment'], 'integer'],
+                'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real','type_payment', 'id_company'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
             [['cargo', 'statuses', 'type_payments'], 'safe'],
             [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status', 'paid_car_owner_status'], 'safe']
@@ -97,9 +97,11 @@ class OrderSearch extends Order
                 $q->andWhere('invoice.number LIKE "%' . $this->certificateNumber . '%"');
             }]);
         }
-        $query->joinWith(['company' => function($q){
-            $q->andWhere('company.name LIKE "%' . $this->companyName . '%"');
-        }]);
+        if($this->companyName) {
+            $query->joinWith(['company' => function ($q) {
+                $q->andWhere('company.name LIKE "%' . $this->companyName . '%"');
+            }]);
+        }
         return $dataProvider;
     }
 

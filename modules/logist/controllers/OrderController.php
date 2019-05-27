@@ -209,6 +209,7 @@ class OrderController extends Controller
         return $this->render('addCompany', [
             'modelOrder' => $modelOrder,
             'companies' => $companies,
+            'redirect' => $redirect
         ]);
     }
 

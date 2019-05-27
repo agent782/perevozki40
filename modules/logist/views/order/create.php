@@ -17,7 +17,10 @@ use app\models\Payment;
 /* @var $profile \app\models\Profile*/
 
 $this->title = 'Оформлление заказа';
+<<<<<<< HEAD
 //var_dump($modelOrder->type_payment);
+=======
+>>>>>>> a155b654d1118940b36589aaae156cebe3265c0d
 ?>
 
 <div class="order-create">
@@ -83,7 +86,7 @@ $this->title = 'Оформлление заказа';
     <?php $formFinishOrder = ActiveForm::begin([
         'action' => '/order/create',
 //        'enableAjaxValidation' => true,
-//        'validationUrl' => \yii\helpers\Url::to(['/company/validate-add-company']),
+//        'validationUrl' => \yii\helpers\Url::to(['/user/']),
         'fieldConfig' => [
             'labelOptions' => ['class' => 'col-lg-12 control-label'],
         ],
@@ -105,12 +108,10 @@ $this->title = 'Оформлление заказа';
 
     <div class="col-lg-12">
     <?php
-        $bank = ($modelOrder->type_payment == Payment::TYPE_BANK_TRANSFER);
         echo Html::submitButton(
-                (!$bank)?'Оформить заказ':'Выбрать плательщика',
-                ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_set_user']);
+                'Оформить заказ',
+                ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'logist_add_company']);
     ?>
-
     </div>
     <?php $formFinishOrder::end()?>
 

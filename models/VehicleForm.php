@@ -64,20 +64,6 @@ class VehicleForm extends Model
                 'loadingTypeIds',
             ]
                 , 'required', 'message' => 'Выберите хотя бы один из вариантов.'],
-//             [[
-//                'tonnage',
-//                'length',
-//                'height',
-//                'width',
-//                'volume',
-//                'length_spec',
-//                'tonnage_spec',
-//                'length_spec',
-//                'volume_spec',
-//                'passengers',
-//                ''
-//
-//            ], 'required'],
             [[
                 'tonnage',
                 'length',
@@ -99,7 +85,10 @@ class VehicleForm extends Model
                 'ep',
                 'price_zones'
             ], 'safe'],
-            ['photo', 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 4000000]
+            ['photo', 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 4000000],
+            [['instruction_to_driver', 'confidentiality_agreement', 'use_conditions'],
+                'compare', 'compareValue' => 1, 'operator' => '==', 'skipOnEmpty' => false, 'skipOnError' => false,
+                'message' => 'Подтвердите согласие.']
 
         ];
     }

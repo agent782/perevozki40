@@ -8,11 +8,12 @@
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\widgets\MaskedInput;
-$this->title = 'Регистрация';
+$this->title = 'Регистрация (2/4)';
 ?>
 
-    <h3><?=$this->title?></h3>
-<div class="container">
+
+<div>
+    <h4><?=$this->title?></h4>
 <?php
 $form = ActiveForm::begin([
     'fieldConfig' => [
@@ -43,7 +44,7 @@ $form = ActiveForm::begin([
     'enableClientValidation' => true
 ])->widget(\yii\captcha\Captcha::className(), ['options' => ['style' => 'width: 100px;']])?>
 
-<?= Html::submitButton('Подтвердить', [
+<?= Html::submitButton('Получить смс-код', [
     'class' => 'btn btn-primary',
     'name' => 'button',
     'value' => 'signup2'
@@ -52,4 +53,3 @@ $form = ActiveForm::begin([
 ActiveForm::end();
 ?>
 </div>
-<?=$modelProfile->name?>

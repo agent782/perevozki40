@@ -17,6 +17,7 @@
     $this->title = Html::encode('Регистрация клиента');
     $this->registerJsFile('/js/signup.js');
 ?>
+<h3><?= $this->title?></h3>
 <div class="row">
 
     <?php
@@ -62,15 +63,8 @@
     </div>
 
     <div class="col-md-4 col-sm-4">
-<!--        --><?//= Html::dropDownList( null, 0,[
-//                    '0'=>'Паспорт РФ',
-//                    '1'=>'Паспорт другой страны'
-//                ],
-//                [
-//                    'id' => 'countryPassportDwnList',
-//                    'class' => 'btn btn-primary',
-//                ]
-//        )?>
+        <comment>Все личные данные клиентов хранятся в зашифрованном виде! Водители в первую очередь принимают заказы от Клиентов, с наиболее полной информацией в профиле (При аозможности
+            заполняйте все поля!) и наивысшим рейтингом.</comment>
         <?= $form->field($modelStart, 'country')->dropDownList(\yii\helpers\ArrayHelper::map(
             (($q = new \yii\db\Query())
                 ->select(['id_country', 'name'])
@@ -121,12 +115,11 @@
         <?= $form->field($modelStart, 'photo')->fileInput([
             'id' => 'pathPhoto'
         ]) ?>
-<!--        --><?//= Html::button('Загрузить', ['class' => 'btn btn', 'id' => 'selectPhoto'])?>
         <?= Html::img('/img/noPhoto.jpg', ['id' => 'photoPreview', 'class' => 'profile_photo_min'])?>
     </div>
 
     <div class="col-xs-12" style="margin: 10px">
-    <?= Html::submitButton('Далее',['class' => 'btn btn-success'])?>
+    <?= Html::submitButton('Завершить',['class' => 'btn btn-success'])?>
     <?php
         ActiveForm::end();
     ?>

@@ -1,4 +1,5 @@
 <?php
+/* @var $modelDriverLicense \app\models\DriverLicense*/
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -58,10 +59,39 @@ $this->registerJsFile('/js/signup.js');
                     'type' => 'tel',
                     'autocorrect' => 'off',
                     'autocomplete' => 'date',
-                    'placeholder' => '01.01.1980'
+                    'placeholder' => '31.01.1980'
                 ]
             ])
         ;?>
+
+        <?= $form->field($modelStart, 'is_driver')->radioList(['Нет', 'Да'],
+            [
+                'id' => 'is_driver',
+                'onchange' => '
+                    if($(this).find("input:checked").val() == 0){
+                        $("#number").val("");
+                        $("#driver_license").attr("hidden", true);
+                    } else {
+                        $("#driver_license").attr("hidden", false   );
+                    }
+                '
+        ])->label('Вы будете выполнять заказы в качестве водителя?')?>
+
+        <div id="driver_license" hidden>
+            <?= $form->field($modelStart, 'driver_licence_number')->input('text', ['id' => 'number']);?>
+            <?= $form->field($modelStart, 'driver_licence_date') ->widget(MaskedInput::className(),[
+                'clientOptions' => [
+                ],
+                'mask' => '99.99.9999',
+                'options' => [
+                    'type' => 'tel',
+                    'autocorrect' => 'off',
+                    'autocomplete' => 'date',
+                    'placeholder' => '31.01.1980'
+                ]
+            ]);?>
+            <?= $form->field($modelStart, 'driver_licence_place')->textarea();?>
+        </div>
     </div>
 
     <div class="col-md-4 col-sm-4">
@@ -106,7 +136,7 @@ $this->registerJsFile('/js/signup.js');
                 ]
             ])?>
         <?= $form->field($modelStart, 'passport_place')->textarea(['placeholder'=>'Кем выдан']) ?>
-        <?= $form->field($modelStart, 'reg_address')?>
+        <?= $form->field($modelStart, 'reg_address')->textarea()?>
     </div>
 
     <div class="col-md-4 col-sm-4">

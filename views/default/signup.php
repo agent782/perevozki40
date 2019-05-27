@@ -7,10 +7,10 @@
  */
     use yii\bootstrap\ActiveForm;
     use yii\bootstrap\Html;
-    $this->title = 'Регистрация';
+    $this->title = 'Регистрация (1/4)';
 ?>
 
-<h3><?=$this->title?></h3>
+<h4><?=$this->title?></h4>
 
 <?php
 //var_dump(Yii::$app->session->get('modelProfile')->name);

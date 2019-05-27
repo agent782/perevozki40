@@ -1,5 +1,6 @@
 <?php
-use yii\helpers\Html;
+use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 /* @var $this \yii\web\View view component instance */
 /* @var $message \yii\mail\MessageInterface the message being composed */
@@ -16,6 +17,8 @@ use yii\helpers\Html;
 <body>
     <?php $this->beginBody() ?>
     <?= $content ?>
+    <br>
+    С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', Url::home('http'))?>
     <?php $this->endBody() ?>
 </body>
 </html>

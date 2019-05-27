@@ -21,7 +21,8 @@ $this->title = 'Поиск пользователя';
     <?=
     AutoComplete::widget([
         'clientOptions' => [
-            'source' => Url::to(['/user/autocomplete']),
+//            'source' => Url::to(['/user/autocomplete']),
+            'source' => \app\models\Profile::getArrayForAutoComplete(true),
             'autoFill' => true,
             'minLength' => '0',
             'select' => new JsExpression('function(event, ui) {               
@@ -89,6 +90,7 @@ $this->title = 'Поиск пользователя';
         <?= $form->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
         <?= $form->field($profile, 'name')->input('text',  ['id' => 'name'])?>
         <?= $form->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
+        <?= $form->field($profile, 'sex')->radioList(['Мужской', 'Женский'])?>
         <?= $form->field($user, 'username')->input('tel',  ['id' => 'username', 'readonly' => true])?>
         <?= $form->field($user, 'email')->input('email',  ['id' => 'email'])?>
         <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>

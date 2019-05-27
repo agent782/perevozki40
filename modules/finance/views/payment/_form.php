@@ -69,7 +69,7 @@ use yii\web\JsExpression;
 
     <div id="company">
         <?= $form->field($model, 'id_company')->hiddenInput(['id' => 'payer_company'])?>
-        
+
     <?= \yii\jui\AutoComplete::widget([
         'clientOptions' => [
             'source' => $companies,

@@ -19,11 +19,12 @@ class SignupUserForm extends Model
     {
         return [
             ['email', 'trim'],
-            ['email', 'required'],
+            [['password','email'], 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetAttribute' => 'email','targetClass' => '\app\models\User', 'message' => 'Пользователь с таким email уже зарегистрирован'],
-            ['password', 'required'],
+            ['email', 'unique', 'skipOnEmpty' => false, 'skipOnError' => false,
+                'targetAttribute' => 'email','targetClass' => '\app\models\User',
+                'message' => 'Пользователь с таким email уже зарегистрирован'],
             ['password', 'string', 'min' => 6],
         ];
     }

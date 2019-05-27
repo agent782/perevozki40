@@ -36,6 +36,7 @@ use yii\web\IdentityInterface;
 class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
+    const STATUS_WAIT_ACTIVATE = 1;
     const STATUS_ACTIVE = 10;
 
     const SCENARIO_SAVE = 'save';
@@ -116,7 +117,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['updated_at', 'default', 'value' => date('d.m.Y h:i')],
             ['active_at', 'default', 'value' => date('d.m.Y h:i')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+//            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
             [['push_ids'], 'safe']
         ];
@@ -150,7 +151,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id]);
     }
 
     /**
@@ -294,7 +295,7 @@ class User extends ActiveRecord implements IdentityInterface
         return Yii::$app->authManager->getRolesByUser($this->getId());
     }
 
-        public function canRole(string $roleName){
+    public function canRole(string $roleName){
         $userRoles = Yii::$app->authManager->getRolesByUser($this->id);
         foreach ($userRoles as $userRole){
             if($userRole->name == $roleName ) return true;
@@ -335,6 +336,8 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return $arr;
     }
+
+
 
 
 

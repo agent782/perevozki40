@@ -253,6 +253,7 @@ class CompanyController extends Controller
 
     }
 
+
     public function actionDownloadDocument($idCompany, $type,$redirect = '/company/index')
     {
 //       echo $idCompany;
@@ -263,7 +264,8 @@ class CompanyController extends Controller
                $document = Document::findOne(['id_company' => $idCompany, 'type' => $type]);
 
                if(!$document){
-                   if (!$modelCompany -> createDocument($document->type)){
+                   $document = $modelCompany -> createDocument($type);
+                   if (!$document){
                        return $this->redirect($redirect);
                    }
                }
@@ -276,7 +278,8 @@ class CompanyController extends Controller
 
                    }
                    $modelCompany->createDocument($type);
-                   return Yii::$app->response->sendFile($path);
+                   return Yii::$app->response->sendFile($path   );
+                   return $this->redirect($redirect);
                }
                  else {
                    $document->delete();

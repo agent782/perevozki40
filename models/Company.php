@@ -234,7 +234,7 @@ class Company extends \yii\db\ActiveRecord
                     $document->createPdfContractClient($this->id);
             }
             if ($document->save()) {
-                return $this;
+                return $document;
             }
         }
         return false;
