@@ -71,6 +71,7 @@ class Profile extends \yii\db\ActiveRecord
     const ROLE_VEHICLE = 'vehicle';
     const ROLE_VIP_VEHICLE = 'vip_vehicle';
 
+    
     const SCENARIO_SAFE_SAVE = 'safe_save';
 
     /**
