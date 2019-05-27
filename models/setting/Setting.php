@@ -34,7 +34,7 @@ class Setting extends \yii\db\ActiveRecord
     {
         return [
             [['id'], 'required'],
-            [['id', 'last_num_contract', 'id_our_company', 'FLAG_EXPIRED_ORDER'], 'integer'],
+            [['id', 'last_num_contract', 'FLAG_EXPIRED_ORDER'], 'integer'],
             [['noPhotoPath'], 'string']
         ];
     }
@@ -47,7 +47,6 @@ class Setting extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'last_num_contract' => Yii::t('app', 'Last Num Contract'),
-            'id_our_company' => Yii::t('app', 'Id Our Company'),
         ];
     }
 
