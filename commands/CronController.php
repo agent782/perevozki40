@@ -34,19 +34,19 @@ class CronController extends Controller
 
 
                 $user = User::find()->where(['id' => $order->id_user])->one();
-                functions::sendEmail(
-                    $user->email,
-                    null,
-                    'Заказ №' . $order->id . '. Машина не найдена.',
-                    [
-                        'order' => $order,
-                        'user' => $user
-                    ],
-                    [
-                        'html' => 'views/Order/expiredOrder_html',
-                        'text' => 'views/Order/expiredOrder_text'
-                    ]
-                );
+//                functions::sendEmail(
+//                    $user->email,
+//                    null,
+//                    'Заказ №' . $order->id . '. Машина не найдена.',
+//                    [
+//                        'order' => $order,
+//                        'user' => $user
+//                    ],
+//                    [
+//                        'html' => 'views/Order/expiredOrder_html',
+//                        'text' => 'views/Order/expiredOrder_text'
+//                    ]
+//                );
                 $Message = new Message([
                     'id_to_user' => $order->id_user,
                     'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
