@@ -12,7 +12,7 @@ use app\models\User;
 use Yii;
 use app\components\functions\functions;
 use app\models\Order;
-use app\models\Setting;
+use app\models\setting\Setting;
 use yii\console\Controller;
 use yii2tech\crontab\CronJob;
 use yii2tech\crontab\CronTab;
