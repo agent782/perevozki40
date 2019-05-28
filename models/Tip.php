@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use app\components\widgets\ShowMessageWidget;
 use Yii;
+use yii\base\Model;
 
 /**
  * This is the model class for table "tip".
@@ -44,5 +46,14 @@ class Tip extends \yii\db\ActiveRecord
             'attribute' => 'Attribute',
             'description' => 'Description',
         ];
+    }
+
+    static public function getTipButtonModal($model, string $attr){
+        return
+            ShowMessageWidget::widget([
+               'helpMessage' => self::findOne(['model' => $model->formName(), 'attribute' => $attr])->description,
+                'header' => 'Подсказка'
+            ]);
+
     }
 }

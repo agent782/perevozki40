@@ -108,6 +108,7 @@ class VehicleController extends Controller
         $modelRegLicense = new RegLicense();
 
         $session = Yii::$app->session;
+
         switch (Yii::$app->request->post('button')){
             case 'create_next1':
                 if($session['VehicleForm'])$VehicleForm=$session->get('VehicleForm');
@@ -136,8 +137,19 @@ class VehicleController extends Controller
 
                 break;
             case 'create_next2':
-                if($session['VehicleForm'])$VehicleForm=$session->get('VehicleForm');
+                $VehicleForm=$session->get('VehicleForm');
+                if(!$VehicleForm || !$VehicleForm->vehicleTypeId) return $this->redirect($redirect);
 
+//                switch ($VehicleForm->vehicleTypeId){
+//                    case Vehicle::TYPE_TRUCK:
+//                        $VehicleForm->scenario = Vehicle::SCENARIO_UPDATE_TRUCK;
+//                        break;
+//                    case Vehicle::TYPE_PASSENGER:
+//                        $VehicleForm->scenario = Vehicle::SCENARIO_UPDATE_PASS;
+//                        break;
+//                    case Vehicle::TYPE_SPEC:
+//                        break;
+//                }
                 if($VehicleForm->load(Yii::$app->request->post())) {
 
                     $modelRegLicense = new RegLicense(['id_user' => $id_user]);
@@ -153,14 +165,8 @@ class VehicleController extends Controller
             case 'create_finish':
                 if($session->get('VehicleForm'))$VehicleForm = $session->get('VehicleForm');
                 if($VehicleForm->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
-                    var_dump($VehicleForm);
                     $session->set('VehicleForm', $VehicleForm);
                     $session->set('modelRegLicense', $modelRegLicense);
-//                    return var_dump($modelRegLicense);
-//                    return  $modelRegLicense->reg_number . ' ' .  Vehicle::find()->where(['id_user' => Yii::$app->user->id])->one()->regLicense->reg_number;
-//                    echo $modelVehicle->id_vehicle_type;
-//                    return var_dump($VehicleForm);
-//                    var_dump($modelRegLicense);
 
                     if($modelRegLicense->save()) {
                         $modelRegLicense->image1 = functions::saveImage(
@@ -502,10 +508,12 @@ class VehicleController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-//            $model = new VehicleForm();
-            $model = new RegLicense();
+            $model = new VehicleForm();
+            $model2 = new RegLicense();
             if($model->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model);
+            if($model2->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model2);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }

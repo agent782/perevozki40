@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\functions\functions;
 use app\models\DriverForm;
 use app\models\DriverLicense;
 use app\models\Passport;
@@ -38,7 +39,7 @@ class DriverController extends Controller
      * Lists all Driver models.
      * @return mixed
      */
-    public function actionIndex($id_user = null, $redirect = null)
+    public function actionIndex($id_user = null, $redirect = '/driver')
     {
         if(!$id_user) $id_user = Yii::$app->user->id;
         $modelProfile = Profile::findOne(['id_user' => $id_user]);
@@ -52,7 +53,19 @@ class DriverController extends Controller
         $dataProvider->query->where(['id_car_owner' => $id_user]);
 
         if($modelProfile->load(Yii::$app->request->post()) && $modelDriverLicense->load(Yii::$app->request->post())){
-            return 1;
+            if($modelDriverLicense->save()){
+                $modelProfile->id_driver_license = $modelDriverLicense->id;
+                if($modelProfile->save()){
+                    ($modelProfile->is_driver)
+                    ? functions::setFlashSuccess('Теперь вы можете указывать себя водителем при принятии заказа')
+                    : functions::setFlashSuccess('Теперь вы не можете указывать себя водителем при принятии заказа')
+                    ;
+                }
+                else {
+                    functions::setFlashWarning('Ошибка на сервере, попробуйте позже');
+                }
+                return $this->redirect($redirect);
+            }
         }
 
         return $this->render('index', [
@@ -107,23 +120,27 @@ class DriverController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $redirect = '/driver')
     {
         $model = $this->findModel($id);
+        if(!$model) {
+            functions::setFlashWarning('Ошибка на сервере');
+            return $this->redirect($redirect);
+        }
         $DriverForm = new DriverForm();
         $DriverForm = $DriverForm->initDriverForm($model);
         $DriverFormOld = $DriverForm;
 
         if ($DriverForm->load(Yii::$app->request->post())) {
 
-                if($DriverForm->save($model)){
+                if($DriverForm->save($model, $model->id_car_owner)){
                     Yii::$app->session->setFlash('success', 'Водитель сохранен.');
                 }else {
                     Yii::$app->session->setFlash('warning', 'Ошибка соединения. Попробуйте позже.');
                 }
 
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect($redirect);
         } else {
             return $this->render('update', [
                 'DriverForm' => $DriverForm,
@@ -174,6 +191,17 @@ class DriverController extends Controller
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
             $model = new DriverForm();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+    public function actionValidateDriverLicense(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+//            $model = new VehicleForm();
+            $model = new DriverLicense();
             if($model->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model);
         }

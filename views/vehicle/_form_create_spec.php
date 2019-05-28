@@ -14,8 +14,9 @@ use app\components\widgets\ShowMessageWidget;
 ?>
     <?php
     $form = ActiveForm::begin([
-//        'enableAjaxValidation' => true,
-//        'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form')
+        'enableAjaxValidation' => true,
+        'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form'),
+        'enableClientValidation' => true
     ]);
 
 
@@ -30,11 +31,12 @@ $imgLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'image')
 $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'description');
 
 ;
-//    var_dump($VehicleForm);
 ?>
 <div class="row">
     <div class="col-lg-4">
         <?php
+        // Для валидации VehicleForm
+        echo $form->field($VehicleForm, 'vehicleTypeId')->hiddenInput()->label(false);
         echo $form->field($VehicleForm, 'bodyTypeId')->radioList($BodyTypes, [
                 'item' => function ($index, $label, $name, $checked, $value) use ($imgBTs, $descBTs) {
                     $return = '<label>';
@@ -102,10 +104,6 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
 //                    'id' => 'width',
                     'type' => 'tel'
                 ]]);
-//                echo $form->field($VehicleForm, 'height', ['inputOptions' => [
-////                    'id' => 'height',
-//                    'type' => 'tel'
-//                ]]);
             ?>
         </div>
         <div id="volume" hidden>
@@ -139,12 +137,6 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
     </div>
     <div class="col-lg-4">
         <?= $form->field($VehicleForm, 'description')->textarea()?>
-<!--        --><?//= $form->field($VehicleForm, 'photo')->fileInput([
-//            'multiple'=>false,
-//            'id' =>'pathPhoto'
-//        ]) ?>
-<!--        <br>-->
-<!--        --><?//= Html::img('/img/noPhoto.jpg', ['id' => 'photoPreview', 'class' => 'profile_photo_min'])?>
     </div>
 </div>
 

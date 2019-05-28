@@ -15,8 +15,8 @@ use app\components\widgets\ShowMessageWidget;
 <div class="row">
 <?php
     $form = ActiveForm::begin([
-//        'enableAjaxValidation' => true,
-//        'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form')
+        'enableAjaxValidation' => true,
+        'validationUrl' => \yii\helpers\Url::to('/vehicle/validate-vehicle-form')
     ]);
     $vehTypeId = $VehicleForm->vehicleTypeId;
     $BodyTypes = ArrayHelper::map(BodyType::find()->where(['id_type_vehicle' => $vehTypeId])->asArray()->all(), 'id', 'body');

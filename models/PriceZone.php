@@ -424,11 +424,11 @@ class PriceZone extends \yii\db\ActiveRecord
         $returnPZ->r_h = self::mathDiscount($this->r_h, $discount);
         $returnPZ->r_loading = self::mathDiscount($this->r_loading, $discount);
         $returnPZ->min_price = self::mathDiscount($this->min_price, $discount);
-        $returnPZ->min_r_10 = self::mathDiscount($this->min_r_10, $discount);
-        $returnPZ->min_r_20 = self::mathDiscount($this->min_r_20, $discount);
-        $returnPZ->min_r_30 = self::mathDiscount($this->min_r_30, $discount);
-        $returnPZ->min_r_40 = self::mathDiscount($this->min_r_40, $discount);
-        $returnPZ->min_r_50 = self::mathDiscount($this->min_r_50, $discount);
+        $returnPZ->min_r_10 = $this->min_r_10;
+        $returnPZ->min_r_20 = $this->min_r_20;
+        $returnPZ->min_r_30 = $this->min_r_30;
+        $returnPZ->min_r_40 = $this->min_r_40;
+        $returnPZ->min_r_50 = $this->min_r_50;
         $returnPZ->remove_awning = self::mathDiscount($this->remove_awning, $discount);
 
         return $returnPZ;

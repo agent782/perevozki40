@@ -68,7 +68,7 @@ class functions
     }
 
     static public function sendEmail($to, $from, string $sub, array $params, $views = null, $layouts = null){
-        if(!$from) $from = [Yii::$app->params['robotEmail'] => 'perevozki40.ru'];
+        if(!$from) $from = Yii::$app->params['robotEmail'];
         if(!$views) $views = [
             'html' => 'views/empty_html',
             'text' => 'views/empty_text',
