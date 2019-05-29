@@ -75,10 +75,11 @@ class VehicleForm extends Model
             ], 'number'],
             ['tonnage', 'validateTonnage', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [['length', 'width'], 'validateLengthWidth', 'skipOnEmpty' => false, 'enableClientValidation' => true],
-            [['height', 'longlength'], 'validateHeigthLonglength', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            [['height'], 'validateHeigth', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             ['volume', 'validateVolume', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [['tonnage_spec', 'length_spec'], 'validateSpecTonnageLength', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [['volume_spec'], 'validateSpecVolume', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            ['passengers', 'validatePassengers', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [[
                 'id',
                 'longlength',
@@ -114,7 +115,7 @@ class VehicleForm extends Model
         }
     }
 
-    public function validateHeigthLonglength($attribute){
+    public function validateHeigth($attribute){
         if(!$this->$attribute && $this->vehicleTypeId == Vehicle::TYPE_TRUCK){
             $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
         }
@@ -146,19 +147,17 @@ class VehicleForm extends Model
         }
     }
 
-    public function validateLonglength($attribute){
-        if($this->longlength && !$this->$attribute){
-            $this->addError($attribute, 'Необходимо заполнить.');
+    public function validatePassengers($attribute){
+        if(!$this->$attribute && $this->vehicleTypeId == Vehicle::TYPE_PASSENGER){
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
         }
     }
 
-
-
-//    public function passValidate($attribute){
-//        if(!$this->$attribute && $this->vehicleTypeId != 2) {
-//            $this->addError($attribute, 'Необходимо заполнить.' . $this->vehicleTypeId);
-//        }
-//    }
+    public function validateLonglength($attribute){
+        if(!$this->$attribute){
+            $this->addError($attribute, 'Необходимо заполнить.');
+        }
+    }
 
     public function attributeLabels()
     {

@@ -150,6 +150,7 @@ $this->registerJs(
                     return \app\models\BodyType::find()->where(['id' => $model->body_type])->one()->body;
                 }
             ],
+            'statusText',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]);
@@ -182,7 +183,6 @@ $this->registerJs(
                         $return .= $price_zone->id . ', ';
                     }
                     $return = substr($return, 0, -2);
-//                    $return .= '<br>' . Html::a('Изменить', Url::to(['/vehicle/select-pricezones', 'id' => $model->id]), ['class' => 'btn']);
                     return $return;
                 }
             ],
@@ -195,15 +195,11 @@ $this->registerJs(
             'tonnage',
             'length',
             'width',
-//             'height',
              'volume',
              'tonnage_spec',
              'length_spec',
             'volume_spec',
-            // 'passengers',
-            // 'ep',
-            // 'rp',
-            // 'lp',
+            'statusText',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

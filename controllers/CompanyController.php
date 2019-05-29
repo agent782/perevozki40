@@ -76,7 +76,6 @@ class CompanyController extends Controller
                                 //юр лицо в списке текущего пользователя
                                 (Company::CompanyBelongsUser(Yii::$app->user->getId(), Yii::$app->request->get('id')))
                                     &&
-
                                 (
                                     //и одно из трех
                                     //или число привязашшых профилей == 1, единственный профиль

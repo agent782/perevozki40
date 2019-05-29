@@ -49,9 +49,15 @@ class Tip extends \yii\db\ActiveRecord
     }
 
     static public function getTipButtonModal($model, string $attr){
+        $Model = '';
+        if(is_string($model)){
+            $Model = $model;
+        } else {
+            $Model = $model->formName();
+        }
         return
             ShowMessageWidget::widget([
-               'helpMessage' => self::findOne(['model' => $model->formName(), 'attribute' => $attr])->description,
+               'helpMessage' => self::findOne(['model' => $Model, 'attribute' => $attr])->description,
                 'header' => 'Подсказка'
             ]);
 

@@ -26,12 +26,11 @@ $imgBTs = ArrayHelper::map(BodyType::find()->asArray()->all(), 'id', 'image');
 $descBTs = ArrayHelper::map(BodyType::find()->asArray()->all(), 'id', 'description');
 
 ?>
-
-
     <div class="col-lg-4">
         <br>
         <?php
-
+        // Для валидации VehicleForm
+        echo $form->field($VehicleForm, 'vehicleTypeId')->hiddenInput()->label(false);
         echo $form->field($VehicleForm, 'tonnage', ['inputOptions' => [
             'id' => 'tonnage',
             'type' => 'tel',

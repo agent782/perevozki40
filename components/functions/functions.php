@@ -87,7 +87,7 @@ class functions
 
         $mes = Yii::$app->mailer
             ->compose($views, $params)
-            ->setFrom([$from['email'] => 'perevozki40.ru'])
+            ->setFrom($from['email'])
             ->setSubject($sub);
 
         if(is_array($to)){

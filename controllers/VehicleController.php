@@ -45,7 +45,15 @@ class VehicleController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['car_owner', 'admin', 'dispetcher']
+                        'roles' => ['car_owner', 'admin', 'dispetcher', 'logist']
+                    ],
+                    [
+                        'actions' => ['update', 'delete', 'full-delete'],
+                        'allow' => true,
+                        'matchCallback' => function ($rule, $action) {
+                            $user_id = Yii::$app->user->id;
+                            return (Vehicle::findOne(Yii::$app->request->get('id'))->id_user == $user_id);
+                        },
                     ]
                 ],
             ]
@@ -193,7 +201,7 @@ class VehicleController extends Controller
                                   Yii::$app->params['logistEmail']['email'],
                               ],
                               null,
-                              'Новое ТС!',
+                              'Новое ТС на проверке!',
                               [
                                   'vehicle' => $modelVehicle,
                                   'profile' => Profile::findOne(['id_user' => $modelVehicle->id_user]),
@@ -372,7 +380,7 @@ class VehicleController extends Controller
                 return $this->redirect(['index']);
             }
         }
-        Yii::$app->session->setFlash('warning', 'Ошибка.');
+        Yii::$app->session->setFlash('warning', 'Ошибка на сервере. Попробуйте позже.');
         return $this->redirect(['index']);
     }
 
