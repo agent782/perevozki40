@@ -92,13 +92,14 @@ class PriceZoneController extends Controller
                     break;
                 case 'next2':
                     $model = $session->get('model');
+
                     if(!$model){
                         $session->remove('model');
                         $session->setFlash('warning', 'Попробуйте еще раз или обратитесь к администратору!');
-//                        return var_dump($model);
                         return $this->redirect('/price-zone/create');
                     }
                     if($model->load(Yii::$app->request->post())) {
+                        $model->id = PriceZone::getNextId();
                         $session->set('model', $model);
                         return $this->render('create3', [
                             'model' => $model,
@@ -112,7 +113,7 @@ class PriceZoneController extends Controller
                         $session->setFlash('warning', 'Попробуйте еще раз или обратитесь к администратору!');
                         return $this->redirect('/price-zone/create');
                     }
-                    if($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    if($model->load(Yii::$app->request->post())) {
                         if(!is_array($model->body_types)) $model->body_types = str_split($model->body_types, strlen($model->body_types));//Строка полученная тз радиолист привращается в массив
                         $session->set('model', $model);
 //                        $model->body_types = serialize($model->body_types);
@@ -121,7 +122,7 @@ class PriceZoneController extends Controller
                             $session->setFlash('success', 'Тарифная зона успешно сохранена.');
                             return $this->redirect('/price-zone');
                         }
-                        return var_dump($model[errors]);
+//                        return var_dump($model[errors]);
                         $session->setFlash('warning', 'Ошибка! Попробуйте еще раз или обратитесь к администратору.');
                         return $this->redirect('/price-zone');
 //                        return var_dump($model[errors]);
@@ -153,8 +154,8 @@ class PriceZoneController extends Controller
         $model = new PriceZone();
         $model->attributes = $modelOld->attributes;
         if ($model->load(Yii::$app->request->post()) ) {
-            if($model == $modelOld){
-                functions::setFlashSuccess('Тариф обновлен');
+            if(PriceZone::compare($model, $modelOld)){
+                functions::setFlashSuccess('Вы не внесли изменений');
                 return $this->redirect(['index']);
             }
             if(!is_array($model->body_types)) $model->body_types = str_split($model->body_types, strlen($model->body_types));//Строка полученная тз радиолист привращается в массив
@@ -172,6 +173,7 @@ class PriceZoneController extends Controller
         }
         return $this->render('update', [
             'model' => $model,
+            'isNewRecord' => false
         ]);
     }
 

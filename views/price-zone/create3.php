@@ -52,6 +52,7 @@
 
                 break;
             case Vehicle::TYPE_PASSENGER :
+//                echo $form->field($model, 'id');
                 echo $form->field($model, 'passengers');
                 break;
             case Vehicle::TYPE_SPEC :

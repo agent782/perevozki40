@@ -128,12 +128,12 @@ class PriceZone extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'unique_index', 'r_km'], 'required'],
+            [['r_km', 'id'], 'required'],
             [['veh_type', 'body_types'], 'required', 'message' => 'Выберите хотя бы один из вариантов'],
 //            [['veh_type', 'passengers'], 'integer'],
 //            [[], 'validateTRUCK', 'skipOnEmpty' => false],
 //            ['volume_spec', 'required'],
-            [['tonnage_min', 'tonnage_max', 'volume_min', 'volume_max', 'length_min', 'length_max',
+            [['unique_index', 'tonnage_min', 'tonnage_max', 'volume_min', 'volume_max', 'length_min', 'length_max',
                 'tonnage_long_min', 'tonnage_long_max', 'length_long_min', 'length_long_max',
                 'tonnage_spec_min', 'tonnage_spec_max', 'length_spec_min', 'length_spec_max', 'volume_spec', 'r_km', 'r_loading',
                 'h_loading', 'min_price', 'r_h', 'min_r_10', 'min_r_20', 'min_r_30', 'min_r_40', 'min_r_50', 'remove_awning'], 'number'],
@@ -146,10 +146,9 @@ class PriceZone extends \yii\db\ActiveRecord
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             [['created_at', 'updated_at'], 'default','value' => date('d.m.Y H:m')],
             [['bodiesColumn','longlength','remove_awning', 'created_at', 'updated_at', 'history'], 'safe'],
-
             [['passengers'], 'validatePASS', 'enableClientValidation' => true, 'skipOnEmpty' => false],
-
             [['tonnage_min', 'tonnage_max', 'length_min', 'length_max'], 'validateTRUCK', 'skipOnEmpty' => false],
+//
         ];
     }
 
@@ -197,7 +196,7 @@ class PriceZone extends \yii\db\ActiveRecord
             'history' => 'История изменений',
         ];
     }
-        public function behaviors()
+    public function behaviors()
     {
         return [
             'convertDate' => [
@@ -438,9 +437,49 @@ class PriceZone extends \yii\db\ActiveRecord
         return ($value - round($value*$discount/100, 1));
     }
 
-
     public function getPriceZoneForCarOwner($id_car_owner){
         //можно добавить возможность менять процент в зависимости от роли, рейтинга и тд
         return $this->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
+    }
+
+    static public function getNextId(){
+        $id = 1;
+        foreach (self::find()->all() as $item) {
+            if ($item->id > $id) $id = $item->id;
+        }
+        return ++$id;
+    }
+
+    static public function compare(PriceZone $pricezone1, PriceZone $pricezone2) : bool{
+        if($pricezone1->veh_type == $pricezone2->veh_type
+            && $pricezone1->id == $pricezone2->id
+            && $pricezone1->body_types == $pricezone2->body_types
+            && $pricezone1->longlength == $pricezone2->longlength
+            && $pricezone1->tonnage_min == $pricezone2->tonnage_min
+            && $pricezone1->tonnage_max == $pricezone2->tonnage_max
+            && $pricezone1->volume_min == $pricezone2->volume_min
+            && $pricezone1->volume_max == $pricezone2->volume_max
+            && $pricezone1->length_min == $pricezone2->length_min
+            && $pricezone1->length_max == $pricezone2->length_max
+            && $pricezone1->passengers == $pricezone2->passengers
+            && $pricezone1->tonnage_spec_min == $pricezone2->tonnage_spec_min
+            && $pricezone1->tonnage_spec_max == $pricezone2->tonnage_spec_max
+            && $pricezone1->length_spec_min == $pricezone2->length_spec_min
+            && $pricezone1->length_spec_max == $pricezone2->length_spec_max
+            && $pricezone1->volume_spec == $pricezone2->volume_spec
+            && $pricezone1->r_km == $pricezone2->r_km
+            && $pricezone1->h_loading == $pricezone2->h_loading
+            && $pricezone1->r_loading == $pricezone2->r_loading
+            && $pricezone1->min_price == $pricezone2->min_price
+            && $pricezone1->r_h == $pricezone2->r_h
+            && $pricezone1->min_r_10 == $pricezone2->min_r_10
+            && $pricezone1->min_r_20 == $pricezone2->min_r_20
+            && $pricezone1->min_r_30 == $pricezone2->min_r_30
+            && $pricezone1->min_r_40 == $pricezone2->min_r_40
+            && $pricezone1->min_r_50 == $pricezone2->min_r_50
+            && $pricezone1->remove_awning == $pricezone2->remove_awning
+        )
+            return true;
+        return false;
     }
 }

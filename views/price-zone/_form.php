@@ -17,9 +17,8 @@ $body_typies= \app\models\BodyType::find()->where(['id_type_vehicle' => $model->
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'veh_type')->textInput() ?>
+    <?= $form->field($model, 'veh_type')->hiddenInput()->label(false) ?>
 
-<!--    --><?//= $form->field($model, 'body_types')->textInput(['maxlength' => true]) ?>
     <?= ($model->veh_type != Vehicle::TYPE_SPEC)? $form->field($model, 'body_types')->checkboxList(
         ArrayHelper::map(
         $body_typies, 'id', 'body')):
@@ -27,7 +26,7 @@ $body_typies= \app\models\BodyType::find()->where(['id_type_vehicle' => $model->
      ArrayHelper::map(
         $body_typies, 'id', 'body'));
     ?>
-    <?= $form->field($model, 'longlength')->textInput() ?>
+    <?= $form->field($model, 'longlength')->radioList(['Нет', 'Да']) ?>
 
     <?= $form->field($model, 'tonnage_min')->textInput() ?>
 
@@ -76,7 +75,7 @@ $body_typies= \app\models\BodyType::find()->where(['id_type_vehicle' => $model->
     <?= $form->field($model, 'remove_awning')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

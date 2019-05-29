@@ -328,7 +328,7 @@ class Profile extends \yii\db\ActiveRecord
             $return .= '. <br>';
         }
         if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
-        if($showDriveLicense) $return .= 'ВУ' . $this->driverLicense->fullInfo . '. <br>';
+        if($showDriveLicense) $return .= 'ВУ: ' . $this->driverLicense->fullInfo . '. <br>';
 
         return $return;
     }

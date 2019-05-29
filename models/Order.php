@@ -1472,7 +1472,7 @@ class Order extends \yii\db\ActiveRecord
         $distance = $this->real_km;
         $hour = $this->real_h;
         $real_pz = PriceZone::findOne(['unique_index' => $this->id_price_zone_real]);
-        if($forVehicle) $real_pz = $real_pz->getWithDiscount(9);
+        if($forVehicle) $real_pz = $real_pz->getWithDiscount(self::getVehicleProcentPrice());
         if(!$real_pz || !$distance) return ['text' => 'Ошибка на сервере', 'cost' => 0];
         if($distance){
             $cost = 0;
@@ -1547,20 +1547,22 @@ class Order extends \yii\db\ActiveRecord
                 $cost += $this->real_remove_awning * $real_pz->remove_awning;
                 $text .= '<br>Итого за "растентовку": ' . $this->real_remove_awning * $real_pz->remove_awning;
             }
+
+            if($withDiscount){
+                $cost = $this->getFinishCost(false);
+            }
             if($this->additional_cost){
                 $cost += $this->additional_cost;
                 $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
             }
-            if($withDiscount){
-                $cost = $this->getFinishCost(false);
-            }
+            $text .= '<br>Комментарии водителя: ' . $this->comment_vehicle;
             $return['cost'] =  $cost;
-            if($withDiscount){
-                $cost = $this->getFinishCost(true);
-            }
+//            if($withDiscount){
+//                $cost = $this->getFinishCost($html);
+//            }
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
             if($this->discount && $withDiscount) {
-                $text .= '<br>Скидка: ' . $this->discount . Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']);
+                $text .= '<br>Скидка: ' . $this->discount . ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
             }
             $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
             $return['text'] =  $text;
@@ -1577,11 +1579,14 @@ class Order extends \yii\db\ActiveRecord
     public function getFinishCost($html = true){
         if($html){
             return ($this->discount)
-                ? '<s>' . $this->cost . '</s> ' . '<strong> ' . round($this->cost - ($this->cost*$this->discount/100)) . '</strong>'
+                ? '<s>' . $this->cost . '</s> '
+                . '<strong> '
+                . round($this->cost - (($this->cost - $this->additional_cost) * $this->discount/100))
+                . '</strong>'
                 : $this->cost;
         } else{
             return ($this->discount)
-                ? round($this->cost - ($this->cost*$this->discount/100))
+                ? round($this->cost - (($this->cost - $this->additional_cost) * $this->discount/100))
                 : $this->cost;
         }
     }
@@ -1589,14 +1594,14 @@ class Order extends \yii\db\ActiveRecord
     public function getFinishCostForVehicle(){
         return round(
             $this->cost
-            - ($this->cost
+            - (($this->cost - $this->additional_cost)
             * SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent
             / 100)
         );
     }
 
     public function getVehicleProcentPrice(){
-        return \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
+        return \app\models\setting\SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent;
     }
     public function getArrayPaidStatuses(){
         return [

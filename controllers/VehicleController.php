@@ -45,14 +45,24 @@ class VehicleController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['car_owner', 'admin', 'dispetcher', 'logist']
+                        'roles' => ['admin', 'dispetcher', 'logist', 'finance']
                     ],
                     [
-                        'actions' => ['update', 'delete', 'full-delete'],
                         'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
+                        'actions' => ['index', 'create', 'select-pricezones', 'update-pricezones', 'validate-vehicle-form', 'validate-vehicle'],
+                        'roles' => ['car_owner']
+                    ],
+                    [
+                        'actions' => ['update', 'view', 'delete', 'full-delete'],
+                        'allow' => true,
+                        'roles' => ['car_owner'],
+                            'matchCallback' => function ($rule, $action) {
                             $user_id = Yii::$app->user->id;
-                            return (Vehicle::findOne(Yii::$app->request->get('id'))->id_user == $user_id);
+                            $vehicle = Vehicle::findOne(Yii::$app->request->get('id'));
+                            if($vehicle) {
+                                return ($vehicle->id_user == $user_id);
+                            }
+                            return false;
                         },
                     ]
                 ],

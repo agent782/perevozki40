@@ -602,16 +602,18 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
         $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+        if($UserModel->profile->is_driver){
+//            return var_dump(['0' => $UserModel->profile->fioFull]);
+            $driversArr['0'] = $UserModel->profile->fioFull;
+        }
         $vehicles = [];
         $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
 //        return var_dump($Vehicles);
 
         foreach ($Vehicles as $vehicle) {
             if ($vehicle->canOrder($OrderModel)) {
-//                return $vehicle->getMinRate($OrderModel)->id;
-
+//                return var_dump($vehicle->getMinRate($OrderModel));
                 $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel)->unique_index);
-//                return $rate;
                 $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
                 $vehicles[$vehicle->id] =
                     $vehicle->brand

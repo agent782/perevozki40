@@ -64,7 +64,11 @@ use yii\bootstrap\Tabs;
                 'label' => 'ТС и водитель',
                 'format' => 'raw',
                 'value' => function($model){
-                    return $model->vehicle->brandAndNumber . ' (' . $model->driver->fio . ')';
+                    $fio = ($model->driver)
+                        ? $model->driver->fio
+                        : $model->profile->fioFull;
+                    return $model->vehicle->brandAndNumber
+                    . ' (' . $fio . ')';
                 }
             ],
             [
