@@ -196,6 +196,7 @@ class PriceZone extends \yii\db\ActiveRecord
             'history' => 'История изменений',
         ];
     }
+
     public function behaviors()
     {
         return [
@@ -216,11 +217,13 @@ class PriceZone extends \yii\db\ActiveRecord
             $this->addError($attribute, 'Необходимо заполнить.');
         }
     }
+
     public function validateNotLonglength($attribute){
         if($this->longlength && !$this->$attribute && $this->veh_type==Vehicle::TYPE_TRUCK){
             $this->addError($attribute, 'Необходимо заполнить.');
         }
     }
+
     public function validateTRUCK($attribute){
         if(!$this->$attribute && $this->veh_type == Vehicle::TYPE_TRUCK){
             $this->addError($attribute, 'Необходимо заполнить.');
@@ -311,6 +314,7 @@ class PriceZone extends \yii\db\ActiveRecord
         }
         return false;
     }
+
     public function CostCalculation($distance, $discount = null){
         if($distance){
             $cost = 0;
@@ -318,10 +322,10 @@ class PriceZone extends \yii\db\ActiveRecord
                     $cost = $this->min_r_10 * $this->r_h;
                 }
                 else if ($distance >= 20 && $distance<40){
-                    $cost = $this->min_r_10 * $this->r_h;
+                    $cost = $this->min_r_20 * $this->r_h;
                 }
                 else if ($distance >= 40 && $distance<60){
-                    $cost = $this->min_r_10 * $this->r_h;
+                    $cost = $this->min_r_30 * $this->r_h;
                 }
                 else if ($distance >= 60 && $distance<80){
                     $cost = $this->min_r_40 * $this->r_h;
@@ -403,6 +407,7 @@ class PriceZone extends \yii\db\ActiveRecord
 
         return $return;
     }
+
     public function getPriceAndShortInfo($distance = null){
         $return = '';
         if($distance)$return .= '&asymp;' . $this->CostCalculation($distance) . 'р. ';
@@ -434,7 +439,7 @@ class PriceZone extends \yii\db\ActiveRecord
     }
 
     static public function mathDiscount($value, $discount) : float {
-        return ($value - round($value*$discount/100, 1));
+        return ($value - round($value*$discount/100, 2));
     }
 
     public function getPriceZoneForCarOwner($id_car_owner){

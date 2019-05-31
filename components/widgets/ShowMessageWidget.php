@@ -27,6 +27,10 @@ class ShowMessageWidget extends Widget
             'toggleButton' => $this->ToggleButton,
             'header' => $this->header,
             'closeButton' => ['hidden' => false],
+            'clientOptions' => [
+                'backdrop' => 'static',
+//                'keyboard' => true
+            ]
 //            'bodyOptions' => ['class' => 'container'],
         ]);
 

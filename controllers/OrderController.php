@@ -156,8 +156,9 @@ class OrderController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($user_id = null)
+    public function actionCreate($user_id = null, $redirect = '/client')
     {
+//        return var_dump(Yii::$app->request->post());
         if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
 //            $this->layout = 'logist';
         };
@@ -213,6 +214,7 @@ class OrderController extends Controller
 //                    var_dump($modelOrder->getErrors());
 //                    return;
                     $route = new Route();
+                    if($session->get('route')) $route = $session->get('route');
 //                    $session->set('modelOrder', $modelOrder);
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
@@ -242,7 +244,9 @@ class OrderController extends Controller
                         'route' => $route,
                         'modelOrder' => $modelOrder,
                         'TypiesPayment' => $TypiesPayment,
-                        'companies' => $companies
+                        'companies' => $companies,
+                        'user_id' => $user_id,
+                        'redirect' => $redirect
                     ]);
                 }
                 break;
@@ -493,7 +497,8 @@ class OrderController extends Controller
                     $session->set('route', $route);
                     return $this->render('/order/update2', [
                         'modelOrder' => $modelOrder,
-                        'route' => $route
+                        'route' => $route,
+                        'redirect' => $redirect
                     ]);
                 }
                 break;
@@ -769,6 +774,11 @@ class OrderController extends Controller
                     if ($realRoute->save()){
                         $modelOrder->id_route_real = $realRoute->id;
                         if($modelOrder->save()){
+                            if($modelOrder->ClientPaidCash) {
+                                $modelOrder->paid_status = $modelOrder::PAID_YES;
+                                $modelOrder->type_payment = Payment::TYPE_CASH;
+                                $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
+                            }
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
                         } else {
                             functions::setFlashWarning('Ошибка на сервере');

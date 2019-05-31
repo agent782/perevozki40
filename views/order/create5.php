@@ -10,6 +10,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use kartik\datetime\DateTimePicker;
+use yii\helpers\Url;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 //echo date('d.m.Y H:i');
@@ -95,7 +96,17 @@ use app\components\widgets\ShowMessageWidget;
     <div id="companies" <?= $companiesHide?> >
     <?= $form->field($modelOrder, 'id_company',[
         'enableAjaxValidation' => true,
-    ])->radioList($companies)->label('Юр. лица: ')?>
+    ])->radioList($companies)->label('Юр. лица: '. Html::a(Html::icon('plus', [
+            'class' => 'btn btn-info',
+            'title' => 'Добавить водителя'
+        ]), ['/company/create',
+            'user_id' => $user_id,
+            'redirect' => Url::to([
+                '/order/create',
+                'user_id' => $user_id,
+                'redirect' => $redirect,
+            ])
+        ]))?>
     </div>
     </div>
     <div class="col-lg-5">
