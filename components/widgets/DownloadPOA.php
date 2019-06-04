@@ -78,7 +78,7 @@ class DownloadPOA extends Widget
         echo Html::button('Закрыть', ['class' => 'btn btn-warning', 'data-dismiss' => 'modal']);
 
         ActiveForm::end();
-
+        echo 
         Modal::end();
     }
 }

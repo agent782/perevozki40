@@ -27,7 +27,7 @@ $this->title = Html::encode('Регистрация юридического л�
     <?php
     $form = ActiveForm::begin([
         'enableAjaxValidation' => true,
-//        'enableClientValidation' => true,
+        'enableClientValidation' => true,
         'validationUrl' => \yii\helpers\Url::to(['/company/validate-add-company']),
         'fieldConfig' => [
 //            'template' => "{label}<br>{input}<br>{error}",

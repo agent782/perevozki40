@@ -26,7 +26,7 @@ $form = ActiveForm::begin([
 ]);
 ?>
 <?= $form->field( $modelUser, 'username')
-    ->textInput(['autofocus' => 'autoFocus'])
+    ->textInput(['autofocus' => true])
     ->widget(MaskedInput::className(),[
         'mask' => '+7(999)999-99-99',
         'clientOptions'=>[

@@ -1,4 +1,6 @@
 <?php
+
+use yii\widgets\MaskedInput;
 $this->registerCssFile("https://cdn.jsdelivr.net/npm/suggestions-jquery@17.10.1/dist/css/suggestions.min.css");
 $this->registerJsFile("https://cdn.jsdelivr.net/npm/suggestions-jquery@17.10.1/dist/js/jquery.suggestions.min.js");
 $this->registerJsFile('/js/jquery-dateFormat.js');
@@ -17,12 +19,16 @@ $this->registerJsFile('/js/addCompany.js');
 
 
         <?= $form->field($XcompanyXprofile, 'job_post')->input('text', ['placeholder' => 'Менеджер по логистике'])?>
-        <?= $form->field($modelCompany, 'phone')->input('text', ['id' => 'phone',
-            'type' => 'tel',
-            'autocorrect' => 'off',
-            'autocomplete' => 'on',
-            'autofocus' => true,
-            'placeholder' => '9105234777',
+        <?= $form->field($modelCompany, 'phone')->widget(MaskedInput::class,[
+            'mask' => '+7(999)999-99-99',
+            'clientOptions'=>[
+                'removeMaskOnSubmit' => true,
+                'removeMaskOnSubmit' => true,
+            ],
+            'options' => [
+                'type' => 'tel',
+                'autocorrect' => 'off',
+            ]
         ])
         ?>
         <?= $form->field($modelCompany, 'email')->input('text', ['id' => 'email'])?>
@@ -34,7 +40,22 @@ $this->registerJsFile('/js/addCompany.js');
         <?= $form->field($modelCompany, 'management_name')->input('text', ['id' => 'management-name'])?>
         <?= $form->field($modelCompany, 'management_post')->input('text', ['id' => 'management-post'])?>
         <?= $form->field($modelCompany, 'ogrn')->input('text',['id' => 'ogrn'])?>
-        <?= $form->field($modelCompany, 'ogrn_date')->input('text', ['id' => 'ogrn_date', 'placeholder' => '01.01.2000',]) ?>
+        <?= $form->field($modelCompany, 'ogrn_date')
+            ->input('text', ['id' => 'ogrn_date', 'placeholder' => '01.01.2000',])
+    ->widget(MaskedInput::className(),[
+        'clientOptions' => [
+
+        ],
+        'mask' => '99.99.9999',
+        'options' => [
+            'type' => 'tel',
+            'autocorrect' => 'off',
+            'autocomplete' => 'date',
+            'placeholder' => '01.01.2000'
+        ]
+    ])
+
+        ?>
         <?= $form->field($modelCompany, 'FIO_contract')->input('text', ['id' => 'FIO_contract'])?>
         <?= $form->field($modelCompany, 'job_contract')->input('text', ['id' => 'job_contract'])?>
         <?= $form->field($modelCompany, 'basis_contract')->input('text', ['id' => 'basis_contract'])?>

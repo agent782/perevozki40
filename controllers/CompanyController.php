@@ -142,7 +142,7 @@ class CompanyController extends Controller
         $modelProfile = Profile::findOne($user_id);
         $XcompanyXprofile = new XprofileXcompany();
         if ($modelCompany->load(Yii::$app->request->post()) && $XcompanyXprofile->load(Yii::$app->request->post())){
-//            return var_dump($modelCompany);
+//            return var_dump($modelCompany->getErrors());
             if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
                 if ($modelCompany->save()) {
 

@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
 //                'attribute'=>'parent_id',
-                'label'=>'Договор',
+                'label'=>'Договор с Клиентом',
                 'format'=>'raw', // Возможные варианты: raw, html
                 'value'=>function($data, $model, $modelDocument){
                     $modelDocument = \app\models\Document::findOne(['id_company' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]);
@@ -143,7 +143,8 @@ $this->params['breadcrumbs'][] = $this->title;
 //                'filter' => Category::getParentsList()
             ],
             [
-                'label'=>'Доверенность',
+                'label'=>'Доверенность' . \app\models\Tip::getTipButtonModal('XprofileXcompany', 'STATUS_POA'),
+                'encodeLabel' => false,
                 'format'=>'raw', // Возможные варианты: raw, html
                 'value'=>function($data){
                     $id_user = Yii::$app->user->getId();
@@ -154,6 +155,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ->andWhere([
                             'id_profile' => $id_user,
                         ])
+                        ->limit(1)
                         ->one();
 
                     if($modelPOA->STATUS_POA===XprofileXcompany::STATUS_POWER_OF_ATTORNEY_UNSIGNED) {
@@ -205,10 +207,37 @@ $this->params['breadcrumbs'][] = $this->title;
                             . Html::a(Html::img('/img/icons/download-25.png'),[
                                 Url::to(['/poa/download-confirm-poa', 'idCompany' => $data->id, 'idProfile' => $id_user, 'return' => '/company'])
                             ])
+                            . '<br><br>'
+                            . \app\components\widgets\ButtonUpload::widget([
+                                'model' => $modelPOA,
+                                'typeDocument' => \app\models\XprofileXcompany::ClientPOA,
+                                'completeRedirect' => '/company/index',
+                                'header' => 'Отправка подписанной доверенности',
+                                'action' => \yii\helpers\Url::to(['/poa/upload-client-poa', 'idCompany' => $data->id, 'idUser' => $id_user, 'completeRedirect' => '/company/index']),
+                            ]);
                         ;
                     }
                 }
 
+            ],
+            [
+                'label' => 'Сотрудники' . ShowMessageWidget::widget([
+                        'helpMessage' => 'От одного Юр. лица могут заказывать несколько пользователей-сотрудников. 
+                        При наличии Доверенностей они могут редактировать данные и просматривать статистику. '
+                    ]),
+                'encodeLabel' => false,
+                'format' => 'raw',
+                'value' => function($model){
+                    $return = '';
+                    foreach ($model->profiles as $profile){
+                        $return .= $profile->fioShort;
+                        $return .= Html::a(($model->getXProfXcom($profile->id_user)->STATUS_POA)
+                            ? Html::icon('ok-circle', ['title' => 'Доверенность оформлена'])
+                            : Html::icon('remove-circle', ['title' => 'Доверенность не офрмлена']), '#');
+                        $return .= '<br>';
+                    }
+                    return $return;
+                }
             ],
             [
                 'class' => \yii\grid\ActionColumn::className(),
