@@ -149,7 +149,10 @@ class PoaController extends Controller
             ->one()
         ;
 
-        if (!$modelPOA) \Yii::$app->session->setFlash('warning', 'Ошибка! Попробуйте еще раз или обратитесь к администратору.');
+        if (!$modelPOA) {
+            \Yii::$app->session->setFlash('warning', 'Ошибка! Попробуйте еще раз или обратитесь к администратору.');
+            return $this->redirect($return);
+        }
         if($modelPOA->load(Yii::$app->request->post())) {
             if ($modelPOA = $modelPOA->createPowerOfAttorneyForm()) {
                 if ($modelPOA->save())

@@ -13,6 +13,7 @@ use app\models\Company;
 use app\models\OrderOLD;
 use app\models\Passport;
 use app\models\Profile;
+use app\models\UpdateUserProfileForm;
 use app\models\User;
 use Yii;
 use app\components\functions\functions;
@@ -42,8 +43,14 @@ class UserController extends Controller
 
     public function actionIndex(){
         $modelUser = functions::findUser(\Yii::$app->user->identity->getId());
-
-        return $this->render('index', compact(['modelUser']));
+        $modelProfile = $modelUser->profile;
+        $UpdateUserProfileForm = new UpdateUserProfileForm();
+        $UpdateUserProfileForm->setAttr($modelProfile);
+        return $this->render('index', [
+            'modelUser' => $modelUser,
+            'modelProfile' =>$modelProfile,
+            'UpdateUserProfileForm' => $UpdateUserProfileForm
+        ]);
     }
 
     public function actionSignupClient(){

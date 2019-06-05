@@ -24,7 +24,7 @@ class ButtonUpload extends Widget
     public $multiple = true;
     public $typeDocument;
     public $header = 'Отправка подписанного Договора';
-    public $ToggleButton = ['label' => 'Отправить подписанный скан', 'class' => 'btn btn-success'];
+    public $ToggleButton = ['label' => 'Отправить подписанный скан', 'class' => 'btn btn-xs btn-success'];
     public $completeRedirect = '/company/index';
     public $action;
 

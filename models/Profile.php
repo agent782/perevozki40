@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\CryptBehaviors;
 use app\components\DateBehaviors;
+use app\components\SerializeBehaviors;
 use nickcv\encrypter\behaviors\EncryptionBehavior;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
@@ -25,7 +26,7 @@ use app\models\setting\Setting;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $sex
- * @property string $photo_url
+ * @property string $photo
  * @property integer $bithday
  * @property string $status_client
  * @property string $status_vehicle
@@ -49,6 +50,9 @@ use app\models\setting\Setting;
  * @property string $profileInfo
  * @property string $driverFullInfo
  * @property User $user
+ * @property string $history_updates
+ * @property integer $check_status
+ * @property Passport $passport
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -71,6 +75,8 @@ class Profile extends \yii\db\ActiveRecord
     const ROLE_VEHICLE = 'vehicle';
     const ROLE_VIP_VEHICLE = 'vip_vehicle';
 
+    const CHECK_STATUS_YES = 1;
+    const CHECK_STATUS_NO = 0;
 
     const SCENARIO_SAFE_SAVE = 'safe_save';
 
@@ -110,6 +116,8 @@ class Profile extends \yii\db\ActiveRecord
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
             ['is_driver', 'default', 'value' => false],
+            [['history_updates'], 'safe'],
+            ['check_status', 'default', 'value' => self::CHECK_STATUS_NO]
         ];
     }
 
@@ -158,6 +166,10 @@ class Profile extends \yii\db\ActiveRecord
                 'class' => DateBehaviors::className(),
                 'dateAttributes' => ['bithday'],
                 'format' => DateBehaviors::FORMAT_DATE,
+            ],
+            'serialize' => [
+                'class' => SerializeBehaviors::class,
+                'arrAttributes' => ['history_updates']
             ]
         ];
     }

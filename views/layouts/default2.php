@@ -145,6 +145,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/user',
                         ],
                         [
+                            'label' => 'Сделать новый заказ',
+                            'url' => Url::to(['/order/create', 'user_id' => Yii::$app->user->id]),
+                            'visible' => !Yii::$app->user->can('car_owner')
+                        ],
+                        [
                             'label' => (Message::countNewMessage(Yii::$app->user->id))
                                 ?'Уведомления ' .
                                     '<b class="incube-invert">' . \app\models\Message::countNewMessage(Yii::$app->user->id) . '</b>'
@@ -154,20 +159,28 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'encode' => false
                         ],
                         [
+                            'label' => 'Заказы (Водитель)',
+                            'url' => '/order/vehicle',
+                            'visible' => Yii::$app->user->can('car_owner'),
+                        ],
+                        [
+                            'label' => 'Мой транспорт',
+                            'url' => '/vehicle',
+                            'visible' => Yii::$app->user->can('car_owner'),
+                        ],
+                        [
+                            'label' => 'Мои водители',
+                            'url' => '/driver',
+                            'visible' => Yii::$app->user->can('car_owner'),
+                        ],
+                        [
                             'label' => 'Юридические лица',
                             'url' => '/company',
                         ],
                         [
-                            'label' => 'Сделать новый заказ',
-                            'url' => Url::to(['/order/create', 'user_id' => Yii::$app->user->id])
-                        ],
-                        [
                             'label' => 'Заказы (Клиент)',
-                            'url' => '/order/client'
-                        ],
-                        [
-                            'label' => 'Заказы (Водитель)',
-                            'url' => '/order/vehicle'
+                            'url' => '/order/client',
+                            'visible' => !Yii::$app->user->isGuest
                         ],
                         [
                             'label' => 'Договора с клиентами',
@@ -190,22 +203,18 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'visible' => Yii::$app->user->can('admin'),
                         ],
                         [
+                            'label' => 'Завершть регистрацию клиента',
+                            'linkOptions' => ['class' => 'btn-primary'],
+                            'url' => '/user/signup-client',
+                            'visible' => Yii::$app->user->can('user')
+                        ],
+                        [
                             'label' => 'Регистрация автовладельца',
                             'url' => '/car-owner/create',
                             'visible' => Yii::$app->user->can('user')
                                 || Yii::$app->user->can('client'),
 //                            'visible' => Yii::$app->user->can('car_owner'),
 
-                        ],
-                        [
-                            'label' => 'Мои водители',
-                            'url' => '/driver',
-                            'visible' => Yii::$app->user->can('car_owner'),
-                        ],
-                        [
-                            'label' => 'Мой транспорт',
-                            'url' => '/vehicle',
-                            'visible' => Yii::$app->user->can('car_owner'),
                         ],
                         [
                             'label' => 'Управление Прайс-листом',

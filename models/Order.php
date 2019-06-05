@@ -198,6 +198,7 @@ class Order extends \yii\db\ActiveRecord
             [['paid_status', 'paid_car_owner_status'], 'default', 'value' => self::PAID_NO],
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
+            ['type_payment', 'validateForUser']
 
 
         ];
@@ -382,6 +383,17 @@ class Order extends \yii\db\ActiveRecord
             $this->addError($attribute, 'Необходимо заполнить "Общий вес груза".');
         }
         return;
+    }
+
+    public function validateForUser($attribute){
+        if(Yii::$app->user->can('user')
+            && $this->type_payment != Payment::TYPE_CASH
+        ){
+            $this->addError($attribute, 'Вам необходимо '
+                . Html::a('завершить регистрацию Клиента.', '/user/signup-client')
+                . 'Это займет у Вас 1 имнуту. До этого Вы можете выбрать только наличную форму оплаты. '
+            );
+        }
     }
 
     public function getSuitableRates($distance){

@@ -1,4 +1,11 @@
 <?php
+
+/* @var User $modelUser*/
+/* @var Profile $modelProfile*/
+/* @var UpdateUserProfileForm $UpdateUserProfileForm*/
+/* @var \yii\web\View $this*/
+
+    $this->registerJsFile('/js/updateUserProfileForm.js');
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -6,16 +13,49 @@
  * Time: 17:35
  */
     use yii\bootstrap\Html;
-    use Dadata\Client;
     use app\models\User;
-    use yii\db\Query;
+    use app\models\Profile;
+    use app\models\UpdateUserProfileForm;
 
-    $this->title = Html::encode('Личный кабинет')
+
+//    $this->title = Html::encode(
+//             $modelProfile->fioFull). Html::a(' (Выйти)', '/default/logout', ['style' => 'font-size: 12px;']);
 ?>
 
-<br>
-<?php
+    <div class="container" id="profile">
+        <label class="h4"><?= $this->title?></label>
 
+        <?php
+            $form = \yii\bootstrap\ActiveForm::begin([
+                'fieldConfig' => [
+                    'inputOptions' => [
+                        'style' => 'width:auto',
+                        'readonly' => true
+                    ]
+                ]
+            ]);
+        ?>
+        <?=
+            $form->field($UpdateUserProfileForm, 'surname')->input('text', ['id' => 'surname'])
+                ->label($modelProfile->getAttributeLabel('surname')
+                    . ' ' .Html::a(Html::icon('edit', ['title' => 'Редактировать']), '#', ['id' => 'edit_surname']))
+
+        ?>
+        <?=$form->field($UpdateUserProfileForm, 'name')?>
+        <?=$form->field($UpdateUserProfileForm, 'patrinimic')?>
+        <?php
+            $form::end();
+        ?>
+
+
+    </div>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<?php
+    foreach (Yii::$app->authManager->getRolesByUser(Yii::$app->user->id) as $role){
+        echo $role->name . '<br>';
+    }
+    var_dump(Yii::$app->user->can('car_owner'));
 ?>
 <br>
 <?//= var_dump($_SERVER)?>

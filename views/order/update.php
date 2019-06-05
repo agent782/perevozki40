@@ -75,7 +75,12 @@ $this->registerJsFile('/js/order.js');
         ])
     ?>
 
-    <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, [
+    <?= $form->field($modelOrder, 'type_payment', [
+    'errorOptions' => [
+        'class' => 'help-block' ,
+        'encode' => false
+    ]
+    ])->radioList($TypiesPayment, [
         'encode' => false,
         'onchange' => '
             if($(this).find("input:checked").val()  == 3) {
