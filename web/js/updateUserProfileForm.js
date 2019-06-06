@@ -2,12 +2,17 @@
  * Created by Admin on 05.06.2019.
  */
 $(document).ready(function () {
-    $('#edit_surname').click(function () {
-        $('#surname').attr('readonly', false).focus();
+    $('#edit_profile').click(function () {
+        $('#profile').find('input').attr('readonly', false);
+        $('#surname').focus();
+        $('button').attr('disabled', false);
     });
-    $('#surname').focusout(function () {
-        $('#surname').attr('readonly', true);
+    $('#edit_passport').click(function () {
+        $('#passport').find('input, textarea').attr('readonly', false);
+        $('#passportMask').focus();
+        $('button').attr('disabled', false);
     });
+
 
 
 })

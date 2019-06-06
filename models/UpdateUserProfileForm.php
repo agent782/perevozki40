@@ -40,15 +40,15 @@ class UpdateUserProfileForm extends Model
     public function rules()
     {
         return [
-            [['bithday'], 'required'],
-//            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
+            [['name', 'surname', 'patrinimic', 'bithday'], 'required'],
+            [['passport_number', 'passport_date', 'passport_place', 'reg_address'], 'validatePassport', 'skipOnEmpty' =>false],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
             ['country', 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
             [['photo'], 'image', 'extensions' => 'jpg', 'maxSize' => 4100000],
             [['passport_number', 'reg_address'], 'string', 'max' => 255],
-            ['email2', 'email'],
+            [['email','email2'], 'email'],
             [['bithday'], 'date', 'format' => 'php:d.m.Y',
                 'max' => (time() - 60*60*24*365*18), 'min' => (time() - 60*60*24*365*100),
                 'tooBig' => 'Вам должно быть не менее 18 лет',
@@ -81,6 +81,13 @@ class UpdateUserProfileForm extends Model
             'country' => 'Гражданство',
             'reg_address' => 'Адрес регистрации'
         ];
+    }
+
+    public function validatePassport($attribute){
+        if(($this->passport_number || $this->passport_date || $this->passport_place || $this->reg_address)
+            && !$this->$attribute){
+            $this->addError($attribute, 'Необходимо заполнить все данные паспорта или оставить все поля пустыми');
+        }
     }
 
     public function setAttr(Profile $profile){

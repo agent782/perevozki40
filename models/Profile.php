@@ -206,9 +206,11 @@ class Profile extends \yii\db\ActiveRecord
     {
         return new ProfileQuery(get_called_class());
     }
+
     public function getSex(){
         return $this->sex ? 'Женский' : 'Мужской';
     }
+
     public function getUrlPhoto(){
         return '/uploads/photos/users/'.$this->photo;
     }
@@ -225,6 +227,7 @@ class Profile extends \yii\db\ActiveRecord
     public function getPhone(){
         return $this->user->username;
     }
+
     public function getEmail(){
         return $this->user->email;
     }
@@ -245,6 +248,7 @@ class Profile extends \yii\db\ActiveRecord
         $string = substr($string, 0, -2);
         return $string;
     }
+
     public function getDriverLicense(){
         return $this->hasOne(DriverLicense::class,['id'=>'id_driver_license']);
     }
@@ -286,9 +290,11 @@ class Profile extends \yii\db\ActiveRecord
     public function getFioShort(){
         return $this->surname . ' ' . mb_substr($this->name, 0, 1) . '. ' . mb_substr($this->patrinimic, 0, 1) . '. ';
     }
+
     public function getCreate_at(){
         return date('d.m.Y h:i', $this->user->created_at);
     }
+
     public function getCompaniesConfirm(){
 
         $companies = [];
