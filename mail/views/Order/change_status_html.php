@@ -13,5 +13,4 @@
 <br><br>
 Спасибо, что Вы с нами!
 
-Команда <a href="<?= Yii::$app->homeUrl?>">PEREVOZKI40.RU</a>
 

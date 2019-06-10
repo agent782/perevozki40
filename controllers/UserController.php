@@ -13,6 +13,7 @@ use app\models\Company;
 use app\models\OrderOLD;
 use app\models\Passport;
 use app\models\Profile;
+use app\models\UpdateUserProfileForm;
 use app\models\User;
 use Yii;
 use app\components\functions\functions;
@@ -42,8 +43,24 @@ class UserController extends Controller
 
     public function actionIndex(){
         $modelUser = functions::findUser(\Yii::$app->user->identity->getId());
+        $modelProfile = $modelUser->profile;
+        $UpdateUserProfileForm = new UpdateUserProfileForm();
+        $OldProfileAttr = new UpdateUserProfileForm();
+        $OldProfileAttr->setAttr($modelProfile);
+        $UpdateUserProfileForm->setAttr($modelProfile);
+//        return $UpdateUserProfileForm->photo;
+        if($UpdateUserProfileForm->load(Yii::$app->request->post())){
+            if(!$UpdateUserProfileForm->passport_number) $UpdateUserProfileForm->country = null;
+            var_dump($OldProfileAttr->attributes);
+            var_dump($UpdateUserProfileForm->attributes );
+            return var_dump(array_diff($UpdateUserProfileForm->attributes , $OldProfileAttr->attributes));
+        }
 
-        return $this->render('index', compact(['modelUser']));
+        return $this->render('index', [
+            'modelUser' => $modelUser,
+            'modelProfile' =>$modelProfile,
+            'UpdateUserProfileForm' => $UpdateUserProfileForm
+        ]);
     }
 
     public function actionSignupClient(){
@@ -72,9 +89,13 @@ class UserController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-            $model = new SignUpClientFormStart();
-            if($model->load(Yii::$app->request->post()))
-                return \yii\widgets\ActiveForm::validate($model);
+//            $model = new SignUpClientFormStart();
+//            if($model->load(Yii::$app->request->post()))
+//                return \yii\widgets\ActiveForm::validate($model);
+
+            $mode2 = new UpdateUserProfileForm();
+            if($mode2->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($mode2);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }

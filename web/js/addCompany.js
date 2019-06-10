@@ -87,42 +87,42 @@ $(document).ready(function () {
         }
     });
 
-    $('#phone').on('change', function () {
-        if($(this).val()){
-            $('#phone2').show();
-            $('label[for="phone2"]').show();
-        } else {
-            $('#phone2').hide();
-            $('label[for="phone2"]').hide();
-        }
-    });
-    $('#phone2').on('change', function () {
-        if($(this).val()){
-            $('#phone3').show();
-            $('label[for="phone3"]').show();
-        } else {
-            $('#phone3').hide();
-            $('label[for="phone3"]').hide();
-        }
-    });
-    $('#email').on('change', function () {
-        if($(this).val()){
-            $('#email2').show();
-            $('label[for="email2"]').show();
-        } else {
-            $('#email2').hide();
-            $('label[for="email2"]').hide();
-        }
-    });
-    $('#email2').on('change', function () {
-        if($(this).val()){
-            $('#email3').show();
-            $('label[for="email3"]').show();
-        } else {
-            $('#email3').hide();
-            $('label[for="email3"]').hide();
-        }
-    });
+    // $('#phone').on('change', function () {
+    //     if($(this).val()){
+    //         $('#phone2').show();
+    //         $('label[for="phone2"]').show();
+    //     } else {
+    //         $('#phone2').hide();
+    //         $('label[for="phone2"]').hide();
+    //     }
+    // });
+    // $('#phone2').on('change', function () {
+    //     if($(this).val()){
+    //         $('#phone3').show();
+    //         $('label[for="phone3"]').show();
+    //     } else {
+    //         $('#phone3').hide();
+    //         $('label[for="phone3"]').hide();
+    //     }
+    // });
+    // $('#email').on('change', function () {
+    //     if($(this).val()){
+    //         $('#email2').show();
+    //         $('label[for="email2"]').show();
+    //     } else {
+    //         $('#email2').hide();
+    //         $('label[for="email2"]').hide();
+    //     }
+    // });
+    // $('#email2').on('change', function () {
+    //     if($(this).val()){
+    //         $('#email3').show();
+    //         $('label[for="email3"]').show();
+    //     } else {
+    //         $('#email3').hide();
+    //         $('label[for="email3"]').hide();
+    //     }
+    // });
 
     //подсказка на адреса
     $("#address").suggestions({

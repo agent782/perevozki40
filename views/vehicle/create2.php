@@ -19,7 +19,7 @@ $this->title = 'Новое транспортное средство.';
 //$this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="vehicle-create2 row" >
+<div class="vehicle-create2" >
 
     <h4><?= Html::encode($this->title) ?></h4>
     <br>
@@ -55,7 +55,8 @@ $this->title = 'Новое транспортное средство.';
         <?= Html::a('Назад', Url::to(['/vehicle/create','id_user' => Yii::$app->user->id]), ['class' => 'btn btn-warning'])?>
         <?= Html::submitButton('Далее', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'create_next2']) ?>
         <?php
-        ActiveForm::end();
+            ActiveForm::end();
         ?>
+
     </div>
 </div>

@@ -15,8 +15,8 @@ use app\components\widgets\ShowMessageWidget;
 
 <?php
 $form = ActiveForm::begin([
-//    'enableAjaxValidation' => true,
-//    'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form')
+    'enableAjaxValidation' => true,
+    'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form')
 ]);
 
 $vehTypeId = $VehicleForm->vehicleTypeId;
@@ -37,7 +37,8 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
         <div class="col-lg-4">
             <br>
             <?php
-
+            // Для валидации VehicleForm
+            echo $form->field($VehicleForm, 'vehicleTypeId')->hiddenInput()->label(false);
                     echo $form->field($VehicleForm, 'tonnage', ['inputOptions' => [
                         'id' => 'tonnage',
                         'type' => 'tel',
@@ -84,22 +85,8 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             echo $form->field($VehicleForm, 'longlength')->radioList(['Нет', 'Да'], [
                         'value' => 0,
                         'id' => 'radioLonglength',
-//                        'onchange' => '
-//                                        if($(this).find("input:checked").val() == 1) $("#longlength").show();
-//                                        else {
-//                                            $("#longlength").hide();
-//                                            $("#tonnage_long").val("");
-//                                            $("#length_long").val("");
-//                                        }
-//                                    '
-                    ]);
+                    ])->label($VehicleForm->getAttributeLabel('longlength') . \app\models\Tip::getTipButtonModal('vehicle', 'longlength'));
             ?>
-<!--<div id="longlength" hidden>-->
-<!--    --><?php
-//    echo $form->field($VehicleForm, 'tonnage_long', ['inputOptions' => ['id' => 'tonnage_long']]);
-//    echo $form->field($VehicleForm, 'length_long', ['inputOptions' => ['id' => 'length_long']]);
-//    ?>
-<!--</div>-->
 </div>
 <br>
 <div class="col-lg-4">

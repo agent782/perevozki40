@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\datetime\DateTimePicker;
@@ -8,6 +8,7 @@ use app\models\Vehicle;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 use app\models\Payment;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $modelOrder app\models\Order */
 /* @var $BTypies array*/
@@ -74,7 +75,12 @@ $this->registerJsFile('/js/order.js');
         ])
     ?>
 
-    <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, [
+    <?= $form->field($modelOrder, 'type_payment', [
+    'errorOptions' => [
+        'class' => 'help-block' ,
+        'encode' => false
+    ]
+    ])->radioList($TypiesPayment, [
         'encode' => false,
         'onchange' => '
             if($(this).find("input:checked").val()  == 3) {
@@ -90,7 +96,17 @@ $this->registerJsFile('/js/order.js');
     <div id="companies" <?=($modelOrder->type_payment != Payment::TYPE_BANK_TRANSFER)? 'hidden' : '';?>>
         <?= $form->field($modelOrder, 'id_company',[
             'enableAjaxValidation' => true,
-        ])->radioList($companies)?>
+        ])->radioList($companies)->label('Юр. лица' . Html::a(Html::icon('plus', [
+                'class' => 'btn btn-info',
+                'title' => 'Добавить водителя'
+            ]), ['/company/create',
+                'user_id' => $modelOrder->id_user,
+                'redirect' => Url::to([
+                    '/order/update',
+                    'id_order' => $modelOrder->id,
+                    'redirect' => $redirect,
+                ])
+            ]));?>
     </div>
 
         <?=

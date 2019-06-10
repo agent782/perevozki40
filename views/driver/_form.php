@@ -20,8 +20,8 @@ use yii\widgets\MaskedInput;
 <div class="col-lg-4">
     <?php
         if($model->isNewRecord) {
-            echo $form->field($DriverForm, 'name')->textInput(['maxlength' => true]);
             echo $form->field($DriverForm, 'surname')->textInput(['maxlength' => true]);
+            echo $form->field($DriverForm, 'name')->textInput(['maxlength' => true]);
             echo $form->field($DriverForm, 'patronymic')->textInput(['maxlength' => true]);
         }
     ?>
@@ -38,8 +38,8 @@ use yii\widgets\MaskedInput;
             ]
         ])
     ?>
-    <?= $form->field($DriverForm, 'address')->textarea(['rows' => 6]) ?>
-\    <?= $form->field($DriverForm, 'phone')
+    <?= $form->field($DriverForm, 'address')->textarea(['rows' => 4])?>
+    <?= $form->field($DriverForm, 'phone')
         ->widget(MaskedInput::className(),[
             'mask' => '+7(999)999-99-99',
             'clientOptions'=>[
@@ -137,8 +137,8 @@ use yii\widgets\MaskedInput;
     </div>
 
    <p><div class="col-lg-12 form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Сохранить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
         <?= Html::a('Отменить', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Сохранить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
     </p>
 

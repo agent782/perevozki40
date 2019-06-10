@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\CryptBehaviors;
 use app\components\DateBehaviors;
+use app\components\SerializeBehaviors;
 use nickcv\encrypter\behaviors\EncryptionBehavior;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
@@ -25,7 +26,7 @@ use app\models\setting\Setting;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $sex
- * @property string $photo_url
+ * @property string $photo
  * @property integer $bithday
  * @property string $status_client
  * @property string $status_vehicle
@@ -49,6 +50,9 @@ use app\models\setting\Setting;
  * @property string $profileInfo
  * @property string $driverFullInfo
  * @property User $user
+ * @property string $history_updates
+ * @property integer $check_status
+ * @property Passport $passport
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -70,6 +74,9 @@ class Profile extends \yii\db\ActiveRecord
     const ROLE_VIP_CLIENT = 'vip_client';
     const ROLE_VEHICLE = 'vehicle';
     const ROLE_VIP_VEHICLE = 'vip_vehicle';
+
+    const CHECK_STATUS_YES = 1;
+    const CHECK_STATUS_NO = 0;
 
     const SCENARIO_SAFE_SAVE = 'safe_save';
 
@@ -109,6 +116,8 @@ class Profile extends \yii\db\ActiveRecord
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
             ['is_driver', 'default', 'value' => false],
+            [['history_updates'], 'safe'],
+            ['check_status', 'default', 'value' => self::CHECK_STATUS_NO]
         ];
     }
 
@@ -157,6 +166,10 @@ class Profile extends \yii\db\ActiveRecord
                 'class' => DateBehaviors::className(),
                 'dateAttributes' => ['bithday'],
                 'format' => DateBehaviors::FORMAT_DATE,
+            ],
+            'serialize' => [
+                'class' => SerializeBehaviors::class,
+                'arrAttributes' => ['history_updates']
             ]
         ];
     }
@@ -193,9 +206,11 @@ class Profile extends \yii\db\ActiveRecord
     {
         return new ProfileQuery(get_called_class());
     }
+
     public function getSex(){
         return $this->sex ? 'Женский' : 'Мужской';
     }
+
     public function getUrlPhoto(){
         return '/uploads/photos/users/'.$this->photo;
     }
@@ -212,6 +227,7 @@ class Profile extends \yii\db\ActiveRecord
     public function getPhone(){
         return $this->user->username;
     }
+
     public function getEmail(){
         return $this->user->email;
     }
@@ -232,6 +248,7 @@ class Profile extends \yii\db\ActiveRecord
         $string = substr($string, 0, -2);
         return $string;
     }
+
     public function getDriverLicense(){
         return $this->hasOne(DriverLicense::class,['id'=>'id_driver_license']);
     }
@@ -273,9 +290,11 @@ class Profile extends \yii\db\ActiveRecord
     public function getFioShort(){
         return $this->surname . ' ' . mb_substr($this->name, 0, 1) . '. ' . mb_substr($this->patrinimic, 0, 1) . '. ';
     }
+
     public function getCreate_at(){
         return date('d.m.Y h:i', $this->user->created_at);
     }
+
     public function getCompaniesConfirm(){
 
         $companies = [];
@@ -327,7 +346,7 @@ class Profile extends \yii\db\ActiveRecord
             $return .= '. <br>';
         }
         if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
-        if($showDriveLicense) $return .= 'ВУ' . $this->driverLicense->fullInfo . '. <br>';
+        if($showDriveLicense) $return .= 'ВУ: ' . $this->driverLicense->fullInfo . '. <br>';
 
         return $return;
     }

@@ -53,7 +53,7 @@ class OrderController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['car_owner', 'client', 'admin', 'dispetcher']
+                        'roles' => ['user', 'car_owner', 'client', 'admin', 'dispetcher']
                     ]
                 ],
             ]
@@ -156,8 +156,9 @@ class OrderController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($user_id = null)
+    public function actionCreate($user_id = null, $redirect = '/client')
     {
+//        return var_dump(Yii::$app->request->post());
         if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
 //            $this->layout = 'logist';
         };
@@ -213,6 +214,7 @@ class OrderController extends Controller
 //                    var_dump($modelOrder->getErrors());
 //                    return;
                     $route = new Route();
+                    if($session->get('route')) $route = $session->get('route');
 //                    $session->set('modelOrder', $modelOrder);
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
@@ -242,7 +244,9 @@ class OrderController extends Controller
                         'route' => $route,
                         'modelOrder' => $modelOrder,
                         'TypiesPayment' => $TypiesPayment,
-                        'companies' => $companies
+                        'companies' => $companies,
+                        'user_id' => $user_id,
+                        'redirect' => $redirect
                     ]);
                 }
                 break;
@@ -493,7 +497,8 @@ class OrderController extends Controller
                     $session->set('route', $route);
                     return $this->render('/order/update2', [
                         'modelOrder' => $modelOrder,
-                        'route' => $route
+                        'route' => $route,
+                        'redirect' => $redirect
                     ]);
                 }
                 break;
@@ -602,16 +607,18 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
         $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+        if($UserModel->profile->is_driver){
+//            return var_dump(['0' => $UserModel->profile->fioFull]);
+            $driversArr['0'] = $UserModel->profile->fioFull;
+        }
         $vehicles = [];
         $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
 //        return var_dump($Vehicles);
 
         foreach ($Vehicles as $vehicle) {
             if ($vehicle->canOrder($OrderModel)) {
-//                return $vehicle->getMinRate($OrderModel)->id;
-
+//                return var_dump($vehicle->getMinRate($OrderModel));
                 $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel)->unique_index);
-//                return $rate;
                 $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
                 $vehicles[$vehicle->id] =
                     $vehicle->brand
@@ -767,6 +774,11 @@ class OrderController extends Controller
                     if ($realRoute->save()){
                         $modelOrder->id_route_real = $realRoute->id;
                         if($modelOrder->save()){
+                            if($modelOrder->ClientPaidCash) {
+                                $modelOrder->paid_status = $modelOrder::PAID_YES;
+                                $modelOrder->type_payment = Payment::TYPE_CASH;
+                                $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
+                            }
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
                         } else {
                             functions::setFlashWarning('Ошибка на сервере');

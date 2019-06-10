@@ -29,8 +29,6 @@ class VehicleForm extends Model
     public $height;
     public $volume;
     public $longlength;
-    public $tonnage_long;
-    public $length_long;
     public $passengers;
     public $ep;
     public $rp;
@@ -72,10 +70,16 @@ class VehicleForm extends Model
                 'volume',
                 'length_spec',
                 'tonnage_spec',
-                'length_spec',
                 'volume_spec',
                 'passengers',
             ], 'number'],
+            ['tonnage', 'validateTonnage', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            [['length', 'width'], 'validateLengthWidth', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            [['height'], 'validateHeigth', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            ['volume', 'validateVolume', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            [['tonnage_spec', 'length_spec'], 'validateSpecTonnageLength', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            [['volume_spec'], 'validateSpecVolume', 'skipOnEmpty' => false, 'enableClientValidation' => true],
+            ['passengers', 'validatePassengers', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [[
                 'id',
                 'longlength',
@@ -88,20 +92,69 @@ class VehicleForm extends Model
             ['photo', 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 4000000],
             [['instruction_to_driver', 'confidentiality_agreement', 'use_conditions'],
                 'compare', 'compareValue' => 1, 'operator' => '==', 'skipOnEmpty' => false, 'skipOnError' => false,
-                'message' => 'Подтвердите согласие.']
+                'message' => 'Подтвердите согласие.'],
 
         ];
     }
-
-    public function validateLonglength($attribute){
-        if($this->longlength && !$this->$attribute){
-            $this->addError($attribute, 'Необходимо заполнить.');
+    public function validateTonnage($attribute){
+        if(!$this->$attribute &&
+            ($this->bodyTypeId != Vehicle::BODY_crane
+                && $this->bodyTypeId != Vehicle::BODY_excavator
+                && $this->bodyTypeId != Vehicle::BODY_excavator_loader )){
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
+        }
+    }
+    public function validateLengthWidth($attribute){
+        if(!$this->$attribute && $this->vehicleTypeId != Vehicle::TYPE_PASSENGER &&
+            ($this->bodyTypeId != Vehicle::BODY_crane
+                && $this->bodyTypeId != Vehicle::BODY_excavator
+                && $this->bodyTypeId != Vehicle::BODY_excavator_loader
+                && $this->bodyTypeId != Vehicle::BODY_dump
+            )){
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
         }
     }
 
+    public function validateHeigth($attribute){
+        if(!$this->$attribute && $this->vehicleTypeId == Vehicle::TYPE_TRUCK){
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
+        }
+    }
 
-    public function passValidate($attribute){
-        if($this->passengers && $this->vehicleTypeId == 2) {
+    public function validateVolume($attribute){
+        if(!$this->$attribute &&
+            ($this->bodyTypeId != Vehicle::BODY_crane
+                && $this->bodyTypeId != Vehicle::BODY_excavator
+                && $this->bodyTypeId != Vehicle::BODY_excavator_loader
+                && $this->bodyTypeId != Vehicle::BODY_manipulator)){
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
+        }
+    }
+
+    public function validateSpecTonnageLength($attribute){
+        if(!$this->$attribute &&
+            ($this->bodyTypeId == Vehicle::BODY_crane
+            || $this->bodyTypeId == Vehicle::BODY_manipulator))
+        {
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
+        }
+    }
+
+    public function validateSpecVolume($attribute){
+        if(!$this->$attribute && (
+            $this->bodyTypeId == Vehicle::BODY_excavator_loader || $this->bodyTypeId == Vehicle::BODY_excavator)) {
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
+        }
+    }
+
+    public function validatePassengers($attribute){
+        if(!$this->$attribute && $this->vehicleTypeId == Vehicle::TYPE_PASSENGER){
+            $this->addError($attribute, 'Необходимо заполнить "' . $this->getAttributeLabel($attribute) . '"');
+        }
+    }
+
+    public function validateLonglength($attribute){
+        if(!$this->$attribute){
             $this->addError($attribute, 'Необходимо заполнить.');
         }
     }

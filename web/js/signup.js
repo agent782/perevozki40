@@ -48,6 +48,7 @@ $(document).ready(function () {
                 $("#passportMask").inputmask("");
                 $("#passportMask").attr('type', 'text');
             }
+            $("#passportMask").focus();
         });
 
     function readURL(input) {

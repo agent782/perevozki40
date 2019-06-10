@@ -137,18 +137,19 @@ public function getProfile(){
 public function createPowerOfAttorneyForm(){
     $phpword =  new PhpWord();
     $modelCompany = $this->company;
-    $modelProfile = $this->profile;
-    $modelPassport = $modelProfile->passport;
+
     if(!$modelCompany) {
         Yii::$app->session->setFlash('warning', 'Должны быть заполнены все реквизиты юр.лица');
         return false;
     }
+    $modelProfile = $this->profile;
     if(!$modelProfile) {
         Yii::$app->session->setFlash('warning', 'Заполните все поля Профиля.');
         return false;
     }
+    $modelPassport = $modelProfile->passport;
     if(!$modelPassport) {
-        Yii::$app->session->setFlash('warning', 'Заполните паспортные данные.');
+        Yii::$app->session->setFlash('warning', 'Заполните паспортные данные в разделе Профиль.');
         return false;
     }
 
@@ -160,10 +161,12 @@ public function createPowerOfAttorneyForm(){
     $doc->setValue('company_address', $modelCompany->address);
     $doc->setValue('inn', $modelCompany->inn);
     $doc->setValue('ogrn', $modelCompany->ogrn);
-//    $doc->setValue('PASSPORT_ID', $modelPassport->id);
+    $doc->setValue('FIO', $modelProfile->fioFull);
+    $doc->setValue('PASSPORT_ID', $modelPassport->number);
     $doc->setValue('PASSPORT_PLACE', $modelPassport->place);
-//    $doc->setValue('PASSPORT_DATE', $modelPassport->date);
+    $doc->setValue('PASSPORT_DATE', $modelPassport->date);
     $doc->setValue('REG_ADDRESS', $modelProfile->reg_address);
+    $doc->setValue('POA_DATE', $this->term_of_office);
 
 //    ${PASSPORT_ID, выдан: ${PASSPORT_PLASE} ${PASSPORT_DATE}, прописанный по адресу ${REG_ADDRESS
 
@@ -250,23 +253,6 @@ public function DeleteUploadPoaFile(){
         }
     }
 
-//    public function CreateConfirmPoa()
-//    {
-//        if($this->DeleteConfirmPoa()) {
-//            $confirm_poa = 'poa' . '-' . $this->id . '-' . time() . '.zip';
-//            $zip = new ZipArchive();
-//            $zip_name = Yii::getAlias('@poa_confirm/' . $confirm_poa);
-//            if ($this->UploadFilesExists() && $zip->open($zip_name, ZipArchive::CREATE)) {
-//                foreach (unserialize($this->url_upload_poa) as $file) {
-//                    $zip->addFile(Yii::getAlias('@poa_upload/' . $file));
-//                }
-//                $zip->close();
-//                $this->url_poa = $confirm_poa;
-//                if($this->save()) return $this;
-//            }
-//        }
-//        return false;
-//    }
 
     public function DeleteConfirmPoa(){
         if($this->url_poa && file_exists(Yii::getAlias('@poa_confirm/' . $this->url_poa))){

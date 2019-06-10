@@ -38,9 +38,11 @@ class DriverLicense extends \yii\db\ActiveRecord
     {
         return [
             [['date', 'number', 'place'], 'required'],
-            [['id'], 'safe'],
             ['checked', 'safe'],
-            [['date'], 'date', 'format' => 'php:d.m.Y'],
+            [['date'], 'date', 'format' => 'php:d.m.Y','min' => (time() - 60*60*24*365*50),
+                'max' => time(),
+                'tooSmall' => 'Проверьте дату.',
+                'tooBig' => 'Вы из будущего?)'],
             [['place', 'number'], 'string', 'max' => 255],
         ];
     }

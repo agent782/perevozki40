@@ -76,7 +76,6 @@ class CompanyController extends Controller
                                 //юр лицо в списке текущего пользователя
                                 (Company::CompanyBelongsUser(Yii::$app->user->getId(), Yii::$app->request->get('id')))
                                     &&
-
                                 (
                                     //и одно из трех
                                     //или число привязашшых профилей == 1, единственный профиль
@@ -143,7 +142,7 @@ class CompanyController extends Controller
         $modelProfile = Profile::findOne($user_id);
         $XcompanyXprofile = new XprofileXcompany();
         if ($modelCompany->load(Yii::$app->request->post()) && $XcompanyXprofile->load(Yii::$app->request->post())){
-//            return var_dump($modelCompany);
+//            return var_dump($modelCompany->getErrors());
             if(!Company::find()->where(['inn' => $modelCompany->inn])->count()){
                 if ($modelCompany->save()) {
 

@@ -39,7 +39,7 @@ class DownloadPOA extends Widget
     public function DownloadPoa(){
         Modal::begin([
             'header' => 'Отредактируйте при необходимости',
-            'toggleButton' => ['label' => 'Скачать бланк', 'class' => 'btn btn-success'],
+            'toggleButton' => ['label' => 'Скачать бланк', 'class' => 'btn btn-xs btn-success'],
         ]);
 
         $form = ActiveForm::begin([
@@ -78,7 +78,9 @@ class DownloadPOA extends Widget
         echo Html::button('Закрыть', ['class' => 'btn btn-warning', 'data-dismiss' => 'modal']);
 
         ActiveForm::end();
-
+        echo '<p> Пожалуйста, скачайте заполненный бланк доверенности, распечатайте, 
+            заверьте подписью и печатью организации или ИП, отсканируйте и загрузите файл в разделе 
+            "Юридические лица, нажав на кнопку "Отправить подписанный скан".</p>';
         Modal::end();
     }
 }

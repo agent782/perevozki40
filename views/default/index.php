@@ -1,5 +1,6 @@
 <?php
     use yii\bootstrap\Html;
+    use yii\helpers\Url;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 ?>
 <?php
@@ -13,7 +14,7 @@
             </div>
             <div class="col-lg-5" id="newOrder">
                 СДЕЛАТЬ НОВЫЙ ЗАКАЗ<br>
-                <a href="/user/signup-client"><button class="btn btn-success">ЗАКАЗАТЬ</button></a>
+                <a href="<?=Url::to(['/order/create', 'user_id' => Yii::$app->user->id])?>"><button class="btn btn-success">ЗАКАЗАТЬ</button></a>
             </div>
             <div class="col-lg-3" id="regVehicle">
                 ЗАВЕРШИТЬ РЕГИСТРАЦИЮ ВОДИТЕЛЯ<br>

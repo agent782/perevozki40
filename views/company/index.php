@@ -27,9 +27,6 @@ $this->title = 'Юридические лица';
 $this->params['breadcrumbs'][] = $this->title;
 
 
-
-
-
 ?>
 <div class="company-index">
 
@@ -60,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             [
 //                'attribute'=>'parent_id',
-                'label'=>'Договор',
+                'label'=>'Договор с Клиентом',
                 'format'=>'raw', // Возможные варианты: raw, html
                 'value'=>function($data, $model, $modelDocument){
                     $modelDocument = \app\models\Document::findOne(['id_company' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]);
@@ -72,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 3. Отсканируйте и отправьте Договор на проверку.<br><br>'
                             . Html::a('Скачать бланк',
                                 \yii\helpers\Url::to(['download-document', 'idCompany' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]),
-                                ['class'=>'btn btn-info', 'data-toggle' => 'tooltip', 'title' => 'Инфорсация', 'id' => 'create-contract'])
+                                ['class'=>'btn btn-xs  btn-info', 'data-toggle' => 'tooltip', 'title' => 'Инфорсация', 'id' => 'create-contract'])
 
                             ;
                     }
@@ -84,13 +81,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                     '/document/download-confirm-doc',
                                     'id' => $data->ConfirmDoc->id,
                                     'type' => $data->ConfirmDoc->type]),
-                                ['class' => 'btn', 'data-toggle' => 'tooltip', 'title' => 'Скачать'])
+                                ['class' => 'btn  btn-xs', 'data-toggle' => 'tooltip', 'title' => 'Скачать'])
                             ;
                     } else if ($modelDocument->status === \app\models\Document::STATUS_ON_CHECKING) {
                         return $modelDocument->getStatusString()
                             .  Html::a(Html::img('/img/icons/delete-26.png'),
                                 Url::to(['/document/delete-upload-docs', 'id' => $modelDocument->id, 'returnRedirectUrl' => '/company/index', 'type'=>\app\models\Document::TYPE_CONTRACT_CLIENT ]),
-                                ['class' => 'btn',
+                                ['class' => 'btn  btn-xs',
                                     'data-confirm' => 'Удалить загруженный скан?',
                                     'data-toggle' => 'tooltip', 'title' => 'Удалить']);
                             ;
@@ -104,7 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             . '<br>'
                             . Html::a('Скачать бланк',
                                 \yii\helpers\Url::to(['download-document', 'idCompany' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]),
-                                ['class'=>'btn btn-info', 'data-toggle' => 'tooltip', 'title' => 'Скачать бланк'])
+                                ['class'=>'btn btn-xs btn-info', 'data-toggle' => 'tooltip', 'title' => 'Скачать бланк'])
                             . '<br><br>'
                             . \app\components\widgets\ButtonUpload::widget([
                                 'model' => $modelDocument,
@@ -124,7 +121,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 . '<br><br> '
                                 . Html::a('Скачать бланк',
                                 \yii\helpers\Url::to(['download-document', 'idCompany' => $data->id, 'type' => \app\models\Document::TYPE_CONTRACT_CLIENT]),
-                                ['class'=>'btn btn-info'])
+                                ['class'=>'btn btn-xs  btn-info'])
                                 . '<br><br>'
                                 . \app\components\widgets\ButtonUpload::widget([
                                         'model' => $modelDocument,
@@ -143,7 +140,8 @@ $this->params['breadcrumbs'][] = $this->title;
 //                'filter' => Category::getParentsList()
             ],
             [
-                'label'=>'Доверенность',
+                'label'=>'Доверенность' . \app\models\Tip::getTipButtonModal('XprofileXcompany', 'STATUS_POA'),
+                'encodeLabel' => false,
                 'format'=>'raw', // Возможные варианты: raw, html
                 'value'=>function($data){
                     $id_user = Yii::$app->user->getId();
@@ -154,6 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ->andWhere([
                             'id_profile' => $id_user,
                         ])
+                        ->limit(1)
                         ->one();
 
                     if($modelPOA->STATUS_POA===XprofileXcompany::STATUS_POWER_OF_ATTORNEY_UNSIGNED) {
@@ -205,10 +204,37 @@ $this->params['breadcrumbs'][] = $this->title;
                             . Html::a(Html::img('/img/icons/download-25.png'),[
                                 Url::to(['/poa/download-confirm-poa', 'idCompany' => $data->id, 'idProfile' => $id_user, 'return' => '/company'])
                             ])
+                            . '<br><br>'
+                            . \app\components\widgets\ButtonUpload::widget([
+                                'model' => $modelPOA,
+                                'typeDocument' => \app\models\XprofileXcompany::ClientPOA,
+                                'completeRedirect' => '/company/index',
+                                'header' => 'Отправка подписанной доверенности',
+                                'action' => \yii\helpers\Url::to(['/poa/upload-client-poa', 'idCompany' => $data->id, 'idUser' => $id_user, 'completeRedirect' => '/company/index']),
+                            ]);
                         ;
                     }
                 }
 
+            ],
+            [
+                'label' => 'Сотрудники' . ShowMessageWidget::widget([
+                        'helpMessage' => 'От одного Юр. лица могут заказывать несколько пользователей-сотрудников. 
+                        При наличии Доверенностей они могут редактировать данные и просматривать статистику. '
+                    ]),
+                'encodeLabel' => false,
+                'format' => 'raw',
+                'value' => function($model){
+                    $return = '';
+                    foreach ($model->profiles as $profile){
+                        $return .= $profile->fioShort;
+                        $return .= Html::a(($model->getXProfXcom($profile->id_user)->STATUS_POA)
+                            ? Html::icon('ok-circle', ['title' => 'Доверенность оформлена'])
+                            : Html::icon('remove-circle', ['title' => 'Доверенность не офрмлена']), '#');
+                        $return .= '<br>';
+                    }
+                    return $return;
+                }
             ],
             [
                 'class' => \yii\grid\ActionColumn::className(),

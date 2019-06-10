@@ -4,6 +4,7 @@ use yii\bootstrap\Html;
 use kartik\checkbox\CheckboxX;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\DriverSearch */
@@ -19,20 +20,54 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
     <?php
-        $form = \kartik\form\ActiveForm::begin();
+        $hideDriverLicenseDiv = ($modelProfile->is_driver)?'':'hidden';
+
+        $form = \kartik\form\ActiveForm::begin([
+            'enableAjaxValidation' => true,
+            'validationUrl' => '/driver/validate-driver-license'
+        ]);
     ?>
     <?=$form->field($modelProfile, 'is_driver')->widget(CheckboxX::class,[
         'id' => 'chk_is_driver',
         'labelSettings' => ['position' => CheckboxX::LABEL_RIGHT],
         'pluginOptions' => [
-            'threeState' => false
+            'threeState' => false,
+        ],
+        'pluginEvents' => [
+            'change' => 'function(){
+                if($(this).val() == 1) {
+                    $("#driver_license").attr("hidden", false);
+                } else {
+                    $("#driver_license").attr("hidden", true);
+                }
+            }'
         ]
     ])
-        ->label('Я водитель', ['class' => 'h3'])
+        ->label(
+                'Я водитель' . \app\models\Tip::getTipButtonModal($modelProfile, 'is_driver'),
+                ['class' => 'h4'])
     ?>
+    <div id="driver_license" <?= $hideDriverLicenseDiv?> >
+        <?=$form->field($modelDriverLicense, 'number')?>
+        <?=$form->field($modelDriverLicense, 'date')->widget(MaskedInput::class,[
+            'clientOptions' => [
+            ],
+            'mask' => '99.99.9999',
+            'options' => [
+                'type' => 'tel',
+                'autocorrect' => 'off',
+                'autocomplete' => 'date',
+                'placeholder' => '01.01.2000'
+            ]
+        ])?>
+        <?=$form->field($modelDriverLicense, 'place')->textarea()?>
+    </div>
+    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-sm btn-primary'])?>
+
     <?php
         $form::end();
     ?>
+<br>
     <p>
         <?= Html::a('Добавить водителя.', ['/driver/create', 'id_car_owner' => Yii::$app->user->id], ['class' => 'btn btn-success']) ?>
     </p>

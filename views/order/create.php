@@ -1,7 +1,9 @@
 <?php
+namespace app\components;
 
 use yii\bootstrap\Html;
-use yii\bootstrap\ActiveForm;
+//use yii\bootstrap\ActiveForm;
+use app\components\myActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\rating\StarRating;
 
@@ -9,8 +11,8 @@ use kartik\rating\StarRating;
 /* @var $model app\models\Order */
 
 $this->title = 'Заказ автотранспорта.';
-$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
+//$this->params['breadcrumbs'][] = $this->title;
 //var_dump($_POST);
 
 ?>
@@ -19,11 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h4><?= Html::encode($this->title) ?></h4>
 
     <?php
-        $form = ActiveForm::begin();
+        $form = myActiveForm::begin();
     ?>
     <?= $form->field($modelOrder, 'id_vehicle_type')->radioList(
             ArrayHelper::map(\app\models\VehicleType::find()->asArray()->all(), 'id', 'type')
-    )?>
+    )->label($modelOrder->getAttributeLabel('id_vehicle_type'), ['withTip' => true])?>
 
     <?=
     Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
@@ -36,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ])?>
 
     <?php
-        ActiveForm::end();
+        myActiveForm::end();
     ?>
 
 </div>

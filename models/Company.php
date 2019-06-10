@@ -76,12 +76,19 @@ class Company extends \yii\db\ActiveRecord
 //                'management_name', 'management_post', 'name_full', 'name_short',
 //                'phone', 'phone2', 'phone3', 'citizenship', 'state_status'], 'safe'],
 //            [['opf_short'], 'string', 'max' => 64],
-            [['phone','phone2','phone3'], 'string', 'length'=> [10,10], 'tooLong'=> 'Неверный формат номера "9105234777"', 'tooShort'=> 'Неверный формат номера "9105234777"'],
-            [['phone','phone2','phone3'], 'match', 'pattern' => '/[0123456789]$/'],
+//            [['phone','phone2','phone3'], 'string', 'length'=> [10,10], 'tooLong'=> 'Неверный формат номера "9105234777"', 'tooShort'=> 'Неверный формат номера "9105234777"'],
             [['email', 'email2', 'email3'], 'email'],
 //            [['inn'], 'unique'],
-            [['ogrn_date'], 'required'],
-            [['ogrn_date'], 'date', 'format' => 'php:d.m.Y', 'message' => 'Неверный формат! Введите дату в формате "дд.мм.гггг" ("01.01.2000")'],
+//            [['ogrn_date'], 'required'],
+            [['ogrn_date'], 'date', 'format' => 'php:d.m.Y',
+                'skipOnError' => false,
+                'skipOnEmpty' => false,
+                'min' => (time() - 60*60*24*365*50),
+                'max' => time(),
+                'tooSmall' => 'Проверьте дату.',
+                'tooBig' => 'Вы из будущего?)'
+            ],
+
             [[
                     'name',
                     'address_real',
@@ -106,7 +113,7 @@ class Company extends \yii\db\ActiveRecord
                     'state_status',
                     'data_type',
                     'status',
-                    'raiting',
+                    'raiting','phone2','phone3'
                 ], 'safe'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['raiting', 'default', 'value' => 0],
@@ -160,10 +167,7 @@ class Company extends \yii\db\ActiveRecord
             'job_contract' => Yii::t('app', 'Должность подписывающего договор'),
         ];
     }
-//    public function beforeValidate()
-//    {
-//        $this->phone = mb_ereg_replace("[^0-9]",'',$this->phone);
-//    }
+
     public function behaviors()
     {
         return [
@@ -189,6 +193,9 @@ class Company extends \yii\db\ActiveRecord
 // для текущего пользователя
     public function getXprofileXcompany($idUser){
         return $this->hasOne(XprofileXcompany::className(), ['id_company' => 'id', 'id_profile' => $idUser]);
+    }
+    public function getXprofXcom($id_user){
+        return XprofileXcompany::findOne(['id_company' => $this->id, 'id_profile' => $id_user]);
     }
     // для всех пользователя
     public function getXAllProfilesXcompany(){

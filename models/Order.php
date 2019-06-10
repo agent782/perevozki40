@@ -123,14 +123,7 @@ class Order extends \yii\db\ActiveRecord
     const PAID_NO = 0;
     const PAID_YES = 1;
     const PAID_YES_AVANS = 2;
-//    const PAID_CANCELED = 2;
-
-    public $body_typies;
-    public $loading_typies;
-    public $suitable_rates;
-    public $selected_rates;
-    public $ClientPhone;
-    public $ClientPaidCash;
+    const PAID_PROCCESSING = 3;
 
     const SCENARIO_UPDATE_TRUCK = 'update_truck';
     const SCENARIO_UPDATE_PASS = 'update_pass';
@@ -152,6 +145,13 @@ class Order extends \yii\db\ActiveRecord
     const SCENARIO_NEW_ORDER = 'new_order';
     const SCENARIO_LOGIST_NEW_ORDER = 'logist_new_order';
     const SCENARIO_ADD_ID_COMPANY = 'add_id_company';
+
+    public $body_typies;
+    public $loading_typies;
+    public $suitable_rates;
+    public $selected_rates;
+    public $ClientPhone;
+    public $ClientPaidCash;
 
     /**
      * @inheritdoc
@@ -182,7 +182,7 @@ class Order extends \yii\db\ActiveRecord
                 'ClientPhone', 'id_user'],
                 'safe'
             ],
-            ['ClientPaidCash', 'default', 'value' => '0'],
+            [['additional_cost','ClientPaidCash'], 'default', 'value' => '0'],
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
                 'real_length_spec', 'real_volume_spec', 'cost'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
@@ -198,6 +198,7 @@ class Order extends \yii\db\ActiveRecord
             [['paid_status', 'paid_car_owner_status'], 'default', 'value' => self::PAID_NO],
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
+            ['type_payment', 'validateForUser']
 
 
         ];
@@ -301,7 +302,7 @@ class Order extends \yii\db\ActiveRecord
             'type_payment' => 'Способ оплаты:',
             'status' => 'Статус',
             'statusText' => 'Статус',
-            'paidText' => 'Оплата',
+            'paidText' => 'Оплата от Клиента',
             'create_at' => 'Дата оформления заказа',
             'clientInfo' => 'Заказчик',
             'shortInfoForClient' => 'ТС',
@@ -325,6 +326,7 @@ class Order extends \yii\db\ActiveRecord
             'additional_cost' => 'Доп. расходы (Помощь грузчика(ов), платные дороги/въезды и т.п.), р.',
             'cost' => 'Сумма',
             'ClientPhone' => 'Телефон клиента',
+            'id_company' => 'Юр. лицо '
 
         ];
     }
@@ -367,18 +369,31 @@ class Order extends \yii\db\ActiveRecord
         }
         return;
     }
+
     public function validateLoadingTypies($attribute){
         if($this->id_vehicle_type == Vehicle::TYPE_TRUCK && !$this->$attribute){
             $this->addError($attribute, 'Выберите хотя бы один из вариантов.');
         }
         return;
     }
+
     public function validateTonnage($attribute){
         if(($this->id_vehicle_type == Vehicle::TYPE_TRUCK || $this->body_typies == Vehicle::BODY_dump || $this->body_typies == Vehicle::BODY_manipulator)
             && !$this->$attribute){
             $this->addError($attribute, 'Необходимо заполнить "Общий вес груза".');
         }
         return;
+    }
+
+    public function validateForUser($attribute){
+        if(Yii::$app->user->can('user')
+            && $this->type_payment != Payment::TYPE_CASH
+        ){
+            $this->addError($attribute, 'Вам необходимо '
+                . Html::a('завершить регистрацию Клиента.', '/user/signup-client')
+                . 'Это займет у Вас 1 имнуту. До этого Вы можете выбрать только наличную форму оплаты. '
+            );
+        }
     }
 
     public function getSuitableRates($distance){
@@ -480,6 +495,7 @@ class Order extends \yii\db\ActiveRecord
         }
         return $return . '</ul>';
     }
+
     public function getListPriceZonesCostsForVehicle($id_car_owner, $distance = null, $infoButton = true){
         $rates = $this->priceZones;
         $return = '<ul>';
@@ -665,6 +681,7 @@ class Order extends \yii\db\ActiveRecord
             parent::afterSave($insert, $changedAttributes);
         }
     }
+
     public function afterFind()
     {
         $this->body_typies = ArrayHelper::getColumn($this->bodyTypies, 'id');
@@ -693,24 +710,29 @@ class Order extends \yii\db\ActiveRecord
     public function getVehicleType(){
         return $this->hasOne(VehicleType::className(), ['id' => 'id_vehicle_type']);
     }
+
     public function getInvoice(){
         return $this->hasOne(Invoice::class, ['id_order' => 'id'])
             ->andWhere([invoice::tableName().'.type' => Invoice::TYPE_INVOICE])
             ;
     }
+
     public function getCertificate(){
         return $this->hasOne(Invoice::class, ['id_order' => 'id'])
             ->andWhere([invoice::tableName().'.type' => Invoice::TYPE_CERTIFICATE])
             ;
     }
+
     public function getBodyTypies(){
         return $this->hasMany(BodyType::className(), ['id' => 'id_bodytype'])
             ->viaTable('XorderXtypebody', ['id_order' => 'id']);
     }
+
     public function getLoadingTypies(){
         return $this->hasMany(LoadingType::className(), ['id' => 'id_loading_type'])
             ->viaTable('XorderXloadingtype', ['id_order' => 'id']);
     }
+
     public function getPriceZones(){
         return $this->hasMany(PriceZone::className(), ['unique_index' => 'id_rate'])
             ->viaTable('XorderXrate', ['id_order' => 'id'])
@@ -742,27 +764,34 @@ class Order extends \yii\db\ActiveRecord
     public function getRoute(){
         return $this->hasOne(Route::className(), ['id' => 'id_route']);
     }
+
     public function getRealRoute(){
         return $this->hasOne(Route::className(), ['id' => 'id_route_real']);
     }
+
     public function getUser(){
         return $this->hasOne(User::className(), ['id' => 'id_user']);
     }
+
     public function getProfile(){
         return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
     }
+
     public function getCompany(){
         return $this->hasOne(Company::class, ['id' => 'id_company']);
     }
+
     public function getCarOwner(){
         return $this->hasOne(Profile::class, ['id_user' => 'id_car_owner']);
     }
+
     public function getVehicle(){
         if($this->id_vehicle){
             return $this->hasOne(Vehicle::className(), ['id'=> 'id_vehicle']);
         }
         return null;
     }
+
     public function getDriver(){
         if($this->id_driver){
             return $this->hasOne(Driver::class, ['id' => 'id_driver']);
@@ -800,7 +829,7 @@ class Order extends \yii\db\ActiveRecord
         return $res;
     }
 
-   static public function getStatusesArray(){
+    static public function getStatusesArray(){
        $res[self::STATUS_NEW] = 'Новый';
        $res[self::STATUS_IN_PROCCESSING] = 'В обработке';
        $res[self::STATUS_VEHICLE_ASSIGNED] = 'Принят водителем';
@@ -828,6 +857,7 @@ class Order extends \yii\db\ActiveRecord
        }
        return null;
     }
+
     public function getPaidCarOwnerText(){
         switch ($this->paid_car_owner_status){
             case self::PAID_NO:
@@ -989,12 +1019,14 @@ class Order extends \yii\db\ActiveRecord
                     : TypePayment::findOne($this->type_payment)->type
             ;
     }
+
     public function getPaymentMinText($withIconDiscount = true){
         return ($withIconDiscount)
             ? TypePayment::findOne($this->type_payment)->minTextWithIconDiscount
             : TypePayment::findOne($this->type_payment)->min_text
             ;
     }
+
     public function getPriceZonesWithInfo(){
         $return = '';
         foreach ($this->priceZones as $priceZone){
@@ -1103,7 +1135,7 @@ class Order extends \yii\db\ActiveRecord
                 break;
             case self::STATUS_NEW:
                 switch ($this->status) {
-                    case self::STATUS_NEW:
+                    case self::STATUS_NEW: case self::STATUS_IN_PROCCESSING:
                         $title_client = 'Заказ №' . $this->id . ' изменен.';
                         $this->deleteEventChangeStatusToExpired();
                         $this->setEventChangeStatusToExpired();
@@ -1168,6 +1200,7 @@ class Order extends \yii\db\ActiveRecord
                     $title_client = 'Заказ №'.$this->id.' отменен.';
                     $message_client = 'Вы отменили Ваш заказ.  <br>'
                         . $this->getFullNewInfo(true);
+                    $this->deleteEventChangeStatusToExpired();
                 }
                 if($this->status == self::STATUS_VEHICLE_ASSIGNED){
                     if(strtotime($this->valid_datetime) < time()) {
@@ -1298,6 +1331,7 @@ class Order extends \yii\db\ActiveRecord
 
         return $return;
     }
+
     public function getFullFinishInfo($showClientPhone = false, $realRoute = null){
         if($this->realRoute) $real_route = $this->realRoute;
         else {
@@ -1382,6 +1416,7 @@ class Order extends \yii\db\ActiveRecord
         }
 
     }
+
     public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true, $showDriveLicence = true){
         $return = '';
         if(!$this->id_vehicle) return false;
@@ -1398,7 +1433,8 @@ class Order extends \yii\db\ActiveRecord
         }
         return $return;
     }
-     public function getArrayAttributesForSetFinishPricezone(){
+
+    public function getArrayAttributesForSetFinishPricezone(){
         $body_type = Vehicle::findOne($this->id_vehicle)->bodyType;
         $res = [];
         switch ($this->id_vehicle_type){
@@ -1472,7 +1508,7 @@ class Order extends \yii\db\ActiveRecord
         $distance = $this->real_km;
         $hour = $this->real_h;
         $real_pz = PriceZone::findOne(['unique_index' => $this->id_price_zone_real]);
-        if($forVehicle) $real_pz = $real_pz->getWithDiscount(9);
+        if($forVehicle) $real_pz = $real_pz->getWithDiscount(self::getVehicleProcentPrice());
         if(!$real_pz || !$distance) return ['text' => 'Ошибка на сервере', 'cost' => 0];
         if($distance){
             $cost = 0;
@@ -1547,6 +1583,7 @@ class Order extends \yii\db\ActiveRecord
                 $cost += $this->real_remove_awning * $real_pz->remove_awning;
                 $text .= '<br>Итого за "растентовку": ' . $this->real_remove_awning * $real_pz->remove_awning;
             }
+
             if($this->additional_cost){
                 $cost += $this->additional_cost;
                 $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
@@ -1554,13 +1591,14 @@ class Order extends \yii\db\ActiveRecord
             if($withDiscount){
                 $cost = $this->getFinishCost(false);
             }
+            $text .= '<br>Комментарии водителя: ' . $this->comment_vehicle;
             $return['cost'] =  $cost;
-            if($withDiscount){
-                $cost = $this->getFinishCost(true);
-            }
+//            if($withDiscount){
+//                $cost = $this->getFinishCost($html);
+//            }
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
-            if($this->discount && $withDiscount) {
-                $text .= '<br>Скидка: ' . $this->discount . Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']);
+            if($this->discount && !$forVehicle) {
+                $text .= '<br>Скидка: ' . $this->discount . ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
             }
             $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
             $return['text'] =  $text;
@@ -1575,29 +1613,29 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function getFinishCost($html = true){
+
         if($html){
             return ($this->discount)
-                ? '<s>' . $this->cost . '</s> ' . '<strong> ' . round($this->cost - ($this->cost*$this->discount/100)) . '</strong>'
+                ? '<s>' . $this->cost . '</s> '
+                . '<strong> '
+                . round($this->cost - (($this->cost - $this->additional_cost) * $this->discount/100))
+                . '</strong>'
                 : $this->cost;
         } else{
             return ($this->discount)
-                ? round($this->cost - ($this->cost*$this->discount/100))
+                ? round($this->cost - (($this->cost - $this->additional_cost) * $this->discount/100))
                 : $this->cost;
         }
     }
 
     public function getFinishCostForVehicle(){
-        return round(
-            $this->cost
-            - ($this->cost
-            * SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent
-            / 100)
-        );
+        return round($this->CalculateAndPrintFinishCost(false, true, false)['cost']);
     }
 
     public function getVehicleProcentPrice(){
-        return \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
+        return \app\models\setting\SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent;
     }
+
     public function getArrayPaidStatuses(){
         return [
             self::PAID_YES => 'Оплачен',

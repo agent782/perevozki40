@@ -1,3 +1,11 @@
+Html в сообщениях об ошибке валидации
+
+<?= $form->field($modelOrder, 'type_payment', [
+        'errorOptions' => [
+            'class' => 'help-block' ,
+            'encode' => false
+        ]
+=========================================
 Сохранение текущего тарифа для поездки
 Order -> current_finish_price_zone
 

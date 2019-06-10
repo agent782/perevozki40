@@ -39,7 +39,6 @@ class Passport extends \yii\db\ActiveRecord
             [['country'], 'string', 'max' => 64],
             [['id'], 'safe'],
             ['date' , 'date', 'format' => 'php:d.m.Y'],
-            ['country', 'safe']
         ];
     }
 

@@ -10,6 +10,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use kartik\datetime\DateTimePicker;
+use yii\helpers\Url;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 //echo date('d.m.Y H:i');
@@ -22,6 +23,7 @@ use app\components\widgets\ShowMessageWidget;
 <?php
 
     $form = ActiveForm::begin([
+        'enableAjaxValidation' => true,
         'validationUrl' => '/order/validate-order',
         'options' => [
             'data-pjax' => true
@@ -73,7 +75,12 @@ use app\components\widgets\ShowMessageWidget;
         ])
     ?>
 
-    <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, [
+    <?= $form->field($modelOrder, 'type_payment', [
+        'errorOptions' => [
+            'class' => 'help-block' ,
+            'encode' => false
+        ]
+    ])->radioList($TypiesPayment, [
         'id' => 'type_payment',
         'encode' => false,
         'onchange' => '
@@ -88,14 +95,24 @@ use app\components\widgets\ShowMessageWidget;
             }
             changePriceZones();
         '
-    ])?>
+    ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
     <?php
         $companiesHide = ($companies && $modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER) ? '' : 'hidden';
     ?>
     <div id="companies" <?= $companiesHide?> >
     <?= $form->field($modelOrder, 'id_company',[
         'enableAjaxValidation' => true,
-    ])->radioList($companies)->label('Юр. лица: ')?>
+    ])->radioList($companies)->label('Юр. лица: '. Html::a(Html::icon('plus', [
+            'class' => 'btn btn-info',
+            'title' => 'Добавить водителя'
+        ]), ['/company/create',
+            'user_id' => $user_id,
+            'redirect' => Url::to([
+                '/order/create',
+                'user_id' => $user_id,
+                'redirect' => $redirect,
+            ])
+        ]))?>
     </div>
     </div>
     <div class="col-lg-5">

@@ -13,7 +13,6 @@ use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 ?>
 <div>
-    <h4>В процессе выполнения...</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_arhive,
         'options' => [
@@ -22,22 +21,22 @@ use yii\bootstrap\Tabs;
         'responsiveWrap' => false,
         'pjax'=>true,
         'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
-
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-//                    return $model->id;
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-            ],
+//            [
+//                'class' => 'kartik\grid\ExpandRowColumn',
+//                'value' => function ($model, $key, $index, $column) {
+//
+//                    return GridView::ROW_COLLAPSED;
+//                },
+//                'enableRowClick' => true,
+//                'allowBatchToggle'=>true,
+//                'detail'=>function ($model) {
+//                    return 'TEST';
+////                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
+//                },
+//                'detailOptions'=>[
+//                    'class'=> 'kv-state-enable',
+//                ],
+//            ],
             'id',
             [
                 'label' => 'Время начала/завершения',
@@ -52,10 +51,11 @@ use yii\bootstrap\Tabs;
             ],
             [
                 'label' => 'Сумма (р.)',
-                'attribute' => 'finishCostForVehicle',
+                'attribute' => 'cost_finish_vehicle',
                 'format' => 'raw'
             ],
             [
+
                 'attribute' => 'paidText',
                 'format' => 'raw'
             ],
@@ -74,7 +74,11 @@ use yii\bootstrap\Tabs;
                 'label' => 'ТС и водитель',
                 'format' => 'raw',
                 'value' => function($model){
-                    return $model->vehicle->brandAndNumber . ' (' . $model->driver->fio . ')';
+                    $fio = ($model->driver)
+                        ? $model->driver->fio
+                        : $model->profile->fioFull;
+                    return $model->vehicle->brandAndNumber
+                        . ' (' . $fio . ')';
                 }
             ],
             [

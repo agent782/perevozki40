@@ -14,7 +14,7 @@ use yii\bootstrap\Html;
 <h4>Необходимые характеристики ТС и груза.</h4>
 
 <?php
-    $form = ActiveForm::begin([
+    $form = \app\components\myActiveForm::begin([
         'enableAjaxValidation' => true,
         'validationUrl' => '/order/validate-order',
     ]);
@@ -29,10 +29,7 @@ use yii\bootstrap\Html;
 
     <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
             echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
-            'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
-                'helpMessage' => '',
-                'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
-            ])
+            'Груз длинномер', ['withTip' => true]
             );
             echo $form->field($modelOrder, 'cargo')->textarea([
                 'placeholder' => '20 коробок 30х30х30см....Холодильник........Станок 1,5 х 1,5 х 1,5м'
@@ -69,6 +66,6 @@ use yii\bootstrap\Html;
 ])?>
 
 <?php
-    ActiveForm::end();
+\app\components\myActiveForm::end();
 ?>
 </div>
