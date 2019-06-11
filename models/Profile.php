@@ -51,7 +51,8 @@ use app\models\setting\Setting;
  * @property string $driverFullInfo
  * @property User $user
  * @property string $history_updates
- * @property integer $check_status
+ * @property integer $check_update_status
+ * @property string $update_to_check;
  * @property Passport $passport
  */
 class Profile extends \yii\db\ActiveRecord
@@ -75,8 +76,9 @@ class Profile extends \yii\db\ActiveRecord
     const ROLE_VEHICLE = 'vehicle';
     const ROLE_VIP_VEHICLE = 'vip_vehicle';
 
-    const CHECK_STATUS_YES = 1;
-    const CHECK_STATUS_NO = 0;
+    const CHECK_UPDATE_STATUS_WAIT = 2;
+    const CHECK_UPDATE_STATUS_YES = 1;
+    const CHECK_UPDATE_STATUS_NO = 0;
 
     const SCENARIO_SAFE_SAVE = 'safe_save';
 
@@ -116,8 +118,8 @@ class Profile extends \yii\db\ActiveRecord
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
             ['is_driver', 'default', 'value' => false],
-            [['history_updates'], 'safe'],
-            ['check_status', 'default', 'value' => self::CHECK_STATUS_NO]
+            [['history_updates', 'update_to_check'], 'safe'],
+            ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT]
         ];
     }
 
@@ -169,7 +171,7 @@ class Profile extends \yii\db\ActiveRecord
             ],
             'serialize' => [
                 'class' => SerializeBehaviors::class,
-                'arrAttributes' => ['history_updates']
+                'arrAttributes' => ['history_updates', 'update_to_check']
             ]
         ];
     }
@@ -212,7 +214,10 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getUrlPhoto(){
-        return '/uploads/photos/users/'.$this->photo;
+        return '/uploads/photos/users/' . $this->photo;
+    }
+    public function getUrlUpdatePhoto(){
+        return '/uploads/photos/users/update/' . $this->update_to_check['photo'];
     }
 
     //Относительный путь фото
@@ -406,6 +411,25 @@ class Profile extends \yii\db\ActiveRecord
         }
 
         return $return;
+    }
+
+    //Получить публичные атрибуты...то, что профиль может редактировать
+    public function getPublicAttributes():array {
+        return [
+            'surname' => $this->surname,
+            'name' => $this->name,
+            'patrinimic' => $this->patrinimic,
+            'sex' => $this->sex,
+            'bithday' => $this->bithday,
+            'email' => $this->email,
+            'email2' => $this->email2,
+            'phone2' => $this->phone2,
+            'reg_address' => $this->reg_address,
+            'passport_number' => $this->passport->number,
+            'passport_date' => $this->passport->date,
+            'passport_place' => $this->passport->place,
+            'country' => $this->passport->country
+        ];
     }
 }
 

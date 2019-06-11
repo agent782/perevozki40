@@ -43,7 +43,7 @@ class UpdateUserProfileForm extends Model
             [['name', 'surname', 'patrinimic', 'bithday'], 'required'],
             [['passport_number', 'passport_date', 'passport_place', 'reg_address'], 'validatePassport', 'skipOnEmpty' =>false],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
-            ['country', 'safe'],
+            [['country', 'sex'], 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
             [['photo'], 'image', 'extensions' => 'jpg', 'maxSize' => 4100000],
@@ -110,49 +110,62 @@ class UpdateUserProfileForm extends Model
         $this->photo = $profile->photo;
     }
 
-    public function uploadPhoto(){
+    public function sendToCheck(Profile $profile){
+        if(!$profile) return false;
+
+        if($profile->photo != $this->photo) {
+            $this->photo = self::uploadPhoto(true);
+        }
+        $profile->update_to_check = $this->attributes;
+        $profile->check_update_status = Profile::CHECK_UPDATE_STATUS_WAIT;
+        if($profile->save()) return true;
+        return false;
+    }
+
+    public function saveProfile(Profile $profile){
+        // НЕ ДОДЕЛАНО!!!!!
+
+        if(!$profile) return false;
+
+
+        $profile->name = $this->name;
+        $profile->patrinimic = $this->patrinimic;
+        $profile->surname = $this->surname;
+        $profile->email = $this->email;
+        $profile->email2 = $this->email2;
+        $profile->reg_address = $this->reg_address;
+        if($profile->passport){
+            $this->passport_number = $profile->passport->number;
+            $this->passport_date = $profile->passport->date;
+            $this->passport_place = $profile->passport->place;
+            $this->country = $profile->passport->country;
+        } else {
+
+        }
+        $profile->bithday = $this->bithday;
+        $profile->sex = $this->sex;
+        $profile->phone2 = $this->phone2;
+        if($this->photo){
+
+        }
+
+    }
+
+    public function uploadPhoto($update = true){
         if($this->validate() && $this->photo){
-            $dir = Yii::getAlias('@userPhotoDir').'/';
+            $dir = (!$update)
+                ? Yii::getAlias('@userPhotoDir').'/'
+                : Yii::getAlias('@userUpdatePhotoDir').'/'
+            ;
             $filename = Yii::$app->user->getId() . '.' . $this->photo->extension;
             $this->photo->saveAs($dir.$filename);
             Image::thumbnail($dir.$filename, 768, null)->save();
             return $filename;
         }else{
             return null;
-
         }
     }
 
-
-    public function saveProfile()
-    {
-        $modelProfile = new Profile();
-        $modelProfile = Yii::$app->user->identity->profile;
-        $this->photo = UploadedFile::getInstance($this, 'photo');
-        if($this->photo) {
-            $modelProfile->photo = $this->uploadPhoto();
-        }
-        $modelProfile->phone2 = $this->phone2;
-        $modelProfile->email2 = $this->email2;
-        $modelProfile->bithday = ($this->bithday);
-        $modelProfile->reg_address = $this->reg_address;
-
-        if($modelProfile->save()) {
-            $auth = Yii::$app->authManager;
-            $role = $auth->getRole('client');
-            $auth->revokeAll($modelProfile->id_user);
-            $auth->assign($role, $modelProfile->id_user);
-            $modelPassport = $this->addPassport();
-            if($modelPassport) {
-                $modelProfile->id_passport = $modelPassport->id;
-                if($modelProfile->save()) {
-                    return $modelProfile;
-                }
-            }
-        }
-//        return $modelProfile;
-        return false;
-    }
     public function addPassport()
     {
 

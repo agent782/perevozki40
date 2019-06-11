@@ -4,10 +4,8 @@
 /* @var Profile $modelProfile*/
 /* @var UpdateUserProfileForm $UpdateUserProfileForm*/
 /* @var \yii\web\View $this*/
-
     $this->registerJsFile('/js/updateUserProfileForm.js');
     $this->registerJsFile('/js/signup.js');
-
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -60,7 +58,12 @@
                 <?= $form->field($UpdateUserProfileForm, 'surname')->input('text', ['id' => 'surname']); ?>
                 <?=$form->field($UpdateUserProfileForm, 'name')?>
                 <?=$form->field($UpdateUserProfileForm, 'patrinimic')?>
-                <?= $form->field($UpdateUserProfileForm, 'sex')->radioList(['Мужской', 'Женский'])?>
+                <?= $form->field($UpdateUserProfileForm, 'sex')->radioList(['Мужской', 'Женский'], [
+                    'itemOptions' => [
+                        'id' => 'sex',
+                        'disabled' => true
+                    ]
+                ])?>
                 <?= $form->field($UpdateUserProfileForm, 'email') ->input('email')?>
                 <?= $form->field($UpdateUserProfileForm, 'phone2')
                     ->widget(MaskedInput::className(),[
@@ -92,7 +95,8 @@
                     ])
                 ;?>
                 <?= $form->field($UpdateUserProfileForm, 'photo')->fileInput([
-                    'id' => 'pathPhoto'
+                    'id' => 'pathPhoto',
+                    'disabled' => true
                 ]) ?>
                 <?= Html::img($modelProfile->urlPhoto, ['id' => 'photoPreview', 'class' => 'profile_photo_min'])?>
 

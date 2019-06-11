@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 use app\components\functions\functions;
 use app\models\Profile;
+use app\models\ProfileSearch;
 use app\models\User;
 use app\models\UserSearch;
 use yii\web\Controller;
@@ -21,17 +22,23 @@ class UsersController extends Controller
      *
      */
 
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['admin']
-                    ]]]];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            'access' => [
+//                'class' => AccessControl::className(),
+//                'rules' => [
+////                    [
+////                        'actions' => ['check-users-updates'],
+////                        'allow' => true,
+////                        'roles' => ['@']
+////                    ],
+////                    [
+////                        'allow' => true,
+////                        'roles' => ['admin']
+////                    ],
+//                ]]];
+//    }
 
 
 
@@ -103,6 +110,14 @@ class UsersController extends Controller
      * @param integer $id
      * @return mixed
      */
+    public function actionCheckUsersUpdates($redirecr = '/admin/users/check-users-updates'){
+        $searchModel = new  ProfileSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->get());
+        $dataProvider->query->andWhere(['in', 'check_update_status', [Profile::CHECK_UPDATE_STATUS_WAIT]]);
+
+        return $this->render('check-users-updates', compact(['dataProvider','searchModel']));
+    }
+
     public function actionDelete($id)
     {
         $model = $this->findModel($id);

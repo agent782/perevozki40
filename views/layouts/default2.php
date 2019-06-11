@@ -136,6 +136,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'visible' => Yii::$app->user->can('admin'),
                         ],
                         [
+                            'label' => 'Проверка изменения пользователей',
+                            'url' => '/admin/users/check-users-updates',
+//                            'visible' => Yii::$app->user->can('admin'),
+                        ],
+                        [
                             'label' => 'Подсказки',
                             'url' => '/tip',
                             'visible' => Yii::$app->user->can('admin'),

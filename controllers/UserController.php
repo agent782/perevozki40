@@ -41,47 +41,51 @@ class UserController extends Controller
         ];
     }
 
-    public function actionIndex(){
-        $modelUser = functions::findUser(\Yii::$app->user->identity->getId());
+    public function actionIndex($redirect = '/user')
+    {
+        $modelUser = User::findOne(Yii::$app->user->identity->getId());
         $modelProfile = $modelUser->profile;
         $UpdateUserProfileForm = new UpdateUserProfileForm();
         $OldProfileAttr = new UpdateUserProfileForm();
         $OldProfileAttr->setAttr($modelProfile);
         $UpdateUserProfileForm->setAttr($modelProfile);
-//        return $UpdateUserProfileForm->photo;
-        if($UpdateUserProfileForm->load(Yii::$app->request->post())){
-            if(!$UpdateUserProfileForm->passport_number) $UpdateUserProfileForm->country = null;
-            var_dump($OldProfileAttr->attributes);
-            var_dump($UpdateUserProfileForm->attributes );
-            return var_dump(array_diff($UpdateUserProfileForm->attributes , $OldProfileAttr->attributes));
+        if ($UpdateUserProfileForm->load(Yii::$app->request->post())) {
+            if (!$UpdateUserProfileForm->passport_number) $UpdateUserProfileForm->country = null;
+            $UpdateUserProfileForm->photo = UploadedFile::getInstance($UpdateUserProfileForm, 'photo');
+            $new_attr = array_diff($UpdateUserProfileForm->attributes, $OldProfileAttr->attributes);
+//            return var_dump($UpdateUserProfileForm->photo);
+            if ($new_attr || !$UpdateUserProfileForm->photo) {
+                $UpdateUserProfileForm->sendToCheck($modelProfile);
+                functions::setFlashSuccess('Изменения отправлены на модерацию.');
+            } else {
+                functions::setFlashWarning('Ничего не изменилось.');
+            }
+            return $this->redirect($redirect);
         }
-
         return $this->render('index', [
             'modelUser' => $modelUser,
-            'modelProfile' =>$modelProfile,
+            'modelProfile' => $modelProfile,
             'UpdateUserProfileForm' => $UpdateUserProfileForm
         ]);
     }
 
-    public function actionSignupClient(){
+    public function actionSignupClient()
+    {
         $modelStart = new SignUpClientFormStart();
-        if($modelStart->load(Yii::$app->request->post())){
+        if ($modelStart->load(Yii::$app->request->post())) {
             if ($modelProfile = $modelStart->saveProfile()) {
 //                return $this->render('signupClient2', compact(['modelProfile']));
                 functions::setFlashSuccess('Спасибо, ' . $modelProfile->name . ' ' . $modelProfile->patrinimic
                     . '! Надеемся на долгосрочное сотрудничество!');
                 emails::sendAfterClientRegistration($modelProfile->id_user);
                 return $this->redirect('/order/client');
-            }
-            else {
+            } else {
                 functions::setFlashWarning('Ошибка на сервере. Попробуйте позже...');
-                return $this->render('signupClientStart', compact(['modelStart', 'modelProfile','modelPassport']));
+                return $this->render('signupClientStart', compact(['modelStart', 'modelProfile', 'modelPassport']));
             }
-        }
-        else{
+        } else {
             return $this->render('signupClientStart', compact(['modelStart']));
         }
-
     }
 
     public function actionValidatePassport()
@@ -94,40 +98,41 @@ class UserController extends Controller
 //                return \yii\widgets\ActiveForm::validate($model);
 
             $mode2 = new UpdateUserProfileForm();
-            if($mode2->load(Yii::$app->request->post()))
+            if ($mode2->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($mode2);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 
-    public function actionAddpushallid($user_id = null){
+    public function actionAddpushallid($user_id = null)
+    {
 
         $pushalluserid = Yii::$app->request->get('pushalluserid');
 //        return var_dump(Yii::$app->request->get());
         if ($pushalluserid) {
-            if(!$user_id){
+            if (!$user_id) {
                 $user = User::findOne(Yii::$app->user->id);
             } else {
                 $user = User::find()->where(['id' => $user_id])->one();
             }
-            if(!$user){
+            if (!$user) {
                 functions::setFlashWarning('Ошибка на сервере.');
                 return $this->redirect('/user');
             }
-            if(!is_array($user->push_ids)) {
+            if (!is_array($user->push_ids)) {
                 $pids = [];
                 $pids [] = $pushalluserid;
             } else {
-                $hasId=0;
-                foreach ($user->push_ids as $push_id){
-                    if($push_id == $pushalluserid) $hasId = 1;
+                $hasId = 0;
+                foreach ($user->push_ids as $push_id) {
+                    if ($push_id == $pushalluserid) $hasId = 1;
                 }
                 $pids = $user->push_ids;
-                if(!$hasId) $pids [] = $pushalluserid;
+                if (!$hasId) $pids [] = $pushalluserid;
             }
             $user->push_ids = $pids;
             $user->scenario = $user::SCENARIO_SAVE;
-            if($user->save()) {
+            if ($user->save()) {
                 functions::setFlashSuccess('Вы подписались на push-уведомления.');
             } else {
 //                return var_dump($user->getErrors());

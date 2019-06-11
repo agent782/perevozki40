@@ -5,7 +5,7 @@ $(document).ready(function () {
     $('#edit_profile').click(function () {
         $('#profile').find('input').attr('readonly', false);
         $('#surname').focus();
-        $('button').attr('disabled', false);
+        $('button, #pathPhoto, #sex').attr('disabled', false);
     });
     $('#edit_passport').click(function () {
         $('#passport').find('input, textarea').attr('readonly', false);

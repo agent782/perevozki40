@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
+use app\models\Profile;
 
 /**
  * User model
@@ -32,6 +33,7 @@ use yii\web\IdentityInterface;
  * @property array $drivers
  * @property array $vehicles
  * @property array $vehicleIds
+ * @property Profile $profile
  */
 class User extends ActiveRecord implements IdentityInterface
 {
