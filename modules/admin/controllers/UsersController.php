@@ -141,4 +141,43 @@ class UsersController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionConfirmProfileUpdate($id_user, $redirect = '/admin/users/check-users-updates'){
+        $Profile = Profile::findOne(['id_user' => $id_user]);
+        if(!$Profile || !$Profile->update_to_check){
+            functions::setFlashWarning('Такого профиля не существует!');
+        } else {
+            if ($Profile->photo != $Profile->update_to_check['photo'] && $Profile->update_to_check['photo']) {
+                $photo_upd = Yii::getAlias('@userUpdatePhotoDir/') . $Profile->update_to_check['photo'];
+                if (file_exists($photo_upd)) {
+                    $filename = $Profile->id_user . '.' . pathinfo($photo_upd, PATHINFO_EXTENSION);
+                    $photo_save = Yii::getAlias('@userPhotoDir/') . $filename;
+                    if (rename($photo_upd, $photo_save)) {
+                        functions::setFlashInfo('Фото изменено');
+                        $Profile->photo = $filename;
+                    } else {
+                        functions::setFlashInfo('Фото не изменено');
+                    }
+                } else {
+                    functions::setFlashInfo('Фото не изменено_1');
+                }
+
+                if (array_key_exists('photo', $Profile->update_to_check)) {
+                    $update_attrs = $Profile->update_to_check;
+                    unset($update_attrs['photo']);
+                    $Profile->setAttributes($update_attrs, false);
+                }
+
+                $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_YES;
+                $Profile->update_to_check = null;
+
+                if ($Profile->save()) {
+                    functions::setFlashSuccess('Профиль успешно изменен');
+                } else {
+                    functions::setFlashWarning('Ошибка на сервере. Профиль не ихменен.');
+                }
+            }
+        }
+        return $this->redirect($redirect);
+    }
 }

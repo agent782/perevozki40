@@ -53,7 +53,7 @@ use kartik\grid\GridView;
                'label' => 'Действия',
                'format' => 'raw',
                'value' => function($profile){
-                    return Html::a(Html::icon('ok-sign'), '#')
+                    return Html::a(Html::icon('ok-sign'), Url::to(['/admin/users/confirm-profile-update', 'id_user' => $profile->id_user]))
                         . ' '
                         . Html::a(Html::icon('remove-sign'), '#')
                         ;
@@ -61,3 +61,6 @@ use kartik\grid\GridView;
            ]
        ]
     ]);
+
+    ?>
+

@@ -157,7 +157,9 @@ class UpdateUserProfileForm extends Model
                 ? Yii::getAlias('@userPhotoDir').'/'
                 : Yii::getAlias('@userUpdatePhotoDir').'/'
             ;
-            $filename = Yii::$app->user->getId() . '.' . $this->photo->extension;
+            $filename = ($update)
+                ?Yii::$app->user->getId() . '_upd.' . $this->photo->extension
+                :Yii::$app->user->getId() . '.' . $this->photo->extension;
             $this->photo->saveAs($dir.$filename);
             Image::thumbnail($dir.$filename, 768, null)->save();
             return $filename;

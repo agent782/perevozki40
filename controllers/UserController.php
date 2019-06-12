@@ -60,7 +60,7 @@ class UserController extends Controller
             } else {
                 functions::setFlashWarning('Ничего не изменилось.');
             }
-            return $this->redirect($redirect);
+//            return $this->redirect($redirect);
         }
         return $this->render('index', [
             'modelUser' => $modelUser,
