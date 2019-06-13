@@ -23,7 +23,7 @@ class UpdateUserProfileForm extends Model
     public $surname;
     public $patrinimic;
     public $email;
-    public $id_passport;
+//    public $id_passport;
     public $sex;
 
     public $bithday;
@@ -98,7 +98,7 @@ class UpdateUserProfileForm extends Model
         $this->email2 = $profile->email2;
         $this->reg_address = $profile->reg_address;
         if($profile->passport){
-            $this->id_passport = $profile->id_passport;
+//            $this->id_passport = $profile->id_passport;
             $this->passport_number = $profile->passport->number;
             $this->passport_date = $profile->passport->date;
             $this->passport_place = $profile->passport->place;

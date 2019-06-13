@@ -188,12 +188,7 @@ class UsersController extends Controller
 
                     if($Passport->save()){
                         $Profile->id_passport = $Passport->id;
-
-                        if(!$Profile->save()){
-                            functions::setFlashWarning('Ошибка сохранения данных паспорта!');
-                        }
                     } else {
-                        return var_dump($Passport->getErrors());
                         functions::setFlashWarning('Ошибка сохранения данных паспорта!');
                     }
                 }
