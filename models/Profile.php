@@ -427,14 +427,7 @@ class Profile extends \yii\db\ActiveRecord
                 'phone2' => $this->phone2,
                 'reg_address' => $this->reg_address,
             ];
-        if($this->passport){
-            array_merge($return, [
-                'passport_number' => $this->passport->number,
-                'passport_date' => $this->passport->date,
-                'passport_place' => $this->passport->place,
-                'country' => $this->passport->country
-            ]);
-        }
+
         return $return;
     }
 }

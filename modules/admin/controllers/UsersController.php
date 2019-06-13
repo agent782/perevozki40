@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 use app\components\functions\functions;
+use app\models\Passport;
 use app\models\Profile;
 use app\models\ProfileSearch;
 use app\models\User;
@@ -110,12 +111,12 @@ class UsersController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionCheckUsersUpdates($redirecr = '/admin/users/check-users-updates'){
+    public function actionCheckUsersUpdates($redirect = '/admin/users/check-users-updates'){
         $searchModel = new  ProfileSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->get());
         $dataProvider->query->andWhere(['in', 'check_update_status', [Profile::CHECK_UPDATE_STATUS_WAIT]]);
 
-        return $this->render('check-users-updates', compact(['dataProvider','searchModel']));
+        return $this->render('check-users-updates', compact(['dataProvider','searchModel', 'redirect']));
     }
 
     public function actionDelete($id)
@@ -161,22 +162,64 @@ class UsersController extends Controller
                 } else {
                     functions::setFlashInfo('Фото не изменено_1');
                 }
+            }
+            if($Profile->update_to_check['passport_number']){
+                if($Profile->passport){
+                    if($Profile->passport->number != $Profile->update_to_check['passport_number']
+                        || $Profile->passport->date != $Profile->update_to_check['passport_date']
+                        || $Profile->passport->place != $Profile->update_to_check['passport_place']
+                        || $Profile->passport->country != $Profile->update_to_check['country']
+                    ){
+                        $Profile->passport->number = $Profile->update_to_check['passport_number'];
+                        $Profile->passport->date = $Profile->update_to_check['passport_date'];
+                        $Profile->passport->place = $Profile->update_to_check['passport_place'];
+                        $Profile->passport->country = $Profile->update_to_check['country'];
 
-                if (array_key_exists('photo', $Profile->update_to_check)) {
-                    $update_attrs = $Profile->update_to_check;
-                    unset($update_attrs['photo']);
-                    $Profile->setAttributes($update_attrs, false);
-                }
-
-                $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_YES;
-                $Profile->update_to_check = null;
-
-                if ($Profile->save()) {
-                    functions::setFlashSuccess('Профиль успешно изменен');
+                        if(!$Profile->passport->save()){
+                            functions::setFlashWarning('Ошибка сохранения данных паспорта!');
+                        }
+                    }
                 } else {
-                    functions::setFlashWarning('Ошибка на сервере. Профиль не ихменен.');
+                    $Passport = new Passport();
+                    $Passport->number = $Profile->update_to_check['passport_number'];
+                    $Passport->date = $Profile->update_to_check['passport_date'];
+                    $Passport->place = $Profile->update_to_check['passport_place'];
+                    $Passport->country = $Profile->update_to_check['country'];
+
+                    if($Passport->save()){
+                        $Profile->id_passport = $Passport->id;
+
+                        if(!$Profile->save()){
+                            functions::setFlashWarning('Ошибка сохранения данных паспорта!');
+                        }
+                    } else {
+                        return var_dump($Passport->getErrors());
+                        functions::setFlashWarning('Ошибка сохранения данных паспорта!');
+                    }
                 }
             }
+            if($Profile->update_to_check['email'] != $Profile->email){
+                $Profile->user->email = $Profile->update_to_check['email'];
+                if(!$Profile->user->save(false)){
+                    functions::setFlashWarning('шибка сохранения email');
+                }
+            }
+
+            if (array_key_exists('photo', $Profile->update_to_check)) {
+                $update_attrs = $Profile->update_to_check;
+                unset($update_attrs['photo']);
+                $Profile->setAttributes($update_attrs, false);
+            }
+
+            $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_YES;
+            $Profile->update_to_check = null;
+
+            if ($Profile->save()) {
+                functions::setFlashSuccess('Профиль успешно изменен');
+            } else {
+                functions::setFlashWarning('Ошибка на сервере. Профиль не ихменен.');
+            }
+
         }
         return $this->redirect($redirect);
     }

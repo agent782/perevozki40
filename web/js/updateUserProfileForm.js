@@ -10,7 +10,7 @@ $(document).ready(function () {
     $('#edit_passport').click(function () {
         $('#passport').find('input, textarea').attr('readonly', false);
         $('#passportMask').focus();
-        $('button').attr('disabled', false);
+        $('button, #countryPassportDwnList').attr('disabled', false);
     });
 
 

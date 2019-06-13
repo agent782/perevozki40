@@ -30,6 +30,13 @@ use kartik\grid\GridView;
                        }
                        $res .= $openTag . $profile->update_to_check[$attribute] . $closeTag . '<br>';
                    }
+                   if($profile->update_to_check['passport_number']){
+
+                       $res .= $profile->update_to_check['passport_number'] . '<br>';
+                       $res .= $profile->update_to_check['passport_date'] . '<br>';
+                       $res .= $profile->update_to_check['passport_place'] . '<br>';
+                       $res .= \app\models\Country::findOne($profile->update_to_check['country'])->name . '<br>';
+                   }
                    if($profile->update_to_check['photo']){
                         $res .= Html::img($profile->urlUpdatePhoto, ['style'=>'width: auto; height: 100px;']);
                    }
@@ -44,6 +51,12 @@ use kartik\grid\GridView;
                     foreach ($profile->getPublicAttributes() as $attribute=>$value){
                         $res .= $value . '<br>';
                     }
+                   if($profile->passport){
+                       $res .= $profile->passport->number .  '<br>';
+                       $res .= $profile->passport->date .  '<br>';
+                       $res .= $profile->passport->place .  '<br>';
+                       $res .= \app\models\Country::findOne($profile->passport->country)->name .  '<br>';
+                   }
                    $res .= Html::img($profile->urlPhoto, ['style'=>'width: auto; height: 100px']);
 
                     return $res;

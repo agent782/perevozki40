@@ -119,7 +119,8 @@
                     ), 'id_country', 'name'
                 ), [
                     'id' => 'countryPassportDwnList',
-                    'class' => 'btn btn-primary'
+                    'class' => 'btn btn-primary',
+                    'disabled' => true
                 ] )?>
                 <?= $form->field($UpdateUserProfileForm, 'passport_number')
                     ->widget(MaskedInput::className(),[
@@ -156,7 +157,10 @@
 
             </div>
             <div class="col-lg-4">
-
+                <br><br>
+                <?= Html::a('Изменить основной номер телефона', '/user/change-phone', ['class' => 'btn btn-block btn-primary'])?>
+                <br><br>
+                <?= Html::a('Изменить пароль', '/user/change-password', ['class' => 'btn btn-block btn-primary'])?>
             </div>
             <div class="col-lg-12">
                 <br><br>
