@@ -15,11 +15,14 @@ use app\models\Passport;
 use app\models\Profile;
 use app\models\UpdateUserProfileForm;
 use app\models\User;
+use app\models\VerifyPhone;
+use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use app\components\functions\functions;
 use app\models\signUpClient\SignUpClientFormStart;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\HttpException;
 use yii\web\UploadedFile;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
@@ -97,9 +100,15 @@ class UserController extends Controller
 //            if($model->load(Yii::$app->request->post()))
 //                return \yii\widgets\ActiveForm::validate($model);
 
-            $mode2 = new UpdateUserProfileForm();
-            if ($mode2->load(Yii::$app->request->post()))
-                return \yii\widgets\ActiveForm::validate($mode2);
+            $model2 = new UpdateUserProfileForm();
+            if ($model2->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model2);
+
+            $model3 = new User();
+            if ($model3->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model3);
+
+
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
@@ -236,5 +245,24 @@ class UserController extends Controller
             echo Json::encode($res);
 //        echo Json::encode([1111,22222,33333,44444]);
         }
+    }
+
+    public function actionChangePhone($id_user = null, $admin = false, $redirect = '/user'){
+        $User = User::findOne($id_user);
+        if(!$User) throw new HttpException(404, 'Нет такого пользователя');
+        $VerifyPhone = new VerifyPhone();
+
+        if(Yii::$app->request->isAjax){
+            return $this->renderContent('1111111111');
+        }
+
+        if($User->load(Yii::$app->request->post())){
+
+        }
+
+        return $this->render('change-phone', compact([
+            'User',
+            'VerifyPhone'
+        ]));
     }
 }

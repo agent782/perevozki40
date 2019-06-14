@@ -107,7 +107,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['username', 'unique', 'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
+            ['username', 'unique', 'skipOnError'  => true,  'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
             ['username', 'required', 'message' => 'Введите номер телефона', 'message' => 'Введите Ваш номер телефона'],
             ['email', 'email'],
 //            ['username', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],

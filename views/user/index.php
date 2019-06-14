@@ -16,7 +16,8 @@
     use app\models\User;
     use app\models\Profile;
     use app\models\UpdateUserProfileForm;
-    USE yii\widgets\MaskedInput;
+    use yii\widgets\MaskedInput;
+    use yii\helpers\Url;
 
     $this->title = Html::encode(
              $modelProfile->fioFull) . ' (ID ' . $modelProfile->id_user . ')'
@@ -158,7 +159,8 @@
             </div>
             <div class="col-lg-4">
                 <br><br>
-                <?= Html::a('Изменить основной номер телефона', '/user/change-phone', ['class' => 'btn btn-block btn-primary'])?>
+                <?= Html::a('Изменить основной номер телефона',
+                    Url::to(['/user/change-phone', 'id_user' => Yii::$app->user->id]), ['class' => 'btn btn-block btn-primary'])?>
                 <br><br>
                 <?= Html::a('Изменить пароль', '/user/change-password', ['class' => 'btn btn-block btn-primary'])?>
             </div>

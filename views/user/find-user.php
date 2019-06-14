@@ -14,7 +14,7 @@ use app\models\Payment;
 $this->title = 'Поиск пользователя';
 ?>
 
-<div class="find-vehicle">
+<div class="find-user">
 
     <h3><?= Html::encode($this->title) ?></h3>
 <!--    <label>Поиск ТС:</label>-->
