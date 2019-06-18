@@ -17,10 +17,10 @@ use app\models\Payment;
 /* @var $profile \app\models\Profile*/
 
 $this->title = 'Оформлление заказа';
-<<<<<<< HEAD
+//<<<<<<< HEAD
 //var_dump($modelOrder->type_payment);
-=======
->>>>>>> a155b654d1118940b36589aaae156cebe3265c0d
+//=======
+//>>>>>>> a155b654d1118940b36589aaae156cebe3265c0d
 ?>
 
 <div class="order-create">

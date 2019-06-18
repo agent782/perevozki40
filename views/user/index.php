@@ -39,6 +39,7 @@
                     ]
                 ]
             ]);
+            echo $UpdateUserProfileForm->id_user;
         ?>
             <div class="col-lg-12">
                 <br><br>
@@ -55,7 +56,7 @@
                 </label>
 
                 <br><br>
-
+                <?= $form->field($UpdateUserProfileForm, 'id_user')->hiddenInput()->label(false)?>
                 <?= $form->field($UpdateUserProfileForm, 'surname')->input('text', ['id' => 'surname']); ?>
                 <?=$form->field($UpdateUserProfileForm, 'name')?>
                 <?=$form->field($UpdateUserProfileForm, 'patrinimic')?>

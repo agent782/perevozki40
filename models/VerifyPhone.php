@@ -20,8 +20,9 @@ class VerifyPhone extends Model
     public function rules(){
         return [
 //            [['userCode'],'required'],
-            [['userCode'],'compare', 'compareValue' => $this->_verifyCode, 'skipOnEmpty' => false, 'message' => 'Код не верный!'] ,
+            [['userCode'],'compare', 'compareValue' => $this->getVerifyCode(), 'skipOnEmpty' => false, 'message' => 'Код не верный!' . $this->verifyCode] ,
 //            ['userCode', 'number'],
+            ['verifyCode', 'safe']
 
         ];
     }
@@ -33,7 +34,7 @@ class VerifyPhone extends Model
 
     public function validateCode($attribute, $params){
         if($this->$attribute != $this->_verifyCode)
-            $this->addError($attribute, 'Код неверный');
+            $this->addError($attribute, 'Код неверный ' . $this->verifyCode);
             return;
     }
 

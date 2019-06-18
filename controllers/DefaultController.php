@@ -215,6 +215,10 @@ class DefaultController extends Controller
             $model = new User();
             if($model->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model);
+
+            $model2 = new VerifyPhone();
+            if($model2->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model2);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }

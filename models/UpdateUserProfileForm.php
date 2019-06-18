@@ -19,6 +19,7 @@ use yii\bootstrap\Html;
 
 class UpdateUserProfileForm extends Model
 {
+    public $id_user;
     public $name;
     public $surname;
     public $patrinimic;
@@ -40,10 +41,10 @@ class UpdateUserProfileForm extends Model
     public function rules()
     {
         return [
-            [['name', 'surname', 'patrinimic', 'bithday'], 'required'],
+            [['name', 'surname', 'patrinimic', 'bithday', 'email'], 'required'],
             [['passport_number', 'passport_date', 'passport_place', 'reg_address'], 'validatePassport', 'skipOnEmpty' =>false],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
-            [['country', 'sex'], 'safe'],
+            [['country', 'sex', 'id_user'], 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
             [['photo'], 'image', 'extensions' => 'jpg', 'maxSize' => 4100000],
@@ -58,6 +59,9 @@ class UpdateUserProfileForm extends Model
                 'max' => time(),
                 'tooSmall' => 'Проверьте дату.',
                 'tooBig' => 'Вы из будущего?)'],
+            ['email', 'validateUniqueEmail'],
+
+//            ['email', 'validateEmail', 'skipOnEmpty' => false]
 //            ['bithday', 'date', 'max' => (time() - 60*60*24*365*18)],
 
         ];
@@ -90,7 +94,15 @@ class UpdateUserProfileForm extends Model
         }
     }
 
+    public function validateUniqueEmail($attribute){
+        if(User::find()->where(['email' => $this->$attribute])
+            ->andWhere(['<>', 'id' , $this->id_user])->one()
+        )
+            $this->addError($attribute, 'Пользователь с таким email уже существует. Укажите другой адрес или войдите под пользователем с этим email');
+    }
+
     public function setAttr(Profile $profile){
+        $this->id_user = $profile->id_user;
         $this->name = $profile->name;
         $this->patrinimic = $profile->patrinimic;
         $this->surname = $profile->surname;

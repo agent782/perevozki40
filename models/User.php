@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\DateBehaviors;
 use app\components\SerializeBehaviors;
 use app\components\UserBehaviors;
+use function Sodium\compare;
 use wowkaster\serializeAttributes\SerializeAttributesBehavior;
 use Yii;
 use yii\base\NotSupportedException;
@@ -42,8 +43,11 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
     const SCENARIO_SAVE = 'save';
+    const SCENARIO_CHANGE_PASS = 'change_pass';
 
+    public $new_username;
     public $captcha;
+
     /**
      * @inheritdoc
      */
@@ -61,7 +65,11 @@ class User extends ActiveRecord implements IdentityInterface
             'created_at',
             'updated_at',
             'active_at',
-            'status'
+            'status',
+            'new_username'
+        ];
+        $scenarios[self::SCENARIO_CHANGE_PASS] = [
+            'old_pass', 'new_pass','new_pass_repeat'
         ];
 
         return $scenarios;
@@ -107,11 +115,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['username', 'unique', 'skipOnError'  => true,  'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
-            ['username', 'required', 'message' => 'Введите номер телефона', 'message' => 'Введите Ваш номер телефона'],
+            ['username', 'unique', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
+            ['username', 'required', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Введите номер телефона', 'message' => 'Введите Ваш номер телефона'],
             ['email', 'email'],
 //            ['username', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
-            ['username', 'validateLengthPhone'],
+            ['username', 'validateLengthPhone', 'skipOnError'  => false , 'skipOnEmpty' => false],
 //                'message' => 'Неверный формат номера','tooLong' => 'Неверный формат номера','tooShort' => 'Неверный формат номера'
 //            ],
 //            ['email', 'safe'],
@@ -121,7 +129,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
 //            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
-            [['push_ids'], 'safe']
+            [['push_ids', 'new_username'], 'safe'],
         ];
     }
 
@@ -133,6 +141,9 @@ class User extends ActiveRecord implements IdentityInterface
                 $this->addError('username', 'Неверный формат номера');
             }
     }
+
+
+
 
 //    public function beforeValidate()
 //    {

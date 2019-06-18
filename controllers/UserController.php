@@ -9,10 +9,13 @@
 namespace app\controllers;
 
 use app\components\functions\emails;
+use app\models\ChangePasswordForm;
 use app\models\Company;
 use app\models\OrderOLD;
 use app\models\Passport;
 use app\models\Profile;
+use app\models\settings\SettingSMS;
+use app\models\Sms;
 use app\models\UpdateUserProfileForm;
 use app\models\User;
 use app\models\VerifyPhone;
@@ -88,6 +91,17 @@ class UserController extends Controller
             }
         } else {
             return $this->render('signupClientStart', compact(['modelStart']));
+        }
+    }
+
+    public function actionValidateUser(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model3 = new User();
+//            $model3->scenario = User::SCENARIO_CHANGE_PASS;
+            if ($model3->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model3);
         }
     }
 
@@ -247,22 +261,76 @@ class UserController extends Controller
         }
     }
 
-    public function actionChangePhone($id_user = null, $admin = false, $redirect = '/user'){
-        $User = User::findOne($id_user);
+    public function actionChangePhone(){
+        $session = Yii::$app->session;
+        $User = Yii::$app->user->identity;
         if(!$User) throw new HttpException(404, 'Нет такого пользователя');
+        $User->username = '';
+        $User->scenario = User::SCENARIO_SAVE;
         $VerifyPhone = new VerifyPhone();
+        $timer = 0;
+        if($session->has('timer')){
+            $timer = $session->get('timer') - time();
+        }
+        if($timer < 0 ) $timer = 0;
+        else {
+            if($session->get('VerifyPhone')) {
+                $VerifyPhone = $session->get('VerifyPhone');
+                $VerifyPhone->userCode = '';
+            }
+        }
+        if(Yii::$app->request->isPjax) {
+            $User->username = (Yii::$app->request->post('username'));
 
-        if(Yii::$app->request->isAjax){
-            return $this->renderContent('1111111111');
+            if($User->validate()) {
+//            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+                $User->new_username = $User->username;
+                $timer = Yii::$app->request->post('timer');
+                if ($timer <= 0) {
+                    $VerifyPhone->generateCode();
+                    if(SettingSMS::find()->one()->sms_code_update_phone){
+                        $sms = new Sms($User->new_username, $VerifyPhone->getVerifyCode());
+                        if(!$sms->sendAndSave()){
+                            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                            return $this->redirect('/user');
+                        }
+                    }
+                    $session->set('timer', time() + 300);
+                    $timer = $session->get('timer') - time();
+                    $session->set('VerifyPhone', $VerifyPhone);
+                }
+            }
         }
 
-        if($User->load(Yii::$app->request->post())){
+        if($VerifyPhone->load(Yii::$app->request->post())
+            && $User->load(Yii::$app->request->post()))
+        {
+            $User->username = $User->new_username;
+            if($User->save()){
+                $session->remove('VerifyPhone');
+                $User->new_username = '';
+                functions::setFlashSuccess('Номер успешно изменен.');
+            } else {
+                functions::setFlashWarning('Номер не изменен. Попробуйте позже');
+            }
+            return $this->redirect('/user');
+        }
+        return $this->render('change-phone',[
+            'User' => $User,
+            'VerifyPhone' => $VerifyPhone,
+            'timer' => $timer
+        ]);
+    }
 
+    public function actionChangePassword(){
+        $ChangePasswordForm = new ChangePasswordForm();
+
+        if($ChangePasswordForm->load(Yii::$app->request->post()) && $ChangePasswordForm->validate()){
+            return 1;
         }
 
-        return $this->render('change-phone', compact([
-            'User',
-            'VerifyPhone'
-        ]));
+        return $this->render('change-password', [
+            'ChangePasswordForm' => $ChangePasswordForm
+        ]);
     }
 }
