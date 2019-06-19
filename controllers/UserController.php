@@ -58,6 +58,7 @@ class UserController extends Controller
         if ($UpdateUserProfileForm->load(Yii::$app->request->post())) {
             if (!$UpdateUserProfileForm->passport_number) $UpdateUserProfileForm->country = null;
             $UpdateUserProfileForm->photo = UploadedFile::getInstance($UpdateUserProfileForm, 'photo');
+            return var_dump($UpdateUserProfileForm->photo);
             $new_attr = array_diff($UpdateUserProfileForm->attributes, $OldProfileAttr->attributes);
 //            return var_dump($UpdateUserProfileForm->photo);
             if ($new_attr || !$UpdateUserProfileForm->photo) {

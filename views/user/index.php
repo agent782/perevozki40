@@ -18,6 +18,7 @@
     use app\models\UpdateUserProfileForm;
     use yii\widgets\MaskedInput;
     use yii\helpers\Url;
+    use app\models\Tip;
 
     $this->title = Html::encode(
              $modelProfile->fioFull) . ' (ID ' . $modelProfile->id_user . ')'
@@ -39,7 +40,6 @@
                     ]
                 ]
             ]);
-            echo $UpdateUserProfileForm->id_user;
         ?>
             <div class="col-lg-12">
                 <br><br>
@@ -160,6 +160,13 @@
             </div>
             <div class="col-lg-4">
                 <br><br>
+                <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781" width="320" height="120" scrolling="no" style="overflow: hidden;">
+                </iframe>
+                <br>
+                <?=Tip::getTipButtonModal($modelUser, 'push_ids',
+                    ['label' => 'Что такое push уведомления? ' . Html::icon('info-sign')]
+                )?>
+                <br><br>
                 <?= Html::a('Изменить основной номер телефона',
                     Url::to(['/user/change-phone', 'id_user' => Yii::$app->user->id]), ['class' => 'btn btn-block btn-primary'])?>
                 <br><br>
@@ -176,76 +183,4 @@
         </div>
 
     </div>
-
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<?php
-    foreach (Yii::$app->authManager->getRolesByUser(Yii::$app->user->id) as $role){
-        echo $role->name . '<br>';
-    }
-    var_dump(Yii::$app->user->can('car_owner'));
-?>
-<br>
-<?//= var_dump($_SERVER)?>
-    <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781&type=middle" width="420" height="110" scrolling="no" style="overflow: hidden;">
-    </iframe>
-<br>
-<?php
-    $url = Yii::$app->urlManager->createAbsoluteUrl([
-        '//https://pushall.ru/api.php',
-        'type' => 'broadcast',
-        'id' => '4781',
-        'key' => 'fbbc4ea3fbe1cdb2f7fc1b4246d48174',
-        'title' => 'test1',
-        'text' => 'TEST TEST',
-        'url' => 'http://2.grigorov.org/order/vehicle',
-        'priority' => '1'
-    ], 'https');
-?>
-<?= $url?>
-<?= Html::a('Отправить',
-        $url,  ['class' => 'btn btn-primary'])?>
-<br>
-<?= Yii::getAlias('@app')?>
-<br>
-<?= $modelUser->id;?>
-<br>
-<?= Yii::$app->user->can('user') . ' '  .key(Yii::$app->authManager->getRolesByUser($modelUser->id))?>
-<!--<?//= $modelUser->profile->getRolesToString()?>-->
-    <br>
-<?= $modelUser->username?>
-    <br>
-<?= $modelUser->email?>
-    <br>
-<?= $modelUser->created_at?>
-    <br>
-<?= ($modelUser->profile->name)?>
-    <br>
-<?= $modelUser->profile->surname?>
-    <br>
-<?= $modelUser->profile->patrinimic?>
-    <br>
-<?= $modelUser->profile->getSex()?>
-<br>
-<img src="<?=$modelUser->profile->urlPhoto?>" style="width: auto; height: 100px"/>
-    <br>
-
-<br>
-<?php
-    if($modelUser->profile->passport):
-?>
-<?= $modelUser->profile->passport->number?>
-<br>
-<?= $modelUser->profile->passport->date?>
-<br>
-<?= $modelUser->profile->passport->place?>
-<br>
-<?= $modelUser->profile->passport->country?>
-<br>
-<?php
-    endif;
-?>
-<?php
-
-    var_dump(($modelUser->push_ids));
-?>
 

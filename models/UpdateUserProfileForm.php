@@ -47,7 +47,7 @@ class UpdateUserProfileForm extends Model
             [['country', 'sex', 'id_user'], 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
-            [['photo'], 'image', 'extensions' => 'jpg', 'maxSize' => 4100000],
+            [['photo'], 'image', 'extensions' => 'jpg, bmp', 'maxSize' => 6100000],
             [['passport_number', 'reg_address'], 'string', 'max' => 255],
             [['email','email2'], 'email'],
             [['bithday'], 'date', 'format' => 'php:d.m.Y',

@@ -25,7 +25,7 @@ class ChangePasswordForm extends Model
         return [
             ['new_pass', 'string', 'min' => 6, 'max' => 64, 'skipOnEmpty' => false],
             ['new_pass_repeat', 'compare', 'compareAttribute'  => 'new_pass', 'skipOnEmpty' => false],
-            [['new_pass_repeat', 'old_pass'], 'required', 'skipOnEmpty' => false],
+            [['new_pass_repeat', 'old_pass', 'new_pass'], 'required', 'skipOnEmpty' => false],
             ['old_pass', 'validatePassword', 'skipOnError' => true, 'skipOnEmpty' => false]
         ];
     }
@@ -40,6 +40,15 @@ class ChangePasswordForm extends Model
                 $this->addError($attribute, 'Неверный  "Пароль".');
             }
         }
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'old_pass' => 'Текущий пароль',
+            'new_pass' => 'Новый пароль',
+            'new_pass_repeat' => 'Новый пароль еще раз',
+        ];
     }
 
     public function getUser()

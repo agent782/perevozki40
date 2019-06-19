@@ -20,6 +20,11 @@ $this->title = 'Смена пароля.';
     <h3> <?= $this->title?> </h3>
     <?php
         $form = ActiveForm::begin([
+            'fieldConfig' => [
+                'inputOptions' => [
+                    'style' => 'width:auto',
+                ]
+            ]
 //            'enableAjaxValidation' => true,
 //            'validationUrl' => '/user/validate-user'
         ]);
@@ -27,7 +32,8 @@ $this->title = 'Смена пароля.';
     <?= $form->field($ChangePasswordForm, 'old_pass')->passwordInput()?>
     <?= $form->field($ChangePasswordForm, 'new_pass')->passwordInput()?>
     <?= $form->field($ChangePasswordForm, 'new_pass_repeat')->passwordInput()?>
-    <?= Html::submitButton()?>
+    <?= Html::a('Отмена', '/user', ['class' => 'btn btn-warning'])?>
+    <?= Html::submitButton('Сменить пароль', ['class' => 'btn btn-success'])?>
 
     <?php
         $form::end();

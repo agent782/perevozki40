@@ -48,7 +48,7 @@ class Tip extends \yii\db\ActiveRecord
         ];
     }
 
-    static public function getTipButtonModal($model, string $attr){
+    static public function getTipButtonModal($model, string $attr, array $ToggleButton = []){
         $Model = '';
         if(is_string($model)){
             $Model = $model;
@@ -58,7 +58,8 @@ class Tip extends \yii\db\ActiveRecord
         return
             ShowMessageWidget::widget([
                'helpMessage' => self::findOne(['model' => $Model, 'attribute' => $attr])->description,
-                'header' => 'Подсказка'
+                'header' => 'Подсказка',
+                'ToggleButton' => $ToggleButton
             ]);
 
     }
