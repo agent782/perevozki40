@@ -87,6 +87,7 @@ sendPush
 ____________________________
 ПЕРЕНОС НА СЕРВЕР
 
+php.ini upload_max_filesize "2M" УВЕЛИЧИТЬ
 Поменять адрес колбэк экшена на pushall.ru
 Включить обработку событий на mysql сервере
 event_scheduler=ON в /etc/mysql/mysql.conf.d/mysqld.cnf

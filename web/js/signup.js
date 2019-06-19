@@ -3,7 +3,7 @@
  */
 $(document).ready(function () {
     // $('#selectPhoto').on('click', function () {
-        var filesExt = ['jpg', 'gif', 'png', 'bmp']; // массив расширений
+        var filesExt = ['jpg', 'gif', 'png', 'bmp', 'jpeg']; // массив расширений
         $('#pathPhoto').change(function(){
             var parts = $(this).val().split('.');
             if(filesExt.join().search(parts[parts.length - 1]) != -1){

@@ -48,15 +48,15 @@ class OrderController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['user', 'car_owner', 'client', 'admin', 'dispetcher']
-                    ]
-                ],
-            ]
+//            'access' => [
+//                'class' => AccessControl::class,
+//                'rules' => [
+//                    [
+//                        'allow' => true,
+//                        'roles' => ['user', 'car_owner', 'client', 'admin', 'dispetcher']
+//                    ]
+//                ],
+//            ]
         ];
     }
 
@@ -168,6 +168,7 @@ class OrderController extends Controller
         $TypiesPayment = TypePayment::getTypiesPaymentsArray();
         $companies =[];
         if($user_id){
+//            $modelOrder->scenario = Order::SCENARIO_NEW_ORDER;
             $user = Yii::$app->user->identity;
             $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
         }
@@ -179,8 +180,6 @@ class OrderController extends Controller
                     $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
                     $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
                     $session->set('modelOrder', $modelOrder);
-//                    var_dump($modelOrder->getErrors());
-//                    return;
                     return $this->render('create2', [
                         'modelOrder' => $modelOrder,
                         'BTypies' => $BTypies,
@@ -194,6 +193,7 @@ class OrderController extends Controller
                     functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     return $this->redirect('create');
                 }
+
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     $VehicleAttributes = Vehicle::getArrayAttributes($modelOrder->id_vehicle_type, $modelOrder->body_typies);
                     $session->set('modelOrder', $modelOrder);

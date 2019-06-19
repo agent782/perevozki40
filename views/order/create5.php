@@ -19,7 +19,6 @@ use app\components\widgets\ShowMessageWidget;
 
 <h4>Шаг 5 из 5.</h4>
 <div class="container-fluid">
-<!--    --><?php //\yii\widgets\Pjax::begin(['id' => 'create5']);?>
 <?php
 
     $form = ActiveForm::begin([
@@ -142,7 +141,6 @@ use app\components\widgets\ShowMessageWidget;
 </div>
 <?php
     ActiveForm::end();
-//\yii\widgets\Pjax::end();
 ?>
 </div>
 <script>

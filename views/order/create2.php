@@ -18,9 +18,6 @@ $this->registerJsFile('/js/order.js');
         'validationUrl' => '/order/validate-order',
     ]);
     echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
-
-//    $modelOrder->loading_typies[0] = '2';
-//    var_dump($modelOrder);
 ?>
 
 <?=

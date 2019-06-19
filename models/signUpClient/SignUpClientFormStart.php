@@ -83,6 +83,7 @@ class SignUpClientFormStart extends Model
             $dir = Yii::getAlias('@userPhotoDir').'/';
             $filename = Yii::$app->user->getId() . '.' . $this->photo->extension;
             $this->photo->saveAs($dir.$filename);
+            Image::autorotate($dir.$filename)->save();
             Image::thumbnail($dir.$filename, 768, null)->save();
             return $filename;
         }else{

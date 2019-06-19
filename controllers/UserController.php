@@ -58,7 +58,6 @@ class UserController extends Controller
         if ($UpdateUserProfileForm->load(Yii::$app->request->post())) {
             if (!$UpdateUserProfileForm->passport_number) $UpdateUserProfileForm->country = null;
             $UpdateUserProfileForm->photo = UploadedFile::getInstance($UpdateUserProfileForm, 'photo');
-            return var_dump($UpdateUserProfileForm->photo);
             $new_attr = array_diff($UpdateUserProfileForm->attributes, $OldProfileAttr->attributes);
 //            return var_dump($UpdateUserProfileForm->photo);
             if ($new_attr || !$UpdateUserProfileForm->photo) {
@@ -265,6 +264,14 @@ class UserController extends Controller
     public function actionChangePhone(){
         $session = Yii::$app->session;
         $User = Yii::$app->user->identity;
+        $Profile = $User->profile;
+        if($Profile){
+            $history_updates = $Profile->history_updates;
+            $history_updates[] = [
+                time() => ['user' => $User->attributes]
+            ];
+            $Profile->history_updates = $history_updates;
+        }
         if(!$User) throw new HttpException(404, 'Нет такого пользователя');
         $User->username = '';
         $User->scenario = User::SCENARIO_SAVE;
@@ -307,7 +314,11 @@ class UserController extends Controller
             && $User->load(Yii::$app->request->post()))
         {
             $User->username = $User->new_username;
+
             if($User->save()){
+                if($Profile) {
+                    $Profile->save(false);
+                }
                 $session->remove('VerifyPhone');
                 $User->new_username = '';
                 functions::setFlashSuccess('Номер успешно изменен.');

@@ -5,7 +5,7 @@ namespace app\models;
 use app\components\CryptBehaviors;
 use app\components\DateBehaviors;
 use app\components\SerializeBehaviors;
-use nickcv\encrypter\behaviors\EncryptionBehavior;
+use app\components\SerializeAndCryptBehaviors;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
 use app\components\functions\functions;
@@ -82,6 +82,11 @@ class Profile extends \yii\db\ActiveRecord
 
     const SCENARIO_SAFE_SAVE = 'safe_save';
 
+    public $Update = [
+        'user' => [],
+        'profile' => [],
+        'passport' => []
+    ];
     /**
      * @inheritdoc
      */
@@ -171,11 +176,16 @@ class Profile extends \yii\db\ActiveRecord
             ],
             'serialize' => [
                 'class' => SerializeBehaviors::class,
-                'arrAttributes' => ['history_updates', 'update_to_check']
-            ]
+                'arrAttributes' => ['update_to_check']
+            ],
+            'encryption' => [
+                'class' => SerializeAndCryptBehaviors::class,
+                'attrs' => [
+                    'history_updates'
+                ],
+            ],
         ];
     }
-
 
 
     /**

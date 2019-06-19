@@ -2,6 +2,7 @@
     namespace app\components\functions;
     use Yii;
     use app\models\User;
+    use yii\imagine\Image;
     use yii\web\UploadedFile;
 
     /**
@@ -39,6 +40,8 @@ class functions
         $model->$attribute = $image;
         $filename = $filename . '.' . $image->extension;
         if ($image->saveAs($savePath . $filename)) {
+            Image::autorotate($savePath.$filename)->save();
+
             \Yii::$app->session->setFlash('success', 'Файл ' . $image . ' успешно сохранен.');
             return $filename;
         }

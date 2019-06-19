@@ -96,6 +96,8 @@ class VehicleForm extends Model
 
         ];
     }
+
+
     public function validateTonnage($attribute){
         if(!$this->$attribute &&
             ($this->bodyTypeId != Vehicle::BODY_crane

@@ -47,7 +47,7 @@ class UpdateUserProfileForm extends Model
             [['country', 'sex', 'id_user'], 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
-            [['photo'], 'image', 'extensions' => 'jpg, bmp', 'maxSize' => 6100000],
+            [['photo'], 'file', 'extensions' => 'jpg, jpeg', 'maxSize' => 8100000],
             [['passport_number', 'reg_address'], 'string', 'max' => 255],
             [['email','email2'], 'email'],
             [['bithday'], 'date', 'format' => 'php:d.m.Y',
@@ -173,7 +173,9 @@ class UpdateUserProfileForm extends Model
                 ?Yii::$app->user->getId() . '_upd.' . $this->photo->extension
                 :Yii::$app->user->getId() . '.' . $this->photo->extension;
             $this->photo->saveAs($dir.$filename);
+            Image::autorotate($dir.$filename)->save();
             Image::thumbnail($dir.$filename, 768, null)->save();
+
             return $filename;
         }else{
             return null;

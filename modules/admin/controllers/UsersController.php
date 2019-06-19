@@ -165,6 +165,7 @@ class UsersController extends Controller
             }
             if($Profile->update_to_check['passport_number']){
                 if($Profile->passport){
+                    $Profile->Update['passport'] = $Profile->passport->attributes();
                     if($Profile->passport->number != $Profile->update_to_check['passport_number']
                         || $Profile->passport->date != $Profile->update_to_check['passport_date']
                         || $Profile->passport->place != $Profile->update_to_check['passport_place']
@@ -176,8 +177,10 @@ class UsersController extends Controller
                         $Profile->passport->country = $Profile->update_to_check['country'];
 
                         if(!$Profile->passport->save()){
+                            $Profile->Update['passport'] = [];
                             functions::setFlashWarning('Ошибка сохранения данных паспорта!');
                         }
+
                     }
                 } else {
                     $Passport = new Passport();
@@ -194,24 +197,33 @@ class UsersController extends Controller
                 }
             }
             if($Profile->update_to_check['email'] != $Profile->email){
+                $Profile->Update['user'] = $Profile->user->attributes;
                 $Profile->user->email = $Profile->update_to_check['email'];
                 if(!$Profile->user->save(false)){
+                    $Profile->Update['user'] = [];
                     functions::setFlashWarning('шибка сохранения email');
                 }
             }
-
+            $update_attrs = $Profile->update_to_check;
             if (array_key_exists('photo', $Profile->update_to_check)) {
-                $update_attrs = $Profile->update_to_check;
                 unset($update_attrs['photo']);
-                $Profile->setAttributes($update_attrs, false);
             }
+            $Profile->Update['profile'] = $Profile->attributes;
+            $Profile->setAttributes($update_attrs, false);
 
             $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_YES;
             $Profile->update_to_check = null;
-
+            $history_updates = $Profile->history_updates;
+            if(!$history_updates) $history_updates = [];
+            $history_updates[] = [
+                time() => $Profile->Update
+            ];
+            $Profile->history_updates = $history_updates;
             if ($Profile->save()) {
+
                 functions::setFlashSuccess('Профиль успешно изменен');
             } else {
+                $Profile->Update['profile'] = [];
                 functions::setFlashWarning('Ошибка на сервере. Профиль не ихменен.');
             }
 

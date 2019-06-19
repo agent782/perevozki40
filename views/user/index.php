@@ -19,6 +19,7 @@
     use yii\widgets\MaskedInput;
     use yii\helpers\Url;
     use app\models\Tip;
+    use kartik\form\ActiveForm;
 
     $this->title = Html::encode(
              $modelProfile->fioFull) . ' (ID ' . $modelProfile->id_user . ')'
@@ -30,7 +31,7 @@
         <br>
         <div class="row">
         <?php
-            $form = \yii\bootstrap\ActiveForm::begin([
+            $form = ActiveForm::begin([
                 'enableAjaxValidation' => true,
                 'validationUrl' => '/user/validate-passport',
                 'fieldConfig' => [
@@ -51,7 +52,10 @@
             </div>
             <div class="col-lg-4" id="profile">
                 <label class="h4">Профиль <?=
-                        Html::a(Html::icon('edit', ['title' => 'Редактировать']), '#', ['id' => 'edit_profile']);
+                        Html::a(Html::icon('edit', ['title' => 'Редактировать'])
+                            . ' <i style="font-size: 10px;">редактировать</i>', '#', [
+                            'id' => 'edit_profile',
+                        ]);
                     ?>
                 </label>
 
@@ -96,16 +100,26 @@
                         ]
                     ])
                 ;?>
+
                 <?= $form->field($UpdateUserProfileForm, 'photo')->fileInput([
                     'id' => 'pathPhoto',
-                    'disabled' => true
+                    'disabled' => true,
+                    [ 'pluginOptions' => [
+                        'showPreview' => true,
+                        'showCaption' => true,
+                        'showRemove' => true,
+                        'showUpload' => false
+                    ]]
                 ]) ?>
-                <?= Html::img($modelProfile->urlPhoto, ['id' => 'photoPreview', 'class' => 'profile_photo_min'])?>
+                <?= Html::img($modelProfile->urlPhoto, ['id' => 'photoPreview',
+                    'class' => 'profile_photo_min'
+                ])?>
 
             </div>
             <div class="col-lg-4" id="passport">
                 <label class="h4">Паспорт и регистрация <?=
-                    Html::a(Html::icon('edit', ['title' => 'Редактировать']), '#', ['id' => 'edit_passport']);
+                    Html::a(Html::icon('edit', ['title' => 'Редактировать'])
+                        . '<i style="font-size: 10px;"> редактировать</i>', '#', ['id' => 'edit_passport']);
                     ?>
                 </label>
 
