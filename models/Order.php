@@ -981,13 +981,12 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getClientInfo(){
+    public function getClientInfo($html = true){
         $return = '';
         $return .= $this->profile->fioFull
             . '<br>'
-            . 'Телефон: <a href="tel:+7'. $this->user->username .'">'. $this->user->username. '</a>'
-        ;
-        if($this->profile->phone2) $return .= ' (доп. тел.: <a href="tel:+7'. $this->profile->phone2 .'">'. $this->profile->phone2. '</a>)';
+            . 'Телефон: '. functions::getHtmlLinkToPhone($this->user->username, $html);
+        if($this->profile->phone2) $return .= ' (доп. тел.: ' . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
         if($this->id_company) $return .= '<br>' .$this->company->name . '<br>';
 
         return $return;
@@ -1114,7 +1113,7 @@ class Order extends \yii\db\ActiveRecord
                     $message_client = 'Водитель (ТC: '. $vehicle->brandAndNumber .') отказался от заказа.<br> Поиск ТС продолжится до '
                         . $valid_datetime
                         . '<br>. Вы можете оценить действия водителя в Личном кабинете, в разделе Уведомления. <br>'
-                        . $this->getFullNewInfo(true) . '<br>';
+                        . $this->getFullNewInfo(true, false, true, false) . '<br>';
                     $push_to_vehicle = true;
                     $email_to_vehicle = true;
 
@@ -1160,14 +1159,14 @@ class Order extends \yii\db\ActiveRecord
                 $title_vehicle = 'Вы приняли заказ №'.$this->id.'.';
                 $message_vehicle = 'Вы приняли заказ №'
                     . $this->id  . '<br>'
-                    . $this->getFullInfoAboutVehicle() . '<br>'
-                    . $this->getFullNewInfo(false, true, false)
+                    . $this->getFullInfoAboutVehicle(true, true, true, false) . '<br>'
+                    . $this->getFullNewInfo(false, true, false, false)
                     . '<br><strong>Телефоны клиента в разделе Заказы на вкладке "В процессе...". </strong><br>';
 
 
                 $message_client = $this->getFullInfoAboutVehicle(false, false, false)
                     . '<br><strong>Телефоны, паспорт и ВУ водителя в разделе Заказы на вкладке "В процессе...". </strong><br><br>'
-                    . $this->getFullNewInfo(true,true, false);
+                    . $this->getFullNewInfo(true,true, false, false);
 
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
@@ -1178,6 +1177,10 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_EXPIRED:
+                $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
+                $message_client = 'Вы можете повторить поиск в разделе "Заказы" на вкладке "Отмененные".';
+
+                $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
             case self::STATUS_CONFIRMED_VEHICLE:
                 $title_client = 'Заказ №'.$this->id.' выполнен.';
@@ -1199,7 +1202,7 @@ class Order extends \yii\db\ActiveRecord
                 if($this->status == self::STATUS_NEW || $this->status == self::STATUS_IN_PROCCESSING){
                     $title_client = 'Заказ №'.$this->id.' отменен.';
                     $message_client = 'Вы отменили Ваш заказ.  <br>'
-                        . $this->getFullNewInfo(true);
+                        . $this->getFullNewInfo(true, false, true, false);
                     $this->deleteEventChangeStatusToExpired();
                 }
                 if($this->status == self::STATUS_VEHICLE_ASSIGNED){
@@ -1212,12 +1215,12 @@ class Order extends \yii\db\ActiveRecord
                     $title_vehicle = 'Заказ №'.$this->id.' отменен клиентом.';
                     $message_vehicle = 'Клиент отменил принятый Вами заказ на <br>'
                         .'ТС: ' .$vehicle->brandAndNumber . '<br>'
-                        . $this->getFullNewInfo(false, true) . '<br>'
+                        . $this->getFullNewInfo(false, true, false, false) . '<br>'
                         .'. <br> При желании Вы можете оценить действие Клиента, что повлияет на его рейтинг клиента.'
                     ;
                     $message_client = 'Вы отменили Заказ. Пожалуйста, позвоните водителю и сообщите об отмене заказа <br>'
                         . $this->vehicleFioAndPhone . '<br>'
-                        . $this->getFullNewInfo(true) . '<br>';
+                        . $this->getFullNewInfo(true, false, true, false) . '<br>';
                     $push_to_vehicle = true;
                     $email_to_vehicle = true;
 
@@ -1318,7 +1321,7 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
-    public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false, $showPriceZones = true){
+    public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false, $showPriceZones = true, $html = true){
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
         $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
         $return .= $this->getShortInfoForClient() . ' <br>';
@@ -1326,7 +1329,7 @@ class Order extends \yii\db\ActiveRecord
         $return .= ($showPriceZones) ? 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>' :'';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
-            ?'Заказчик:' . $this->clientInfo . ' <br>'
+            ?'Заказчик:' . $this->getClientInfo($html) . ' <br>'
             :'Заказчик:' . $this->clientInfoWithoutPhone . ' <br>';
 
         return $return;
@@ -1417,7 +1420,7 @@ class Order extends \yii\db\ActiveRecord
 
     }
 
-    public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true, $showDriveLicence = true){
+    public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true, $showDriveLicence = true, $html = false){
         $return = '';
         if(!$this->id_vehicle) return false;
         $vehicle = $this->vehicle;
@@ -1429,7 +1432,7 @@ class Order extends \yii\db\ActiveRecord
             if($driver) $return .= 'Водитель: ' . $driver->getFullInfo($showPhones, $showPassport, $showDriveLicence);
             $return .= 'Владелец ТС: ' . $vehicle_user->getProfileInfo($showPhones);
         } else {
-            if($vehicle_user) $return .= 'Водитель: ' . $vehicle_user->getDriverFullInfo($showPhones, $showPassport, $showDriveLicence);
+            if($vehicle_user) $return .= 'Водитель: ' . $vehicle_user->getDriverFullInfo($showPhones, $showPassport, $showDriveLicence, $html);
         }
         return $return;
     }

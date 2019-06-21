@@ -13,15 +13,11 @@ use yii\bootstrap\ActiveForm;
                 'layout' => 'horizontal'
             ]); ?>
 
-    <?= $form->field($model, 'id')->textInput() ?>
 
     <?= $form->field($model, 'last_num_contract')->textInput() ?>
 
-    <?= $form->field($model, 'id_our_company')->textInput() ?>
-
     <?= $form->field($model, 'noPhotoPath')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'FLAG_EXPIRED_ORDER')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -130,7 +130,7 @@ class functions
 
     static public function getHtmlLinkToPhone(string $phone, $html =true){
         if(!$html) return $phone;
-        return 'Телефон: <a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
+        return '<a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
     }
 
     static public function DownloadFile(string $pathToFile, string $redirect){

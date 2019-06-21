@@ -74,6 +74,8 @@ use app\components\widgets\ShowMessageWidget;
         ])
     ?>
 
+    <input value="<?= $user_id?>" hidden disabled>
+
     <?= $form->field($modelOrder, 'type_payment', [
         'errorOptions' => [
             'class' => 'help-block' ,
@@ -83,7 +85,9 @@ use app\components\widgets\ShowMessageWidget;
         'id' => 'type_payment',
         'encode' => false,
         'onchange' => '
-            if($(this).find("input:checked").val()  == 3) {
+            if($(this).find("input:checked").val()  == 3 
+                && $("#id_user").val()
+            ) {
                 $("#companies").show();  
                   $("#companies").removeAttr("checked");
             } else{
@@ -96,7 +100,7 @@ use app\components\widgets\ShowMessageWidget;
         '
     ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
     <?php
-        $companiesHide = ($companies && $modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER) ? '' : 'hidden';
+        $companiesHide = ($companies && $modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER && $modelOrdel->id_user) ? '' : 'hidden';
     ?>
     <div id="companies" <?= $companiesHide?> >
     <?= $form->field($modelOrder, 'id_company',[

@@ -231,7 +231,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/setting',
                             'visible' => Yii::$app->user->can('admin'),
                         ],
-
+                        [
+                            'label' => 'Системные инструменты',
+                            'url' => '/admin/default/system-tools',
+                            'visible' => Yii::$app->user->can('admin'),
+                        ],
                         ['label' => 'Выход', 'url' => '/default/logout']
                     ];
             ?>

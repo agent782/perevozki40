@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Setting;
+use app\models\setting\Setting;
 use app\models\SettingSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;

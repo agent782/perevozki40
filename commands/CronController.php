@@ -32,8 +32,9 @@ class CronController extends Controller
 
             foreach ($orders as $order) {
 
+                $order->changeStatus(Order::STATUS_EXPIRED, $order->id_user);
+//                $user = User::find()->where(['id' => $order->id_user])->one();
 
-                $user = User::find()->where(['id' => $order->id_user])->one();
 //                functions::sendEmail(
 //                    $user->email,
 //                    null,
@@ -47,22 +48,22 @@ class CronController extends Controller
 //                        'text' => 'views/Order/expiredOrder_text'
 //                    ]
 //                );
-                $Message = new Message([
-                    'id_to_user' => $order->id_user,
-                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
-                    'text' => 'Вы можете повторить поиск в Личном кабинете в разделе Заказы на вкладке Отмененные.',
-                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
-                    'push_status' => Message::STATUS_NEED_TO_SEND,
-                    'email_status' => Message::STATUS_NEED_TO_SEND,
-                    'can_review_client' => false,
-                    'can_review_vehicle' => false,
-                    'id_order' => $order->id
-                ]);
-                $Message->sendPush();
+//                $Message = new Message([
+//                    'id_to_user' => $order->id_user,
+//                    'title' => 'Заказ №' . $order->id . '. Машина не найдена.',
+//                    'text' => 'Вы можете повторить поиск в Личном кабинете в разделе Заказы на вкладке Отмененные.',
+//                    'url' => Url::to(['/order/view', 'id' => $order->id], true),
+//                    'push_status' => Message::STATUS_NEED_TO_SEND,
+//                    'email_status' => Message::STATUS_NEED_TO_SEND,
+//                    'can_review_client' => false,
+//                    'can_review_vehicle' => false,
+//                    'id_order' => $order->id
+//                ]);
+//                $Message->sendPush();
 
-                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
-                $order->scenario = $order::SCENARIO_UPDATE_STATUS;
-                $order->save();
+//                $order->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
+//                $order->scenario = $order::SCENARIO_UPDATE_STATUS;
+//                $order->save();
             }
             $setting->FLAG_EXPIRED_ORDER = 1;
             if($setting->save()) echo 'y'; else echo 'n';

@@ -29,6 +29,7 @@ use yii\web\HttpException;
 use yii\web\UploadedFile;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 class UserController extends Controller
 {
@@ -190,6 +191,7 @@ class UserController extends Controller
                 $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
                 if ($user->save() && $profile->save()) {
                     functions::setFlashSuccess('Пользовватель сохранен.');
+                    $this->redirect([$redirect, 'id_user' => $user->id]);
                 } else {
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }

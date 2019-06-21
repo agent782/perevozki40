@@ -8,8 +8,9 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'ЗАКАЗЫ';
-//$this->params['breadcrumbs'][] = $this->title;
+
 ?>
+
 <div class="order-index">
     <h3><?= Html::encode($this->title) ?></h3>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

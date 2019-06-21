@@ -24,11 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+//            'id',
             'last_num_contract',
-            'id_our_company',
             'noPhotoPath',
-            'FLAG_EXPIRED_ORDER',
+//            'FLAG_EXPIRED_ORDER',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

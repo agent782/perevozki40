@@ -119,19 +119,19 @@ class OrderController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $modelOrder = new Order();
-
-        if ($modelOrder->load(Yii::$app->request->post())) {
-            var_dump($modelOrder->id_user);
-            return;
-        }
-
-        return $this->render('create', [
-            'modelOrder' => $modelOrder,
-        ]);
-    }
+//    public function actionCreate()
+//    {
+//        $modelOrder = new Order();
+//
+//        if ($modelOrder->load(Yii::$app->request->post())) {
+//            var_dump($modelOrder->id_user);
+//            return;
+//        }
+//
+//        return $this->render('create', [
+//            'modelOrder' => $modelOrder,
+//        ]);
+//    }
 
     /**
      * Updates an existing Order model.

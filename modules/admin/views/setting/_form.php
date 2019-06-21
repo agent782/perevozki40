@@ -16,8 +16,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'last_num_contract')->textInput() ?>
 
-    <?= $form->field($model, 'id_our_company')->textInput() ?>
-
     <?= $form->field($model, 'noPhotoPath')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">

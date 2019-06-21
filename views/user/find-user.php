@@ -22,7 +22,7 @@ $this->title = 'Поиск пользователя';
     AutoComplete::widget([
         'clientOptions' => [
 //            'source' => Url::to(['/user/autocomplete']),
-            'source' => \app\models\Profile::getArrayForAutoComplete(true),
+            'source' => \app\models\Profile::getArrayForAutoComplete(false),
             'autoFill' => true,
             'minLength' => '0',
             'select' => new JsExpression('function(event, ui) {               

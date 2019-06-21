@@ -52,7 +52,9 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'ТС',
                 'format' => 'raw',
-                'attribute' => 'fullInfoAboutVehicle'
+                'value' => function($order){
+                    return $order->getFullInfoAboutVehicle(true,true,true,true);
+                }
             ],
             [
             'label' => 'Маршрут',

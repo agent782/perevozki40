@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Добавить ТС', [
             '/user/find-user',
-            'redirect' => '/vehicle/create',
+            'redirect' => \yii\helpers\Url::to(['/vehicle/create']),
             'redirect2' => '/logist/vehicle'],
             ['class' => 'btn btn-success'
             ])

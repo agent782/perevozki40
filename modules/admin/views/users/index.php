@@ -25,7 +25,11 @@ echo GridView::widget([
         [
             'attribute' => 'profile.photoFullPath',
             'format' => ['image',['width'=>'60']],
-            'value' => function($dataProvider) { return $dataProvider->profile->photoFullPath; },
+            'value' => function($model) {
+                if($model->profile) {
+                    return $model->profile->photoFullPath;
+                }
+            },
         ],
 //        'profile.photoFullPath:image',
         'profile.name',

@@ -89,7 +89,7 @@ class VehicleForm extends Model
                 'ep',
                 'price_zones'
             ], 'safe'],
-            ['photo', 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 4000000],
+            ['photo', 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 7000000],
             [['instruction_to_driver', 'confidentiality_agreement', 'use_conditions'],
                 'compare', 'compareValue' => 1, 'operator' => '==', 'skipOnEmpty' => false, 'skipOnError' => false,
                 'message' => 'Подтвердите согласие.'],

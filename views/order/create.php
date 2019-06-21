@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 use kartik\rating\StarRating;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Order */
+/* @var $modelOrder app\models\Order */
 
 $this->title = 'Заказ автотранспорта.';
 //$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];

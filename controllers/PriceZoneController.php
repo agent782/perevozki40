@@ -168,6 +168,7 @@ class PriceZoneController extends Controller
                 }
                 $modelOld->id = $model->id;
                 $modelOld->status = $modelOld::STATUS_ACTIVE;
+                $modelOld->save();
             }
             functions::setFlashWarning('Ошибка обновления тарифа');
         }
@@ -185,8 +186,9 @@ class PriceZoneController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        $model = $this->findModel($id);
+        $model->status = PriceZone::STATUS_OLD;
+        $model->save(false);
         return $this->redirect(['index']);
     }
 

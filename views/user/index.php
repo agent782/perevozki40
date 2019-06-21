@@ -181,7 +181,7 @@
                     ['label' => 'Что такое push уведомления? ' . Html::icon('info-sign')]
                 )?>
                 <br><br>
-                <?= Html::a('Изменить основной номер телефона',
+                <?= Html::a('Изменить основной номер телефона <br>' . $modelUser->username,
                     Url::to(['/user/change-phone', 'id_user' => Yii::$app->user->id]), ['class' => 'btn btn-block btn-primary'])?>
                 <br><br>
                 <?= Html::a('Изменить пароль', '/user/change-password', ['class' => 'btn btn-block btn-primary'])?>

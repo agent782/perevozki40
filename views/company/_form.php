@@ -42,18 +42,13 @@ $this->registerJsFile('/js/addCompany.js');
         <?= $form->field($modelCompany, 'ogrn')->input('text',['id' => 'ogrn'])?>
         <?= $form->field($modelCompany, 'ogrn_date')
             ->input('text', ['id' => 'ogrn_date', 'placeholder' => '01.01.2000',])
-    ->widget(MaskedInput::className(),[
-        'clientOptions' => [
-
-        ],
-        'mask' => '99.99.9999',
-        'options' => [
-            'type' => 'tel',
-            'autocorrect' => 'off',
-            'autocomplete' => 'date',
-            'placeholder' => '01.01.2000'
-        ]
-    ])
+//    ->widget(MaskedInput::class,[
+//        'mask' => '99.99.9999',
+//        'options' => [
+//            'type' => 'tel',
+//            'placeholder' => '31.01.2000'
+//        ]
+//    ])
 
         ?>
         <?= $form->field($modelCompany, 'FIO_contract')->input('text', ['id' => 'FIO_contract'])?>

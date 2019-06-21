@@ -172,7 +172,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             ])
                             . '  '
                             . Html::a(Html::img('/img/icons/delete-26.png'),
-                                Url::to(['/poa/delete-all-poa-files', 'idCompany' => $modelPOA->id_company, 'idProfile' => $modelPOA->id_profile, 'return' => '/poa']),
+                                Url::to(['/poa/delete-all-poa-files', 'idCompany' => $modelPOA->id_company,
+                                    'idProfile' => $modelPOA->id_profile, 'return' => '/poa']),
                                 ['class' => 'btn',
                                     'data-confirm' => 'Удалить подписанную доверенность?',
                                     'data-toggle' => 'tooltip',

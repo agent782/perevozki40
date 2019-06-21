@@ -1,3 +1,16 @@
+
+=========================================
+для unlinlAll в system-tools
+
+Решение для MacOS 10.13 и MAMP/XAMPP (просто сменить путь к сокету).
+Нужно создать симлинк на сокет MySQL, чтобы PHP смог его увидеть. Это решает проблему.
+
+Для этого прописать в консоли:
+sudo mkdir /var/mysql
+cd /var/mysql && sudo ln -s /Applications/MAMP/tmp/mysql/mysql.sock
+
+++++++++++++++++++++++++++++++++++++++++++
+
 Html в сообщениях об ошибке валидации
 
 <?= $form->field($modelOrder, 'type_payment', [

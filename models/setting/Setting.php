@@ -10,7 +10,6 @@ use Yii;
  *
  * @property integer $id
  * @property integer $last_num_contract
- * @property integer $id_our_company
  * @property string $noPhotoPath
  * @property integer $FLAG_EXPIRED_ORDER
  */
