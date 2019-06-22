@@ -18,7 +18,7 @@ use yii\helpers\Url;
     <?php $this->beginBody() ?>
     <?= $content ?>
     <br>
-    С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', Url::home('http'))?>
+    С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', Url::to('perevozki40.ru','http'))?>
     <?php $this->endBody() ?>
 </body>
 </html>
