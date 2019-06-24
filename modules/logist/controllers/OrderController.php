@@ -62,6 +62,7 @@ class OrderController extends Controller
     public function actionIndex()
     {
         $searchModel = new OrderSearch();
+        $searchModel->type_payments = [];
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider_newOrders = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider_in_process = $searchModel->search(Yii::$app->request->queryParams);
@@ -69,26 +70,27 @@ class OrderController extends Controller
         $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider_newOrders->query
-            ->where([Order::tableName().'.status' => Order::STATUS_NEW])
-            ->orWhere([Order::tableName().'.status' => Order::STATUS_IN_PROCCESSING])
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_NEW])
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_IN_PROCCESSING])
         ;
         $dataProvider_newOrders->sort->defaultOrder = [
             'valid_datetime' => SORT_ASC,
             'datetime_start' => SORT_ASC
         ];
         $dataProvider_in_process->query
-            ->where([Order::tableName().'.status' => Order::STATUS_VEHICLE_ASSIGNED])
-            ->orWhere([Order::tableName().'.status' => Order::STATUS_DISPUTE]);
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_VEHICLE_ASSIGNED])
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_DISPUTE]);
         $dataProvider_arhive->query
-            ->where(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
+            ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
         $dataProvider_expired_and_canceled->query
-            ->where([Order::tableName().'.status' => Order::STATUS_EXPIRED])
-            ->orWhere([Order::tableName().'.status' => Order::STATUS_CANCELED])
-            ->orWhere([Order::tableName().'.status' => Order::STATUS_NOT_ACCEPTED]);
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_EXPIRED])
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_CANCELED])
+            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_NOT_ACCEPTED]);
         $dataProvider_arhive->sort->defaultOrder = [
 //            'paid_status' => SORT_ASC,
             'real_datetime_start' => SORT_DESC
         ];
+
         $countNewOrders = Order::getCountNewOrders();
 
         return $this->render('index', [

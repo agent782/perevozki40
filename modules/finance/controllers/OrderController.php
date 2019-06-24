@@ -42,6 +42,16 @@ class OrderController extends Controller
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';
                 } ,
+            ],
+            'changePaymentType' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+                    return $model->paymentMinText;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
             ]
 
         ]);
@@ -78,21 +88,21 @@ class OrderController extends Controller
             'id', 'name'
         );
 
-        if(Yii::$app->request->post('hasEditable')){
-            $id_order = Yii::$app->request->post('editableKey');
-//            $out = Json::encode(['output'=>'','message'=>'']);
-            $Order = Order::findOne($id_order);
-            if(!$Order) return 1;
-            $load = Yii::$app->request->post('Order');
-//            $Order->scenario = $Order::SCENARIO_UPDATE_PAID_STATUS;
-            if($Order->load($load)){
-                if($Order->save()){
-//                    echo $out;
-                    return 1;
-                }
-            }
-            return Yii::$app->request->post('editableKey');
-        }
+//        if(Yii::$app->request->post('hasEditable')){
+//            $id_order = Yii::$app->request->post('editableKey');
+////            $out = Json::encode(['output'=>'','message'=>'']);
+//            $Order = Order::findOne($id_order);
+//            if(!$Order) return 1;
+//            $load = Yii::$app->request->post('Order');
+////            $Order->scenario = $Order::SCENARIO_UPDATE_PAID_STATUS;
+//            if($Order->load($load)){
+//                if($Order->save()){
+////                    echo $out;
+//                    return 1;
+//                }
+//            }
+//            return Yii::$app->request->post('editableKey');
+//        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,

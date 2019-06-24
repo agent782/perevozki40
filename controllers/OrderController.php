@@ -602,9 +602,9 @@ class OrderController extends Controller
             functions::setFlashWarning('Ошибка на сервере');
             $this->redirect($redirect);
         }
-        if (!$UserModel->getDrivers()->count()) {
+        if (!$UserModel->getDrivers()->count() && !$UserModel->profile->is_driver) {
             functions::setFlashWarning('У Вас не добавлен ни один водитель!');
-            return $this->redirect($redirect);
+//            return $this->redirect($redirect);
         }
         $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
         if($UserModel->profile->is_driver){

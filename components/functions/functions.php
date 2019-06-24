@@ -70,7 +70,7 @@ class functions
         return Yii::$app->session->setFlash('info', $mes);
     }
 
-    static public function sendEmail($to, $from, string $sub, array $params, $views = null, $layouts = null){
+    static public function sendEmail($to, $from, string $sub, array $params, $views = null, $layouts = null, array $files = []){
         if(!$from) $from = Yii::$app->params['robotEmail'];
         if(!$views) $views = [
             'html' => 'views/empty_html',
@@ -92,6 +92,13 @@ class functions
             ->compose($views, $params)
             ->setFrom($from['email'])
             ->setSubject($sub);
+
+        if($files && is_array($files)){
+            Yii::$app->mailer->compose();
+            foreach ($files as $file){
+                $mes->attach($file);
+            }
+        }
 
         if(is_array($to)){
             foreach ($to as $item){
@@ -133,7 +140,7 @@ class functions
         return '<a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
     }
 
-    static public function DownloadFile(string $pathToFile, string $redirect){
+    static public function DownloadFile(string $pathToFile){
         if(file_exists($pathToFile) && is_file($pathToFile)){
             return Yii::$app->response->sendFile($pathToFile);
         }

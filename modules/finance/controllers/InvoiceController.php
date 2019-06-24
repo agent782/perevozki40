@@ -2,6 +2,7 @@
 
 namespace app\modules\finance\controllers;
 
+use app\components\functions\emails;
 use app\components\functions\functions;
 use app\models\Order;
 use Yii;
@@ -187,6 +188,7 @@ class InvoiceController extends Controller
             if($modelInvoice->url = functions::saveImage($modelInvoice, 'upload_file', $path, $filename)){
                 $modelInvoice->upload_file = null;
                 if($modelInvoice->save()){
+                    emails::sendAfterUploadInvoice($modelOrder->id_user, $modelInvoice, $modelOrder->id, [$path.$modelInvoice->url]);
                     functions::setFlashSuccess('Документ загружен');
                     return $this->redirect($redirect);
                 }
@@ -201,5 +203,6 @@ class InvoiceController extends Controller
 
     public function actionDownload(string $pathToFile, string $redirect){
         return functions::DownloadFile($pathToFile, $redirect);
+//        Yii::$app->response->xSendFile($pathToFile);
     }
 }

@@ -22,7 +22,9 @@ $this->title = 'Журнал заказов';
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
-//        'pjax' => true,
+        'pjax' => true,
+//        'responsive' => true,
+//        'floatHeader' => true,
 //        'pjaxSettings' => [
 //            'options' => ['id' => 'grid-orders']
 //        ],
@@ -52,7 +54,7 @@ $this->title = 'Журнал заказов';
                                 'pathToFile' => Yii::getAlias('@invoices/') . $modelInvoice->url,
                                 'redirect' => '/finance/order'
                             ]),
-                            ['title' => 'Скачать']
+                            ['title' => 'Скачать', 'data-pjax' => "0"]
                         ). ' '
                         . UploadInvoiceWidget::widget([
                             'modelInvoice' => $modelInvoice,
@@ -99,7 +101,7 @@ $this->title = 'Журнал заказов';
                                 'pathToFile' => Yii::getAlias('@certificates/') . $modelCertificate->url,
                                 'redirect' => '/finance/order'
                             ]),
-                            ['title' => 'Скачать']
+                            ['title' => 'Скачать', 'data-pjax' => "0"]
                         ) . ' '
                         . UploadInvoiceWidget::widget([
                             'modelInvoice' => $modelCertificate,

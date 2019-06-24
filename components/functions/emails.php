@@ -8,6 +8,8 @@
 
 namespace app\components\functions;
 
+use app\models\Invoice;
+use app\models\Order;
 use app\models\Profile;
 use Yii;
 use app\components\functions\functions;
@@ -68,6 +70,49 @@ class emails
                 'text' => 'views/car-owner/after_registration_text.php',
             ]
 
+        );
+    }
+
+    static public function sendAfterUploadInvoice($id_user, $modelInvoice, $id_order, array $files = []){
+        $profile = Profile::findOne(['id_user' => $id_user]);
+        if($profile){
+            $name = $profile->name . ' ' . $profile->patrinimic;
+        }
+        switch ($modelInvoice->type){
+            case Invoice::TYPE_INVOICE:
+                $sub = 'Заказ №' . $id_order . '. Счет выставлен.';
+                break;
+            case Invoice::TYPE_CERTIFICATE:
+                $sub = 'Заказ №' . $id_order . '. Акт выполненных работ оформлен.';
+                break;
+        }
+        $sendToEmails = [];
+        if($profile->email) $sendToEmails[] = $profile->email;
+        if($profile->email2) $sendToEmails[] = $profile->email2;
+        $Order = Order::findOne($id_order);
+        if($Order){
+            if($Order->company){
+                if($Order->company->email) $sendToEmails[] = $Order->company->email;
+                if($Order->company->email2) $sendToEmails[] = $Order->company->email2;
+                if($Order->company->email3) $sendToEmails[] = $Order->company->email3;
+            }
+        }
+        functions::sendEmail(
+            $sendToEmails,
+//            'agent782@ya.ru',
+            Yii::$app->params['financeEmail'],
+            $sub,
+            [
+                'name' => $name,
+                'type' => $modelInvoice->type
+
+            ],
+            [
+                'html' => 'views/order/upload_invoice_html.php',
+                'text' => 'views/order/upload_invoice_text.php',
+            ],
+            null,
+            $files
         );
     }
 }
