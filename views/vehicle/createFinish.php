@@ -26,13 +26,12 @@ $this->title = Html::encode('Регистрационные данные тра�
 <?php
     $form = ActiveForm::begin([
         'enableAjaxValidation' => true,
-        'enableClientValidation' => true,
+//        'enableClientValidation' => true,
         'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form') // без этого не работает валидация  уникальности гос номера
     ]);
 echo $form->field($modelRegLicense, 'id_user')->hiddenInput()->label(false);
 
 $classiferVehicleIds = [];
-$brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->orderBy(['brand' => SORT_ASC])->all(), 'id', 'brand');
 
 ?>
 <h4><?= $this->title?></h4>
@@ -108,7 +107,7 @@ $brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->or
         '
 
     ] ) ?>
-    <?= $form->field($modelRegLicense, 'brand_id')->dropDownList($brands)?>
+    <?= $form->field($modelRegLicense, 'brand')->textInput()?>
     <?= $form->field($modelRegLicense, 'reg_number')
         ->widget(MaskedInput::className(),[
             'mask' => '* 999 ** 999',

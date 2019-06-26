@@ -426,7 +426,7 @@ class Vehicle extends \yii\db\ActiveRecord
 
     public function getBrand(){
         return ($this && $this->regLicense)?
-            Brand::find()->where(['id' => $this->regLicense->brand_id])->one()->brand:
+            $this->regLicense->brand:
             null;
     }
 

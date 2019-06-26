@@ -32,7 +32,6 @@ $imgLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'image')
 $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'description');
 
 $classiferVehicleIds = [];
-$brands = \yii\helpers\ArrayHelper::map(\app\models\Brand::find()->asArray()->orderBy(['brand' => SORT_ASC])->all(), 'id', 'brand');
 $this->registerJsFile('/js/update_price_zones.js');
 
 ?>
@@ -237,7 +236,7 @@ $this->registerJsFile('/js/update_price_zones.js');
         '
 
             ] ) ?>
-            <?= $form->field($modelRegLicense, 'brand_id')->dropDownList($brands)?>
+            <?= $form->field($modelRegLicense, 'brand')->textInput()?>
             <?= $form->field($modelRegLicense, 'reg_number')
                 ->widget(MaskedInput::className(),[
                     'mask' => '* 999 ** 999',

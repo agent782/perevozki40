@@ -116,7 +116,8 @@ use yii\bootstrap\Tabs;
                         . Html::a('Отменить', Url::to([
                             '/order/canceled-by-client',
                             'id_order' => $model->id,
-                            'id_vehicle' => $model->id_vehicle
+                            'id_vehicle' => $model->id_vehicle,
+                            'redirect' => '/logist/order'
                         ]),
                             [
                                 'class' => 'btn-xs btn-warning',

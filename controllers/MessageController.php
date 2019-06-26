@@ -84,6 +84,7 @@ class MessageController extends Controller
             $reviewModel->id_user_from = $mes->id_from_review;
             if($mes->can_review_client) $reviewModel->type = $reviewModel::TYPE_TO_VEHICLE;
             if($mes->can_review_vehicle) $reviewModel->type = $reviewModel::TYPE_TO_CLIENT;
+            if($mes->id_order) $mes->id_order=$reviewModel->id_order;
             $reviewModel->id_message = $id;
 
             if($reviewModel->save()) functions::setFlashSuccess('Ваш отзыв отправлен на проверку.');

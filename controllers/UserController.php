@@ -172,6 +172,7 @@ class UserController extends Controller
     public function actionFindUser($redirect, $id_order = null, $id_user = null, $redirect2 = null){
         $this->layout = '@app/views/layouts/logist';
         $user = new User();
+
         $profile = new Profile();
         if($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
 
@@ -182,16 +183,17 @@ class UserController extends Controller
                 $tmpProfile->name = $profile->name;
                 $tmpProfile->surname = $profile->surname;
                 $tmpProfile->patrinimic = $profile->patrinimic;
+                $tmpProfile->sex = $profile->sex;
                 $tmpProfile->phone2 = $profile->phone2;
                 $tmpProfile->email2 = $profile->email2;
 
                 $user = $tmpUser;
                 $profile = $tmpProfile;
-                $user->scenario = $user::SCENARIO_SAVE;
+                $user->scenario = $user::SCENARIO_SAVE_WITHOUT_USERNAME;
                 $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
                 if ($user->save() && $profile->save()) {
                     functions::setFlashSuccess('Пользовватель сохранен.');
-                    $this->redirect([$redirect, 'id_user' => $user->id]);
+                    $this->redirect([$redirect, 'id_user' => $user->id, 'redirect' => $redirect2]);
                 } else {
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }

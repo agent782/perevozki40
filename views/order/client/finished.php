@@ -11,6 +11,7 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use app\models\Invoice;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -51,7 +52,34 @@ use yii\bootstrap\Tabs;
             ],
             [
                 'attribute' => 'paymentText',
-                'format' => 'raw'
+                'format' => 'raw',
+                'value' => function(Order $order){
+                    $return = $order->paymentText;
+                    if($order->invoice){
+                        if($order->invoice->urlFull){
+                            $return .= '<br>' . Html::a('Счет №' . $order->invoice->number,
+                                    Url::to(['/finance/invoice/download',
+                                        'pathToFile' => $order->invoice->urlFull,
+                                        'redirect' => Url::to(['/order/client'])
+                                    ]),
+                                    ['title' => 'Скачать', 'data-pjax' => "0"]
+                                );
+                        }
+                    } else {
+                        $return .= '<br>Документы оформляются...';
+                    }
+
+                    if($order->certificate){
+                        $return .= '<br>' . Html::a('Акт №' . $order->certificate->number,  Url::to(['/finance/invoice/download',
+                                'pathToFile' => $order->certificate->urlFull,
+                                'redirect' => '/order/client'
+                            ]),
+                                ['title' => 'Скачать', 'data-pjax' => "0"]);
+                    }
+
+
+                    return $return;
+                }
             ],
             [
                 'label' => 'Маршрут',

@@ -199,7 +199,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         ],
                         [
                             'label' => 'ТС',
-                            'url' => '/admin/vehicle',
+                            'url' => '/logist/vehicle',
                             'visible' => Yii::$app->user->can('admin'),
                         ],
                         [

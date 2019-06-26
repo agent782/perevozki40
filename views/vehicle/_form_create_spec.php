@@ -16,7 +16,7 @@ use app\components\widgets\ShowMessageWidget;
     $form = ActiveForm::begin([
         'enableAjaxValidation' => true,
         'validationUrl' => \yii\helpers\Url::to('validate-vehicle-form'),
-        'enableClientValidation' => true
+//        'enableClientValidation' => true
     ]);
 
 

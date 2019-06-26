@@ -15,6 +15,7 @@ use Yii;
  * @property int $id_order
  * @property int $status
  * @property string $url
+ * @property string $urlFull
  * @property string $url_confirm
  * @property int $create_at
  * @property int $update_at
@@ -90,6 +91,20 @@ class Invoice extends \yii\db\ActiveRecord
             'create_at' => 'Create At',
             'update_at' => 'Update At',
         ];
+    }
+
+    public function getUrlFull(){
+        switch ($this->type){
+            case self::TYPE_INVOICE:
+                return Yii::getAlias('@invoices/').$this->url;
+                break;
+            case self::TYPE_CERTIFICATE:
+                return Yii::getAlias('@certificates/').$this->url;
+                break;
+            default:
+                return fal;se;
+                break;
+        }
     }
 
 }

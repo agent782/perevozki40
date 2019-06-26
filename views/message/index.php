@@ -65,11 +65,13 @@ $this->title = 'Уведомления';
                 'format' => 'raw',
                 'value' => function($model){
                     $review = \app\models\Review::findOne(['id_message' => $model->id]);
-                    if($model->can_review_client || $model->can_review_vehicle) {
-                        if($review){
-                            return $review->getRatingImage();
+                    if($review) {
+                        if($review->value){
+                            return $review->getRatingImage()
+                                . Html::a(Html::icon('edit'), ['/message/view', 'id' => $model->id], ['class' => 'btn-xs btn-info']);
+                                ;
                         } else {
-                            return Html::a('Оценить', ['/message/view', 'id' => $model->id], ['class' => 'btn-sm btn-info']);
+                            return Html::a('Оценить', ['/message/view', 'id' => $model->id], ['class' => 'btn-xs btn-info']);
                         }
                     }
 

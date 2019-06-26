@@ -17,9 +17,7 @@
     $form = ActiveForm::begin([
 
         'enableAjaxValidation' => true,
-//        'enableClientScript' => true,
         'validationUrl' => \yii\helpers\Url::to('validate-price-zone'),
-        'enableClientValidation' => true,
 
     ]);
 

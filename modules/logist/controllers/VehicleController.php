@@ -1,129 +1,74 @@
 <?php
 
 namespace app\modules\logist\controllers;
-
+use app\components\functions\functions;
+use app\models\Profile;
 use Yii;
 use app\models\Vehicle;
 use app\models\VehicleSearch;
-use yii\web\Controller;
-use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
-/**
- * VehicleController implements the CRUD actions for Vehicle model.
- */
-class VehicleController extends Controller
+
+class VehicleController extends \yii\web\Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Lists all Vehicle models.
-     * @return mixed
-     */
     public function actionIndex()
     {
         $searchModel = new VehicleSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, Vehicle::SORT_TRUCK, [
-            Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING
-        ], true);
-
+        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, Vehicle::SORT_TRUCK,
+            [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING,Vehicle::STATUS_NOT_ACTIVE]);
+        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, Vehicle::SORT_PASS,
+            [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING,Vehicle::STATUS_NOT_ACTIVE]);
+        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, Vehicle::SORT_SPEC,
+            [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING,Vehicle::STATUS_NOT_ACTIVE]);
+        $dataProviderDeleted = $searchModel->search(Yii::$app->request->queryParams, [1,2,3], Vehicle::SORT_DATE_CREATE, [Vehicle::STATUS_DELETED]);
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+            'SearchModel' => $searchModel,
+            'dataProviderTruck' => $dataProviderTruck,
+            'dataProviderPass' => $dataProviderPass,
+            'dataProviderSpec' => $dataProviderSpec,
+            'dataProviderDeleted' => $dataProviderDeleted,
         ]);
     }
 
-    /**
-     * Displays a single Vehicle model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
+    public function actionCheck($id, $id_user)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+        $model = Vehicle::findOne(['id' => $id]);
+        $model->scenario = $model::SCENARIO_CHECK;
+        $profile = Profile::findOne(['id_user' => $id_user]);
 
-    /**
-     * Creates a new Vehicle model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-//    public function actionCreate()
-//    {
-//        $model = new Vehicle();
-//
-//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-//            return $this->redirect(['view', 'id' => $model->id]);
-//        }
-//
-//        return $this->render('create', [
-//            'model' => $model,
-//        ]);
-//    }
 
-    /**
-     * Updates an existing Vehicle model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        switch (Yii::$app->request->post('button')) {
+            case 'success':
+                $model->status = $model::STATUS_ACTIVE;
+                $model->error_mes = '';
+                break;
+            case 'error':
+                if ($model->load(Yii::$app->request->post())) {
+                    $model->status = $model::STATUS_NOT_ACTIVE;
+                }
+                break;
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing Vehicle model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the Vehicle model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Vehicle the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Vehicle::findOne($id)) !== null) {
-            return $model;
+        if ($model->save()) {
+            functions::setFlashSuccess('Статус изменен. ТС ' . $model->statusText);
+            functions::sendEmail(
+                $profile->user->email,
+                Yii::$app->params['robotEmail'],
+                'Изменение статуса ТС.',
+                [
+                    'profile' => $profile,
+                    'vehicle' => $model,
+                ],
+                [
+                    'html' => 'views/changeStatusVehicle_html',
+                    'text' => 'views/changeStatusVehicle_text',
+                ],
+                null
+            );
+        } else {
+            return var_dump($model->getErrors());
+            functions::setFlashWarning('Ошибка. Статус ТС не изменен!!!');
         }
+        return $this->redirect('index');
 
-        throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

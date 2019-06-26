@@ -33,6 +33,7 @@ $this->title = 'Поиск пользователя';
                $("#phone2").val(ui.item.phone2);
                $("#email").val(ui.item.email);
                $("#email2").val(ui.item.email2);
+               $("#sex :radio[value =" + ui.item.sex +"]").attr("checked", true);
                $("#name").val(ui.item.name);
                $("#surname").val(ui.item.surname);
                $("#patrinimic").val(ui.item.patrinimic);
@@ -90,7 +91,7 @@ $this->title = 'Поиск пользователя';
         <?= $form->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
         <?= $form->field($profile, 'name')->input('text',  ['id' => 'name'])?>
         <?= $form->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
-        <?= $form->field($profile, 'sex')->radioList(['Мужской', 'Женский'])?>
+        <?= $form->field($profile, 'sex')->radioList(['Мужской', 'Женский'], ['id' => 'sex'])?>
         <?= $form->field($user, 'username')->input('tel',  ['id' => 'username', 'readonly' => true])?>
         <?= $form->field($user, 'email')->input('email',  ['id' => 'email'])?>
         <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>

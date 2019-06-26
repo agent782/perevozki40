@@ -185,7 +185,6 @@ class VehicleController extends Controller
                 if($VehicleForm->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
                     $session->set('VehicleForm', $VehicleForm);
                     $session->set('modelRegLicense', $modelRegLicense);
-
                     if($modelRegLicense->save()) {
                         $modelRegLicense->image1 = functions::saveImage(
                             $modelRegLicense,
@@ -345,7 +344,6 @@ class VehicleController extends Controller
                     Yii::$app->session->setFlash('warning', 'Ошибка сохранения. Попробуйте позже.');
 //                    return $this->redirect('/vehicle/index');
                 }
-                if(Yii::$app->user->can('admin'))return $this->redirect('/admin/vehicle/index');
                 return $this->redirect($redirect);
 
             }
@@ -526,12 +524,14 @@ class VehicleController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-            $model = new VehicleForm();
             $model2 = new RegLicense();
-            if($model->load(Yii::$app->request->post()))
-                return \yii\widgets\ActiveForm::validate($model);
             if($model2->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model2);
+
+            $model = new VehicleForm();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }

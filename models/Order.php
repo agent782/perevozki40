@@ -104,6 +104,9 @@ use app\components\widgets\ShowMessageWidget;
  * @property integer $additional_cost
  * @property Invoice $invoice
  * @property Invoice $certificate
+* @property integer $id_review_vehicle
+* @property integer $id_review_client
+
 
  */
 class Order extends \yii\db\ActiveRecord
@@ -184,7 +187,7 @@ class Order extends \yii\db\ActiveRecord
             ],
             [['additional_cost','ClientPaidCash'], 'default', 'value' => '0'],
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
-                'real_length_spec', 'real_volume_spec', 'cost'], 'number' ],
+                'real_length_spec', 'real_volume_spec', 'cost', 'id_review_vehicle', 'id_review_client'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
             [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
                 'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle','id_car_owner'], 'integer'],
@@ -198,7 +201,8 @@ class Order extends \yii\db\ActiveRecord
             [['paid_status', 'paid_car_owner_status'], 'default', 'value' => self::PAID_NO],
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
-            ['type_payment', 'validateForUser']
+            ['type_payment', 'validateForUser'],
+
 
 
         ];
@@ -798,6 +802,14 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
+    public function getReviewVehicle(){
+        return $this->hasOne(Review::class, ['id' => 'id_review_vehicle']);
+    }
+
+    public function getReviewClient(){
+        return $this->hasOne(Review::class, ['id' => 'id_review_client']);
+    }
+
     public function getStatusText(){
         $res = 'Новый';
         switch ($this->status){
@@ -1087,6 +1099,7 @@ class Order extends \yii\db\ActiveRecord
         //айдишники в сообщении клиенту, отзыв от и отзыв кому
         $client_id_to_review = null;
         $client_id_from_review = null;
+        $event_review = null;
         //айдишники в сообщении водителю, отзыв от и отзыв кому
         $vehicle_id_to_review = null;
         $vehicle_id_from_review = null;
@@ -1118,8 +1131,9 @@ class Order extends \yii\db\ActiveRecord
                     $email_to_vehicle = true;
 
                    $message_can_review_client = true;
-                   $client_id_to_review = $vehicle->id_user;
+                   $client_id_to_review = $vehicle->user->id;
                    $client_id_from_review = $id_client;
+                   $event_review = Review::EVENT_ORDER_CANCELED;
 
                     $this->valid_datetime = $valid_datetime;
                     $this->id_vehicle = null;
@@ -1144,9 +1158,6 @@ class Order extends \yii\db\ActiveRecord
                         $this->deleteEventChangeStatusToExpired();
                         $this->discount = $this->getDiscount($this->id_user);
                         $this->setEventChangeStatusToExpired();
-                        break;
-                    default:
-                        $title_client = 'Заказ №' . $this->id . ' оформлен.';
                         break;
                 }
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
@@ -1190,6 +1201,15 @@ class Order extends \yii\db\ActiveRecord
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
 
+                $message_can_review_client = true;
+                $message_can_review_vehicle = true;
+
+                $client_id_to_review = $vehicle->user->id;
+                $client_id_from_review = $id_client;
+                $vehicle_id_to_review = $id_client;
+                $vehicle_id_from_review = $vehicle->user->id;
+                $event_review = Review::EVENT_ORDER_CANCELED;
+
                 if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
                 else $this->paid_status = self::PAID_NO;
                 $this->cost_finish = $this->getFinishCost(false);
@@ -1226,7 +1246,8 @@ class Order extends \yii\db\ActiveRecord
 
                     $message_can_review_vehicle = true;
                     $vehicle_id_to_review = $id_client;
-                    $vehicle_id_from_review = $vehicle->id_user;
+                    $vehicle_id_from_review = $vehicle->user->id;
+                    $event_review = Review::EVENT_ORDER_CANCELED;
 
                     $this->id_vehicle = null;
                     $this->id_car_owner = null;
@@ -1273,6 +1294,7 @@ class Order extends \yii\db\ActiveRecord
                 ]
             );
         }
+
         //Сообщение клиенту
         if($id_client) {
             $Message_to_client = new Message([
@@ -1290,6 +1312,19 @@ class Order extends \yii\db\ActiveRecord
             ]);
             $Message_to_client->sendPush();
         }
+
+        if($message_can_review_client){
+            $review_client = new Review([
+                'id_order' => $this->id,
+                'id_message' => $Message_to_client->id,
+                'event' => $event_review,
+                'type' => Review::TYPE_TO_VEHICLE,
+                'id_user_from' => $id_client,
+                'id_user_to' => $vehicle->user->id,
+            ]);
+            $review_client->save(false);
+        }
+
         //Сообщение водителю
         if($id_vehicle && $push_to_vehicle) {
             $Message_to_vehicle = new Message([
@@ -1306,6 +1341,18 @@ class Order extends \yii\db\ActiveRecord
                 'id_from_review' => $vehicle_id_from_review
             ]);
             $Message_to_vehicle->sendPush();
+        }
+
+        if($message_can_review_vehicle){
+            $review_vehicle = new Review([
+                'id_order' => $this->id,
+                'id_message' => $Message_to_vehicle->id,
+                'event' => $event_review,
+                'type' => Review::TYPE_TO_CLIENT,
+                'id_user_from' => $vehicle->user->id,
+                'id_user_to' => $id_client,
+            ]);
+            $review_vehicle->save(false);
         }
 
         $this->scenario = self::SCENARIO_UPDATE_STATUS;

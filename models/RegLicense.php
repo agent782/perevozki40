@@ -20,7 +20,7 @@ use app\models\setting\Setting;
  * @property string $image1
  * @property string $image2
  * @property integer $status
- * @property integer $brand_id
+ * @property string $brand
 * @property string $image1Html
  * @property string $image2Html
 
@@ -62,11 +62,12 @@ class RegLicense extends \yii\db\ActiveRecord
             [['number', 'reg_number', 'date', 'place'], 'required'],
             [['status'], 'default', 'value' => self::STATUS_ON_CHECKING],
             [['reg_number'], 'string', 'max' => 16],
+            [['brand'], 'string', 'max' => 64],
             [['id_user'], 'safe'],
             [['number', 'place', 'country'], 'string', 'max' => 255],
             [['image1', 'image2'], 'image', 'extensions' => 'png, jpg, bmp', 'maxSize' => 5200000],
             ['reg_number', 'uniqueRegNumber'],
-            ['brand_id', 'required'],
+            ['brand', 'required'],
             ['date', 'date', 'format' => 'php: d.m.Y',
                 'min' => (time() - 60*60*24*365*40),
                 'max' => time(),
@@ -82,7 +83,6 @@ class RegLicense extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID СР',
-            'brand_id' => 'Марка ТС',
             'reg_number' => 'Гос. номер',
             'number' => 'Серия, номер свидетельства о регистрации:',
             'date' => 'Дата выдачи свидетельства о регистрации:',
@@ -95,6 +95,7 @@ class RegLicense extends \yii\db\ActiveRecord
             'image1Html' => 'Скан или фото свидетельства о регистрации ТС (1 сторона)',
             'image2Html' => 'Скан или фото свидетельства о регистрации ТС (2 сторона)',
             'status' => 'Статус',
+            'brand' => 'Марка ТС'
         ];
     }
 

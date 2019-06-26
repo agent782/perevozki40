@@ -99,6 +99,33 @@ class PriceZoneController extends Controller
                         return $this->redirect('/price-zone/create');
                     }
                     if($model->load(Yii::$app->request->post())) {
+                        switch ($model->veh_type){
+                            case Vehicle::TYPE_TRUCK:
+                                $model->scenario = PriceZone::SCENARIO_TRUCK;
+                                break;
+                            case Vehicle::TYPE_PASSENGER:
+                                $model->scenario = PriceZone::SCENARIO_PASS;
+                                break;
+                            case Vehicle::TYPE_SPEC:
+                                switch ($model->body_typies){
+                                    case Vehicle::BODY_manipulator:
+                                        $model->scenario = PriceZone::SCENARIO_MANIPULATOR;
+                                        break;
+                                    case Vehicle::BODY_crane:
+                                        $model->scenario = PriceZone::SCENARIO_CRANE;
+                                        break;
+                                    case Vehicle::BODY_dump:
+                                        $model->scenario = PriceZone::SCENARIO_DUMP;
+                                        break;
+                                    case Vehicle::BODY_excavator:
+                                        $model->scenario = PriceZone::SCENARIO_EXCAVATOR;
+                                        break;
+                                    case Vehicle::BODY_excavator_loader:
+                                        $model->scenario = PriceZone::SCENARIO_EXCAVATOR;
+                                        break;
+                                }
+                                break;
+                        }
                         $model->id = PriceZone::getNextId();
                         $session->set('model', $model);
                         return $this->render('create3', [
@@ -122,7 +149,6 @@ class PriceZoneController extends Controller
                             $session->setFlash('success', 'Тарифная зона успешно сохранена.');
                             return $this->redirect('/price-zone');
                         }
-//                        return var_dump($model[errors]);
                         $session->setFlash('warning', 'Ошибка! Попробуйте еще раз или обратитесь к администратору.');
                         return $this->redirect('/price-zone');
 //                        return var_dump($model[errors]);
@@ -151,17 +177,46 @@ class PriceZoneController extends Controller
     public function actionUpdate($id)
     {
         $modelOld = $this->findModel($id);
+        switch ($modelOld->veh_type){
+            case Vehicle::TYPE_TRUCK:
+                $modelOld->scenario = PriceZone::SCENARIO_TRUCK;
+                break;
+            case Vehicle::TYPE_PASSENGER:
+                $modelOld->scenario = PriceZone::SCENARIO_PASS;
+                break;
+            case Vehicle::TYPE_SPEC:
+                switch ($modelOld->body_typies){
+                    case Vehicle::BODY_manipulator:
+                        $modelOld->scenario = PriceZone::SCENARIO_MANIPULATOR;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $modelOld->scenario = PriceZone::SCENARIO_CRANE;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $modelOld->scenario = PriceZone::SCENARIO_DUMP;
+                        break;
+                    case Vehicle::BODY_excavator:
+                        $modelOld->scenario = PriceZone::SCENARIO_EXCAVATOR;
+                        break;
+                    case Vehicle::BODY_excavator_loader:
+                        $modelOld->scenario = PriceZone::SCENARIO_EXCAVATOR;
+                        break;
+                }
+                break;
+        }
         $model = new PriceZone();
         $model->attributes = $modelOld->attributes;
+        $model->scenario = $modelOld->scenario;
         if ($model->load(Yii::$app->request->post()) ) {
             if(PriceZone::compare($model, $modelOld)){
                 functions::setFlashSuccess('Вы не внесли изменений');
                 return $this->redirect(['index']);
             }
+            $model->unique_index = null;
             if(!is_array($model->body_types)) $model->body_types = str_split($model->body_types, strlen($model->body_types));//Строка полученная тз радиолист привращается в массив
             $modelOld->status = $modelOld::STATUS_OLD;
             $modelOld->updated_at = date('d.m.Y', time());
-            if( $modelOld->save()) {
+            if( $modelOld->save()){
                 if($model->save()){
                 functions::setFlashSuccess('Тариф обновлен');
                 return $this->redirect(['index']);

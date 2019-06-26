@@ -70,22 +70,22 @@ class OrderController extends Controller
         $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider_newOrders->query
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_NEW])
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_IN_PROCCESSING])
-        ;
+            ->where(['in', Order::tableName().'.status', [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]]);
         $dataProvider_newOrders->sort->defaultOrder = [
             'valid_datetime' => SORT_ASC,
             'datetime_start' => SORT_ASC
         ];
         $dataProvider_in_process->query
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_VEHICLE_ASSIGNED])
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_DISPUTE]);
+            ->where(['in', Order::tableName().'.status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]]);
         $dataProvider_arhive->query
-            ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
+            ->where(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
         $dataProvider_expired_and_canceled->query
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_EXPIRED])
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_CANCELED])
-            ->andFilterWhere([Order::tableName().'.status' => Order::STATUS_NOT_ACCEPTED]);
+            ->where(['in', Order::tableName().'.status', [
+                Order::STATUS_EXPIRED,
+                Order::STATUS_CANCELED,
+                Order::STATUS_NOT_ACCEPTED
+            ]]);
+
         $dataProvider_arhive->sort->defaultOrder = [
 //            'paid_status' => SORT_ASC,
             'real_datetime_start' => SORT_DESC

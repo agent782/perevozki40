@@ -43,7 +43,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
 
     const SCENARIO_SAVE = 'save';
+    const SCENARIO_SAVE_WITHOUT_USERNAME = 'save_without_username';
     const SCENARIO_CHANGE_PASS = 'change_pass';
+
 
     public $new_username;
     public $captcha;
@@ -70,6 +72,9 @@ class User extends ActiveRecord implements IdentityInterface
         ];
         $scenarios[self::SCENARIO_CHANGE_PASS] = [
             'old_pass', 'new_pass','new_pass_repeat'
+        ];
+        $scenarios[self::SCENARIO_SAVE_WITHOUT_USERNAME] = [
+            'email', 'update_at'
         ];
 
         return $scenarios;

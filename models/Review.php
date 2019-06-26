@@ -19,6 +19,9 @@ use app\components\DateBehaviors;
  * @property int $create_at
  * @property int $update_at
  * @property int $id_message
+ * @property int $id_order
+ * @property int $event
+
  */
 class Review extends \yii\db\ActiveRecord
 {
@@ -29,6 +32,14 @@ class Review extends \yii\db\ActiveRecord
     const STATUS_ACTIVE = 1;
     const STATUS_ONCHECKING = 2;
 
+    const EVENT_NULL = 0;
+    const EVENT_ORDER_COMPLETED = 1;
+    const EVENT_RE_ORDERING = 2;
+    const EVENT_ORDER_CANCELED = 3;
+    const EVENT_INVOICE_PAID_ON_TIME = 4;
+    const EVENT_INVOICE_PAID_NOT_TIME = 5;
+    const EVENT_CERTIFICATION_SIGNED_ON_TIME = 6;
+    const EVENT_EVENT_CERTIFICATION_SIGNED_NOT_TIME = 7;
 
     /**
      * {@inheritdoc}
@@ -45,10 +56,11 @@ class Review extends \yii\db\ActiveRecord
     {
         return [
             [['value', 'id_user_from', 'id_user_to', 'type'], 'required'],
-            [['value', 'id_user_from', 'id_user_to', 'type', 'status', 'id_message'], 'integer'],
+            [['value', 'id_user_from', 'id_user_to', 'type', 'status', 'id_message', 'id_order'], 'integer'],
             [['comment'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_ONCHECKING],
+            ['event', 'default', 'value' => self::EVENT_NULL]
         ];
     }
     public function behaviors()
