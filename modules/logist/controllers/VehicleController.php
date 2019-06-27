@@ -21,7 +21,7 @@ class VehicleController extends \yii\web\Controller
             [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING,Vehicle::STATUS_NOT_ACTIVE]);
         $dataProviderDeleted = $searchModel->search(Yii::$app->request->queryParams, [1,2,3], Vehicle::SORT_DATE_CREATE, [Vehicle::STATUS_DELETED]);
         return $this->render('index', [
-            'SearchModel' => $searchModel,
+            'searchModel' => $searchModel,
             'dataProviderTruck' => $dataProviderTruck,
             'dataProviderPass' => $dataProviderPass,
             'dataProviderSpec' => $dataProviderSpec,
@@ -29,45 +29,59 @@ class VehicleController extends \yii\web\Controller
         ]);
     }
 
-    public function actionCheck($id, $id_user)
+    public function actionCheck($id_vehicle)
     {
-        $model = Vehicle::findOne(['id' => $id]);
+        $model = Vehicle::findOne(['id' => $id_vehicle]);
         $model->scenario = $model::SCENARIO_CHECK;
-        $profile = Profile::findOne(['id_user' => $id_user]);
+        $profile = $model->profile;
 
+        if(!$model || !$profile){
+            throw new \HttpException(404, 'Нет такого ТС или пользователя');
+        }
 
+        $model_load = false;
         switch (Yii::$app->request->post('button')) {
             case 'success':
                 $model->status = $model::STATUS_ACTIVE;
                 $model->error_mes = '';
+                $model_load = true;
                 break;
             case 'error':
                 if ($model->load(Yii::$app->request->post())) {
                     $model->status = $model::STATUS_NOT_ACTIVE;
+                    $model_load = true;
                 }
                 break;
         }
-        if ($model->save()) {
-            functions::setFlashSuccess('Статус изменен. ТС ' . $model->statusText);
-            functions::sendEmail(
-                $profile->user->email,
-                Yii::$app->params['robotEmail'],
-                'Изменение статуса ТС.',
-                [
-                    'profile' => $profile,
-                    'vehicle' => $model,
-                ],
-                [
-                    'html' => 'views/changeStatusVehicle_html',
-                    'text' => 'views/changeStatusVehicle_text',
-                ],
-                null
-            );
-        } else {
-            return var_dump($model->getErrors());
-            functions::setFlashWarning('Ошибка. Статус ТС не изменен!!!');
+        if($model_load) {
+            if ($model->save()) {
+                functions::setFlashSuccess('Статус изменен. ТС ' . $model->statusText);
+                functions::sendEmail(
+                    [
+                        $profile->email,
+                        $profile->email2
+                    ],
+                    Yii::$app->params['robotEmail'],
+                    'Изменение статуса ТС.',
+                    [
+                        'profile' => $profile,
+                        'vehicle' => $model,
+                    ],
+                    [
+                        'html' => 'views/changeStatusVehicle_html',
+                        'text' => 'views/changeStatusVehicle_text',
+                    ],
+                    null
+                );
+            } else {
+                functions::setFlashWarning('Ошибка. Статус ТС не изменен!!!');
+            }
+            return $this->redirect('index');
         }
-        return $this->redirect('index');
+        return $this->render('check', [
+           'model' => $model,
+            'profile' => $profile
+        ]);
 
     }
 

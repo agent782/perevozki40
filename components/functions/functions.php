@@ -102,13 +102,13 @@ class functions
 
         if(is_array($to)){
             foreach ($to as $item){
-                $mes->setTo($item)->send();
+                if($item)
+                    return $mes->setTo($item)->send();
             }
-            return;
+
         } else {
-           return $mes ->
-            setTo($to)
-                ->send();
+            if($to) return $mes ->setTo($to)->send();
+
         }
 
     }

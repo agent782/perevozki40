@@ -3,12 +3,15 @@
 namespace app\models;
 
 use Yii;
+use yii\bootstrap\Html;
 
 /**
  * This is the model class for table "{{%body_type}}".
  *
  * @property integer $id
  * @property string $body
+ * @property string $body_short
+ * @property string $bodyShortWithTip
  * @property string $image
  * @property integer $id_type_vehicle
  *
@@ -33,6 +36,7 @@ class BodyType extends \yii\db\ActiveRecord
             [['body', 'image', 'id_type_vehicle'], 'required'],
             [['id_type_vehicle'], 'integer'],
             [['body', 'image'], 'string', 'max' => 255],
+            [['body_short', 'image'], 'string', 'max' => 16],
         ];
     }
 
@@ -73,5 +77,9 @@ class BodyType extends \yii\db\ActiveRecord
         }
 
         return $BTypies->all();
+    }
+
+    public function getBodyShortWithTip(){
+        return '<b style = "cursor:help;" title =' . $this->body . '>' . $this->body_short . '</b>';
     }
 }

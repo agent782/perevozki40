@@ -6,28 +6,13 @@
  * Time: 14:48
  */
 use yii\bootstrap\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\bootstrap\Widget;
 use app\components\widgets\CheckVehicleWidget;
 use yii\helpers\Url;
+use yii\bootstrap\Tabs;
 
 $this->title = Html::encode('ТС');
-$this->registerJs(
-    '$(function(){
-        $("#aTruck").on("click", function(){
-            $("#div_truck").slideToggle();
-        });
-        $("#aPass").on("click", function(){
-            $("#div_pass").slideToggle();
-        });
-        $("#aSpec").on("click", function(){
-            $("#div_spec").slideToggle();
-        });
-                $("#aDeleted").on("click", function(){
-            $("#div_deleted").slideToggle();
-        });
-    });'
-);
 
 $ActionColumnButtons =[
     'delete' =>function ($url, $model) {
@@ -58,8 +43,8 @@ $ActionColumnButtons =[
 ];
 
 ?>
-<div class="container-fluid">
-    <h2>
+<div>
+    <h3>
         <?=$this->title?>
         <?= Html::a(Html::icon('plus', ['class' => 'btn btn-primary']),
                 Url::to([
@@ -69,213 +54,46 @@ $ActionColumnButtons =[
                 ])
             );
         ?>
-
-
-    </h2>
-
-    <a  href="#aTruck" id="aTruck"><h3>Грузовые ТС</h3></a>
-    <div id="div_truck">
-        <?=
-            GridView::widget([
-                'dataProvider' => $dataProviderTruck,
-//                'filterModel' => $SeachModel,
-                'options' => [
-                    'style' => 'width: 70%;'
-                ],
-                'columns' => [
-                    ['class' => '\yii\grid\SerialColumn'],
-                    [
-                        'label' => 'Пользователь',
-                        'format' => 'raw',
-                        'value' => function($model){
-                            $res ='';
-                            $res .= $model->id_user . ' ' . $model->profile->fioShort;
-                            return $res;
-                        }
-                    ],
-                    'regLicense.brand',
-                    'tonnage',
-                    'bodyTypeText',
-                    [
-                        'attribute' => 'loadingtypesText',
-                        'format' => 'raw'
-                    ],
-                    [
-                        'label' => 'Размеры кузова (ДхШхВ / Объем) м.',
-                        'value' => function($model){
-                            return $model->length . ' x ' . $model->width . ' x ' . $model->height . ' / ' . $model->volume;
-                        }
-                    ],
-                    [
-                        'label' => 'Груз-длинномер',
-                        'format' => 'raw',
-                        'contentOptions' => [
-                            'style' =>'text-align: center;'
-                        ],
-                        'value' => function($model){
-                            return
-                                ($model->longlength)?
-                                    \yii\bootstrap\Html::img('/img/icons/yes-20.png', ['title' => 'Да']):
-                                    \yii\bootstrap\Html::img('/img/icons/no-20.png', ['title' => 'Нет'])
-                                ;
-                        }
-                    ],
-                    [
-                        'attribute' => 'status',
-                        'label' => 'Статус',
-                        'format' => 'raw',
-                        'value' => function($model){
-                            $res = $model->statusText . '<br>';
-                            $res .= CheckVehicleWidget::widget(['modelVehicle' => $model]);
-                            return $res;
-
-                        }
-                    ],
-                    [
-                        'class' => \yii\grid\ActionColumn::className(),
-                        'buttons' => $ActionColumnButtons,
-                        'template' => '{view} {update} {delete}'
-                    ]
-                ]
-            ])
-        ?>
-    </div>
-
-    <a  href="#aPass" id="aPass"><h3>Пассажирские ТС</h3></a>
-    <div id="div_pass">
-        <?=
-        GridView::widget([
-            'dataProvider' => $dataProviderPass,
-//            'filterModel' => $SeachModel,
-            'options' => [
-                'style' => 'width: 70%;'
-            ],
-            'columns' => [
-                ['class' => '\yii\grid\SerialColumn'],
-                [
-                    'label' => 'Пользователь',
-                    'format' => 'raw',
-                    'value' => function($model){
-                        $res ='';
-                        $res .= $model->id_user . ' ' . $model->profile->fioShort;
-                        return $res;
-                    }
-                ],
-                'regLicense.brand',
-                'passengers',
-                'tonnage',
-                'bodyTypeText',
-                [
-                    'attribute' => 'status',
-                    'label' => 'Статус',
-                    'format' => 'raw',
-                    'value' => function($model){
-                        $res = $model->statusText . '<br>';
-                        $res .= CheckVehicleWidget::widget(['modelVehicle' => $model]);
-                        return $res;
-
-                    }
-                ]
-
-
-            ]
-        ])
-
-        ?>
-    </div>
-
-    <a  href="#aSpec" id="aSpec"><h3>Спецтехника</h3></a>
-    <div id="div_spec" >
-<?=
-        GridView::widget([
-            'dataProvider' => $dataProviderSpec,
-//            'filterModel' => $SeachModel,
-            'options' => [
-                'style' => 'width: 70%;'
-            ],
-            'columns' => [
-                ['class' => '\yii\grid\SerialColumn'],
-                [
-                    'label' => 'Пользователь',
-                    'format' => 'raw',
-                    'value' => function($model){
-                        $res ='';
-                        $res .= $model->id_user . ' ' . $model->profile->fioShort;
-                        return $res;
-                    }
-                ],
-                'bodyTypeText',
-                'regLicense.brand.brand',
-                [
-                    'attribute' => 'status',
-                    'label' => 'Статус',
-                    'format' => 'raw',
-                    'value' => function($model){
-                        $res = $model->statusText . '<br>';
-                        $res .= CheckVehicleWidget::widget(['modelVehicle' => $model]);
-                        return $res;
-
-                    }
-                ]
-
-
-            ]
-        ])
-
-        ?>
-    </div>
-
-    <a  href="#aDeleted" id="aDeleted"><h3> Удаленные</h3></a>
-    <div id="div_deleted" hidden>
-<?=
-        GridView::widget([
-            'dataProvider' => $dataProviderDeleted,
-//            'filterModel' => $SeachModel,
-            'options' => [
-                'style' => 'width: 70%;'
-            ],
-            'columns' => [
-                ['class' => '\yii\grid\SerialColumn'],
-                [
-                    'label' => 'Пользователь',
-                    'format' => 'raw',
-                    'value' => function($model){
-                        $res ='';
-                        $res .= $model->id_user . ' ' . $model->profile->fioShort;
-                        return $res;
-                    }
-                ],
-                'regLicense.brand',
-                'tonnage',
-                'bodyTypeText',
-                [
-                    'attribute' => 'loadingtypesText',
-                    'format' => 'raw'
-                ],
-                [
-                    'label' => 'Размеры кузова (ДхШхВ / Объем) м.',
-                    'value' => function($model){
-                        return $model->length . ' x ' . $model->width . ' x ' . $model->height . ' / ' . $model->volume;
-                    }
-                ],
-                [
-                    'label' => 'Груз-длинномер',
-                    'format' => 'raw',
-                    'contentOptions' => [
-                        'style' =>'text-align: center;'
-                    ],
-                    'value' => function($model){
-                        return
-                            ($model->longlength)?
-                                \yii\bootstrap\Html::img('/img/icons/yes-20.png', ['title' => 'Да']):
-                                \yii\bootstrap\Html::img('/img/icons/no-20.png', ['title' => 'Нет'])
-                            ;
-                    }
-                ],
-                'statusText',
-            ]
-        ])
-
-        ?>
-    </div>
+    </h3>
 </div>
+    <?=
+        Tabs::widget([
+            'encodeLabels' => false,
+            'items' => [
+                [
+                    'label' => 'Грузовые',
+                    'content' => $this->render('truck', [
+                        'searchModel' => $searchModel,
+                        'dataProviderTruck' => $dataProviderTruck,
+                        'ActionColumnButtons' => $ActionColumnButtons
+                    ])
+                ],
+                [
+                    'label' => 'Пассажирские',
+                    'content' => $this->render('pass', [
+                        'searchModel' => $searchModel,
+                        'dataProviderPass' => $dataProviderPass,
+                        'ActionColumnButtons' => $ActionColumnButtons
+                    ])
+                ],
+                [
+                    'label' => 'Спецтехника',
+                    'content' => $this->render('spec', [
+                        'searchModel' => $searchModel,
+                        'dataProviderSpec' => $dataProviderSpec,
+                        'ActionColumnButtons' => $ActionColumnButtons
+                    ])
+                ],
+                [
+                    'label' => 'Удаленные',
+                    'content' => $this->render('deleted', [
+                        'searchModel' => $searchModel,
+                        'dataProviderDeleted' => $dataProviderDeleted,
+                        'ActionColumnButtons' => $ActionColumnButtons
+                    ])
+                ]
+            ],
+            'options' => ['tag' => 'div'],
+            'itemOptions' => ['tag' => 'div'],
+        ]);
+    ?>

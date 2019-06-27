@@ -329,9 +329,14 @@ class Vehicle extends \yii\db\ActiveRecord
         }
     }
 
-    public function getBodyTypeText()
+    public function getBodyTypeText($short = false, $html = false)
     {
-        return BodyType::find()->where(['id' => $this->body_type])->one()->body;
+        $body = BodyType::find()->where(['id' => $this->body_type])->one();
+        $body_short = $body->body_short;
+        if($html) $body_short = $body->getBodyShortWithTip();
+        return ($short)
+            ? $body_short
+            : $body->body;
     }
 
     public function getBodyType()
@@ -430,11 +435,13 @@ class Vehicle extends \yii\db\ActiveRecord
             null;
     }
 
-    public function getLoadingtypesText(){
+    public function getLoadingtypesText($short = false){
         if(!$this->loadingtypes)return null;
         $LTypies = '';
         foreach ($this->loadingtypes as $loadingtype){
-            $LTypies .= $loadingtype->type . ' ';
+            $LTypies .= ($short)
+                ? $loadingtype->type_short . ' '
+                : $loadingtype->type . ' ';
         }
         return $LTypies;
 
@@ -443,10 +450,10 @@ class Vehicle extends \yii\db\ActiveRecord
     public function getProfile(){
         return $this->hasOne(Profile::className(), ['id_user' => 'id_user']);
     }
+
     public function getUser(){
         return $this->hasOne(User::className(), ['id' => 'id_user']);
     }
-
 
     public function getLonglengthIcon(){
         return
@@ -455,6 +462,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 '<span class="glyphicon glyphicon-remove-circle"></span>'
             ;
     }
+
     public function getPhotoHtml(){
         return ($this->photo)?
             Html::a(Html::img(
@@ -462,6 +470,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 '/uploads/photos/vehicles/'.$this->photo, ['target' => 'blank']) :
         Html::img('/img/noPhoto.jpg', ['class' => 'profile_photo_min']);
     }
+
     public function getPriceZonesList()
     {
         $return = '';
@@ -475,9 +484,11 @@ class Vehicle extends \yii\db\ActiveRecord
         $return = substr($return, 0, -2);
         return $return;
     }
+
     public function getOrders(){
         return $this->hasMany(Order::class, ['id_vehicle'=>'id']);
     }
+
     public function  hasOrder($statuses_orders) : bool{
         $orders = $this->orders;
         if(!$statuses_orders || !$orders) return false;
@@ -612,9 +623,7 @@ class Vehicle extends \yii\db\ActiveRecord
         return true;
     }
 
-    public function getMinRate(Order $Order)
-//    : PriceZone
-    {
+    public function getMinRate(Order $Order){
         if(!$this->canOrder($Order)) return null;
         $pricezonesForVehicle = [];
         foreach ($Order->priceZones as $OrderPriceZone) {
