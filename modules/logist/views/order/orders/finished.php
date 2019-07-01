@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
 ?>
 
 <div>
-    <h4>В процессе выполнения...</h4>
+    <h4>Завершенные.</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_arhive,
         'filterModel' => $searchModel,
