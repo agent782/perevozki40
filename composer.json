@@ -45,7 +45,8 @@
         "kartik-v/yii2-widget-typeahead": "*",
         "keygenqt/yii2-autocomplete-ajax": "@dev",
         "kartik-v/yii2-editable": "dev-master",
-        "kartik-v/yii2-checkbox-x": "dev-master"
+        "kartik-v/yii2-checkbox-x": "dev-master",
+        "kartik-v/yii2-money": "@dev"
 
     },
     "require-dev": {

@@ -8,18 +8,31 @@
 use kartik\grid\GridView;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+use app\models\Vehicle;
 ?>
 
     <label class="h3">Спецтехника</label>
     <?=
     GridView::widget([
         'dataProvider' => $dataProviderSpec,
-//            'filterModel' => $SeachModel,
+        'filterModel' => $searchModel,
+        'responsiveWrap' => false,
+        'pjax' => true,
         'options' => [
             'style' => 'width: 70%;'
         ],
         'columns' => [
-            ['class' => '\yii\grid\SerialColumn'],
+            [
+                'attribute' => 'id',
+                'format' => 'raw',
+                'value' => function($vehicle){
+                    return Html::a(
+                        $vehicle->id,
+                        ['/logist/vehicle/view', 'id' => $vehicle->id]
+                    );
+                }
+            ],
             [
                 'label' => 'Пользователь',
                 'format' => 'raw',
@@ -29,8 +42,24 @@ use yii\helpers\Url;
                     return $res;
                 }
             ],
-            'bodyTypeText',
-            'regLicense.brand.brand',
+            [
+                'attribute' => 'body_type',
+                'format' => 'raw',
+                'value' => function(\app\models\Vehicle $vehicle){
+                    return $vehicle->getBodyTypeText(true, true);
+                },
+                'filter' =>
+                    Html::activeCheckboxList($searchModel, 'body_typies',
+                        ArrayHelper::map(\app\models\BodyType::find()
+                            ->where(['in', 'id',
+                                [Vehicle::BODY_manipulator, Vehicle::BODY_dump,
+                                    Vehicle::BODY_crane, Vehicle::BODY_excavator, Vehicle::BODY_excavator_loader]
+                            ])-> all(),'id', 'body')
+                    )
+                ,
+                'filterOptions' => ['class' => 'minRoute'],
+            ],
+            'regLicense.brand',
             [
                 'attribute' => 'status',
                 'label' => 'Статус',

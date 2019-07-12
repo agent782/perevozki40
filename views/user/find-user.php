@@ -34,6 +34,7 @@ $this->title = 'Поиск пользователя';
                $("#email").val(ui.item.email);
                $("#email2").val(ui.item.email2);
                $("#sex :radio[value =" + ui.item.sex +"]").attr("checked", true);
+               $("#is_driver :radio[value =" + ui.item.is_driver +"]").attr("checked", true);
                $("#name").val(ui.item.name);
                $("#surname").val(ui.item.surname);
                $("#patrinimic").val(ui.item.patrinimic);
@@ -71,7 +72,7 @@ $this->title = 'Поиск пользователя';
         'options' => [
             'id' => 'search',
             'class' => 'form-control',
-            'placeholder' => Yii::t('app', 'Введите номер телефона')
+            'placeholder' => Yii::t('app', 'Введите номер телефона, ФИО или ID')
         ]
     ])
     ?>
@@ -96,6 +97,7 @@ $this->title = 'Поиск пользователя';
         <?= $form->field($user, 'email')->input('email',  ['id' => 'email'])?>
         <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
         <?= $form->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
+        <?= $form->field($profile, 'is_driver')->radioList(['Нет', 'Да'], ['id' => 'is_driver'])->label('Водитель')?>
     </div>
     <div class="col-lg-8" id="info">
 

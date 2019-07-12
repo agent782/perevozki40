@@ -6,6 +6,7 @@ use app\components\CryptBehaviors;
 use app\components\DateBehaviors;
 use app\components\SerializeBehaviors;
 use app\components\SerializeAndCryptBehaviors;
+use app\models\setting\SettingVehicle;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
 use app\components\functions\functions;
@@ -54,6 +55,8 @@ use app\models\setting\Setting;
  * @property integer $check_update_status
  * @property string $update_to_check;
  * @property Passport $passport
+ * @property integer $procentVehicle
+ * @property array $balance
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -110,7 +113,7 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_user', 'name', 'surname', 'patrinimic'], 'required'],
+            [['id_user', 'name', 'surname'], 'required'],
             [['id_passport', 'id_driver_license'], 'integer'],
             [['id_user', 'status_client', 'status_vehicle', 'raiting_client', 'raiting_vehicle'],  'integer'],
 //            [['phone2'], 'string', 'max' => 32],
@@ -122,7 +125,7 @@ class Profile extends \yii\db\ActiveRecord
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
-            ['is_driver', 'default', 'value' => false],
+            ['is_driver', 'default', 'value' => 0],
             [['history_updates', 'update_to_check'], 'safe'],
             ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT]
         ];
@@ -427,6 +430,7 @@ class Profile extends \yii\db\ActiveRecord
                 'surname' => $profile->surname,
                 'patrinimic' => $profile->patrinimic,
                 'sex' => $profile->sex,
+                'is_driver' => $profile->is_driver,
                 'value' => ($search)
                     ?$profile->id_user
                     :$profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
@@ -455,6 +459,125 @@ class Profile extends \yii\db\ActiveRecord
             ];
 
         return $return;
+    }
+
+    public function getBalance(){
+        $return = [
+            'balance' => 0,
+            'orders' => [],
+            'not_paid' => 0,
+            'vehicle_orders_not_paid' => [],
+        ];
+
+        $client_orders = Order::find()->where(['id_user' => $this->id_user])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
+            ->all();
+
+        $vehicle_orders = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
+            ->andWhere(['in', 'paid_status', [Order::PAID_YES, Order::PAID_YES_AVANS]])
+            ->all();
+
+        $vehicle_orders_not_paid = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
+            ->andWhere(['paid_status' => Order::PAID_NO])
+            ->all();
+
+        $vehicle_orders_cash = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['type_payment' => Payment::TYPE_CASH])
+            ->andWhere(['in', 'paid_status', [Order::PAID_YES], Order::PAID_YES_AVANS])
+            ->all();
+
+        $payments_debit = Payment::find()->where(['id_user' => $this->id_user])
+            ->andWhere(['status' => Payment::STATUS_SUCCESS])
+            ->andWhere(['direction' => Payment::CREDIT])
+            ->all();
+
+        $payments_credit = Payment::find()->where(['id_user' => $this->id_user])
+            ->andWhere(['status' => Payment::STATUS_SUCCESS])
+            ->andWhere(['direction' => Payment::DEBIT])
+            ->all();
+//        return var_dump($payments_credit);
+        foreach ($client_orders as $order){
+            $return['balance'] -= $order->cost_finish;
+
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => $order->cost_finish,
+                'debit' => '',
+                'description' => 'Заказ № ' . $order->id,
+                'id_order' => $order->id,
+                'id_paiment' => ''
+            ];
+        }
+
+        foreach ($vehicle_orders as $order){
+            $return['balance'] += round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => '',
+                'debit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)),
+                'description' => 'Сумма к выплате за заказ № ' . $order->id,
+                'id_order' => $order->id,
+                'id_paiment' => ''
+            ];
+
+        }
+
+        foreach ($vehicle_orders_cash as $order){
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => round($order->cost_finish_vehicle * $this->procentVehicle/100),
+                'debit' => '',
+                'description' => 'Проценты за заказ № ' . $order->id,
+                'id_order' => $order->id,
+                'id_paiment' => ''
+            ];
+
+            $return['balance'] -= round($order->cost_finish_vehicle * $this->procentVehicle/100);
+        }
+
+        foreach ($vehicle_orders_not_paid as $order){
+            $return['not_paid'] += round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $return['vehicle_orders_not_paid'][] = $order;
+        }
+
+        foreach ($payments_debit as $payment){
+            $return['balance'] -= $payment->cost;
+
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'credit' => $payment->cost,
+                'debit' => '',
+                'description' => $payment->comments,
+                'id_order' => '',
+                'id_paiment' => $payment->id
+            ];
+        }
+
+        foreach ($payments_credit as $payment){
+            $return['balance'] += $payment->cost;
+
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'credit' => '',
+                'debit' => $payment->cost,
+                'description' => $payment->comments,
+                'id_order' => '',
+                'id_paiment' => $payment->id
+            ];        }
+        array_multisort($return['orders'], SORT_DESC);
+        return $return;
+    }
+
+    public function getProcentVehicle(){
+        //переделать в зависмимости от роли или статуса, пока у все 10
+        return SettingVehicle::find()->one()->procent_vehicle;
     }
 }
 

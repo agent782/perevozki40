@@ -54,7 +54,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php ActiveForm::end(); ?>
         <p><a href="/default/signup"><span style="font-size: 18px"> Зарегистрироваться</span></a></p>
-        <a href="">Восстановить пароль</a>
+        <p><a href="/default/reset-password-sms">Восстановить пароль через СМС</a></p>
+        <p><a href="/default/reset-password-email">Восстановить пароль через электронную почту</a></p>
     </div>
 
 

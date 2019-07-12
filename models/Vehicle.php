@@ -178,7 +178,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 self::SCENARIO_UPDATE_SPEC_BODY_dump, self::SCENARIO_UPDATE_SPEC_BODY_excavator]],
             [['id_user', 'passengers', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume'], 'number'],
-            [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y')],
+            [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y h:i')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['rating', 'default', 'value' => 0],
             [['bodyTypies', 'error_mes'], 'safe']

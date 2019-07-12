@@ -156,6 +156,16 @@ $this->title = 'Журнал заказов';
                 ],
             ],
             [
+                'class' => \kartik\grid\EditableColumn::class,
+                'attribute' => 'avans_client',
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_MONEY,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/set_avans_client' ])
+                    ]
+                ],
+            ],
+            [
                 'attribute' =>'type_payment',
                 'format' => 'raw',
                 'value' => function($model){

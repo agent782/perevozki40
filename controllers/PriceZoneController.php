@@ -7,6 +7,7 @@ use app\models\Vehicle;
 use Yii;
 use app\models\PriceZone;
 use app\models\PriceZoneSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -28,6 +29,21 @@ class PriceZoneController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index'],
+                        'roles' => ['@', '?']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete'],
+                        'roles' => ['admin']
+                    ]
+                ]
+            ]
         ];
     }
 

@@ -80,6 +80,10 @@ class BodyType extends \yii\db\ActiveRecord
     }
 
     public function getBodyShortWithTip(){
-        return '<b style = "cursor:help;" title =' . $this->body . '>' . $this->body_short . '</b>';
+        return
+            '<b style = "cursor:help;" title = "' .
+            $this->body
+            . '" >' . $this->body_short . '</b>'
+            ;
     }
 }

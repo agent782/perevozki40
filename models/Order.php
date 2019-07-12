@@ -106,6 +106,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property Invoice $certificate
 * @property integer $id_review_vehicle
 * @property integer $id_review_client
+ * @property float $avans_client
 
 
  */
@@ -202,9 +203,7 @@ class Order extends \yii\db\ActiveRecord
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
             ['type_payment', 'validateForUser'],
-
-
-
+            [['avans_client'], 'number']
         ];
     }
 
@@ -330,7 +329,8 @@ class Order extends \yii\db\ActiveRecord
             'additional_cost' => 'Доп. расходы (Помощь грузчика(ов), платные дороги/въезды и т.п.), р.',
             'cost' => 'Сумма',
             'ClientPhone' => 'Телефон клиента',
-            'id_company' => 'Юр. лицо '
+            'id_company' => 'Юр. лицо ',
+            'avans_client' => 'Аванс'
 
         ];
     }

@@ -19,11 +19,13 @@ class SignupCarOwnerForm extends Model
 {
     const SCENARIO_WITHOUT_DRIVER_LICENSE = 'without_driver_license';
 
+    public $id_user = null;
     public $bithday;
     public $photo;
     public $passport_number;
     public $passport_date;
     public $passport_place;
+    public $email;
     public $email2;
     public $phone2;
     public $country;
@@ -39,7 +41,8 @@ class SignupCarOwnerForm extends Model
     public function rules()
     {
         return [
-            [['bithday', 'country', 'passport_number', 'passport_place', 'passport_date',
+            [['id_user'], 'integer'],
+            [['email', 'bithday', 'country', 'passport_number', 'passport_place', 'passport_date',
                 'reg_address', 'assignAgreement'], 'required'],
             [['is_driver'], 'required', 'message' => 'Выберите один из вариантов'],
 //            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
@@ -49,8 +52,9 @@ class SignupCarOwnerForm extends Model
 //            ['passport_number', 'exist', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
             [['id_driver_licence'], 'integer'],
             [['photo'], 'image', 'extensions' => 'jpg'],
-            [['passport_number', 'driver_licence_number'], 'string', 'max' => 255],
-            ['email2', 'email'],
+            [['passport_number', 'driver_licence_number', 'reg_address'], 'string', 'max' => 255],
+            [['email', 'email2'], 'email'],
+            ['email', 'validateUniqueEmail'],
             [['bithday', 'passport_date'], 'date', 'format' => 'php:d.m.Y'],
             [['bithday'], 'date', 'format' => 'php:d.m.Y',
                 'max' => (time() - 60*60*24*365*18), 'min' => (time() - 60*60*24*365*100),
@@ -86,14 +90,24 @@ class SignupCarOwnerForm extends Model
             'passport_place' => 'Кем выдан',
             'photo' => 'Фото профиля',
             'phone2' => 'Дополнительный телефон',
+            'email' => 'Email',
             'email2' => 'Дополнительный email',
             'country' => 'Гражданство',
             'reg_address' => 'Адрес регистрации',
             'driver_licence_number' => 'Номер водительского удостоверения',
             'driver_licence_date' => 'Дата выдачи ВУ',
             'driver_licence_place' => 'Кем выдано ВУ',
+
         ];
     }
+
+    public function validateUniqueEmail($attribute){
+        if(User::find()->where(['email' => $this->$attribute])
+            ->andWhere(['<>', 'id' , $this->id_user])->one()
+        )
+            $this->addError($attribute, 'Пользователь с таким email уже существует. Укажите другой адрес или войдите под пользователем с этим email');
+    }
+
     public function beforeValidate()
     {
 //        if(!$this->is_driver) $this->scenario=self::SCENARIO_WITHOUT_DRIVER_LICENSE;
@@ -125,7 +139,14 @@ class SignupCarOwnerForm extends Model
 
     public function saveProfile()
     {
-        $modelProfile = Yii::$app->user->identity->profile;
+        $User = Yii::$app->user->identity;
+        if(!$User) return false;
+        $User->email = $this->email;
+        if(!$User->save(false)) return false;
+
+        $modelProfile = $User->profile;
+        if(!$modelProfile) return false;
+
         $this->photo = UploadedFile::getInstance($this, 'photo');
         if($this->photo) {
             $modelProfile->photo = $this->uploadPhoto();
@@ -156,7 +177,6 @@ class SignupCarOwnerForm extends Model
             $auth->revokeAll($modelProfile->id_user);
             $auth->assign($role, $modelProfile->id_user);
         }
-//        return $modelProfile->getErrors();
         return false;
     }
     public function savePassport($id)

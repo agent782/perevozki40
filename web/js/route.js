@@ -135,7 +135,7 @@ $(document).ready(function () {
              * Тестовый массив с метками адресов
              */
             if (rStart.val() && rFinish.val()) {
-                startLoading();
+                // startLoading();
                 var multiRouteModel = new ymaps.multiRouter.MultiRouteModel(adresses, {
                     //avoidTrafficJams: true,
                     results: 1

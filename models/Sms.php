@@ -92,6 +92,7 @@ class Sms extends \yii\db\ActiveRecord
             if(!$smsStatus->sms_id) $this->id = 'error_'.time().'_'.rand(10000,99999);
             $this->status_text = $smsStatus->status;
             if ($this->save()) return $this;
+//            return $this->getErrors();
         }
         return false;
     }

@@ -60,6 +60,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Главная',
                             'url' => Yii::$app->homeUrl,
                         ],
+                        [
+                            'label' => 'Тарифные зоны',
+                            'url' => '/price-zone'
+                        ]
                     ];
                     ?>
                     <?=
@@ -92,9 +96,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 
 //                widgets\Pjax::begin(['id' => 'pjax_message']);
             if(Yii::$app->user->id) {
+
                 if (Message::countNewMessage(Yii::$app->user->id)) {
                     echo Html::a(
-                        Html::img('/img/icons/message-48.png'
+                        Html::img('/img/icons/notification-48.png'
                         ) . '(+' . Message::countNewMessage(Yii::$app->user->id) . ')'
                         , Url::to(['/message']
                     ));
@@ -104,6 +109,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         , Url::to(['/message']));
                 }
             }
+
 //                widgets\Pjax::end();
             ?>
         </div>
@@ -138,7 +144,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Проверка изменения пользователей',
                             'url' => '/admin/users/check-users-updates',
-//                            'visible' => Yii::$app->user->can('admin'),
+                            'visible' => Yii::$app->user->can('admin'),
                         ],
                         [
                             'label' => 'Подсказки',
@@ -150,9 +156,13 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/user',
                         ],
                         [
+                            'label' => 'Баланс',
+                            'url' => '/user/balance',
+                        ],
+                        [
                             'label' => 'Сделать новый заказ',
                             'url' => Url::to(['/order/create', 'user_id' => Yii::$app->user->id]),
-                            'visible' => !Yii::$app->user->can('car_owner')
+                            'visible' => !Yii::$app->user->isGuest
                         ],
                         [
                             'label' => (Message::countNewMessage(Yii::$app->user->id))
@@ -317,6 +327,16 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     </div>
 
 <div style='overflow-x:scroll;overflow-y:hidden;width:auto;'>
+    <div class="warning">
+        <?php
+        if(Yii::$app->user->can('@')) {
+            $balance = Yii::$app->user->identity->profile->balance['balance'];
+            $balanceCSS = ($balance < 0) ? 'color: red' : 'color: green';
+
+            echo Html::a('<h4 style="' . $balanceCSS . '"><b>Ваш баланс: ' . $balance . 'р.</b></h4>', '/user/balance');
+        }
+        ?>
+    </div>
         <?= $content ?>
 </div>
     <!--        <i class="fas fa-truck"></i>perev<img src="/img/icons/wheel.png"/>zki40.ru'-->

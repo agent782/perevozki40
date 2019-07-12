@@ -14,7 +14,7 @@ use yii\bootstrap\Tabs;
 use app\models\Invoice;
 ?>
 <div>
-    <h4>В процессе выполнения...</h4>
+    <h4>Завершенные</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_arhive,
         'options' => [
@@ -40,7 +40,7 @@ use app\models\Invoice;
                 ],
             ],
             'id',
-            'real_datetime_start',
+            'datetime_finish',
             [
                 'label' => 'Сумма к оплате',
                 'attribute' => 'finishCost',
@@ -66,7 +66,10 @@ use app\models\Invoice;
                                 );
                         }
                     } else {
-                        $return .= '<br>Документы оформляются...';
+                        if($order->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER){
+                            $return .= '<br>Документы оформляются...';
+                        }
+
                     }
 
                     if($order->certificate){

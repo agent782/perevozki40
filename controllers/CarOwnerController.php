@@ -42,6 +42,7 @@ class CarOwnerController extends Controller
             $modelStart->phone2 = $modelProfile->phone2;
             $modelStart->email2 = $modelProfile->email2;
             $modelStart->bithday = $modelProfile->bithday;
+            $modelStart->id_user = $modelProfile->id_user;
 //            $modelStart->passport_number = $modelProfile->passport->number;
 //            $modelStart->country = $modelProfile->passport->country;
 //            $modelStart->passport_date = $modelProfile->passport->date;
@@ -51,16 +52,17 @@ class CarOwnerController extends Controller
             $modelStart->photo = $modelProfile->photo;
 
         }
-        if(!$modelProfile) $modelProfile = new Profile();
+        else $modelProfile = new Profile();
+
         if($modelStart->load(\Yii::$app->request->post())){
             if ($modelProfile = $modelStart->saveProfile()) {
 
                 functions::setFlashSuccess('Поздравляем с успешной регистрацией. 
                    Добавьте транспортное средство в личном кабинете и получайте заказы!');
+                emails::sendAfterCarOwnerRegistration($modelProfile->id_user);
                 if(!$modelProfile->is_driver){
                     return $this->redirect('/driver');
                 }
-                emails::sendAfterCarOwnerRegistration($modelProfile->id_user);
                 return $this->redirect('/vehicle');
             }
             functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');

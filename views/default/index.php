@@ -3,6 +3,7 @@
     use yii\helpers\Url;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 ?>
+<div class="container">
 <?php
     if(Yii::$app->user->can('user')):
 ?>
@@ -26,3 +27,4 @@
     endif;
 ?>
 
+</div>

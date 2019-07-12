@@ -189,32 +189,32 @@ class PriceZone extends \yii\db\ActiveRecord
             'body_types' => 'Типы кузова',
             'bodiesColumn' => 'Типы кузова',
             'longlength' => 'Груз-длинномер',
-            'tonnage_min' => 'Грузоподъемность минимальная',
-            'tonnage_max' => 'Грузоподъемность максимальная',
-            'volume_min' => 'Объем минимальный',
-            'volume_max' => 'Объем максимальный',
-            'length_min' => 'Длина кузова минимальная',
-            'length_max' => 'Длина кузова максимальная',
+            'tonnage_min' => 'Грузоподъемность мин. (т.)',
+            'tonnage_max' => 'Грузоподъемность макс. (т.)',
+            'volume_min' => 'Объем мин. (м3)',
+            'volume_max' => 'Объем макс. (м3)',
+            'length_min' => 'Длина кузова мин. (м.)',
+            'length_max' => 'Длина кузова макс. (м.)',
             'tonnage_long_min' => 'Грузоподъемность при перевозке длинномера минимальная',
             'tonnage_long_max' => 'Грузоподъемность при перевозке длинномера максимальная',
-            'length_long_min' => 'Длина длинномера минимальная',
-            'length_long_max' => 'Длина длинномера максимальная',
-            'passengers' => 'Количество пассажиров',
-            'tonnage_spec_min' => 'Грузоподъемность механизма (стрелы) минимальная',
-            'tonnage_spec_max' => 'Грузоподъемность механизма (стрелы) максимальная',
-            'length_spec_min' => 'Длина механизма (стрелы) минимальная',
-            'length_spec_max' => 'Длина механизма (стрелы) максимальная',
-            'volume_spec' => 'Объем механизма (ковша)',
-            'r_km' => 'Руб/км',
-            'h_loading' => 'Время на погрузку/разгрузку',
+            'length_long_min' => 'Длина длинномера мин.',
+            'length_long_max' => 'Длина длинномера макс.',
+            'passengers' => 'Кол-во пассажиров',
+            'tonnage_spec_min' => 'Грузоподъемность механизма (стрелы) мин. (т.)',
+            'tonnage_spec_max' => 'Грузоподъемность механизма (стрелы) макс. (т.)',
+            'length_spec_min' => 'Длина механизма (стрелы) мин. (м.)',
+            'length_spec_max' => 'Длина механизма (стрелы) макс. (м.)',
+            'volume_spec' => 'Объем механизма (ковша) (м3)',
+            'r_km' => 'Руб/км (при пробеге более 120 км)',
+            'h_loading' => 'Время на погрузку/ разгрузку/ ожидание',
             'r_loading' => 'Переработка, руб/час',
-            'min_price' => 'Минимальная оплата при пробеге >100км, руб.',
-            'r_h' => 'Руб/час',
-            'min_r_10' => 'Минимальная оплата при пробеге <20км, ч.',
-            'min_r_20' => 'Минимальная оплата при пробеге >20км, ч.',
-            'min_r_30' => 'Минимальная оплата при пробеге >40км, ч.',
-            'min_r_40' => 'Минимальная оплата при пробеге >60км, ч.',
-            'min_r_50' => 'Минимальная оплата при пробеге >80км, ч.',
+            'min_price' => 'Мин. плата при пробеге >120км, руб.',
+            'r_h' => 'Руб/час (при пробеге менее 120 км)',
+            'min_r_10' => 'Мин. плата при пробеге <20км, ч.',
+            'min_r_20' => 'Мин. плата при пробеге >20км, ч.',
+            'min_r_30' => 'Мин. плата при пробеге >40км, ч.',
+            'min_r_40' => 'Мин. плата при пробеге >60км, ч.',
+            'min_r_50' => 'Мин. плата при пробеге >80км и <120 км, ч.',
             'remove_awning' => 'Растентовка (1 сторона), руб.',
             'status' => 'Статус',
             'created_at' => 'Дата создания',
@@ -245,10 +245,6 @@ class PriceZone extends \yii\db\ActiveRecord
         } return false;
     }
 
-    public function validateSPEC($attribute){
-
-    }
-
     public function getBodiesColumn(){
         if(!$this->bodyTypies) return false;
         $stringBodies = '<ul>';
@@ -257,6 +253,21 @@ class PriceZone extends \yii\db\ActiveRecord
         }
 
         $stringBodies .= '</ul>';
+        return $stringBodies;
+    }
+
+    public function getBodyTypiesText($short = true, $html = true){
+        if(!$this->bodyTypies) return false;
+        $stringBodies = '';
+        foreach ($this->bodyTypies as $bType){
+            $body_short = $bType->body_short;
+            if($html && $short) $body_short = $bType->getBodyShortWithTip();
+            $stringBodies .= ($short)
+                ? $body_short
+                : $bType->body;
+            $stringBodies .= ', ';
+        }
+
         return $stringBodies;
     }
 

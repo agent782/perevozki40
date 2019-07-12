@@ -14,12 +14,22 @@ use yii\helpers\Url;
     <?=
     GridView::widget([
         'dataProvider' => $dataProviderPass,
+        'responsiveWrap' => false,
 //            'filterModel' => $SeachModel,
         'options' => [
             'style' => 'width: 70%;'
         ],
         'columns' => [
-            ['class' => '\yii\grid\SerialColumn'],
+            [
+                'attribute' => 'id',
+                'format' => 'raw',
+                'value' => function($vehicle){
+                    return Html::a(
+                        $vehicle->id,
+                        ['/logist/vehicle/view', 'id' => $vehicle->id]
+                    );
+                }
+            ],
             [
                 'label' => 'Пользователь',
                 'format' => 'raw',
@@ -29,10 +39,18 @@ use yii\helpers\Url;
                     return $res;
                 }
             ],
-            'regLicense.brand',
             'passengers',
+            [
+                'attribute' => 'body_type',
+                'format' => 'raw',
+                'value' => function(\app\models\Vehicle $vehicle){
+                    return $vehicle->getBodyTypeText(true, true);
+                }
+            ],
             'tonnage',
-            'bodyTypeText',
+            'regLicense.brand',
+            'regLicense.reg_number',
+
             [
                 'attribute' => 'status',
                 'label' => 'Статус',

@@ -19,7 +19,11 @@
 //            'value' => $id_vehicle
         ]
     )->label('Выберите ТС')?>
-
+    <?php
+        if (!$UserModel->getDrivers()->count() && !$Profile->is_driver){
+            echo $form->field($Profile, 'is_driver')->checkbox()->label('Водитель - ' . $Profile->fioFull);
+        }
+    ?>
     <?= $form->field($OrderModel, 'id_driver')->radioList($drivers, [])
         ->label('Выберите водителя ' . Html::a(Html::icon('plus', [
                 'class' => 'btn btn-info',

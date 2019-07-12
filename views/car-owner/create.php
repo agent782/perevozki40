@@ -33,6 +33,8 @@ $this->registerJsFile('/js/signup.js');
         ]);
     ?>
     <div class="col-md-4 col-sm-4">
+        <?= $form->field($modelStart, 'id_user')->hiddenInput()->label(false);?>
+        <?= $form->field($modelStart, 'email') ->input('email')?>
 
         <?= $form->field($modelStart, 'phone2')
             ->widget(MaskedInput::className(),[

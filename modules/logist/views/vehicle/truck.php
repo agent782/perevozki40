@@ -18,6 +18,7 @@
             GridView::widget([
                 'dataProvider' => $dataProviderTruck,
                 'filterModel' => $searchModel,
+                'responsiveWrap' => false,
                 'options' => [
                     'style' => 'width: 70%;'
                 ],
@@ -36,10 +37,12 @@
                     [
                         'label' => 'Пользователь',
                         'format' => 'raw',
-                        'value' => function($model){
+                        'value' => function(\app\models\Vehicle $model){
                             $res ='';
                             $res .= '(ID ' . $model->id_user . ') ' . $model->profile->fioShort;
-                            return $res;
+                            return Html::a(
+                                    $res, Url::to(['/finance/profile/view', 'id' => $model->id_user]))
+                            ;
                         }
                     ],
                     'regLicense.brand',
@@ -48,7 +51,7 @@
                         'attribute' => 'tonnage'
                     ],
                     [
-                        'attribute' => 'bodyTypeText',
+                        'attribute' => 'body_type',
                         'format' => 'raw',
                         'value' => function(\app\models\Vehicle $vehicle){
                             return $vehicle->getBodyTypeText(true, true);

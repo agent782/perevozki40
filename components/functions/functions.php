@@ -101,11 +101,12 @@ class functions
         }
 
         if(is_array($to)){
+            $count = 0;
             foreach ($to as $item){
                 if($item)
-                    return $mes->setTo($item)->send();
+                    if($mes->setTo($item)->send()) ++$count;
             }
-
+            return $count;
         } else {
             if($to) return $mes ->setTo($to)->send();
 

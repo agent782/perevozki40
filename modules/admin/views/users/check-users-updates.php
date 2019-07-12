@@ -68,7 +68,7 @@ use kartik\grid\GridView;
                'value' => function($profile){
                     return Html::a(Html::icon('ok-sign'), Url::to(['/admin/users/confirm-profile-update', 'id_user' => $profile->id_user]))
                         . ' '
-                        . Html::a(Html::icon('remove-sign'), '#')
+                        . Html::a(Html::icon('remove-sign'), Url::to(['/admin/users/cancel-profile-update', 'id_user' => $profile->id_user]))
                         ;
                }
            ]

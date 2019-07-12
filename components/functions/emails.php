@@ -115,4 +115,18 @@ class emails
             $files
         );
     }
+
+    static public function sendLinkResetPassword($user){
+        return functions::sendEmail(
+            $user->email,
+            Yii::$app->params['robotEmail'],
+            'perevozki40.ru. Изменение пароля на сайте.',
+            ['user' => $user],
+            [
+                'html' => 'views/passwordResetToken-html',
+                'text' => 'views/passwordResetToken-text'
+            ]
+
+        );
+    }
 }

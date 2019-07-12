@@ -52,6 +52,16 @@ class OrderController extends Controller
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';
                 } ,
+            ],
+            'set_avans_client' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+                    return $model->avans_client;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
             ]
 
         ]);
