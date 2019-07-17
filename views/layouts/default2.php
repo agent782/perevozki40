@@ -277,7 +277,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 </div>
 
 
-<div class="wrap" style=" top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
+<div class="wrap" style=" padding-top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
 
     <?php if(Yii::$app->session->hasFlash('success')): ?>
     <div class="alert alert-success alert-dismissible" role="alert">
@@ -322,7 +322,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
         </div>
     </div>
 
-<div style='width:auto;margin-top: 120px'>
+<div style='width:auto;margin-top: 10px'>
     <div class="warning">
         <?php
         if(!Yii::$app->user->isGuest)

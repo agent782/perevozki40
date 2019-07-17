@@ -137,7 +137,7 @@ class DefaultController extends Controller
 
                     if($session->get('timeout_new_code') > time()) {
 //                        return 1 . $session->get('timeout_new_code');
-                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 5 минут');
+                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 5 минут после последней попытки');
                         return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                     }
                     $modelVerifyPhone->generateCode();
