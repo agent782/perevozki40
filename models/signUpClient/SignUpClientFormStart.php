@@ -32,6 +32,7 @@ class SignUpClientFormStart extends Model
     public $country;
     public $reg_address;
     public $assignAgreement = false;
+    public $confidentiality_agreement;
 
 
     public function rules()
@@ -57,8 +58,9 @@ class SignUpClientFormStart extends Model
                 'tooSmall' => 'Проверьте дату.',
                 'tooBig' => 'Вы из будущего?)'],
 //            ['bithday', 'date', 'max' => (time() - 60*60*24*365*18)],
-            ['assignAgreement', 'compare', 'compareValue' => 1, 'operator' => '==',
+            [['assignAgreement', 'confidentiality_agreement'], 'compare', 'compareValue' => 1, 'operator' => '==',
                 'message' => 'Вы должны быть согласны с условиями использования сервиса.'],
+            ['id_user', 'safe']
 
         ];
     }
@@ -82,7 +84,7 @@ class SignUpClientFormStart extends Model
 
     public function validateUniqueEmail($attribute){
         if(User::find()->where(['email' => $this->$attribute])
-            ->andWhere(['<>', 'id' , $this->id_user])->one()
+            ->andWhere(['<>', 'id' , $this->id_user])->count()
         )
             $this->addError($attribute, 'Пользователь с таким email уже существует. Укажите другой адрес или войдите под пользователем с этим email');
     }

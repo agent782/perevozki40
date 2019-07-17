@@ -185,6 +185,7 @@ class Company extends \yii\db\ActiveRecord
 //            ],
         ];
     }
+
     public function getProfiles()
     {
         return $this->hasMany(Profile::className(), ['id_user' => 'id_profile'])
@@ -194,6 +195,7 @@ class Company extends \yii\db\ActiveRecord
     public function getXprofileXcompany($idUser){
         return $this->hasOne(XprofileXcompany::className(), ['id_company' => 'id', 'id_profile' => $idUser]);
     }
+
     public function getXprofXcom($id_user){
         return XprofileXcompany::findOne(['id_company' => $this->id, 'id_profile' => $id_user]);
     }

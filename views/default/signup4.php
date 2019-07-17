@@ -22,7 +22,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ])?>
             <?= $form->field($modelSignupUserForm, 'email')->input('text') ?>
             <?= $form->field($modelSignupUserForm, 'password')->passwordInput() ?>
+
             <div class="form-group">
+                <?= $form->field($modelSignupUserForm, 'confidentiality_agreement')
+                    ->checkbox()->label('Я ознакомлен и согласен с '
+                        . Html::a('"Соглашением о конфиденциальности".', '/default/policy'))?>
+                <?= $form->field($modelSignupUserForm, 'use_conditions')->checkbox()
+                    ->label('Я ознакомлен и согласен с '
+                        . Html::a('"Условиями использования сервиса perevozki40.ru".', '/default/user-agreement'))?>
                 <?= Html::submitButton('Завершить регистрацию', ['class' => 'btn btn-primary', 'name' => 'button', 'value' => 'signup4']) ?>
             </div>
             <?php ActiveForm::end(); ?>

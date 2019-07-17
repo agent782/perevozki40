@@ -80,7 +80,11 @@ class UserController extends Controller
 
     public function actionSignupClient()
     {
+        $user = Yii::$app->user->identity;
+        if(!$user) return $this->redirect('/default/login');
         $modelStart = new SignUpClientFormStart();
+        $modelStart->email = $user->email;
+        $modelStart->id_user = $user->id;
         if ($modelStart->load(Yii::$app->request->post())) {
             if ($modelProfile = $modelStart->saveProfile()) {
 //                return $this->render('signupClient2', compact(['modelProfile']));

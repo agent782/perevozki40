@@ -263,7 +263,7 @@ class OrderController extends Controller
                 }
 
                 if ($modelOrder->load(Yii::$app->request->post())) {
-
+                    if(!$modelOrder->selected_rates) break;
                     //Оформление заказа оператором
                     if(!$user_id) {
                         $user = new User();
@@ -394,6 +394,8 @@ class OrderController extends Controller
 
                     } else {
                         functions::setFlashWarning('Ошибка на сервере. Заказ не сохранен. Попробуйте позже.');
+                        return var_dump($modelOrder->getErrors());
+                        return $this->redirect($redirect);
                     }
                     return $this->redirect(['/logist/order/add-company', 'id_order' => $modelOrder->id]);
 

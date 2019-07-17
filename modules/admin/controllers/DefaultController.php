@@ -76,13 +76,13 @@ class DefaultController extends Controller
         }
 
         $Users = User::find()
-//            ->where(['>', 'id', 10])
+            ->where(['>', 'id', 10])
             ->all();
         foreach ($Users as $user){
             if($user) {
                 if($user->profile) {
                     $user->profile->unlinkAll('companies', true);
-                    Yii::$app->db->createCommand()->truncateTable('passports')->execute();
+//                    Yii::$app->db->createCommand()->truncateTable('passports')->execute();
                     if($user->profile->passport){
                         $user->profile->passport->delete();
                     }
@@ -115,12 +115,12 @@ class DefaultController extends Controller
 
 //                    $user->profile->delete();
                 }
-
-                Yii::$app->db->createCommand()
-                    ->delete('user', ['id' => $user->id])
-//                    ->execute()
-                ;
-                functions::setFlashSuccess('OK');
+                if($user->delete()) {
+                    functions::setFlashSuccess('OK');
+                } else{
+                    functions::setFlashWarning('id ' . $user->id . ' не удален');
+//                    break;
+                }
             }
 
         }

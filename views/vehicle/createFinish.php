@@ -171,9 +171,15 @@ $classiferVehicleIds = [];
 
 </div>
 <div class="col-lg-12">
-    <?= $form->field($VehicleForm, 'instruction_to_driver')->checkbox()->label('Я ознакомлен и согласен с "Памяткой водителю".')?>
-    <?= $form->field($VehicleForm, 'confidentiality_agreement')->checkbox()->label('Я ознакомлен и согласен с "Соглашением о конфиденциальности".')?>
-    <?= $form->field($VehicleForm, 'use_conditions')->checkbox()->label('Я ознакомлен и согласен с "Условиями использования сервиса perevozki40.ru".')?>
+    <?= $form->field($VehicleForm, 'instruction_to_driver')->checkbox()
+        ->label('Я ознакомлен и согласен с '
+        . Html::a('"Памяткой водителю".', '/default/driver-instruction'))?>
+    <?= $form->field($VehicleForm, 'confidentiality_agreement')
+        ->checkbox()->label('Я ознакомлен и согласен с '
+        . Html::a('"Соглашением о конфиденциальности".', '/default/policy'))?>
+    <?= $form->field($VehicleForm, 'use_conditions')->checkbox()
+        ->label('Я ознакомлен и согласен с '
+        . Html::a('"Условиями использования сервиса perevozki40.ru".', '/default/user-agreement'))?>
 
 </div>
     <div class="col-lg-12">

@@ -18,14 +18,16 @@ body {
 }
 
 .footer {
-    height: 60px;
+    height: auto;
     background-color: #821e82;
+    color: white;
     border-top: 1px solid #ddd;
     padding-top: 20px;
     /*position: absolute;*/
     /*bottom: 0px;*/
     width: 100%;
 }
+
 
 .jumbotron {
     text-align: center;
@@ -193,31 +195,15 @@ a.desc:after {
     text-align: center;
     font-size: larger;
     font-weight: 900;
-    height: 300px;
-    padding: 50px;
+    /*height: 300px;*/
+    padding: 30px;
     margin: 10px;
-    border: 4px;
-    border-color: #821e82;
-
-}
-#homeContentForUser > #regVehicle{
-    background-color: #d3a7db;
-    color: #821e82;
-}
-
-#homeContentForUser{
+    border: 4px #d3a7db;
+    background-color: #821e82;
+    color: white;
     align-content: center;
 }
 
-#homeContentForUser > #regClient{
-    background-color: #d3a7db;
-    color: #821e82;
-
-}
-#homeContentForUser > #newOrder{
-    background-color: #821e82;
-    color: white;
-}
 #homeContentForUser > div > button{
     font-size: 20px;
     position: absolute;

@@ -159,7 +159,7 @@ $this->registerJsFile('/js/signup.js');
 
     <div class="col-xs-12" style="margin: 10px">
         <?= $form->field($modelStart, 'assignAgreement')->checkbox()->label('Я прочитал и согласен с ' .
-            Html::a('Соглашением об использовании сервиса perevozki40.ru', \yii\helpers\Url::to('')))?>
+            Html::a('Соглашением об использовании сервиса perevozki40.ru', \yii\helpers\Url::to('/default/user-agreement')))?>
         <?= Html::submitButton('Далее',['class' => 'btn btn-success'])?>
         <?php
         ActiveForm::end();

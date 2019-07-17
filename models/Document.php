@@ -132,6 +132,7 @@ class Document extends \yii\db\ActiveRecord
         $doc->setValue('kpp', $modelCompany->kpp);
         $doc->setValue('phones', $modelCompany->phone);
         $doc->setValue('emails', $modelCompany->email);
+        $doc->setValue('date_expire', date('d.m.Y', time()+60*60*24*365));
 
 //        $tmpPathDocx = 'tmp/tmp' . $this->id .'.docx';
         $tmpPathDocx = Yii::getAlias('@tmp/tmp' . $this->id .'.docx');

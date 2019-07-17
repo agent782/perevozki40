@@ -122,7 +122,13 @@
 
     <div class="col-xs-12" style="margin: 10px">
         <?= $form->field($modelStart, 'assignAgreement')->checkbox()->label('Я прочитал и согласен с ' .
-            Html::a('Соглашением об использовании сервиса perevozki40.ru', \yii\helpers\Url::to('')))?>
+            Html::a('Соглашением об использовании сервиса perevozki40.ru',
+                \yii\helpers\Url::to(
+                        '/default/user-agreement'
+                )))?>
+        <?= $form->field($modelStart, 'confidentiality_agreement')
+            ->checkbox()->label('Я ознакомлен и согласен с '
+                . Html::a('"Соглашением о конфиденциальности".', '/default/policy'))?>
 
         <?= Html::submitButton('Завершить',['class' => 'btn btn-success'])?>
     <?php

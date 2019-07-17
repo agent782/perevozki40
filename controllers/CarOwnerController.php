@@ -37,6 +37,10 @@ class CarOwnerController extends Controller
 
     public function  actionCreate(){
         $modelStart = new SignupCarOwnerForm();
+        $user = Yii::$app->user->identity;
+        if(!$user) return $this->redirect('/default/login');
+        $modelStart->email = $user->email;
+        $modelStart->id_user = $user->id;
         $modelProfile = Profile::find()->where(['id_user' => \Yii::$app->user->id])->one();
         if($modelProfile){
             $modelStart->phone2 = $modelProfile->phone2;

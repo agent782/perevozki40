@@ -174,7 +174,7 @@ class Order extends \yii\db\ActiveRecord
             [['id_vehicle_type','body_typies'], 'required', 'message' => 'Выберите один из вариантов.'],
             [['loading_typies'], 'validateLoadingTypies', 'skipOnEmpty' => false],
             ['tonnage', 'validateTonnage','skipOnEmpty' => false],
-            [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов'],
+            [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов', 'skipOnEmpty' => false, 'skipOnError' => false],
             [['datetime_start', 'valid_datetime', 'type_payment','datetime_finish', 'real_datetime_start', 'real_km'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'],

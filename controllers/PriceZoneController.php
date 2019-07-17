@@ -34,7 +34,7 @@ class PriceZoneController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index'],
+                        'actions' => ['index', 'validate-price-zone'],
                         'roles' => ['@', '?']
                     ],
                     [

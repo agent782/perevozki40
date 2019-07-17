@@ -277,7 +277,7 @@ class CompanyController extends Controller
 
                    }
                    $modelCompany->createDocument($type);
-                   return Yii::$app->response->sendFile($path   );
+                   return Yii::$app->response->sendFile($path);
                    return $this->redirect($redirect);
                }
                  else {

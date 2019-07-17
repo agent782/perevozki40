@@ -141,11 +141,13 @@ class DefaultController extends Controller
                         return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                     }
                     $modelVerifyPhone->generateCode();
-
+                    $sms = new Sms($modelUser->username, $modelVerifyPhone->getVerifyCode());
+                    // Отправка кода
+//                    if (!$sms->sendAndSave()) {
+//                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+//                        break;
+//                    }
                     $session->set('timeout_new_code', time()+300);
-//                    $modelVerifyPhone->generateCode();
-
-//                    $session->set('timeout_new_code', time()+30);
 
                     $session->set('modelVerifyPhone', $modelVerifyPhone);
                     $session->set('modelUser', $modelUser);
@@ -377,6 +379,19 @@ class DefaultController extends Controller
             'model' => $model,
         ]);
       }
+
+      public function actionUserAgreement(){
+        return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/user_agreement.docx');
+
+      }
+    public function actionPolicy(){
+        return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/policy.docx');
+
+    }
+    public function actionDriverInstruction(){
+        return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/driver_instruction.docx');
+
+    }
 
 }
 

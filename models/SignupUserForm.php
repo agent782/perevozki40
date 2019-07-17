@@ -12,6 +12,8 @@ class SignupUserForm extends Model
 {
     public $email;
     public $password;
+    public $confidentiality_agreement;
+    public $use_conditions;
     /**
     * @inheritdoc
     */
@@ -26,6 +28,9 @@ class SignupUserForm extends Model
                 'targetAttribute' => 'email','targetClass' => '\app\models\User',
                 'message' => 'Пользователь с таким email уже зарегистрирован'],
             ['password', 'string', 'min' => 6],
+            [['confidentiality_agreement', 'use_conditions'],
+                'compare', 'compareValue' => 1, 'operator' => '==', 'skipOnEmpty' => false, 'skipOnError' => false,
+                'message' => 'Подтвердите согласие.'],
         ];
     }
     public function attributeLabels(){

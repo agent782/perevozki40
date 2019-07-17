@@ -86,7 +86,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                 <a href="/<?php Yii::$app->homeUrl?>"><img src="/img/icons/cargo-20.png"> perevozki40.ru</a>
             </div>
             <div class="row" style="font-size: 16px; font-weight: 700">
-                <a href="tel:+74843955888"><img src="/img/icons/phone-20.png">+7(48439)55-888</a>
+                <a href="tel:+74843955888"><img src="/img/icons/phone-20.png">+7(910)523-47-77</a>
             </div>
 
         </div>
@@ -277,11 +277,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 </div>
 
 
-<div class="wrap" style="position: relative; top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
-
-        <?= Breadcrumbs::widget([
-//            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
+<div class="wrap" style=" top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
 
     <?php if(Yii::$app->session->hasFlash('success')): ?>
     <div class="alert alert-success alert-dismissible" role="alert">
@@ -320,16 +316,17 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 	                        </span>
                         </div>
                     </div>
-                    <p hidden>Текстовое содержание....</p>
+                    <p hidden>perevozki40.ru....</p>
                 </div>
             </div>
         </div>
     </div>
 
-<div style='overflow-x:scroll;overflow-y:hidden;width:auto;'>
+<div style='width:auto;margin-top: 120px'>
     <div class="warning">
         <?php
-        if(Yii::$app->user->can('@')) {
+        if(!Yii::$app->user->isGuest)
+        {
             $balance = Yii::$app->user->identity->profile->balance['balance'];
             $balanceCSS = ($balance < 0) ? 'color: red' : 'color: green';
 
@@ -339,12 +336,20 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     </div>
         <?= $content ?>
 </div>
-    <!--        <i class="fas fa-truck"></i>perev<img src="/img/icons/wheel.png"/>zki40.ru'-->
 </div>
+<footer class="footer">
+    <div class="container">
+        <p class="pull-left"><?=Html::a('Соглашением об использовании сервиса perevozki40.ru ',
+                '/default/user-agreement', ['style' => 'color: white']
+            )?> | <?=Html::a(' Соглашением о конфиденциальности ',
+                '/default/policy', ['style' => 'color: white']
+            )?></p>
 
-<footer class="container-fluid footer">
+        <p class="pull-right">&copy; Григоров Денис Евгеньевич <?= date('Y') ?></p>
 
+    </div>
 </footer>
+
 
 <?php $this->endBody() ?>
 </body>
