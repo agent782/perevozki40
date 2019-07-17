@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
+use app\components\widgets\ShowMessageWidget;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\VehicleSearch */
@@ -45,16 +46,10 @@ $this->registerJs(
                 'label' => 'Тарифные зоны',
                 'format' => 'raw',
                 'value' => function($model) {
-                    $return = '';
-                    foreach ($model->price_zones as $price_zone) {
-                        $return .= $price_zone->id . ', ';
-                    }
-                    $return = substr($return, 0, -2);
-//                    $return .= '<br>' . Html::a('Изменить', Url::to(['/vehicle/select-pricezones', 'id' => $model->id]), ['class' => 'btn']);
-                    return $return;
+                    return $model->idsListWithModalInfo;
                 }
             ],
-            'regLicense.brand.brand',
+            'regLicense.brand',
             'regLicense.reg_number',
             [
                 'label' => 'Грузоподъемность, т.',
@@ -141,7 +136,7 @@ $this->registerJs(
                     return $return;
                 }
             ],
-            'regLicense.brand.brand',
+            'regLicense.brand',
             'regLicense.reg_number',
             'passengers',
             [
@@ -190,7 +185,7 @@ $this->registerJs(
                 'label' => 'Тип',
                 'attribute' => 'bodyType.body'
             ],
-            'regLicense.brand.brand',
+            'regLicense.brand',
             'regLicense.reg_number',
             'tonnage',
             'length',

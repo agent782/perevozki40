@@ -262,7 +262,10 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getEmail(){
-        return $this->user->email;
+        if($this->user) {
+            return $this->user->email;
+        }
+        return false;
     }
 
     public function getRoles(){

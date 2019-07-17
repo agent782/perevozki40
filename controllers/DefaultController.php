@@ -323,6 +323,7 @@ class DefaultController extends Controller
                         $User->setPassword($model->password);
                         if($User->save(false)){
                             $User->sms_code_for_reset_password = null;
+                            $User->save(false);
                             functions::setFlashSuccess('Пароль успешно изменен!');
                             return $this->redirect('/default/login');
                         }

@@ -476,9 +476,21 @@ class Vehicle extends \yii\db\ActiveRecord
         $return = '';
         foreach ($this->price_zones as $price_zone) {
             $return .= Html::a($price_zone->id, Url::to(['/price-zone/view', 'id' => $price_zone->id]), ['target' => 'blank']);
+            $return .= ', ';
+        }
+        $return = substr($return, 0, -2);
+        return $return;
+    }
 
-
-
+    public function getIdsListWithModalInfo()
+    {
+        $return = '';
+        foreach ($this->price_zones as $price_zone) {
+            $price_zone = $price_zone->getPriceZoneForCarOwner($this->id_user);
+            $return .= ShowMessageWidget::widget([
+                'ToggleButton' => ['label' =>$price_zone->id],
+                'helpMessage' => $price_zone->printHtml()
+            ]);
             $return .= ', ';
         }
         $return = substr($return, 0, -2);

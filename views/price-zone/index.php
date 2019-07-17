@@ -32,6 +32,7 @@ if(Yii::$app->user->can('admin')){
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
         'filterModel' => $searchModel,
+        'responsiveWrap' => false,
         'options' => [
                 'class' => 'wrap'
 //            'style' => 'vertical-align: top'
@@ -125,6 +126,7 @@ if(Yii::$app->user->can('admin')){
     <?= GridView::widget([
         'dataProvider' => $dataProviderPass,
         'filterModel' => $searchModel,
+        'responsiveWrap' => false,
         'options' => [
                 'class' => 'wrap',
 //            'style' => 'vertical-align: top'
@@ -162,6 +164,7 @@ if(Yii::$app->user->can('admin')){
     <?= GridView::widget([
         'dataProvider' => $dataProviderSpec,
         'filterModel' => $searchModel,
+        'responsiveWrap' => false,
         'options' => [
             'class' => 'wrap',
         ],
