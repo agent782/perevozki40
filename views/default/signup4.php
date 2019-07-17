@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'enableAjaxValidation' => true,
                 'validationUrl' => \yii\helpers\Url::to(['validate-email']), // Добавить URL валидации]);
             ])?>
-            <?= $form->field($modelSignupUserForm, 'email')->input('text') ?>
+            <?= $form->field($modelSignupUserForm, 'email')->input('email') ?>
             <?= $form->field($modelSignupUserForm, 'password')->passwordInput() ?>
 
             <div class="form-group">
