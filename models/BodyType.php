@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\widgets\ShowMessageWidget;
 use Yii;
 use yii\bootstrap\Html;
 
@@ -86,4 +87,5 @@ class BodyType extends \yii\db\ActiveRecord
             . '" >' . $this->body_short . '</b>'
             ;
     }
+
 }

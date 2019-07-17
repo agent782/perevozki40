@@ -6,6 +6,7 @@ use app\components\functions\functions;
 use app\models\setting\Setting;
 use app\models\setting\SettingVehicle;
 use app\models\setting\SettingClient;
+use function Couchbase\fastlzCompress;
 use FontLib\Table\Type\post;
 use Yii;
 use app\components\DateBehaviors;
@@ -732,6 +733,17 @@ class Order extends \yii\db\ActiveRecord
             ->viaTable('XorderXtypebody', ['id_order' => 'id']);
     }
 
+    public function getBodyTypiesText(){
+        if($this->getBodyTypies()->count()){
+            $return = '';
+            foreach ($this->getBodyTypies()->all() as $bodyType){
+                $return .= $bodyType->body . ', ';
+            }
+            return $return;
+        }
+        return false;
+    }
+
     public function getLoadingTypies(){
         return $this->hasMany(LoadingType::className(), ['id' => 'id_loading_type'])
             ->viaTable('XorderXloadingtype', ['id_order' => 'id']);
@@ -892,16 +904,26 @@ class Order extends \yii\db\ActiveRecord
         return false;
     }
 
-    public function getShortInfoForClient($finish = false){
+    public function getShortInfoForClient($Html = false, $finish = false){
         $return = 'Тип ТС: ' . $this->vehicleType->type .'.<br> Тип(ы) кузова: ';
         $bTypies =  '';
         if($finish){
             $bTypies .= $this->vehicle->bodyTypeText . ', ';
         } else {
-            foreach ($this->body_typies as $bodyType) {
-                $bTypies .= BodyType::findOne($bodyType)->body . ', ';
+            if(!$Html) {
+                foreach ($this->body_typies as $bodyType) {
+                    $bTypies .= BodyType::findOne($bodyType)->body . ', ';
+                }
+                $bTypies = substr($bTypies, 0, -2);
+            } else {
+                foreach ($this->body_typies as $bodyType) {
+                    $bTypies .= BodyType::findOne($bodyType)->getBodyShortWithTip() . ', ';
+                }
+                $bTypies .=' ' . ShowMessageWidget::widget([
+                    'helpMessage' => $this->bodyTypiesText
+                ]);
             }
-            $bTypies = substr($bTypies, 0, -2);
+
         }
         $tonnage = ($finish)? $this->real_tonnage: $this->tonnage;
         $length = ($finish)? $this->real_length: $this->length;
@@ -913,7 +935,7 @@ class Order extends \yii\db\ActiveRecord
         $length_spec = ($finish)? $this->real_length_spec: $this->length_spec;
         $volume_spec = ($finish)? $this->real_volume_spec: $this->volume_spec;
         $longlength = ($finish)? $this->real_longlength : $this->longlength;
-        $return .= $bTypies . '. <br>';
+        $return .= $bTypies . '<br>';
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $return .= 'Вес: ' . $tonnage . ' т. ';

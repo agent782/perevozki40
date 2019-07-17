@@ -639,12 +639,15 @@ class OrderController extends Controller
             $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
         }
 
-        if ($OrderModel->load(Yii::$app->request->post()) && $Profile->load(Yii::$app->request->post())) {
+        if ($OrderModel->load(Yii::$app->request->post())
+//            & $Profile->load(Yii::$app->request->post())
+        ) {
             if($Profile->is_driver) $Profile->save(false);
             $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
                 ->getMinRate($OrderModel)->unique_index;
 
             if ($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+
 //                return var_dump($OrderModel->id_vehicle);
                 $OrderModel->changeStatus(
                     Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
