@@ -57,6 +57,19 @@ VIEW для пользователей, машин (для финанс, лог�
 ======================
 190619
 Инструкция PUSH
+===============================
+Вывод денег
+request_payment
+    id
+    id_user
+    cost
+    type_payment
+    requisites
+    url_invoice
+    status
+    create_at
+
+
 
 ---------------------
 logist order finished
