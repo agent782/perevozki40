@@ -374,7 +374,7 @@ class UserController extends Controller
             'pagination' => ['pageSize' => 25]
         ]);
         $dataProvider_not_paid = new ArrayDataProvider([
-            'allModels' => $Balance['vehicle_orders_not_paid']
+            'allModels' => $Balance['orders_not_paid']
         ]);
         $balance = $Balance['balance'];
         $balance_not_paid = $Balance['not_paid'];

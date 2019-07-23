@@ -12,8 +12,10 @@
     <h3 style="<?=$balanceCSS?>">
         <b>Ваш баланс: <?= $balance?> р.</b>
     </h3>
+    <?php if(Yii::$app->user->can('car_owner')): ?>
     (С учетом неоплаченных заказов Клиентами: <?= $balance + $balance_not_paid?> р.)
     <br><br>
+    <?php endif;?>
 
     <?php
     echo \kartik\grid\GridView::widget([

@@ -195,7 +195,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Запрос на выплату',
                             'url' => '/request-payment/create',
-                            'visible' => ['car-owner']
+                            'visible' => Yii::$app->user->can('car-owner')
                         ],
                         [
                             'label' => 'Заказы (Клиент)',

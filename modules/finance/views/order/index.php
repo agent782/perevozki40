@@ -159,7 +159,7 @@ $this->title = 'Журнал заказов';
                 'class' => \kartik\grid\EditableColumn::class,
                 'attribute' => 'avans_client',
                 'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_MONEY,
+                    'inputType' => \kartik\editable\Editable::INPUT_TEXT,
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/finance/order/set_avans_client' ])
                     ]
@@ -188,7 +188,7 @@ $this->title = 'Журнал заказов';
                     if (!$company) $return = null;
                     else $return = Html::a($company->name, Url::to(['/finance/company/view', 'id' => $company->id]));
                     $return .= ' ' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
-                            ['/logist/order/add-company', 'id_order' => $model->id]);
+                            ['/logist/order/add-company', 'id_order' => $model->id, 'redirect' => '/finance/order']);
                     return $return;
                 },
                 'filter' => \yii\jui\AutoComplete::widget([

@@ -149,7 +149,7 @@ class Company extends \yii\db\ActiveRecord
             'okpo' => Yii::t('app', 'ОКПО'),
             'okved' => Yii::t('app', 'ОКВЭД'),
             'opf_short' => Yii::t('app', 'ОПФ'),
-            'phone' => Yii::t('app', 'Телефон'),
+            'phone' => Yii::t('app', 'Телефон организации'),
             'phone2' => Yii::t('app', 'Дополнительный телефон'),
             'phone3' => Yii::t('app', 'Дополнительный телефон №2'),
             'citizenship' => Yii::t('app', 'Гражданство (только для ИП)'),
