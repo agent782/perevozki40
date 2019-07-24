@@ -119,7 +119,8 @@ $this->registerJsFile('/js/order.js');
             <?= $form->field($modelOrder, 'real_h_loading')->input('tel')?>
         </div>
         <?php
-            if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND || Vehicle::LOADING_TYPE_SIDEWAYS)){
+            if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND)
+                || $modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_SIDEWAYS)){
                 echo $form->field($modelOrder, 'real_remove_awning')->input('tel');
             }
         ?>

@@ -99,10 +99,10 @@ use app\models\Invoice;
             [
                 'label' => 'ТС и водитель',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
                     $fio = ($model->driver)
                         ? $model->driver->fio
-                        : $model->profile->fioFull;
+                        : $model->carOwner->fioFull;
                     return $model->vehicle->brandAndNumber
                     . ' (' . $fio . ')';
                 }

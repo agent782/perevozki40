@@ -68,6 +68,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property integer $id_company
  * @property integer $id_vehicle
  * @property integer $id_car_owner
+ * @property Profile $carOwner
  * @property integer $id_driver
  * @property float $cost
  * @property float $cost_finish
@@ -396,7 +397,7 @@ class Order extends \yii\db\ActiveRecord
         ){
             $this->addError($attribute, 'Вам необходимо '
                 . Html::a('завершить регистрацию Клиента.', '/user/signup-client')
-                . 'Это займет у Вас 1 имнуту. До этого Вы можете выбрать только наличную форму оплаты. '
+                . 'Это займет у Вас 1 минуту. До этого Вы можете выбрать только наличную форму оплаты. '
             );
         }
     }
@@ -631,6 +632,10 @@ class Order extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
+        if($this->type_payment != Payment::TYPE_BANK_TRANSFER){
+            $this->id_company = null;
+        }
+
         if ($insert) {
             if(count($this->body_typies)) {
                 foreach ($this->body_typies as $body_type_ld) {

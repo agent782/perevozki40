@@ -204,7 +204,13 @@ class Company extends \yii\db\ActiveRecord
         return $this->hasMany(XprofileXcompany::className(), ['id_company' => 'id',]);
     }
 
+    public function getOrders(){
+        return $this->hasMany(Order::class, ['id_company' => 'id']);
+    }
 
+    public function getPayments(){
+        return $this->hasMany(Payment::class, ['id_company' => 'id']);
+    }
     // Компания проверена хотя бы для одного пользователя
     public function checked($id_company){
         $company = Company::findOne($id_company);
@@ -216,7 +222,7 @@ class Company extends \yii\db\ActiveRecord
     }
 
     //юр лицо в списке текущего пользователя
-    public function CompanyBelongsUser($user_id, $company_id){
+    static public function CompanyBelongsUser($user_id, $company_id){
         return XprofileXcompany::find()
             ->where([
                 'id_company' => $company_id,

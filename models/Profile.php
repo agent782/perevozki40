@@ -13,6 +13,7 @@ use app\components\functions\functions;
 use Yii;
 use yii\helpers\ArrayHelper;
 use app\models\setting\Setting;
+use yii\bootstrap\Html;
 
 /**
  * This is the model class for table "profile".
@@ -235,6 +236,7 @@ class Profile extends \yii\db\ActiveRecord
     public function getUrlPhoto(){
         return '/uploads/photos/users/' . $this->photo;
     }
+
     public function getUrlUpdatePhoto(){
         return '/uploads/photos/users/update/' . $this->update_to_check['photo'];
     }
@@ -469,10 +471,33 @@ class Profile extends \yii\db\ActiveRecord
 
     public function getBalance(){
         if($this->user->canRole('car_owner')) {
-            return $this->getBalanceCarOwner();
+            $balance_user = $this->getBalanceClient();
+            $balance_companies = $this->getBalanceCompanies();
+            $balance_car_owner = $this->getBalanceCarOwner();
+            $balance_text = $balance_car_owner['balance'];
+            $balance_text .= ($balance_user['balance'] || $balance_companies['balance'])
+                ? ' / ' . $balance_user['balance'] . ' / ' . $balance_companies['balance']
+                : '';
+            return [
+                'balance' => $balance_car_owner['balance'] + $balance_user['balance'] + $balance_companies['balance'],
+                'balance_text' => $balance_text . Html::icon('rub'),
+                'balance_car_owner' => $balance_car_owner,
+//                'balance_client' => $balance_user['balance'] + $balance_companies['balance'],
+                'balance_user' => $balance_user,
+                'balance_companies' => $balance_companies
+            ];
         }
-        if($this->user->canRole('client')) {
-            return $this->getBalanceClient();
+        if($this->user->canRole('client')
+           || $this->user->canRole('user')) {
+            $balance_user = $this->getBalanceClient();
+            $balance_companies = $this->getBalanceCompanies();
+            $balance = $balance_user['balance'] + $balance_companies['balance'];
+            return [
+                'balance' => $balance,
+                'balance_text' => $balance . Html::icon('rub'),
+                'balance_user' => $balance_user,
+                'balance_companies' => $balance_companies
+            ];
         }
     }
 
@@ -486,7 +511,11 @@ class Profile extends \yii\db\ActiveRecord
             'orders_avans' => [],
         ];
 
-        $orders = Order::find()->where(['id_user' => $this->id_user,])
+        $orders_cash = Order::find()->where(['id_user' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['type_payment' => Payment::TYPE_CASH])
+            ->all();
+        $orders_card = Order::find()->where(['id_user' => $this->id_user,])
             ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
             ->andWhere(['type_payment' => Payment::TYPE_SBERBANK_CARD])
             ->all();
@@ -497,7 +526,28 @@ class Profile extends \yii\db\ActiveRecord
             ->andWhere(['<>', 'type', Payment::TYPE_BANK_TRANSFER])
             ->all();
 
-        foreach ($orders as $order){
+        foreach ($orders_cash as $order){
+            if($order->paid_status == $order::PAID_YES){
+                $return['orders'][] = [
+                    'date' => $order->datetime_finish,
+                    'debit' => $order->cost_finish,
+                    'credit' => $order->cost_finish,
+                    'description' => 'Заказ № ' . $order->id . '. Оплачен водителю.',
+                    'id_order' => $order->id,
+                ];
+            } else {
+                $return['balance'] -= $order->cost_finish + $order->avans_client;
+                $return['orders'][] = [
+                    'date' => $order->datetime_finish,
+                    'debit' => $order->cost_finish,
+                    'credit' => $order->avans_client,
+                    'description' => 'Заказ № ' . $order->id . '. Частично оплачен или не оплачен водителю.',
+                    'id_order' => $order->id,
+                ];
+            }
+        }
+
+        foreach ($orders_card as $order){
             $return['balance'] -= $order->cost_finish;
 
             $return['orders'][] = [
@@ -518,20 +568,53 @@ class Profile extends \yii\db\ActiveRecord
 
             $return['orders'][] = [
                 'date' => $payment->date,
-                'credit' => $payment->cost,
-                'debit' => '',
+                'debit' => $payment->cost,
                 'description' => $payment->comments,
                 'id_order' => '',
                 'id_paiment' => $payment->id
             ];
+            array_multisort($return['orders'], SORT_DESC);
         }
 
-        array_multisort($return['orders'], SORT_DESC);
+
         return $return;
     }
 
     public function getBalanceCompanies(){
+        $companies = $this->companies;
+        $return = [
+            'balance' => 0,
+        ];
+        foreach ($companies as $company){
+            $return[$company->id] = [
+                'balance' => 0,
+                'orders' => []
+            ];
+            foreach ($company->orders as $order){
+                $return['balance'] -= $order->cost_finish;
+                $return[$company->id]['balance'] -= $order->cost_finish;
+                $return[$company->id]['orders'][] = [
+                    'date' => $order->datetime_finish,
+                    'credit' => $order->cost_finish,
+                    'description' => 'Заказ № ' . $order->id,
+                    'id_order' => $order->id,
+                ];
+            }
+            foreach ($company->payments as $payment){
+                $return['balance'] += $payment->cost;
+                $return[$company->id]['balance'] += $payment->cost;
+                $return[$company->id]['orders'][] = [
+                    'date' => $payment->date,
+                    'debit' => $payment->cost,
+                    'description' => $payment->comments,
+                    'id_paiment' => $payment->id
+                ];
+            }
+            array_multisort($return[$company->id]['orders'], SORT_DESC);
 
+
+        }
+        return $return;
     }
 
     public function getBalanceCarOwner(){
