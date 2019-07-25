@@ -475,9 +475,8 @@ class Profile extends \yii\db\ActiveRecord
             $balance_companies = $this->getBalanceCompanies();
             $balance_car_owner = $this->getBalanceCarOwner();
             $balance_text = $balance_car_owner['balance'];
-            $balance_text .= ($balance_user['balance'] || $balance_companies['balance'])
-                ? ' / ' . $balance_user['balance'] . ' / ' . $balance_companies['balance']
-                : '';
+            $balance_text .= ' / ' . ($balance_user['balance'] + $balance_companies['balance']);
+
             return [
                 'balance' => $balance_car_owner['balance'] + $balance_user['balance'] + $balance_companies['balance'],
                 'balance_text' => $balance_text . Html::icon('rub'),
@@ -573,10 +572,9 @@ class Profile extends \yii\db\ActiveRecord
                 'id_order' => '',
                 'id_paiment' => $payment->id
             ];
-            array_multisort($return['orders'], SORT_DESC);
         }
 
-
+        array_multisort($return['orders'], SORT_DESC);
         return $return;
     }
 
@@ -586,33 +584,33 @@ class Profile extends \yii\db\ActiveRecord
             'balance' => 0,
         ];
         foreach ($companies as $company){
-            $return[$company->id] = [
-                'balance' => 0,
-                'orders' => []
-            ];
-            foreach ($company->orders as $order){
-                $return['balance'] -= $order->cost_finish;
-                $return[$company->id]['balance'] -= $order->cost_finish;
-                $return[$company->id]['orders'][] = [
-                    'date' => $order->datetime_finish,
-                    'credit' => $order->cost_finish,
-                    'description' => 'Заказ № ' . $order->id,
-                    'id_order' => $order->id,
+            if($this->hasFinishOrderOfCompany($company->id)) {
+                $return[$company->id] = [
+                    'balance' => 0,
+                    'orders' => []
                 ];
+                foreach ($company->orders as $order) {
+                    $return['balance'] -= $order->cost_finish;
+                    $return[$company->id]['balance'] -= $order->cost_finish;
+                    $return[$company->id]['orders'][] = [
+                        'date' => $order->datetime_finish,
+                        'credit' => $order->cost_finish,
+                        'description' => 'Заказ № ' . $order->id,
+                        'id_order' => $order->id,
+                    ];
+                }
+                foreach ($company->payments as $payment) {
+                    $return['balance'] += $payment->cost;
+                    $return[$company->id]['balance'] += $payment->cost;
+                    $return[$company->id]['orders'][] = [
+                        'date' => $payment->date,
+                        'debit' => $payment->cost,
+                        'description' => $payment->comments,
+                        'id_paiment' => $payment->id
+                    ];
+                }
+                array_multisort($return[$company->id]['orders'], SORT_DESC);
             }
-            foreach ($company->payments as $payment){
-                $return['balance'] += $payment->cost;
-                $return[$company->id]['balance'] += $payment->cost;
-                $return[$company->id]['orders'][] = [
-                    'date' => $payment->date,
-                    'debit' => $payment->cost,
-                    'description' => $payment->comments,
-                    'id_paiment' => $payment->id
-                ];
-            }
-            array_multisort($return[$company->id]['orders'], SORT_DESC);
-
-
         }
         return $return;
     }
@@ -698,6 +696,8 @@ class Profile extends \yii\db\ActiveRecord
         }
 
         foreach ($orders_avans as $order){
+            $return['not_paid'] += round(($order->cost_finish_vehicle - $order->avans_client)
+                - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100));
             $return['balance'] += round($order->avans_client -
                 ($order->avans_client * $this->procentVehicle/100));
 
@@ -712,7 +712,7 @@ class Profile extends \yii\db\ActiveRecord
                     . ' (' . round(($order->cost_finish_vehicle - $order->avans_client)
                         - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')**',
                 'credit' => '',
-                'description' => '(ОПЛАЧЕН ЧАСТИЧНО) Сумма к выплате за заказ № ' . $order->id,
+                'description' => '(ОПЛАЧЕН КЛИЕНТОМ ЧАСТИЧНО) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
             ];
         }
@@ -742,6 +742,14 @@ class Profile extends \yii\db\ActiveRecord
     public function getProcentVehicle(){
         //переделать в зависмимости от роли или статуса, пока у все 10
         return SettingVehicle::find()->one()->procent_vehicle;
+    }
+
+    public function hasFinishOrderOfCompany($id_company) : bool{
+        return Order::find([
+            'id_user' => $this->id_user,
+            'id_company' => $id_company,
+            ['in', 'status', Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]
+        ])->count();
     }
 }
 

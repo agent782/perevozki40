@@ -1,54 +1,153 @@
 <?php
+
+use kartik\grid\GridView;
 /**
  * Created by PhpStorm.
  * User: Admin
  * Date: 10.07.2019
  * Time: 13:16
  */
-//var_dump($dataProvider);
-    $balanceCSS = ($balance<0)?'color: red':'color: green';
+    $balanceCSS = 'color: red';
+    if($balance['user'] < 0 || $balance['car_owner'] < 0 || $balance['companies'] < 0) {
+        $balanceCSS = 'color: red';
+    }
+
+    $items = [];
+    if($dataProvider_car_owner){
+        $items[] = [
+            'label' => 'Ваш баланс водителя: ' . $balance['car_owner'] . 'р.',
+            'content' => GridView::widget([
+                'dataProvider' => $dataProvider_car_owner,
+                'columns' => [
+                    [
+                        'label' => 'Дата',
+                        'attribute' => 'date',
+                    ],
+                    [
+                        'label' => 'Дебет',
+                        'attribute' => 'debit',
+                        'contentOptions' => ['style' => 'color: green']
+                    ],
+                    [
+                        'label' => 'Кредит',
+                        'attribute' => 'credit',
+                        'contentOptions' => ['style' => 'color: red']
+                    ],
+                    [
+                        'label' => 'Комментарий',
+                        'attribute' => 'description',
+                    ],
+                ]
+            ]),
+        ];
+    }
+    if($dataProvider_user){
+        $items[] = [
+            'label' => 'Ваш баланс клиента: ' . $balance['user'] . 'р.',
+            'content' => GridView::widget([
+                'dataProvider' => $dataProvider_user,
+                'columns' => [
+                    [
+                        'label' => 'Дата',
+                        'attribute' => 'date',
+                    ],
+                    [
+                        'label' => 'Дебет',
+                        'attribute' => 'debit',
+                        'contentOptions' => ['style' => 'color: green']
+                    ],
+                    [
+                        'label' => 'Кредит',
+                        'attribute' => 'credit',
+                        'contentOptions' => ['style' => 'color: red']
+                    ],
+                    [
+                        'label' => 'Комментарий',
+                        'attribute' => 'description',
+                    ],
+                ]
+            ]),
+        ];
+    }
+    if($dataProviders_companies){
+        $content = '';
+        foreach ($dataProviders_companies as $id_company => $dataProvider_company){
+            if($company = \app\models\Company::findOne($id_company)) {
+                $content .= '<div class="h4" id="pointer_company_' . $id_company . '">';
+                $content .= $company->name . ' ('
+                . $Balance['balance_companies'][$id_company]['balance'] . ' р.)';
+                $content .= '<div id="slide_company_' . $id_company . '">';
+                $content .= GridView::widget([
+                    'dataProvider' => $dataProvider_company,
+                    'pjax' => true,
+                    'columns' => [
+                        [
+                            'label' => 'Дата',
+                            'attribute' => 'date',
+                        ],
+                        [
+                            'label' => 'Дебет',
+                            'attribute' => 'debit',
+                            'contentOptions' => ['style' => 'color: green']
+                        ],
+                        [
+                            'label' => 'Кредит',
+                            'attribute' => 'credit',
+                            'contentOptions' => ['style' => 'color: red']
+                        ],
+                        [
+                            'label' => 'Комментарий',
+                            'attribute' => 'description',
+                        ],
+                    ]
+                ]);
+                $content .= '</div> </div>';
+            }
+        }
+        $items[] = [
+            'label' => 'Баланс Ваших юр. лиц: ' . $balance['companies'] . 'р.',
+            'content' => $content
+        ];
+    }
+
+
+
 ?>
 
 <div class="container">
 
-    <?php if(Yii::$app->user->can('car_owner')): ?>
-        <h3 style="<?=$balanceCSS?>">
-            <b>Ваш баланс водителя: <?= $balance['car_owner']?> р.</b>
-        </h3>
-    (С учетом неоплаченных заказов Клиентами: <?= $balance['car_owner'] + $balance['not_paid']?> р.)
-    <br><br>
-    <?php endif;?>
-    <h3 style="<?=$balanceCSS?>">
-        <b>Ваш баланс клиента: <?= $balance['user']?> р.</b>
-    </h3>
 
-
-    <?php
-//    echo \kartik\grid\GridView::widget([
-//        'dataProvider' => $dataProvider,
-//        'responsiveWrap' => false,
-//        'columns' => [
-//            [
-//                'label' => 'Дата',
-//                'attribute' => 'date',
-//            ],
-//            [
-//                'label' => 'Дебет',
-//                'attribute' => 'debit',
-//                'contentOptions' => ['style' => 'color: green']
-//            ],
-//            [
-//                'label' => 'Кредит',
-//                'attribute' => 'credit',
-//                'contentOptions' => ['style' => 'color: red']
-//            ],
-//            [
-//                'label' => 'Комментарий',
-//                'attribute' => 'description',
-//            ],
-//        ]
-//    ]);
-
+    <?=
+        \yii\bootstrap\Tabs::widget([
+            'id' => 'balances',
+           'headerOptions' => [
+               'class' => 'h4',
+               'style' => $balanceCSS
+           ],
+           'items' => $items,
+        ]);
     ?>
 
+
 </div>
+<div id="ids_companies" hidden><?=$ids_companies?></div>
+<script>
+    $(document).ready(function(){
+        var arr_ids = $('#ids_companies').text().split(' ');
+        for(var i in arr_ids) {
+            $("#slide_company_" + arr_ids[i]).hide();
+            $("#pointer_company_" + arr_ids[i]).click(function () {
+                // можно и иначе выбрать все другие блоки
+                // вот так $(".pointer").not(this)
+                $(this).siblings()
+                    .children()
+                    .slideUp("slow");
+                $(this)
+                    .children()
+                    .slideDown("slow");
+            });
+
+        }
+    });
+
+</script>

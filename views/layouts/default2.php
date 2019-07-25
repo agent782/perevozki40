@@ -332,10 +332,12 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
         <?php
         if(!Yii::$app->user->isGuest)
         {
-            $balance = Yii::$app->user->identity->profile->balance['balance_text'];
-            $balanceCSS = ($balance < 0) ? 'color: red' : 'color: green';
+            $balance = Yii::$app->user->identity->profile->balance;
+            $balanceCSS = 'color: green; text-align: center;';
+            if($balance['balance'] < 0) $balanceCSS = 'color: red; text-align: center;';
 
-            echo Html::a('<h4 style="' . $balanceCSS . '"><b>Ваш баланс: ' . $balance . '</b></h4>', '/user/balance');
+            echo Html::a('<h4 style="' . $balanceCSS . '"><b>Ваш баланс: ' . $balance['balance_text']
+                . Html::icon('question-sign') .  '</b></h4>', '/user/balance');
         }
         ?>
     </div>
