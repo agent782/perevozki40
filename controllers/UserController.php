@@ -373,18 +373,15 @@ class UserController extends Controller
         $dataProvider_car_owner = [];
         $dataProvider_user = [];
         $dataProviders_companies = [];
+        $ids_companies = '';
 
-        if($User->canRole('car_owner')){
-            $dataProvider_car_owner = new ArrayDataProvider([
-                'allModels' => $Balance['balance_car_owner']['orders'],
-                'pagination' => ['pageSize' => 15],
-                'sort' => [
-                    'attributes' => ['date'],
-                    'defaultOrder' => [
-                        'date' => SORT_DESC
-                    ]
-                ]
-            ]);
+        if($User->canRole('user')) {
+            $balance = [
+                'car_owner' => 0,
+                'not_paid' => 0,
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => 0
+            ];
         }
         if($User->canRole('client') || $User->canRole('car_owner')) {
             $balance = [
@@ -393,8 +390,6 @@ class UserController extends Controller
                 'user' => $Balance['balance_user']['balance'],
                 'companies' => $Balance['balance_companies']['balance']
             ];
-            $dataProviders_companies = [];
-            $ids_companies = '';
             foreach ($Balance['balance_companies'] as $id_company => $orders){
                 if($company = Company::findOne($id_company)){
                     $dataProviders_companies[$id_company] = new ArrayDataProvider([
@@ -412,13 +407,23 @@ class UserController extends Controller
             }
             $ids_companies = substr($ids_companies, 0, -1);
         }
-        if($User->canRole('user')) {
+        if($User->canRole('car_owner')){
             $balance = [
-                'car_owner' => 0,
-                'not_paid' => 0,
+                'car_owner' => $Balance['balance_car_owner']['balance'],
+                'not_paid' => $Balance['balance_car_owner']['not_paid'],
                 'user' => $Balance['balance_user']['balance'],
-                'companies' => 0
+                'companies' => $Balance['balance_companies']['balance']
             ];
+            $dataProvider_car_owner = new ArrayDataProvider([
+                'allModels' => $Balance['balance_car_owner']['orders'],
+                'pagination' => ['pageSize' => 15],
+                'sort' => [
+                    'attributes' => ['date'],
+                    'defaultOrder' => [
+                        'date' => SORT_DESC
+                    ]
+                ]
+            ]);
         }
 
         $dataProvider_user = new ArrayDataProvider([

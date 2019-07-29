@@ -7,6 +7,28 @@ use kartik\grid\GridView;
  * Date: 10.07.2019
  * Time: 13:16
  */
+/* @var $this \yii\web\View
+ *
+ */
+
+    $this->registerJs(new \yii\web\JsExpression('
+        $(function(){
+        var arr_ids = $(\'#ids_companies\').text().split(\' \');
+        for(var i in arr_ids) {
+            $("#slide_company_" + arr_ids[i]).hide();
+            $("#pointer_company_" + arr_ids[i]).click(function () {
+                $(this).siblings()
+                    .children()
+                    .slideUp("slow");
+                $(this)
+                    .children()
+                    .slideDown("slow");
+            });
+
+        }
+    });
+
+    '));
     $balanceCSS = 'color: red';
     if($balance['user'] < 0 || $balance['car_owner'] < 0 || $balance['companies'] < 0) {
         $balanceCSS = 'color: red';
@@ -73,7 +95,7 @@ use kartik\grid\GridView;
         $content = '';
         foreach ($dataProviders_companies as $id_company => $dataProvider_company){
             if($company = \app\models\Company::findOne($id_company)) {
-                $content .= '<div class="h4" id="pointer_company_' . $id_company . '">';
+                $content .= '<div class="h4" id="pointer_company_' . $id_company . '" style = "cursor: pointer;">';
                 $content .= $company->name . ' ('
                 . $Balance['balance_companies'][$id_company]['balance'] . ' р.)';
                 $content .= '<div id="slide_company_' . $id_company . '">';
@@ -99,6 +121,19 @@ use kartik\grid\GridView;
                             'label' => 'Комментарий',
                             'attribute' => 'description',
                         ],
+                        [
+                            'label' => 'Кто заказывал',
+                            'value' => function($model){
+                                if(array_key_exists('id_order',$model)) {
+                                    $order = \app\models\Order::findOne($model['id_order']);
+                                    if ($order) {
+                                        if ($profile = $order->profile) {
+                                            return $profile->fioFull;
+                                        }
+                                    }
+                                }
+                            }
+                        ]
                     ]
                 ]);
                 $content .= '</div> </div>';
@@ -120,6 +155,7 @@ use kartik\grid\GridView;
     <?=
         \yii\bootstrap\Tabs::widget([
             'id' => 'balances',
+           'encodeLabels' => false,
            'headerOptions' => [
                'class' => 'h4',
                'style' => $balanceCSS
@@ -131,23 +167,7 @@ use kartik\grid\GridView;
 
 </div>
 <div id="ids_companies" hidden><?=$ids_companies?></div>
-<script>
-    $(document).ready(function(){
-        var arr_ids = $('#ids_companies').text().split(' ');
-        for(var i in arr_ids) {
-            $("#slide_company_" + arr_ids[i]).hide();
-            $("#pointer_company_" + arr_ids[i]).click(function () {
-                // можно и иначе выбрать все другие блоки
-                // вот так $(".pointer").not(this)
-                $(this).siblings()
-                    .children()
-                    .slideUp("slow");
-                $(this)
-                    .children()
-                    .slideDown("slow");
-            });
 
-        }
-    });
+<script>
 
 </script>

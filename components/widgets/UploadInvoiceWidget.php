@@ -67,7 +67,9 @@ class UploadInvoiceWidget extends Widget
                 'aria-required' => false,
                 'id' => 'mask_' . rand(),
             ],
-        ])
+        ])->label('Дата '
+                .
+            )
         ;
 
 
