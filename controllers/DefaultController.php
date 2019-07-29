@@ -11,6 +11,8 @@ use app\components\functions\emails;
 use app\components\functions\functions;
 use app\models\LoginForm;
 use app\models\Profile;
+use app\models\ResetPasswordSmsForm;
+use app\models\settings\SettingSMS;
 use app\models\SignupPhoneForm;
 use app\models\User;
 use app\models\VerifyPhone;
@@ -23,6 +25,8 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use app\models\Sms;
 use yii\web\Session;
+use app\models\PasswordResetRequestForm;
+use app\models\ResetPasswordForm;
 
 //use yii\web\Controller;
 
@@ -133,15 +137,17 @@ class DefaultController extends Controller
 
                     if($session->get('timeout_new_code') > time()) {
 //                        return 1 . $session->get('timeout_new_code');
-                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 5 минут');
+                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 5 минут после последней попытки');
                         return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                     }
                     $modelVerifyPhone->generateCode();
-
+                    $sms = new Sms($modelUser->username, $modelVerifyPhone->getVerifyCode());
+                    // Отправка кода
+//                    if (!$sms->sendAndSave()) {
+//                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+//                        break;
+//                    }
                     $session->set('timeout_new_code', time()+300);
-//                    $modelVerifyPhone->generateCode();
-
-//                    $session->set('timeout_new_code', time()+30);
 
                     $session->set('modelVerifyPhone', $modelVerifyPhone);
                     $session->set('modelUser', $modelUser);
@@ -246,6 +252,148 @@ class DefaultController extends Controller
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
+
+    public function actionValidateResetPasswordForm()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model = new ResetPasswordSmsForm();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionResetPasswordSms(){
+        $model = new ResetPasswordSmsForm();
+
+        switch (Yii::$app->request->post('button')){
+            case 'send_sms':
+                if($model->load(Yii::$app->request->post())){
+                    if($User = User::findOne(['username' => $model->phone])){
+                        if($User->send_last_sms_time + 60*10 < time()){
+                            $model->generate_code();
+                            if(SettingSMS::find()->one()->sms_code_reset_password) {
+                                $sms = new Sms($User->username, $model->get_sms_code());
+                                if (!$sms->sendAndSave()) {
+                                    functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                                    break;
+                                }
+                            }else {
+                                functions::setFlashWarning('Отправка смс временно не доступна. Воспользуйтесь восстановлением пароля по email');
+                                break;
+                            }
+                            $User->sms_code_for_reset_password = $model->get_sms_code();
+                            $User->send_last_sms_time = time();
+                            $User->save(false);
+                            return $this->render('/default/change-password', ['model' => $model]);
+                            break;
+                        } else {
+                            $model->set_sms_code($User->sms_code_for_reset_password);
+                            functions::setFlashWarning('Повторный СМС код Вы сможете запросить в '. date('H:i', $User->send_last_sms_time + 60*10));
+                            break;
+                        }
+                    }
+                    functions::setFlashWarning('Пользователь с таким номером телефона не зарегистрирован');
+                }
+                break;
+            case 'change-password':
+                if($model->load(Yii::$app->request->post())){
+                    if($User = User::findOne(['username' => $model->phone])) {
+                        if(!$User->sms_code_for_reset_password){
+                            functions::setFlashWarning('Получите СМС код');
+                            break;
+                        }
+                        $model->set_sms_code($User->sms_code_for_reset_password);
+                        return $this->render('/default/change-password', ['model' => $model]);
+                    }
+                    functions::setFlashWarning('Пользователь с таким номером телефона не зарегистрирован');
+                }
+                break;
+            case 'confirm-password':
+                if($model->load(Yii::$app->request->post())){
+//                    return var_dump($model);
+                    if($User = User::findOne(['username' => $model->phone])) {
+                        $model->set_sms_code($User->sms_code_for_reset_password);
+                        if(!$model->validSmsCode()){
+                            functions::setFlashWarning('Код неверный!');
+                            return $this->render('/default/change-password', ['model' => $model]);
+                        }
+                        $User->setPassword($model->password);
+                        if($User->save(false)){
+                            $User->sms_code_for_reset_password = null;
+                            $User->save(false);
+                            functions::setFlashSuccess('Пароль успешно изменен!');
+                            return $this->redirect('/default/login');
+                        }
+                        functions::setFlashWarning('Ошибка. Попробуйте позже.');
+                    }
+                    functions::setFlashWarning('Пользователь с таким номером телефона не зарегистрирован');
+                }
+                break;
+        }
+
+        return $this->render('reset-password-sms', [
+            'model' => $model
+        ]);
+    }
+
+    public function actionResetPasswordEmail(){
+        $model = new PasswordResetRequestForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->sendEmail()) {
+                functions::setFlashSuccess('Письмо с ссылкой на изменение пароля отправлено на Вашу электронную почту.');
+                return $this->redirect('/default/login');
+            } else {
+                Yii::$app->session->setFlash('error', 'Ошибка на сервере. Попробуйте позже.');
+            }
+        }
+
+        return $this->render('reset-password-email', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Resets password.
+     *
+     * @param string $token
+     * @return mixed
+     * @throws BadRequestHttpException
+     */
+    public function actionResetPassword($token)
+    {
+        try {
+            $model = new ResetPasswordForm($token);
+        } catch (InvalidParamException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+            functions::setFlashSuccess('Пароль успешно изменен!');
+            return $this->redirect('/default/login');
+        }
+
+        return $this->render('resetPasswordForm', [
+            'model' => $model,
+        ]);
+      }
+
+      public function actionUserAgreement(){
+        return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/user_agreement.docx');
+
+      }
+    public function actionPolicy(){
+        return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/policy.docx');
+
+    }
+    public function actionDriverInstruction(){
+        return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/driver_instruction.docx');
+
+    }
+
 }
 
 

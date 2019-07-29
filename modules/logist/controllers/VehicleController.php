@@ -6,6 +6,7 @@ use app\models\Profile;
 use Yii;
 use app\models\Vehicle;
 use app\models\VehicleSearch;
+use yii\web\HttpException;
 
 
 class VehicleController extends \yii\web\Controller
@@ -83,6 +84,15 @@ class VehicleController extends \yii\web\Controller
             'profile' => $profile
         ]);
 
+    }
+
+    public function actionView($id){
+        $vehicle = Vehicle::findOne($id);
+        if(!$vehicle){
+            throw new HttpException(404, 'ТС не найдена');
+        }
+
+        return $this->render('view', ['vehicle' => $vehicle]);
     }
 
 }

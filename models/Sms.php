@@ -92,6 +92,7 @@ class Sms extends \yii\db\ActiveRecord
             if(!$smsStatus->sms_id) $this->id = 'error_'.time().'_'.rand(10000,99999);
             $this->status_text = $smsStatus->status;
             if ($this->save()) return $this;
+//            return $this->getErrors();
         }
         return false;
     }
@@ -106,8 +107,11 @@ class Sms extends \yii\db\ActiveRecord
 
     public function setCost(){
         $cost = 0;
+
         foreach (Yii::$app->smsru->cost($this->to, $this->message)->sms as $sms){
-            return $this->cost = $sms->cost;
+            if($sms->status == 100 || $sms->status == 101 || $sms->status == 102) {
+                return $this->cost = $sms->cost;
+            }
         }
         return null;
     }

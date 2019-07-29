@@ -146,6 +146,10 @@ class InvoiceController extends Controller
             functions::setFlashWarning('Заказ не найден.');
             return $this->redirect($redirect);
         }
+        if(!$modelOrder->company){
+            functions::setFlashWarning('Юридическое лицо отсутствует!');
+            return $this->redirect($redirect);
+        }
         $modelInvoice = null;
         switch ($type) {
             case Invoice::TYPE_INVOICE:

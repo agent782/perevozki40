@@ -14,7 +14,7 @@ use yii\bootstrap\Tabs;
 use app\models\Invoice;
 ?>
 <div>
-    <h4>В процессе выполнения...</h4>
+    <h4>Завершенные</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_arhive,
         'options' => [
@@ -23,24 +23,24 @@ use app\models\Invoice;
         'responsiveWrap' => false,
         'pjax'=>true,
         'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
-
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-//                    return $model->id;
-                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-            ],
+//            [
+//                'class' => 'kartik\grid\ExpandRowColumn',
+//                'value' => function ($model, $key, $index, $column) {
+//
+//                    return GridView::ROW_COLLAPSED;
+//                },
+//                'enableRowClick' => true,
+//                'allowBatchToggle'=>true,
+//                'detail'=>function ($model) {
+////                    return $model->id;
+//                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
+//                },
+//                'detailOptions'=>[
+//                    'class'=> 'kv-state-enable',
+//                ],
+//            ],
             'id',
-            'real_datetime_start',
+            'datetime_finish',
             [
                 'label' => 'Сумма к оплате',
                 'attribute' => 'finishCost',
@@ -48,7 +48,12 @@ use app\models\Invoice;
             ],
             [
                 'attribute' => 'paidText',
-                'format' => 'raw'
+                'format' => 'raw',
+                'value' => function (Order $order){
+                    return ($order->paid_status == $order::PAID_YES_AVANS)
+                        ? $order->paidText . ' (' . $order->avans_client . ')'
+                        : $order->paidText;
+                }
             ],
             [
                 'attribute' => 'paymentText',
@@ -66,7 +71,10 @@ use app\models\Invoice;
                                 );
                         }
                     } else {
-                        $return .= '<br>Документы оформляются...';
+                        if($order->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER){
+                            $return .= '<br>Документы оформляются...';
+                        }
+
                     }
 
                     if($order->certificate){
@@ -91,10 +99,10 @@ use app\models\Invoice;
             [
                 'label' => 'ТС и водитель',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
                     $fio = ($model->driver)
                         ? $model->driver->fio
-                        : $model->profile->fioFull;
+                        : $model->carOwner->fioFull;
                     return $model->vehicle->brandAndNumber
                     . ' (' . $fio . ')';
                 }

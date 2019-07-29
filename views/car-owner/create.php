@@ -33,6 +33,8 @@ $this->registerJsFile('/js/signup.js');
         ]);
     ?>
     <div class="col-md-4 col-sm-4">
+        <?= $form->field($modelStart, 'id_user')->hiddenInput()->label(false);?>
+        <?= $form->field($modelStart, 'email') ->input('email')?>
 
         <?= $form->field($modelStart, 'phone2')
             ->widget(MaskedInput::className(),[
@@ -157,7 +159,7 @@ $this->registerJsFile('/js/signup.js');
 
     <div class="col-xs-12" style="margin: 10px">
         <?= $form->field($modelStart, 'assignAgreement')->checkbox()->label('Я прочитал и согласен с ' .
-            Html::a('Соглашением об использовании сервиса perevozki40.ru', \yii\helpers\Url::to('')))?>
+            Html::a('Соглашением об использовании сервиса perevozki40.ru', \yii\helpers\Url::to('/default/user-agreement')))?>
         <?= Html::submitButton('Далее',['class' => 'btn btn-success'])?>
         <?php
         ActiveForm::end();

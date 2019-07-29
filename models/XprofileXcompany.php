@@ -100,7 +100,7 @@ class XprofileXcompany extends \yii\db\ActiveRecord
             'id_profile' => Yii::t('app', 'Id Profile'),
             'id_company' => Yii::t('app', 'Id Company'),
             'companyName' => Yii::t('app', 'Наименование организации или ИП'),
-            'job_post' => Yii::t('app', 'Должность'),
+            'job_post' => Yii::t('app', 'Ваша должность'),
             'url_form' => Yii::t('app', 'Форма доверенности'),
             'url_upload_poa' => Yii::t('app', 'Доверенность на проверку'),
             'url_poa' => Yii::t('app', 'Доверенность'),

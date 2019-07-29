@@ -12,6 +12,10 @@ use app\models\Vehicle;
  */
 class VehicleSearch extends Vehicle
 {
+
+    public $body_typies = [
+//        Vehicle::BODY_manipulator, Vehicle::BODY_dump, Vehicle::BODY_crane, Vehicle::BODY_excavator, Vehicle::BODY_excavator_loader
+    ];
     /**
      * @inheritdoc
      */
@@ -19,6 +23,7 @@ class VehicleSearch extends Vehicle
     {
         return [
             [['id', 'id_user', 'tonnage', 'length', 'width', 'height', 'longlength', 'passengers', 'ep', 'rp', 'lp'], 'integer'],
+            ['body_typies', 'safe']
         ];
     }
 
@@ -75,6 +80,7 @@ class VehicleSearch extends Vehicle
             'rp' => $this->rp,
             'lp' => $this->lp,
         ]);
+        $query->andFilterWhere(['in', 'body_type', $this->body_typies]);
 
         return $dataProvider;
     }

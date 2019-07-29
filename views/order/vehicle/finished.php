@@ -57,7 +57,12 @@ use yii\bootstrap\Tabs;
             [
 
                 'attribute' => 'paidText',
-                'format' => 'raw'
+                'format' => 'raw',
+                'value' => function (Order $order){
+                    return ($order->paid_status == $order::PAID_YES_AVANS)
+                        ? $order->paidText . ' (' . $order->avans_client . ')'
+                        : $order->paidText;
+                }
             ],
             [
                 'attribute' => 'paymentText',

@@ -145,8 +145,15 @@ class UsersController extends Controller
 
     public function actionConfirmProfileUpdate($id_user, $redirect = '/admin/users/check-users-updates'){
         $Profile = Profile::findOne(['id_user' => $id_user]);
-        if(!$Profile || !$Profile->update_to_check){
+        if(!$Profile) {
             functions::setFlashWarning('Такого профиля не существует!');
+            return $this->redirect($redirect);
+        }
+        if (!$Profile->update_to_check) {
+            $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_NO;
+            $Profile->save(false);
+            functions::setFlashWarning('Данные для редактирования не найдены!');
+
         } else {
             if ($Profile->photo != $Profile->update_to_check['photo'] && $Profile->update_to_check['photo']) {
                 $photo_upd = Yii::getAlias('@userUpdatePhotoDir/') . $Profile->update_to_check['photo'];
@@ -176,11 +183,10 @@ class UsersController extends Controller
                         $Profile->passport->place = $Profile->update_to_check['passport_place'];
                         $Profile->passport->country = $Profile->update_to_check['country'];
 
-                        if(!$Profile->passport->save()){
+                        if(!$Profile->passport->save(false)){
                             $Profile->Update['passport'] = [];
                             functions::setFlashWarning('Ошибка сохранения данных паспорта!');
                         }
-
                     }
                 } else {
                     $Passport = new Passport();
@@ -189,7 +195,7 @@ class UsersController extends Controller
                     $Passport->place = $Profile->update_to_check['passport_place'];
                     $Passport->country = $Profile->update_to_check['country'];
 
-                    if($Passport->save()){
+                    if($Passport->save(false)){
                         $Profile->id_passport = $Passport->id;
                     } else {
                         functions::setFlashWarning('Ошибка сохранения данных паспорта!');
@@ -220,14 +226,32 @@ class UsersController extends Controller
             ];
             $Profile->history_updates = $history_updates;
             if ($Profile->save()) {
-
                 functions::setFlashSuccess('Профиль успешно изменен');
             } else {
                 $Profile->Update['profile'] = [];
                 functions::setFlashWarning('Ошибка на сервере. Профиль не ихменен.');
             }
-
         }
+        return $this->redirect($redirect);
+    }
+
+    public function actionCancelProfileUpdate($id_user, $redirect = '/admin/users/check-users-updates'){
+        $Profile = Profile::findOne(['id_user' => $id_user]);
+        if(!$Profile){
+            functions::setFlashWarning('Такого профиля не существует!');
+        } else {
+            if (!$Profile->update_to_check) {
+                $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_NO;
+                $Profile->save(false);
+                functions::setFlashWarning('Данные для редактирования не найдены!');
+            } else {
+                $Profile->update_to_check = [];
+                $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_NO;
+                $Profile->save(false);
+                functions::setFlashInfo('Изменение данных пользователя отменены');
+            }
+        }
+
         return $this->redirect($redirect);
     }
 }

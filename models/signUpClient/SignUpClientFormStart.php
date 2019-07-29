@@ -11,13 +11,17 @@ use app\models\Passport;
 use app\models\Profile;
 use yii\base\Model;
 use Yii;
+use yii\web\HttpException;
 use yii\web\UploadedFile;
 use yii\helpers\FileHelper;
 use yii\imagine\Image;
+use app\models\User;
 
 
 class SignUpClientFormStart extends Model
 {
+    public $id_user;
+    public $email;
     public $bithday;
     public $photo;
     public $passport_number;
@@ -27,20 +31,23 @@ class SignUpClientFormStart extends Model
     public $phone2;
     public $country;
     public $reg_address;
+    public $assignAgreement = false;
+    public $confidentiality_agreement;
 
 
     public function rules()
     {
         return [
-            [['bithday'], 'required'],
+            [['bithday', 'email'], 'required'],
 //            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
-            ['country', 'safe'],
+            [['id_user','country'], 'safe'],
             ['passport_place', 'string', 'length' => [10, 100]],
 //            ['passport_number', 'unique', 'targetClass' => 'app\models\Passport', 'targetAttribute' => 'id', 'message' => 'Такой паспорт уже заренистрирован в системе'],
             [['photo'], 'image', 'extensions' => 'jpg', 'maxSize' => 4100000],
-            [['passport_number', 'reg_address'], 'string', 'max' => 255],
-            ['email2', 'email'],
+            [['email2','passport_number', 'reg_address'], 'string', 'max' => 255],
+            [['email', 'email2'], 'email'],
+            ['email', 'validateUniqueEmail'],
             [['bithday'], 'date', 'format' => 'php:d.m.Y',
                 'max' => (time() - 60*60*24*365*18), 'min' => (time() - 60*60*24*365*100),
                 'tooBig' => 'Вам должно быть не менее 18 лет',
@@ -51,6 +58,9 @@ class SignUpClientFormStart extends Model
                 'tooSmall' => 'Проверьте дату.',
                 'tooBig' => 'Вы из будущего?)'],
 //            ['bithday', 'date', 'max' => (time() - 60*60*24*365*18)],
+            [['assignAgreement', 'confidentiality_agreement'], 'compare', 'compareValue' => 1, 'operator' => '==',
+                'message' => 'Вы должны быть согласны с условиями использования сервиса.'],
+            ['id_user', 'safe']
 
         ];
     }
@@ -66,10 +76,19 @@ class SignUpClientFormStart extends Model
             'photo' => 'Фото профиля',
             'phone2' => 'Дополнительный телефон',
             'email2' => 'Дополнительный email',
+            'email' => 'Email',
             'country' => 'Гражданство',
             'reg_address' => 'Адрес регистрации'
         ];
     }
+
+    public function validateUniqueEmail($attribute){
+        if(User::find()->where(['email' => $this->$attribute])
+            ->andWhere(['<>', 'id' , $this->id_user])->count()
+        )
+            $this->addError($attribute, 'Пользователь с таким email уже существует. Укажите другой адрес или войдите под пользователем с этим email');
+    }
+
     public function beforeValidate()
     {
         $this->phone2 = mb_ereg_replace("[^0-9]",'',$this->phone2);
@@ -95,8 +114,16 @@ class SignUpClientFormStart extends Model
 
     public function saveProfile()
     {
-        $modelProfile = new Profile();
-        $modelProfile = Yii::$app->user->identity->profile;
+        $User = Yii::$app->user->identity;
+        if(!$User) return false;
+        $User->email = $this->email;
+        if(!$User->save(false)) return false;
+
+
+        $modelProfile = $User->profile;
+        if(!$modelProfile){
+            throw new HttpException(404, 'Ошибка!!');
+        }
         $this->photo = UploadedFile::getInstance($this, 'photo');
         if($this->photo) {
             $modelProfile->photo = $this->uploadPhoto();

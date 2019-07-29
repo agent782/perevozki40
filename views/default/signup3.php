@@ -37,6 +37,7 @@ $form = ActiveForm::begin([
     'name' => 'button',
     'value' => 'signup3'
 ])?>
+
 <?php
 ActiveForm::end();
 ?>

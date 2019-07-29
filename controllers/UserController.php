@@ -23,6 +23,7 @@ use phpDocumentor\Reflection\Types\Null_;
 use Yii;
 use app\components\functions\functions;
 use app\models\signUpClient\SignUpClientFormStart;
+use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\web\HttpException;
@@ -56,6 +57,7 @@ class UserController extends Controller
         $OldProfileAttr = new UpdateUserProfileForm();
         $OldProfileAttr->setAttr($modelProfile);
         $UpdateUserProfileForm->setAttr($modelProfile);
+
         if ($UpdateUserProfileForm->load(Yii::$app->request->post())) {
             if (!$UpdateUserProfileForm->passport_number) $UpdateUserProfileForm->country = null;
             $UpdateUserProfileForm->photo = UploadedFile::getInstance($UpdateUserProfileForm, 'photo');
@@ -78,7 +80,11 @@ class UserController extends Controller
 
     public function actionSignupClient()
     {
+        $user = Yii::$app->user->identity;
+        if(!$user) return $this->redirect('/default/login');
         $modelStart = new SignUpClientFormStart();
+        $modelStart->email = $user->email;
+        $modelStart->id_user = $user->id;
         if ($modelStart->load(Yii::$app->request->post())) {
             if ($modelProfile = $modelStart->saveProfile()) {
 //                return $this->render('signupClient2', compact(['modelProfile']));
@@ -111,9 +117,6 @@ class UserController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-//            $model = new SignUpClientFormStart();
-//            if($model->load(Yii::$app->request->post()))
-//                return \yii\widgets\ActiveForm::validate($model);
 
             $model2 = new UpdateUserProfileForm();
             if ($model2->load(Yii::$app->request->post()))
@@ -123,7 +126,9 @@ class UserController extends Controller
             if ($model3->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model3);
 
-
+            $model = new SignUpClientFormStart();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
@@ -184,6 +189,7 @@ class UserController extends Controller
                 $tmpProfile->surname = $profile->surname;
                 $tmpProfile->patrinimic = $profile->patrinimic;
                 $tmpProfile->sex = $profile->sex;
+                $tmpProfile->is_driver = $profile->is_driver;
                 $tmpProfile->phone2 = $profile->phone2;
                 $tmpProfile->email2 = $profile->email2;
 
@@ -191,6 +197,7 @@ class UserController extends Controller
                 $profile = $tmpProfile;
                 $user->scenario = $user::SCENARIO_SAVE_WITHOUT_USERNAME;
                 $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
+
                 if ($user->save() && $profile->save()) {
                     functions::setFlashSuccess('Пользовватель сохранен.');
                     $this->redirect([$redirect, 'id_user' => $user->id, 'redirect' => $redirect2]);
@@ -213,7 +220,6 @@ class UserController extends Controller
                 $user->scenario = $user::SCENARIO_SAVE;
                 $user->status = User::STATUS_WAIT_ACTIVATE;
                 $profile->scenario = $profile::SCENARIO_SAFE_SAVE;
-
                 if ($user->save()) {
                     $profile->id_user = $user->id;
                     if($profile->save()){
@@ -342,11 +348,103 @@ class UserController extends Controller
         $ChangePasswordForm = new ChangePasswordForm();
 
         if($ChangePasswordForm->load(Yii::$app->request->post()) && $ChangePasswordForm->validate()){
-            return 1;
+            $user = Yii::$app->user->identity;
+            if(!$user) throw new HttpException(404, 'ERROR!!!');
+            $user->setPassword($ChangePasswordForm->new_pass);
+            if($user->save(false)){
+                functions::setFlashSuccess('Пароль успешно изменен!');
+                return $this->redirect('/user');
+            }
+            functions::setFlashWarning('Пароль не изменен! Попробуйте еще раз или обратитесь к администратору.');
         }
 
         return $this->render('change-password', [
             'ChangePasswordForm' => $ChangePasswordForm
         ]);
+    }
+
+    public function actionBalance($id_user = null){
+        if(!$id_user) $id_user = Yii::$app->user->id;
+
+        $Profile = Profile::findOne($id_user);
+        if(!$Profile) throw new HttpException(404, 'Страница не найдена');
+        $User = $Profile->user;
+        $Balance = $Profile->balance;
+        $dataProvider_car_owner = [];
+        $dataProvider_user = [];
+        $dataProviders_companies = [];
+        $ids_companies = '';
+
+        if($User->canRole('user')) {
+            $balance = [
+                'car_owner' => 0,
+                'not_paid' => 0,
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => 0
+            ];
+        }
+        if($User->canRole('client') || $User->canRole('car_owner')) {
+            $balance = [
+                'car_owner' => 0,
+                'not_paid' => 0,
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => $Balance['balance_companies']['balance']
+            ];
+            foreach ($Balance['balance_companies'] as $id_company => $orders){
+                if($company = Company::findOne($id_company)){
+                    $dataProviders_companies[$id_company] = new ArrayDataProvider([
+                        'allModels' => $Balance['balance_companies'][$id_company]['orders'],
+                        'pagination' => ['pageSize' => 15],
+                        'sort' => [
+                            'attributes' => ['date'],
+                            'defaultOrder' => [
+                                'date' => SORT_DESC
+                            ]
+                        ]
+                    ]);
+                    $ids_companies .= $id_company . ' ';
+                }
+            }
+            $ids_companies = substr($ids_companies, 0, -1);
+        }
+        if($User->canRole('car_owner')){
+            $balance = [
+                'car_owner' => $Balance['balance_car_owner']['balance'],
+                'not_paid' => $Balance['balance_car_owner']['not_paid'],
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => $Balance['balance_companies']['balance']
+            ];
+            $dataProvider_car_owner = new ArrayDataProvider([
+                'allModels' => $Balance['balance_car_owner']['orders'],
+                'pagination' => ['pageSize' => 15],
+                'sort' => [
+                    'attributes' => ['date'],
+                    'defaultOrder' => [
+                        'date' => SORT_DESC
+                    ]
+                ]
+            ]);
+        }
+
+        $dataProvider_user = new ArrayDataProvider([
+            'allModels' => $Balance['balance_user']['orders'],
+            'pagination' => ['pageSize' => 15],
+            'sort' => [
+                'attributes' => ['date'],
+                'defaultOrder' => [
+                    'date' => SORT_DESC
+                ]
+            ]
+        ]);
+
+        return $this->render('balance', [
+            'dataProvider_car_owner' => $dataProvider_car_owner,
+            'dataProvider_user' => $dataProvider_user,
+            'dataProviders_companies' => $dataProviders_companies,
+            'balance' => $balance,
+            'Balance' => $Balance,
+            'ids_companies' => $ids_companies
+        ]);
+
     }
 }

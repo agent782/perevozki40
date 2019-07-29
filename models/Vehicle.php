@@ -178,7 +178,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 self::SCENARIO_UPDATE_SPEC_BODY_dump, self::SCENARIO_UPDATE_SPEC_BODY_excavator]],
             [['id_user', 'passengers', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume'], 'number'],
-            [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y')],
+            [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y h:i')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['rating', 'default', 'value' => 0],
             [['bodyTypies', 'error_mes'], 'safe']
@@ -476,9 +476,21 @@ class Vehicle extends \yii\db\ActiveRecord
         $return = '';
         foreach ($this->price_zones as $price_zone) {
             $return .= Html::a($price_zone->id, Url::to(['/price-zone/view', 'id' => $price_zone->id]), ['target' => 'blank']);
+            $return .= ', ';
+        }
+        $return = substr($return, 0, -2);
+        return $return;
+    }
 
-
-
+    public function getIdsListWithModalInfo()
+    {
+        $return = '';
+        foreach ($this->price_zones as $price_zone) {
+            $price_zone = $price_zone->getPriceZoneForCarOwner($this->id_user);
+            $return .= ShowMessageWidget::widget([
+                'ToggleButton' => ['label' =>$price_zone->id],
+                'helpMessage' => $price_zone->printHtml()
+            ]);
             $return .= ', ';
         }
         $return = substr($return, 0, -2);

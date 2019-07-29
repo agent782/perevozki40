@@ -18,7 +18,16 @@ use kartik\grid\GridView;
                 'style' => 'width: 70%;'
             ],
             'columns' => [
-                ['class' => '\yii\grid\SerialColumn'],
+                [
+                    'attribute' => 'id',
+                    'format' => 'raw',
+                    'value' => function($vehicle){
+                        return Html::a(
+                            $vehicle->id,
+                            ['/logist/vehicle/view', 'id' => $vehicle->id]
+                        );
+                    }
+                ],
                 [
                     'label' => 'Пользователь',
                     'format' => 'raw',

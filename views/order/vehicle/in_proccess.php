@@ -46,7 +46,9 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Информация о заказе',
                 'format' => 'raw',
-                'attribute'=>'shortInfoForClient'
+                'value' => function(Order $model){
+                    return $model->getShortInfoForClient(true);
+                }
             ],
             [
                 'label' => 'Заказчик',

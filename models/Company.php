@@ -149,7 +149,7 @@ class Company extends \yii\db\ActiveRecord
             'okpo' => Yii::t('app', 'ОКПО'),
             'okved' => Yii::t('app', 'ОКВЭД'),
             'opf_short' => Yii::t('app', 'ОПФ'),
-            'phone' => Yii::t('app', 'Телефон'),
+            'phone' => Yii::t('app', 'Телефон организации'),
             'phone2' => Yii::t('app', 'Дополнительный телефон'),
             'phone3' => Yii::t('app', 'Дополнительный телефон №2'),
             'citizenship' => Yii::t('app', 'Гражданство (только для ИП)'),
@@ -185,6 +185,7 @@ class Company extends \yii\db\ActiveRecord
 //            ],
         ];
     }
+
     public function getProfiles()
     {
         return $this->hasMany(Profile::className(), ['id_user' => 'id_profile'])
@@ -194,6 +195,7 @@ class Company extends \yii\db\ActiveRecord
     public function getXprofileXcompany($idUser){
         return $this->hasOne(XprofileXcompany::className(), ['id_company' => 'id', 'id_profile' => $idUser]);
     }
+
     public function getXprofXcom($id_user){
         return XprofileXcompany::findOne(['id_company' => $this->id, 'id_profile' => $id_user]);
     }
@@ -202,7 +204,13 @@ class Company extends \yii\db\ActiveRecord
         return $this->hasMany(XprofileXcompany::className(), ['id_company' => 'id',]);
     }
 
+    public function getOrders(){
+        return $this->hasMany(Order::class, ['id_company' => 'id']);
+    }
 
+    public function getPayments(){
+        return $this->hasMany(Payment::class, ['id_company' => 'id']);
+    }
     // Компания проверена хотя бы для одного пользователя
     public function checked($id_company){
         $company = Company::findOne($id_company);
@@ -214,7 +222,7 @@ class Company extends \yii\db\ActiveRecord
     }
 
     //юр лицо в списке текущего пользователя
-    public function CompanyBelongsUser($user_id, $company_id){
+    static public function CompanyBelongsUser($user_id, $company_id){
         return XprofileXcompany::find()
             ->where([
                 'id_company' => $company_id,

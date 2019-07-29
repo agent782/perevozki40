@@ -6,6 +6,7 @@ use app\components\functions\functions;
 use app\models\setting\Setting;
 use app\models\setting\SettingVehicle;
 use app\models\setting\SettingClient;
+use function Couchbase\fastlzCompress;
 use FontLib\Table\Type\post;
 use Yii;
 use app\components\DateBehaviors;
@@ -67,6 +68,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property integer $id_company
  * @property integer $id_vehicle
  * @property integer $id_car_owner
+ * @property Profile $carOwner
  * @property integer $id_driver
  * @property float $cost
  * @property float $cost_finish
@@ -106,6 +108,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property Invoice $certificate
 * @property integer $id_review_vehicle
 * @property integer $id_review_client
+ * @property float $avans_client
 
 
  */
@@ -173,7 +176,7 @@ class Order extends \yii\db\ActiveRecord
             [['id_vehicle_type','body_typies'], 'required', 'message' => 'Выберите один из вариантов.'],
             [['loading_typies'], 'validateLoadingTypies', 'skipOnEmpty' => false],
             ['tonnage', 'validateTonnage','skipOnEmpty' => false],
-            [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов'],
+            [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов', 'skipOnEmpty' => false, 'skipOnError' => false],
             [['datetime_start', 'valid_datetime', 'type_payment','datetime_finish', 'real_datetime_start', 'real_km'], 'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
             [['id_company'],
@@ -202,9 +205,7 @@ class Order extends \yii\db\ActiveRecord
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
             ['type_payment', 'validateForUser'],
-
-
-
+            [['avans_client'], 'number']
         ];
     }
 
@@ -330,7 +331,8 @@ class Order extends \yii\db\ActiveRecord
             'additional_cost' => 'Доп. расходы (Помощь грузчика(ов), платные дороги/въезды и т.п.), р.',
             'cost' => 'Сумма',
             'ClientPhone' => 'Телефон клиента',
-            'id_company' => 'Юр. лицо '
+            'id_company' => 'Юр. лицо ',
+            'avans_client' => 'Аванс'
 
         ];
     }
@@ -395,7 +397,7 @@ class Order extends \yii\db\ActiveRecord
         ){
             $this->addError($attribute, 'Вам необходимо '
                 . Html::a('завершить регистрацию Клиента.', '/user/signup-client')
-                . 'Это займет у Вас 1 имнуту. До этого Вы можете выбрать только наличную форму оплаты. '
+                . 'Это займет у Вас 1 минуту. До этого Вы можете выбрать только наличную форму оплаты. '
             );
         }
     }
@@ -630,6 +632,10 @@ class Order extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
+        if($this->type_payment != Payment::TYPE_BANK_TRANSFER){
+            $this->id_company = null;
+        }
+
         if ($insert) {
             if(count($this->body_typies)) {
                 foreach ($this->body_typies as $body_type_ld) {
@@ -730,6 +736,17 @@ class Order extends \yii\db\ActiveRecord
     public function getBodyTypies(){
         return $this->hasMany(BodyType::className(), ['id' => 'id_bodytype'])
             ->viaTable('XorderXtypebody', ['id_order' => 'id']);
+    }
+
+    public function getBodyTypiesText(){
+        if($this->getBodyTypies()->count()){
+            $return = '';
+            foreach ($this->getBodyTypies()->all() as $bodyType){
+                $return .= $bodyType->body . ', ';
+            }
+            return $return;
+        }
+        return false;
     }
 
     public function getLoadingTypies(){
@@ -892,16 +909,26 @@ class Order extends \yii\db\ActiveRecord
         return false;
     }
 
-    public function getShortInfoForClient($finish = false){
+    public function getShortInfoForClient($Html = false, $finish = false){
         $return = 'Тип ТС: ' . $this->vehicleType->type .'.<br> Тип(ы) кузова: ';
         $bTypies =  '';
         if($finish){
             $bTypies .= $this->vehicle->bodyTypeText . ', ';
         } else {
-            foreach ($this->body_typies as $bodyType) {
-                $bTypies .= BodyType::findOne($bodyType)->body . ', ';
+            if(!$Html) {
+                foreach ($this->body_typies as $bodyType) {
+                    $bTypies .= BodyType::findOne($bodyType)->body . ', ';
+                }
+                $bTypies = substr($bTypies, 0, -2);
+            } else {
+                foreach ($this->body_typies as $bodyType) {
+                    $bTypies .= BodyType::findOne($bodyType)->getBodyShortWithTip() . ', ';
+                }
+                $bTypies .=' ' . ShowMessageWidget::widget([
+                    'helpMessage' => $this->bodyTypiesText
+                ]);
             }
-            $bTypies = substr($bTypies, 0, -2);
+
         }
         $tonnage = ($finish)? $this->real_tonnage: $this->tonnage;
         $length = ($finish)? $this->real_length: $this->length;
@@ -913,7 +940,7 @@ class Order extends \yii\db\ActiveRecord
         $length_spec = ($finish)? $this->real_length_spec: $this->length_spec;
         $volume_spec = ($finish)? $this->real_volume_spec: $this->volume_spec;
         $longlength = ($finish)? $this->real_longlength : $this->longlength;
-        $return .= $bTypies . '. <br>';
+        $return .= $bTypies . '<br>';
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $return .= 'Вес: ' . $tonnage . ' т. ';

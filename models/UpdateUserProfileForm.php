@@ -134,34 +134,38 @@ class UpdateUserProfileForm extends Model
         return false;
     }
 
-    public function saveProfile(Profile $profile){
-        // НЕ ДОДЕЛАНО!!!!!
-
-        if(!$profile) return false;
-
-
-        $profile->name = $this->name;
-        $profile->patrinimic = $this->patrinimic;
-        $profile->surname = $this->surname;
-        $profile->email = $this->email;
-        $profile->email2 = $this->email2;
-        $profile->reg_address = $this->reg_address;
-        if($profile->passport){
-            $this->passport_number = $profile->passport->number;
-            $this->passport_date = $profile->passport->date;
-            $this->passport_place = $profile->passport->place;
-            $this->country = $profile->passport->country;
-        } else {
-
-        }
-        $profile->bithday = $this->bithday;
-        $profile->sex = $this->sex;
-        $profile->phone2 = $this->phone2;
-        if($this->photo){
-
-        }
-
-    }
+//    public function saveProfile(Profile $profile){
+//        // НЕ ДОДЕЛАНО!!!!!
+//
+//        if(!$profile) return false;
+//
+//
+//        $profile->name = $this->name;
+//        $profile->patrinimic = $this->patrinimic;
+//        $profile->surname = $this->surname;
+//        $profile->email = $this->email;
+//        $profile->email2 = $this->email2;
+//        $profile->reg_address = $this->reg_address;
+//        if($profile->passport){
+//            $passport = $profile->passport;
+//        } else {
+//            $passport = new Passport();
+//        }
+//        $passport->number = $this->passport_number;
+//        $passport->date = $this->passport_date;
+//        $passport->place = $this->passport_place;
+//        $passport->country = $this->country;
+//        $passport->save(false);
+//
+//        $profile->id_passport = $passport->id;
+//        $profile->bithday = $this->bithday;
+//        $profile->sex = $this->sex;
+//        $profile->phone2 = $this->phone2;
+//        if($this->photo){
+//
+//        }
+//
+//    }
 
     public function uploadPhoto($update = true){
         if($this->validate() && $this->photo){

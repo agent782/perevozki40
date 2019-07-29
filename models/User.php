@@ -35,6 +35,9 @@ use app\models\Profile;
  * @property array $vehicles
  * @property array $vehicleIds
  * @property Profile $profile
+ * @property string $sms_code_for_reset_password
+ * @property integer $send_last_sms_time
+ *
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -134,7 +137,8 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
 //            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
-            [['push_ids', 'new_username'], 'safe'],
+            [['push_ids', 'new_username', 'send_last_sms_time'], 'safe'],
+            ['sms_code_for_reset_password', 'string', 'max' => 10]
         ];
     }
 
@@ -275,7 +279,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+//            'status' => self::STATUS_ACTIVE,
         ]);
     }
 

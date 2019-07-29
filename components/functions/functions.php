@@ -40,7 +40,9 @@ class functions
         $model->$attribute = $image;
         $filename = $filename . '.' . $image->extension;
         if ($image->saveAs($savePath . $filename)) {
-            Image::autorotate($savePath.$filename)->save();
+            if($image->extension == 'jpg' || $image->extension == 'jpeg' || $image->extension == 'bmp') {
+                Image::autorotate($savePath . $filename)->save();
+            }
 
             \Yii::$app->session->setFlash('success', 'Файл ' . $image . ' успешно сохранен.');
             return $filename;
@@ -101,11 +103,12 @@ class functions
         }
 
         if(is_array($to)){
+            $count = 0;
             foreach ($to as $item){
                 if($item)
-                    return $mes->setTo($item)->send();
+                    if($mes->setTo($item)->send()) ++$count;
             }
-
+            return $count;
         } else {
             if($to) return $mes ->setTo($to)->send();
 

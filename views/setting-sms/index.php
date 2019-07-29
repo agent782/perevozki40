@@ -1,45 +1,23 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\settings\SettingSMSSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model app\models\settings\SettingSMS */
 
-$this->title = 'Setting Sms';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Настройка СМС уведомлений';
+\yii\web\YiiAsset::register($this);
 ?>
-<div class="setting-sms-index">
+<div class="setting-sms-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <h3><?= Html::encode($this->title) ?></h3>
 
-    <p>
-        <?= Html::a('Create Setting Sms', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-//            'id',
-//            'last_num_contract',
-//            'noPhotoPath',
-//            'FLAG_EXPIRED_ORDER',
-//            'user_discount_cash',
-            //'client_discount_cash',
-            //'vip_client_discount_cash',
-            //'user_discount_card',
-            //'client_discount_card',
-            //'vip_client_discount_card',
-            //'procent_vehicle',
-            //'procent_vip_vehicle',
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
             'sms_code_update_phone',
-
-            ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]) ?>
+
 </div>

@@ -60,6 +60,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Главная',
                             'url' => Yii::$app->homeUrl,
                         ],
+                        [
+                            'label' => 'Тарифные зоны',
+                            'url' => '/price-zone'
+                        ]
                     ];
                     ?>
                     <?=
@@ -82,7 +86,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                 <a href="/<?php Yii::$app->homeUrl?>"><img src="/img/icons/cargo-20.png"> perevozki40.ru</a>
             </div>
             <div class="row" style="font-size: 16px; font-weight: 700">
-                <a href="tel:+74843955888"><img src="/img/icons/phone-20.png">+7(48439)55-888</a>
+                <a href="tel:+74843955888"><img src="/img/icons/phone-20.png">+7(910)523-47-77</a>
             </div>
 
         </div>
@@ -92,9 +96,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 
 //                widgets\Pjax::begin(['id' => 'pjax_message']);
             if(Yii::$app->user->id) {
+
                 if (Message::countNewMessage(Yii::$app->user->id)) {
                     echo Html::a(
-                        Html::img('/img/icons/message-48.png'
+                        Html::img('/img/icons/notification-48.png'
                         ) . '(+' . Message::countNewMessage(Yii::$app->user->id) . ')'
                         , Url::to(['/message']
                     ));
@@ -104,6 +109,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         , Url::to(['/message']));
                 }
             }
+
 //                widgets\Pjax::end();
             ?>
         </div>
@@ -138,7 +144,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Проверка изменения пользователей',
                             'url' => '/admin/users/check-users-updates',
-//                            'visible' => Yii::$app->user->can('admin'),
+                            'visible' => Yii::$app->user->can('admin'),
                         ],
                         [
                             'label' => 'Подсказки',
@@ -150,9 +156,13 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => '/user',
                         ],
                         [
+                            'label' => 'Баланс',
+                            'url' => '/user/balance',
+                        ],
+                        [
                             'label' => 'Сделать новый заказ',
                             'url' => Url::to(['/order/create', 'user_id' => Yii::$app->user->id]),
-                            'visible' => !Yii::$app->user->can('car_owner')
+                            'visible' => !Yii::$app->user->isGuest
                         ],
                         [
                             'label' => (Message::countNewMessage(Yii::$app->user->id))
@@ -181,6 +191,11 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Юридические лица',
                             'url' => '/company',
+                        ],
+                        [
+                            'label' => 'Запрос на выплату',
+                            'url' => '/request-payment/create',
+                            'visible' => Yii::$app->user->can('car-owner')
                         ],
                         [
                             'label' => 'Заказы (Клиент)',
@@ -267,11 +282,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 </div>
 
 
-<div class="wrap" style="position: relative; top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
-
-        <?= Breadcrumbs::widget([
-//            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
+<div class="wrap" style=" padding-top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
 
     <?php if(Yii::$app->session->hasFlash('success')): ?>
     <div class="alert alert-success alert-dismissible" role="alert">
@@ -310,21 +321,42 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 	                        </span>
                         </div>
                     </div>
-                    <p hidden>Текстовое содержание....</p>
+                    <p hidden>perevozki40.ru....</p>
                 </div>
             </div>
         </div>
     </div>
 
-<div style='overflow-x:scroll;overflow-y:hidden;width:auto;'>
+<div style='width:auto;margin-top: 10px'>
+    <div class="warning">
+        <?php
+        if(!Yii::$app->user->isGuest)
+        {
+            $balance = Yii::$app->user->identity->profile->balance;
+            $balanceCSS = 'color: green; text-align: center;';
+            if($balance['balance'] < 0) $balanceCSS = 'color: red; text-align: center;';
+
+            echo Html::a('<h4 style="' . $balanceCSS . '"><b>Ваш баланс: ' . $balance['balance_text']
+                . Html::icon('question-sign') .  '</b></h4>', '/user/balance');
+        }
+        ?>
+    </div>
         <?= $content ?>
 </div>
-    <!--        <i class="fas fa-truck"></i>perev<img src="/img/icons/wheel.png"/>zki40.ru'-->
 </div>
+<footer class="footer">
+    <div class="container">
+        <p class="pull-left"><?=Html::a('Соглашением об использовании сервиса perevozki40.ru ',
+                '/default/user-agreement', ['style' => 'color: white']
+            )?> | <?=Html::a(' Соглашением о конфиденциальности ',
+                '/default/policy', ['style' => 'color: white']
+            )?></p>
 
-<footer class="container-fluid footer">
+        <p class="pull-right">&copy; Григоров Денис Евгеньевич <?= date('Y') ?></p>
 
+    </div>
 </footer>
+
 
 <?php $this->endBody() ?>
 </body>

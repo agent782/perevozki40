@@ -48,15 +48,18 @@ class OrderController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
-//            'access' => [
-//                'class' => AccessControl::class,
-//                'rules' => [
-//                    [
-//                        'allow' => true,
-//                        'roles' => ['user', 'car_owner', 'client', 'admin', 'dispetcher']
-//                    ]
-//                ],
-//            ]
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'denyCallback' => function(){
+                            return 1;
+                        }
+                    ],
+                ],
+            ]
         ];
     }
 
@@ -214,7 +217,7 @@ class OrderController extends Controller
 //                    var_dump($modelOrder->getErrors());
 //                    return;
                     $route = new Route();
-                    if($session->get('route')) $route = $session->get('route');
+//                    if($session->get('route')) $route = $session->get('route');
 //                    $session->set('modelOrder', $modelOrder);
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
@@ -260,11 +263,12 @@ class OrderController extends Controller
                 }
 
                 if ($modelOrder->load(Yii::$app->request->post())) {
-
+                    if(!$modelOrder->selected_rates) break;
                     //Оформление заказа оператором
                     if(!$user_id) {
                         $user = new User();
                         $profile = new Profile();
+                        $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
 
                         $session->set('route', $route);
                         $session->set('modelOrder', $modelOrder);
@@ -330,9 +334,10 @@ class OrderController extends Controller
                     $companies = ArrayHelper::map($profile->companies, 'id', 'name');
                     $user->scenario = User::SCENARIO_SAVE;
                     if(!$findUser){
-                        $user->setPassword(rand(11111111, 99999999));
+                        $user->setPassword(123456);
                         $user->generateAuthKey();
                         $user->status = User::STATUS_WAIT_ACTIVATE;
+//                        return var_dump($user->getErrors());
                         if($user->save()){
                             $profile->id_user = $user->id;
                             $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
@@ -389,6 +394,8 @@ class OrderController extends Controller
 
                     } else {
                         functions::setFlashWarning('Ошибка на сервере. Заказ не сохранен. Попробуйте позже.');
+                        return var_dump($modelOrder->getErrors());
+                        return $this->redirect($redirect);
                     }
                     return $this->redirect(['/logist/order/add-company', 'id_order' => $modelOrder->id]);
 
@@ -602,7 +609,8 @@ class OrderController extends Controller
             functions::setFlashWarning('Ошибка на сервере');
             $this->redirect($redirect);
         }
-        if (!$UserModel->getDrivers()->count() && !$UserModel->profile->is_driver) {
+        $Profile = $UserModel->profile;
+        if (!$UserModel->getDrivers()->count() && !$Profile->is_driver) {
             functions::setFlashWarning('У Вас не добавлен ни один водитель!');
 //            return $this->redirect($redirect);
         }
@@ -631,11 +639,15 @@ class OrderController extends Controller
             $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;
         }
 
-        if ($OrderModel->load(Yii::$app->request->post())) {
+        if ($OrderModel->load(Yii::$app->request->post())
+//            & $Profile->load(Yii::$app->request->post())
+        ) {
+            if($Profile->is_driver) $Profile->save(false);
             $OrderModel->id_pricezone_for_vehicle = Vehicle::findOne($OrderModel->id_vehicle)
                 ->getMinRate($OrderModel)->unique_index;
 
             if ($OrderModel->status != Order::STATUS_NEW || $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+
 //                return var_dump($OrderModel->id_vehicle);
                 $OrderModel->changeStatus(
                     Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
@@ -647,6 +659,7 @@ class OrderController extends Controller
 
         return $this->render('/order/accept-order', [
             'OrderModel' => $OrderModel,
+            'Profile' => $Profile,
             'UserModel' => $UserModel,
             'drivers' => $driversArr,
             'vehicles' => $vehicles,

@@ -235,7 +235,7 @@ class VehicleForm extends Model
             $modelVehicle->id_user = Yii::$app->user->id;
             $modelVehicle->id_user = $id_user;
             if(!$modelVehicle->id_user) return false;
-            $modelVehicle->create_at = date('d.m.Y');
+            $modelVehicle->create_at = date('d.m.Y H:i');
         }
         else {
             $modelVehicle = Vehicle::find()->where(['id' => $this->id])->one();

@@ -336,31 +336,28 @@ class VehicleController extends Controller
                     Yii::$app->session->setFlash('success', 'ТС сохранено.');
 //                    return $this->redirect('/vehicle/index');
                 } else {
-
                     $model = $modelOLD;
                     $modelRegLicense = $modelRegLicenseOLD;
                     $model->save();
                     $modelRegLicense->save();
                     Yii::$app->session->setFlash('warning', 'Ошибка сохранения. Попробуйте позже.');
-//                    return $this->redirect('/vehicle/index');
+                    return $this->redirect($redirect);
                 }
                 return $this->redirect($redirect);
 
             }
 //                return var_dump($model->getErrors());
-                Yii::$app->session->setFlash('warning', 'Ошибка сохранения. Попробуйте позже.');
-            if(Yii::$app->user->can('admin'))return $this->redirect('/admin/vehicle/index');
 
-            return $this->redirect('$redirect');
+//            return $this->redirect($redirect);
 //            return 'OK';
-            } else {
-
-                return $this->render('update', [
-                    'model' => $model,
-                    'modelRegLicense' => $modelRegLicense,
-                ]);
             }
-        }
+
+        return $this->render('update', [
+            'model' => $model,
+            'modelRegLicense' => $modelRegLicense,
+        ]);
+
+    }
 
     /**
      * Deletes an existing Vehicle model.

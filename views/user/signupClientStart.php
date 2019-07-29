@@ -31,6 +31,8 @@
     ?>
     <div class="col-md-4 col-sm-4">
 
+        <?= $form->field($modelStart, 'id_user')->hiddenInput()->label(false);?>
+        <?= $form->field($modelStart, 'email') ->input('email')?>
         <?= $form->field($modelStart, 'phone2')
             ->widget(MaskedInput::className(),[
                 'mask' => '+7(999)999-99-99',
@@ -119,7 +121,16 @@
     </div>
 
     <div class="col-xs-12" style="margin: 10px">
-    <?= Html::submitButton('Завершить',['class' => 'btn btn-success'])?>
+        <?= $form->field($modelStart, 'assignAgreement')->checkbox()->label('Я прочитал и согласен с ' .
+            Html::a('Соглашением об использовании сервиса perevozki40.ru',
+                \yii\helpers\Url::to(
+                        '/default/user-agreement'
+                )))?>
+        <?= $form->field($modelStart, 'confidentiality_agreement')
+            ->checkbox()->label('Я ознакомлен и согласен с '
+                . Html::a('"Соглашением о конфиденциальности".', '/default/policy'))?>
+
+        <?= Html::submitButton('Завершить',['class' => 'btn btn-success'])?>
     <?php
         ActiveForm::end();
     ?>

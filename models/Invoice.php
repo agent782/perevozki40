@@ -102,7 +102,7 @@ class Invoice extends \yii\db\ActiveRecord
                 return Yii::getAlias('@certificates/').$this->url;
                 break;
             default:
-                return fal;se;
+                return false;
                 break;
         }
     }

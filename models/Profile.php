@@ -6,12 +6,14 @@ use app\components\CryptBehaviors;
 use app\components\DateBehaviors;
 use app\components\SerializeBehaviors;
 use app\components\SerializeAndCryptBehaviors;
+use app\models\setting\SettingVehicle;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
 use app\components\functions\functions;
 use Yii;
 use yii\helpers\ArrayHelper;
 use app\models\setting\Setting;
+use yii\bootstrap\Html;
 
 /**
  * This is the model class for table "profile".
@@ -54,6 +56,8 @@ use app\models\setting\Setting;
  * @property integer $check_update_status
  * @property string $update_to_check;
  * @property Passport $passport
+ * @property integer $procentVehicle
+ * @property array $balance
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -110,7 +114,7 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_user', 'name', 'surname', 'patrinimic'], 'required'],
+            [['id_user', 'name', 'surname'], 'required'],
             [['id_passport', 'id_driver_license'], 'integer'],
             [['id_user', 'status_client', 'status_vehicle', 'raiting_client', 'raiting_vehicle'],  'integer'],
 //            [['phone2'], 'string', 'max' => 32],
@@ -122,7 +126,7 @@ class Profile extends \yii\db\ActiveRecord
             [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],
             ['photo', 'default', 'value' =>  Setting::getNoPhotoPath()],
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
-            ['is_driver', 'default', 'value' => false],
+            ['is_driver', 'default', 'value' => 0],
             [['history_updates', 'update_to_check'], 'safe'],
             ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT]
         ];
@@ -232,6 +236,7 @@ class Profile extends \yii\db\ActiveRecord
     public function getUrlPhoto(){
         return '/uploads/photos/users/' . $this->photo;
     }
+
     public function getUrlUpdatePhoto(){
         return '/uploads/photos/users/update/' . $this->update_to_check['photo'];
     }
@@ -255,11 +260,17 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getPhone(){
-        return $this->user->username;
+        if($this->user) {
+            return $this->user->username;
+        }
+        return false;
     }
 
     public function getEmail(){
-        return $this->user->email;
+        if($this->user) {
+            return $this->user->email;
+        }
+        return false;
     }
 
     public function getRoles(){
@@ -427,6 +438,7 @@ class Profile extends \yii\db\ActiveRecord
                 'surname' => $profile->surname,
                 'patrinimic' => $profile->patrinimic,
                 'sex' => $profile->sex,
+                'is_driver' => $profile->is_driver,
                 'value' => ($search)
                     ?$profile->id_user
                     :$profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
@@ -455,6 +467,289 @@ class Profile extends \yii\db\ActiveRecord
             ];
 
         return $return;
+    }
+
+    public function getBalance(){
+        if($this->user->canRole('car_owner')) {
+            $balance_user = $this->getBalanceClient();
+            $balance_companies = $this->getBalanceCompanies();
+            $balance_car_owner = $this->getBalanceCarOwner();
+            $balance_text = $balance_car_owner['balance'];
+            $balance_text .= ' / ' . ($balance_user['balance'] + $balance_companies['balance']);
+
+            return [
+                'balance' => $balance_car_owner['balance'] + $balance_user['balance'] + $balance_companies['balance'],
+                'balance_text' => $balance_text . Html::icon('rub'),
+                'balance_car_owner' => $balance_car_owner,
+//                'balance_client' => $balance_user['balance'] + $balance_companies['balance'],
+                'balance_user' => $balance_user,
+                'balance_companies' => $balance_companies
+            ];
+        }
+        if($this->user->canRole('client')
+           || $this->user->canRole('user')) {
+            $balance_user = $this->getBalanceClient();
+            $balance_companies = $this->getBalanceCompanies();
+            $balance = $balance_user['balance'] + $balance_companies['balance'];
+            return [
+                'balance' => $balance,
+                'balance_text' => $balance . Html::icon('rub'),
+                'balance_user' => $balance_user,
+                'balance_companies' => $balance_companies
+            ];
+        }
+    }
+
+    public function getBalanceClient(){
+        $return = [
+            'balance' => 0,
+            'orders' => [],
+            'payments' => [],
+            'not_paid' => 0,
+            'orders_not_paid' => [],
+            'orders_avans' => [],
+        ];
+
+        $orders_cash = Order::find()->where(['id_user' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['type_payment' => Payment::TYPE_CASH])
+            ->all();
+        $orders_card = Order::find()->where(['id_user' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['type_payment' => Payment::TYPE_SBERBANK_CARD])
+            ->all();
+        $payments = Payment::find()->where(['id_user' => $this->id_user])
+            ->andWhere(['status' => Payment::STATUS_SUCCESS])
+            ->andWhere(['calculation_with' => Payment::CALCULATION_WITH_CLIENT])
+            ->andWhere(['id_user' => $this->id_user])
+            ->andWhere(['<>', 'type', Payment::TYPE_BANK_TRANSFER])
+            ->all();
+
+        foreach ($orders_cash as $order){
+            if($order->paid_status == $order::PAID_YES){
+                $return['orders'][] = [
+                    'date' => $order->datetime_finish,
+                    'debit' => $order->cost_finish,
+                    'credit' => $order->cost_finish,
+                    'description' => 'Заказ № ' . $order->id . '. Оплачен водителю.',
+                    'id_order' => $order->id,
+                ];
+            } else {
+                $return['balance'] -= $order->cost_finish + $order->avans_client;
+                $return['orders'][] = [
+                    'date' => $order->datetime_finish,
+                    'debit' => $order->cost_finish,
+                    'credit' => $order->avans_client,
+                    'description' => 'Заказ № ' . $order->id . '. Частично оплачен или не оплачен водителю.',
+                    'id_order' => $order->id,
+                ];
+            }
+        }
+
+        foreach ($orders_card as $order){
+            $return['balance'] -= $order->cost_finish;
+
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => $order->cost_finish,
+                'description' => 'Заказ № ' . $order->id,
+                'id_order' => $order->id,
+            ];
+        }
+
+        foreach ($payments as $payment){
+            if($payment->direction == Payment::DEBIT) {
+                $return['balance'] += $payment->cost;
+            }
+            if($payment->direction == Payment::CREDIT) {
+                $return['balance'] -= $payment->cost;
+            }
+
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'debit' => $payment->cost,
+                'description' => $payment->comments,
+                'id_order' => '',
+                'id_paiment' => $payment->id
+            ];
+        }
+
+        array_multisort($return['orders'], SORT_DESC);
+        return $return;
+    }
+
+    public function getBalanceCompanies(){
+        $companies = $this->companies;
+        $return = [
+            'balance' => 0,
+        ];
+        foreach ($companies as $company){
+            if($this->hasFinishOrderOfCompany($company->id)) {
+                $return[$company->id] = [
+                    'balance' => 0,
+                    'orders' => []
+                ];
+                foreach ($company->orders as $order) {
+                    $return['balance'] -= $order->cost_finish;
+                    $return[$company->id]['balance'] -= $order->cost_finish;
+                    $return[$company->id]['orders'][] = [
+                        'date' => $order->datetime_finish,
+                        'credit' => $order->cost_finish,
+                        'description' => 'Заказ № ' . $order->id,
+                        'id_order' => $order->id,
+                    ];
+                }
+                foreach ($company->payments as $payment) {
+                    $return['balance'] += $payment->cost;
+                    $return[$company->id]['balance'] += $payment->cost;
+                    $return[$company->id]['orders'][] = [
+                        'date' => $payment->date,
+                        'debit' => $payment->cost,
+                        'description' => $payment->comments,
+                        'id_paiment' => $payment->id
+                    ];
+                }
+                array_multisort($return[$company->id]['orders'], SORT_DESC);
+            }
+        }
+        return $return;
+    }
+
+    public function getBalanceCarOwner(){
+        $return = [
+            'balance' => 0,
+            'orders' => [],
+            'not_paid' => 0,
+            'orders_not_paid' => [],
+            'orders_avans' => [],
+
+            'payments' => [],
+        ];
+
+        $orders = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
+            ->andWhere(['paid_status' => Order::PAID_YES])
+            ->all();
+
+        $orders_not_paid = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
+            ->andWhere(['paid_status' => Order::PAID_NO])
+            ->all();
+
+        $orders_avans = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
+            ->andWhere(['paid_status' => Order::PAID_YES_AVANS])
+            ->all();
+
+        $orders_cash = Order::find()->where(['id_car_owner' => $this->id_user,])
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andWhere(['type_payment' => Payment::TYPE_CASH])
+            ->andWhere(['in', 'paid_status', [Order::PAID_YES], Order::PAID_YES_AVANS])
+            ->all();
+
+        $payments = Payment::find()->where(['id_user' => $this->id_user])
+            ->andWhere(['status' => Payment::STATUS_SUCCESS])
+            ->andWhere(['calculation_with' => Payment::CALCULATION_WITH_CAR_OWNER])
+            ->all();
+
+        foreach ($orders as $order){
+            $return['balance'] += round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => '',
+                'debit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)),
+                'description' => 'Сумма к выплате за заказ № ' . $order->id,
+                'id_order' => $order->id,
+            ];
+
+        }
+
+        foreach ($orders_cash as $order){
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => round($order->cost_finish_vehicle * $this->procentVehicle/100),
+                'debit' => '',
+                'description' => 'Проценты за заказ № ' . $order->id,
+                'id_order' => $order->id,
+            ];
+
+            $return['balance'] -= round($order->cost_finish_vehicle * $this->procentVehicle/100);
+        }
+
+        foreach ($orders_not_paid as $order){
+            $return['not_paid'] += round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $return['orders_not_paid'][] = [
+                'date' => $order->datetime_finish,
+                'id_order' => $order->id,
+            ];
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'debit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)) . '*',
+                'credit' => '',
+                'description' => '(НЕ ОПЛАЧЕН) Сумма к выплате за заказ № ' . $order->id,
+                'id_order' => $order->id,
+            ];
+        }
+
+        foreach ($orders_avans as $order){
+            $return['not_paid'] += round(($order->cost_finish_vehicle - $order->avans_client)
+                - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100));
+            $return['balance'] += round($order->avans_client -
+                ($order->avans_client * $this->procentVehicle/100));
+
+            $return['orders_avans'][] = [
+                'date' => $order->datetime_finish,
+                'id_order' => $order->id,
+            ];
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'debit' => round($order->avans_client -
+                        ($order->avans_client * $this->procentVehicle/100))
+                    . ' (' . round(($order->cost_finish_vehicle - $order->avans_client)
+                        - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')**',
+                'credit' => '',
+                'description' => '(ОПЛАЧЕН КЛИЕНТОМ ЧАСТИЧНО) Сумма к выплате за заказ № ' . $order->id,
+                'id_order' => $order->id,
+            ];
+        }
+
+        foreach ($payments as $payment){
+            if($payment->direction == Payment::DEBIT) {
+                $return['balance'] += $payment->cost;
+            }
+            if($payment->direction == Payment::CREDIT) {
+                $return['balance'] -= $payment->cost;
+            }
+
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'credit' => $payment->cost,
+                'debit' => '',
+                'description' => $payment->comments,
+                'id_order' => '',
+                'id_paiment' => $payment->id
+            ];
+        }
+
+        array_multisort($return['orders'], SORT_DESC);
+        return $return;
+    }
+
+    public function getProcentVehicle(){
+        //переделать в зависмимости от роли или статуса, пока у все 10
+        return SettingVehicle::find()->one()->procent_vehicle;
+    }
+
+    public function hasFinishOrderOfCompany($id_company) : bool{
+        return Order::find([
+            'id_user' => $this->id_user,
+            'id_company' => $id_company,
+            ['in', 'status', Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]
+        ])->count();
     }
 }
 
