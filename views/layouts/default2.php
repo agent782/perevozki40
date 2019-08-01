@@ -81,12 +81,13 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
             </div>
 <!--            <img src="/img/icons/menu.png" alt="Меню"/>-->
         </div>
-        <div  class="col-xs-5">
+        <div  class="col-xs-6">
             <div class="row" style="font-size: 20px; font-weight: 900">
                 <a href="/<?php Yii::$app->homeUrl?>"><img src="/img/icons/cargo-20.png"> perevozki40.ru</a>
             </div>
             <div class="row" style="font-size: 16px; font-weight: 700">
-                <a href="tel:+74843955888"><img src="/img/icons/phone-20.png">+7(910)523-47-77</a>
+                <a href="tel:+74843990949"><img src="/img/icons/phone-20.png">+7(484)399-09-49</a>
+                <a href="tel:+79105234777">+7(910)523-47-77</a>
             </div>
 
         </div>
@@ -348,7 +349,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     <div class="container">
         <p class="pull-left"><?=Html::a('Соглашением об использовании сервиса perevozki40.ru ',
                 '/default/user-agreement', ['style' => 'color: white']
-            )?> | <?=Html::a(' Соглашением о конфиденциальности ',
+            )?> | <?=Html::a(' Соглашение о конфиденциальности ',
                 '/default/policy', ['style' => 'color: white']
             )?></p>
 

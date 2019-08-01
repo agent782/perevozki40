@@ -20,22 +20,21 @@ if(Yii::$app->user->can('admin')){
 ?>
 <div class="price-zone-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h4><?= Html::encode($this->title) ?></h4>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a('Рассчитать стоимость', '/order/create', ['class' => 'btn btn-primary'])?>
         <?= $addButton ?>
     </p>
-    <h2>Грузовой транспорт</h2>
-    <div class="col-lg-12">
+    <h4 >Грузовой транспорт</h4>
+    <div>
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
         'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
-                'class' => 'wrap'
-//            'style' => 'vertical-align: top'
+            'style' => 'font-size: 10px'
         ],
         'columns' => [
             'id',
@@ -122,14 +121,13 @@ if(Yii::$app->user->can('admin')){
     ]); ?>
 
 
-    <h2>Пассажирский транспорт</h2>
+    <h4>Пассажирский транспорт</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProviderPass,
         'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
-                'class' => 'wrap',
-//            'style' => 'vertical-align: top'
+            'style' => 'font-size: 10px'
         ],
         'columns' => [
             'id',
@@ -160,13 +158,13 @@ if(Yii::$app->user->can('admin')){
             $actionColumn        ],
     ]); ?>
 
-    <h2>Спецтехника</h2>
+    <h4>Спецтехника</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProviderSpec,
         'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
-            'class' => 'wrap',
+            'style' => 'font-size: 10px'
         ],
         'columns' => [
             'id',
