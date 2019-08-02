@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use app\components\widgets\ShowMessageWidget;
+use app\models\PriceZone;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PriceZoneSearch */
@@ -42,12 +43,20 @@ if(Yii::$app->user->can('admin')){
                 'attribute' => 'bodyTypiesText',
                 'label' => 'Типы кузова',
                 'format' => 'raw',
-                'value' => function(\app\models\PriceZone $model){
-                    return $model->bodyTypiesText
-                        . ' '
-                        . ShowMessageWidget::widget([
-                            'helpMessage' => $model->bodiesColumn
-                        ]);
+                'value' => function(PriceZone $model){
+                    if($model->hasAllBodyTypies()) {
+                        return 'Любой'
+//                            . ShowMessageWidget::widget([
+//                                'helpMessage' => $model->bodiesColumn
+//                            ])
+                            ;
+                    } else {
+                        return $model->bodyTypiesText
+                            . ' '
+                            . ShowMessageWidget::widget([
+                                'helpMessage' => $model->bodiesColumn
+                            ]);
+                    }
                 }
             ],
             [
@@ -78,15 +87,20 @@ if(Yii::$app->user->can('admin')){
             [
                 'label' => 'Длина кузова (м.)',
                 'format' => 'raw',
-                'value' => function($model){
-                    return ($model->length_max)?
-                        $model->length_min
-                        . ' - '
-                        . $model->length_max
-//                        . ' м.'
-                        :
-                        '---'
-                        ;
+                'value' => function(PriceZone $model){
+                    $return = '';
+                    if($model->length_max){
+                        $return .= $model->length_min
+                            . ' - '
+                            . $model->length_max;
+//                          . ' м.';
+                        if($model->longlength){
+                            $return .= ' *';
+                        }
+                    } else {
+                        $return .= '---';
+                    }
+                    return $return;
                 }
             ],
             [
@@ -136,11 +150,19 @@ if(Yii::$app->user->can('admin')){
                 'label' => 'Типы кузова',
                 'format' => 'raw',
                 'value' => function(\app\models\PriceZone $model){
-                    return $model->bodyTypiesText
-                        . ' '
-                        . ShowMessageWidget::widget([
-                            'helpMessage' => $model->bodiesColumn
-                        ]);
+                    if($model->hasAllBodyTypies()) {
+                        return 'Любой'
+//                            . ShowMessageWidget::widget([
+//                                'helpMessage' => $model->bodiesColumn
+//                            ])
+                            ;
+                    } else {
+                        return $model->bodyTypiesText
+                            . ' '
+                            . ShowMessageWidget::widget([
+                                'helpMessage' => $model->bodiesColumn
+                            ]);
+                    }
                 }
             ],
             'passengers',
@@ -181,7 +203,6 @@ if(Yii::$app->user->can('admin')){
                         $model->tonnage_min
                         . ' - '
                         . $model->tonnage_max
-                        . ' т.'
                         :
                         '---'
                         ;
@@ -195,7 +216,6 @@ if(Yii::$app->user->can('admin')){
                         $model->length_min
                         . ' - '
                         . $model->length_max
-                        . ' м.'
                         :
                         '---'
                         ;
@@ -209,7 +229,6 @@ if(Yii::$app->user->can('admin')){
                         $model->volume_min
                         . ' - '
                         . $model->volume_max
-                        . ' м3.'
                         :
                         '---'
                         ;
@@ -234,10 +253,10 @@ if(Yii::$app->user->can('admin')){
                 'label' => 'Длина механизма (стрелы) (м.)',
                 'format' => 'raw',
                 'value' => function($model){
-                    return ($model->lengrh_spec_max)?
-                        $model->lengrh_spec_min
+                    return ($model->length_spec_max)?
+                        $model->length_spec_min
                         . ' - '
-                        . $model->lengrh_spec_max
+                        . $model->length_spec_max
                         :
                         '---'
                         ;
@@ -248,10 +267,8 @@ if(Yii::$app->user->can('admin')){
                 'label' => 'Объем механизма (ковша) (м3)',
                 'format' => 'raw',
                 'value' => function($model){
-                    return ($model->volume_spec_max)?
-                        $model->volume_spec_min
-                        . ' - '
-                        . $model->volume_spec_max
+                    return ($model->volume_spec)?
+                        $model->volume_spec
                         :
                         '---'
                         ;
@@ -272,4 +289,6 @@ if(Yii::$app->user->can('admin')){
         ],
     ]); ?>
     </div>
+    <comment>* В тарифах для груза-длинномера длина указана
+        с учетом допустимого выступания груза за габариты кузова на 2 метра.</comment>
 </div>

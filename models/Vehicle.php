@@ -85,6 +85,7 @@ class Vehicle extends \yii\db\ActiveRecord
     const BODY_pass_minibus = 16;
     const BODY_bus = 17;
     const BODY_side_open = 18;
+    const BODY_ref = 19;
 
     const LOADING_TYPE_BEHIND = 2;
     const LOADING_TYPE_OVERHAND = 3;

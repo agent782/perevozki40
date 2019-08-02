@@ -54,11 +54,17 @@ class PriceZoneController extends Controller
     public function actionIndex()
     {
         $searchModel = new PriceZoneSearch();
-        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, PriceZone::SORT_TRUCK);
+        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams,
+            Vehicle::TYPE_TRUCK,
+            PriceZone::SORT_TRUCK);
         $dataProviderTruck->query->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
-        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, PriceZone::SORT_PASS);
+        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams,
+            Vehicle::TYPE_PASSENGER,
+            PriceZone::SORT_PASS);
         $dataProviderPass->query->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
-        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, PriceZone::SORT_SPEC);
+        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams,
+            Vehicle::TYPE_SPEC,
+            PriceZone::SORT_SPEC);
         $dataProviderSpec->query->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -123,7 +129,7 @@ class PriceZoneController extends Controller
                                 $model->scenario = PriceZone::SCENARIO_PASS;
                                 break;
                             case Vehicle::TYPE_SPEC:
-                                switch ($model->body_typies){
+                                switch ($model->body_types){
                                     case Vehicle::BODY_manipulator:
                                         $model->scenario = PriceZone::SCENARIO_MANIPULATOR;
                                         break;
@@ -201,7 +207,7 @@ class PriceZoneController extends Controller
                 $modelOld->scenario = PriceZone::SCENARIO_PASS;
                 break;
             case Vehicle::TYPE_SPEC:
-                switch ($modelOld->body_typies){
+                switch ($modelOld->body_types){
                     case Vehicle::BODY_manipulator:
                         $modelOld->scenario = PriceZone::SCENARIO_MANIPULATOR;
                         break;
@@ -225,6 +231,7 @@ class PriceZoneController extends Controller
         $model->scenario = $modelOld->scenario;
         if ($model->load(Yii::$app->request->post()) ) {
             if(PriceZone::compare($model, $modelOld)){
+//                return var_dump($model->body_types);
                 functions::setFlashSuccess('Вы не внесли изменений');
                 return $this->redirect(['index']);
             }

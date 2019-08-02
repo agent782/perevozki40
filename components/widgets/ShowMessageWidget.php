@@ -22,7 +22,7 @@ class ShowMessageWidget extends Widget
 
     public function run()
     {   if(!$this->ToggleButton) {
-            $this->ToggleButton = ['label' => Html::icon('info-sign'), 'class' => 'btn'];
+            $this->ToggleButton = ['label' => Html::icon('info-sign'), 'style' => 'cursor: help;'];
         }
         Modal::begin([
             'toggleButton' => $this->ToggleButton,
