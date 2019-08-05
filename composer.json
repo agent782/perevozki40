@@ -46,8 +46,8 @@
         "keygenqt/yii2-autocomplete-ajax": "@dev",
         "kartik-v/yii2-editable": "dev-master",
         "kartik-v/yii2-checkbox-x": "dev-master",
-        "kartik-v/yii2-money": "@dev"
-
+        "kartik-v/yii2-money": "@dev",
+        "kartik-v/yii2-export": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",

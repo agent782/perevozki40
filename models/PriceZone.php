@@ -105,15 +105,20 @@ class PriceZone extends \yii\db\ActiveRecord
     const SORT_SPEC = [
         'enableMultiSort' => true,
         'attributes' => [
-            'bodiesColumn' => [
-                'asc' => [
-                    'bodiesColumn' => 'asc'
-                ],
-                'default' => SORT_ASC
-            ]
+            'body_types',
+            'tonnage_min',
+            'length_min',
+            'tonnage_spec_min',
+            'length_spec_min',
+            'volume_spec'
         ],
         'defaultOrder' => [
-//            'bodiesColumn' => SORT_ASC,
+            'body_types'  => SORT_ASC,
+            'tonnage_min' => SORT_ASC,
+            'length_min' => SORT_ASC,
+            'tonnage_spec_min' => SORT_ASC,
+            'length_spec_min' => SORT_ASC,
+            'volume_spec' => SORT_ASC,
         ]
     ];
 
@@ -459,7 +464,7 @@ class PriceZone extends \yii\db\ActiveRecord
         return ($value - round($value*$discount/100, 2));
     }
 
-    public function getPriceZoneForCarOwner($id_car_owner){
+    public function getPriceZoneForCarOwner($id_car_owner = null){
         //можно добавить возможность менять процент в зависимости от роли, рейтинга и тд
         return $this->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
     }
@@ -530,4 +535,39 @@ class PriceZone extends \yii\db\ActiveRecord
         }
         return false;
     }
+
+    public function getCosts_for(){
+        $User = Yii::$app->user;
+        $return = [
+            'r_km' => 0,
+            'r_h' => 0,
+            'r_loading' => 0,
+            'min_price' => 0,
+            'remove_awning' => 0,
+        ];
+        if($User->can('client')
+            || $User->can('user')
+            || $User->isGuest
+        ) {
+            $return = [
+                'r_km' => $this->r_km,
+                'r_h' => $this->r_h,
+                'r_loading' => $this->r_loading,
+                'min_price' => $this->min_price,
+                'remove_awning' => $this->remove_awning,
+            ];
+        } else {
+            $price_car_owner = $this->getPriceZoneForCarOwner();
+            $return = [
+                'r_km' => $price_car_owner->r_km . '(' . $this->r_km . ')',
+                'r_h' => $price_car_owner->r_h . '(' . $this->r_h . ')',
+                'r_loading' => $price_car_owner->r_loading . '(' . $this->r_loading . ')',
+                'min_price' => $price_car_owner->min_price . '(' . $this->min_price . ')',
+                'remove_awning' => $price_car_owner->remove_awning . '(' . $this->remove_awning . ')',
+            ];
+        }
+
+        return $return;
+    }
+
 }

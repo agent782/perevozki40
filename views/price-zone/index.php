@@ -118,20 +118,44 @@ if(Yii::$app->user->can('admin')){
                 }
             ],
              'passengers',
-
-             'r_km',
-             'h_loading',
-             'r_loading',
-             'min_price',
-             'r_h',
-             'min_r_10',
-             'min_r_20',
-             'min_r_30',
-             'min_r_40',
-             'min_r_50',
-             'remove_awning',
-
-            $actionColumn        ],
+            [
+                'attribute' => 'r_km',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_km'];
+                }
+            ],
+            'h_loading',
+            [
+                'attribute' => 'r_loading',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_loading'];
+                }
+            ],
+            [
+                'attribute' => 'min_price',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['min_price'];
+                }
+            ],
+            [
+                'attribute' => 'r_h',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_h'];
+                }
+            ],
+            'min_r_10',
+            'min_r_20',
+            'min_r_30',
+            'min_r_40',
+            'min_r_50',
+            [
+                'attribute' => 'remove_awning',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['remove_awning'];
+                }
+            ],
+            $actionColumn
+        ],
     ]); ?>
 
 
@@ -166,17 +190,36 @@ if(Yii::$app->user->can('admin')){
                 }
             ],
             'passengers',
-            'r_km',
+            [
+                'attribute' => 'r_km',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_km'];
+                }
+            ],
             'h_loading',
-            'r_loading',
-            'min_price',
-            'r_h',
+            [
+                'attribute' => 'r_loading',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_loading'];
+                }
+            ],
+            [
+                'attribute' => 'min_price',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['min_price'];
+                }
+            ],
+            [
+                'attribute' => 'r_h',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_h'];
+                }
+            ],
             'min_r_10',
             'min_r_20',
             'min_r_30',
             'min_r_40',
             'min_r_50',
-//            'remove_awning',
             $actionColumn        ],
     ]); ?>
 
@@ -274,17 +317,36 @@ if(Yii::$app->user->can('admin')){
                         ;
                 }
             ],
-            'r_km',
+            [
+                'attribute' => 'r_km',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_km'];
+                }
+            ],
             'h_loading',
-            'r_loading',
-            'min_price',
-            'r_h',
+            [
+                'attribute' => 'r_loading',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_loading'];
+                }
+            ],
+            [
+                'attribute' => 'min_price',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['min_price'];
+                }
+            ],
+            [
+                'attribute' => 'r_h',
+                'value' => function(PriceZone $model){
+                    return $model->getCosts_for()['r_h'];
+                }
+            ],
             'min_r_10',
             'min_r_20',
             'min_r_30',
             'min_r_40',
             'min_r_50',
-            'remove_awning',
             $actionColumn
         ],
     ]); ?>

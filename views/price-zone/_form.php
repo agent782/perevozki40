@@ -12,7 +12,6 @@ $body_typies= \app\models\BodyType::find()->where(['id_type_vehicle' => $model->
     ->orderBy(['body' => SORT_ASC])
     ->all();
 ?>
-
 <div class="price-zone-form">
 
     <?php $form = ActiveForm::begin(); ?>

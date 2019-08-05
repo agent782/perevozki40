@@ -207,7 +207,7 @@ class PriceZoneController extends Controller
                 $modelOld->scenario = PriceZone::SCENARIO_PASS;
                 break;
             case Vehicle::TYPE_SPEC:
-                switch ($modelOld->body_types){
+                switch ($modelOld->body_types[0]){
                     case Vehicle::BODY_manipulator:
                         $modelOld->scenario = PriceZone::SCENARIO_MANIPULATOR;
                         break;
