@@ -423,7 +423,7 @@ class Order extends \yii\db\ActiveRecord
                 ;
                 break;
             case Vehicle::TYPE_SPEC:
-                switch ($this->body_typies[0]){
+                switch ($this->body_typies[1]){
                     case Vehicle::BODY_manipulator:
                         $priceZones = $priceZones
                             ->andFilterWhere(['>=', 'tonnage_spec_max', $this->tonnage_spec])

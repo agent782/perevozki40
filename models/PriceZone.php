@@ -301,19 +301,17 @@ class PriceZone extends \yii\db\ActiveRecord
             ;
 
 
-        switch ($this->veh_type){
+        switch ($this->veh_type) {
             case Vehicle::TYPE_TRUCK:
-                if($this->longlength){
+                if ($this->longlength) {
                     $result .=
-                        '<p>Груз-длинномер (выход за габариты кузова по длинне до 2-х метров со знаком). </p>'
-                        ;
+                        '<p>Груз-длинномер (выход за габариты кузова по длинне до 2-х метров со знаком). </p>';
 
                 }
                 $result .=
                     '<p>' . $this->tonnage_min . ' - ' . $this->tonnage_max . 'т. - Грузоподъемность </p>'
                     . '<p>' . $this->length_min . ' - ' . $this->length_max . 'м. - Длина кузова </p>'
-                    . '<p>' . $this->volume_min . ' - ' . $this->volume_max . 'м3. - объем кузова </p>'
-                    ;
+                    . '<p>' . $this->volume_min . ' - ' . $this->volume_max . 'м3. - объем кузова </p>';
                 break;
 
             case Vehicle::TYPE_PASSENGER:
@@ -321,6 +319,25 @@ class PriceZone extends \yii\db\ActiveRecord
                 break;
 
             case Vehicle::TYPE_SPEC:
+                switch ($this->body_types[0]) {
+                    case Vehicle::BODY_manipulator:
+                        $result .=
+                            '<p>' . $this->tonnage_min . ' - ' . $this->tonnage_max . 'т. - Грузоподъемность </p>'
+                            . '<p>' . $this->length_min . ' - ' . $this->length_max . 'м. - Длина кузова </p>';
+                        break;
+                    case Vehicle::BODY_dump:
+                        $result .= '<p>' . $this->volume_min . ' - ' . $this->volume_max . 'м3. - объем кузова </p>';
+                        break;
+                    case Vehicle::BODY_crane:
+                        $result .=
+                            '<p>' . $this->tonnage_spec_min . ' - ' . $this->tonnage_spec_max . 'т. - Грузоподъемность </p>'
+                            . '<p>' . $this->length_spec_min . ' - ' . $this->length_spec_max . 'м. - Длина кузова </p>';
+                        break;
+                    case Vehicle::BODY_excavator:
+                    case Vehicle::BODY_excavator_loader:
+                        $result .= '<p>' . $this->volume_min . ' - ' . $this->volume_spec . 'м3. - объем кузова </p>';
+                        break;
+                }
                 break;
         }
         $result .=
