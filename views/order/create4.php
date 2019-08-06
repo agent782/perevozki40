@@ -9,7 +9,7 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;use yii\jui\ProgressBar;
 
 
-    $this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
+    $this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=16eacdd2-acfd-4122-b0c7-639d10363985&lang=ru_RU');
     $this->registerJsFile('@web/js/route.js');
 ?>
 <div class="container">

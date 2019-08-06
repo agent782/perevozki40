@@ -2,7 +2,7 @@ $(document).ready(function () {
     var lenRoute = 0;
     var nRoutes = 0;
     var myMap;
-    var rBase = 'Обнинск, Борисоглебская улица, 88 ';
+    var rBase = 'Обнинск, Борисоглебская 88';
     var rStart = $('#rStart');
     var r1 = $('#r1');
     var r2 = $('#r2');
@@ -58,9 +58,9 @@ $(document).ready(function () {
             );
             SuggestView[i].state.set('open', true);
             SuggestView[i].events.add('select', function (e) {
-                // createRoute();
+                createRoute();
             });
-            // createRoute();
+            createRoute();
         }
 
         function alertObj(o){
@@ -152,6 +152,7 @@ $(document).ready(function () {
                 // Подписываемся на события модели мультимаршрута.
                 multiRouteView.model.events
                     .add("requestsuccess", function (event) {
+
                         var routes = event.get("target").getRoutes();
                         // console.log("Найдено маршрутов: " + routes.length);
                         // for (var i = 0, l = routes.length; i < l; i++) {
@@ -163,12 +164,12 @@ $(document).ready(function () {
                             $('#len').text(lenRoute).trigger('change');
                             $('#lengthRoute').val(lenRoute).trigger('change');
                         }
-                        // endLoading();
+                        endLoading();
 
                     })
                     .add("requestfail", function (event) {
                         console.log("Ошибка: " + event.get("error").message);
-                        alert('Ошибка со стороны яндекс карт. Попробуйте позже или продолжите без определения расстояния.');
+                        alert('Ошибка на стороне яндекс карт. Попробуйте позже или продолжите без определения расстояния.')
                     });
 
             }
