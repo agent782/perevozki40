@@ -35,9 +35,10 @@ use kartik\grid\GridView;
     }
 
     $items = [];
+    $comments = '';
     if($dataProvider_car_owner){
         $items[] = [
-            'label' => 'Ваш баланс водителя: ' . $balance['car_owner'] . 'р.',
+            'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р.',
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_car_owner,
                 'columns' => [
@@ -62,10 +63,11 @@ use kartik\grid\GridView;
                 ]
             ]),
         ];
+        $comments .= '<p></p><comment>* Баланс по принятым Вами заказам на Ваши ТС.</comment></p>';
     }
     if($dataProvider_user){
         $items[] = [
-            'label' => 'Ваш баланс клиента: ' . $balance['user'] . 'р.',
+            'label' => 'Ваш баланс клиента**: ' . $balance['user'] . 'р.',
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_user,
                 'columns' => [
@@ -90,6 +92,7 @@ use kartik\grid\GridView;
                 ]
             ]),
         ];
+        $comments .= '<p></p><comment>** Баланс по Вашим заказам за наличный расчет и с оплатой банковской картой</comment></p>';
     }
     if($dataProviders_companies){
         $content = '';
@@ -140,9 +143,11 @@ use kartik\grid\GridView;
             }
         }
         $items[] = [
-            'label' => 'Баланс Ваших юр. лиц: ' . $balance['companies'] . 'р.',
+            'label' => 'Баланс Ваших юр. лиц***: ' . $balance['companies'] . 'р.',
             'content' => $content
         ];
+        $comments .= '<p></p><comment>*** Баланс по заказам с оплатой по безналичному расчету 
+от Ваших юр. лиц. В том числе заказы, сделанные другими сотрудниками Ваших юр. лиц.</comment></p>';
     }
 
 
@@ -163,7 +168,7 @@ use kartik\grid\GridView;
            'items' => $items,
         ]);
     ?>
-
+    <?= $comments?>
 
 </div>
 <div id="ids_companies" hidden><?=$ids_companies?></div>

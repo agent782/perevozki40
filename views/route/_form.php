@@ -14,6 +14,7 @@ $this->registerJsFile('@web/js/route.js');
 
 <div id="route">
     <h4>Маршрут.</h4>
+    <p class="border-warning">Перед продолжением нажмите кнопку "Пересчитать"! Для определения расстояния.</p>
     <br>
     <?= $form->field($route, 'routeStart', ['inputOptions' => [
         'id'=>'rStart',

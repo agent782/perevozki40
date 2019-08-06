@@ -370,7 +370,7 @@ class PriceZone extends \yii\db\ActiveRecord
 
     public function CostCalculationWithDiscountHtml($distance = null, $discount = null){
         $cost = $this->CostCalculation($distance);
-        if(!$cost) return 'Невозможно расчитать стоимость. Неверно задан маршрут!';
+        if(!$cost) return 'Невозможно расчитать стоимость. Расстояние не определено!';
         if(!$discount) return $cost;
         $return = '<s>'. $cost . '</s> '
             . '<strong>' . round($cost - ($cost*$discount/100)) . '</strong>';
