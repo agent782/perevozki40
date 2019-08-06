@@ -60,7 +60,7 @@ $(document).ready(function () {
             SuggestView[i].events.add('select', function (e) {
                 createRoute();
             });
-            createRoute();
+            // createRoute();
         }
 
         function alertObj(o){
@@ -187,7 +187,7 @@ $(document).ready(function () {
         });
         $('.points').on('change', function (event) {
             lenRoute = 0;
-            $('#but, #rStart, #rFinish').trigger('click');
+            // $('#but, #rStart, #rFinish').trigger('click');
             // $('#len').text(lenRoute).trigger('change');
             // $('#lengthRoute').val(lenRoute);
         });

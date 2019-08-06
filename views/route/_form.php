@@ -8,7 +8,6 @@ use yii\helpers\ArrayHelper;
 use kartik\datetime\DateTimePicker;
 /* @var $this yii\web\View */
 /* @var $model app\models\Order */
-$this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
 $this->registerJsFile('@web/js/route.js');
 ?>
 

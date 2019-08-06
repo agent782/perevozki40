@@ -34,6 +34,9 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
+    <script
+            src="https://api-maps.yandex.ru/2.1/?apikey=16eacdd2-acfd-4122-b0c7-639d10363985&lang=ru_RU" type="text/javascript">
+    </script>
 <!--    <script charset="UTF-8" src="//cdn.sendpulse.com/js/push/ed2cce3784ec8246afa34633f9a33b2a_0.js" async></script>-->
     <?php $this->head() ?>
 </head>
