@@ -402,7 +402,7 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
-    public function getSuitableRates($distance){
+    public function getSuitableRates($distance, int $limit = 8){
         $result = [];
         $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
 
@@ -412,7 +412,8 @@ class Order extends \yii\db\ActiveRecord
                     ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
                     ->andFilterWhere(['>=', 'volume_max', $this->volume])
                     ->andFilterWhere(['>=', 'length_max', $this->length])
-                    ->andFilterWhere(['longlength' => $this->longlength])->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])->all()
+//                    ->andFilterWhere(['longlength' => $this->longlength])
+                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])->all()
                 ;
                 break;
             case Vehicle::TYPE_PASSENGER:
@@ -463,12 +464,15 @@ class Order extends \yii\db\ActiveRecord
         }
 
 //        $priceZones = $priceZones->all();
+        $count = 0;
         foreach ($priceZones as $priceZone) {
             foreach ($this->body_typies as $body_type) {
-                if ($priceZone->hasBodyType($body_type))
+                if ($priceZone->hasBodyType($body_type)) {
                     $result[$priceZone->unique_index] = 'Тарифная зона ' . $priceZone->id;
-//                continue;
+                    $count++;
+                }
             }
+            if($count >= $limit) break;
         }
         return $result;
     }

@@ -129,8 +129,10 @@ use app\components\widgets\ShowMessageWidget;
         <?php
         \yii\widgets\Pjax::end();
         ?>
+        <comment>
+            Чем больше тарифов выбрано, тем больше ТС подойдут под Ваш заказ.
+        </comment>
     </div>
-
 
 <div class="col-lg-12">
     <?=

@@ -7,41 +7,45 @@
 <div class="container">
 <?php
     if(Yii::$app->user->can('user')):
-?>
-        <div class="row" id="homeContentForUser">
-            <div class="col-lg-5" id="regClient">
-                ЗАВЕРШИТЬ РЕГИСТРАЦИЮ КЛИЕНТА<br><br>
-                <comment style="text-align: left">
-                    Вы сможете:
-                    <ul>
-                        <li>Заказывать услуги автотранспорта</li>
-                        <li>Получать on-line счета, акты, ...</li>
-                        <li>Просматривать статистику</li>
-                        <li>и многое другое!</li>
-                    </ul>
+        $carusel_user_reg = [
+            [
+                'content' => '<div> ЗАВЕРШИТЬ РЕГИСТРАЦИЮ КЛИЕНТА<br><br>
+                   <p style="text-align: left">Вы сможете:</p>
+                     <comment style="text-align: center">
+                        <p>Заказывать услуги автотранспорта</p>
+                        <p>Получать on-line счета, акты, ...</p>
+                        <p>Просматривать статистику</p>
+                        <p>и многое другое!</p>
                 </comment>
                 <p align="right">
                 Бесплатно! <a href="/user/signup-client"><button class="btn btn-lg btn-primary">ЗАВЕРШИТЬ</button></a>
-                </p>
-            </div>
-
-            <div class="col-lg-5" id="regVehicle">
-                ЗАВЕРШИТЬ РЕГИСТРАЦИЮ ВОДИТЕЛЯ<br><br>
-                <comment style="text-align: left">
-                    Вы сможете:
-                    <ul>
-                        <li>Регистрировать ТС</li>
-                        <li>Принимать заказы</li>
-                        <li>Просматривать статистику</li>
-                        <li>и многое другое!</li>
-                    </ul>
+                </p></div>',
+                'options' => ['class' => 'homeContentForUser']
+            ],
+            [
+                'content' => '<div>
+                    ЗАВЕРШИТЬ РЕГИСТРАЦИЮ ВОДИТЕЛЯ<br><br>
+                    <p style="text-align: left">Вы сможете:</p>
+                    <comment style="text-align: center">
+                        <p>Регистрировать ТС</p>
+                        <p>Принимать заказы</p>
+                        <p>Просматривать статистику</p>
+                        <p>и многое другое!</p>
                 </comment>
                 <p align="right">
-                    Бесплатно! <a href="/car-owner/create"> <button class="btn btn-primary">ЗАВЕРШИТЬ</button></a>
-                </p>
-            </div>
-        </div>
-
+                    <br>
+                    Бесплатно! <a href="/car-owner/create"> <button class="btn btn-lg btn-primary">ЗАВЕРШИТЬ</button></a>
+                </p></div>
+                ',
+                'options' => ['class' => 'homeContentForUser']
+            ]
+        ];
+    echo \yii\bootstrap\Carousel::widget([
+        'items' => $carusel_user_reg,
+        'options' => ['class' => 'carousel slide', 'data-interval' => '5000'],
+        'controls' => false
+    ])
+?>
 <?php
     endif;
 ?>

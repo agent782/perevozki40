@@ -195,21 +195,36 @@ class VehicleForm extends Model
         switch ($this->vehicleTypeId){
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['<=', 'tonnage_max', $this->tonnage])
-                    ->orFilterWhere(
-                        ['<=', 'tonnage_min', $this->tonnage]
-                        )
+                    ->andFilterWhere(['<=', 'tonnage_min', $this->tonnage])
                     ->andFilterWhere(['<=', 'volume_min', $this->volume])
-                    ->orFilterWhere(
-                        ['<=', 'volume_max', $this->volume]
-                    )
-                    ->andFilterWhere(['<=', 'length_min', $this->length])
-                    ->orFilterWhere(
-                        ['<=', 'length_max', $this->length]
-                    )
-//                    ->all()
                 ;
-//                break;
+
+                if(!$this->longlength){
+                    $priceZones = $priceZones
+                        ->andFilterWhere(['longlength' => $this->longlength])
+                        ->andFilterWhere(['<=', 'length_min', $this->length])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all();
+                } else {
+                    $priceZones = $priceZones
+                        ->andFilterWhere([
+                            'or',
+                            ['and' ,
+                                ['longlength' => false],
+                                ['<=', 'length_min', $this->length]
+                            ],
+                            ['and' ,
+                                ['longlength' => true],
+                                ['<=', 'length_min', ($this->length + 2)],
+                            ]
+                        ])
+//                        ->andFilterWhere(['<=', 'length_min', $this->length])
+//                        ->andFilterWhere(['longlength' => false])
+//                        ->orFilterWhere(['<=', 'length_min', $this->length + 2])
+//                        ->andFilterWhere(['longlength' => true])
+                    ;
+                }
+                break;
             case Vehicle::TYPE_PASSENGER:
 
                 break;
@@ -217,11 +232,10 @@ class VehicleForm extends Model
 
                 break;
         }
+        $priceZones = $priceZones
+            ->orderBy(['r_km' => SORT_DESC, 'r_h' => SORT_DESC])
+            ->all();
 
-        (!$this->longlength)
-            ? $priceZones = $priceZones->andFilterWhere(['longlength' => $this->longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
-            : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
-//        $priceZones = $priceZones->all();
         foreach ($priceZones as $priceZone){
             if($priceZone->hasBodyType($this->bodyTypeId))
                 $result[$priceZone->id] = 'Тарифная зона ' . $priceZone->id;

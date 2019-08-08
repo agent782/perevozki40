@@ -21,6 +21,10 @@ use app\models\User;
 class SignUpClientFormStart extends Model
 {
     public $id_user;
+    public $surname;
+    public $name;
+    public $patrinimic;
+    public $phone;
     public $email;
     public $bithday;
     public $photo;
@@ -38,7 +42,7 @@ class SignUpClientFormStart extends Model
     public function rules()
     {
         return [
-            [['bithday', 'email'], 'required'],
+            [['bithday', 'email', 'surname', 'name', 'patrinimic'], 'required'],
 //            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
             [['id_user','country'], 'safe'],
@@ -60,7 +64,7 @@ class SignUpClientFormStart extends Model
 //            ['bithday', 'date', 'max' => (time() - 60*60*24*365*18)],
             [['assignAgreement', 'confidentiality_agreement'], 'compare', 'compareValue' => 1, 'operator' => '==',
                 'message' => 'Вы должны быть согласны с условиями использования сервиса.'],
-            ['id_user', 'safe']
+            [['id_user', 'phone'], 'safe']
 
         ];
     }
@@ -68,6 +72,10 @@ class SignUpClientFormStart extends Model
     public function attributeLabels()
     {
         return [
+            'surname' => 'Фамилия',
+            'name' => 'Имя',
+            'patrinimic' => 'Отчество',
+            'phone' => 'Телефон',
             'bithday' => 'Дата рождения',
             'passport_series' => 'Серия паспорта',
             'passport_number' => 'Номер паспорта',
@@ -128,6 +136,9 @@ class SignUpClientFormStart extends Model
         if($this->photo) {
             $modelProfile->photo = $this->uploadPhoto();
         }
+        $modelProfile->surname = $this->surname;
+        $modelProfile->name = $this->name;
+        $modelProfile->patrinimic = $this->patrinimic;
         $modelProfile->phone2 = $this->phone2;
         $modelProfile->email2 = $this->email2;
         $modelProfile->bithday = ($this->bithday);

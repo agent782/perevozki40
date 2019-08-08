@@ -23,7 +23,7 @@ $this->title = 'Оформлление заказа';
 //>>>>>>> a155b654d1118940b36589aaae156cebe3265c0d
 ?>
 
-<div class="order-create">
+<div class="container order-create">
 
     <h3><?= Html::encode($this->title) ?></h3>
     <label>Поиск клиента:</label>
@@ -77,7 +77,7 @@ $this->title = 'Оформлление заказа';
         'options' => [
             'id' => 'search',
             'class' => 'form-control',
-            'placeholder' => Yii::t('app', 'Введите номер телефона')
+            'placeholder' => Yii::t('app', 'Введите номер телефона'),
         ]
     ])
     ?>
@@ -85,18 +85,18 @@ $this->title = 'Оформлление заказа';
     <h2 id="label">Новый клиент</h2>
     <?php $formFinishOrder = ActiveForm::begin([
         'action' => '/order/create',
-//        'enableAjaxValidation' => true,
-//        'validationUrl' => \yii\helpers\Url::to(['/user/']),
+        'enableAjaxValidation' => true,
+        'validationUrl' => \yii\helpers\Url::to(['/user/validate-user']),
         'fieldConfig' => [
             'labelOptions' => ['class' => 'col-lg-12 control-label'],
         ],
     ]);?>
 
     <div class="col-lg-4">
-    <?= $formFinishOrder->field($user, 'id')->hiddenInput(['id' => 'id_user'])->label(false)?>
-    <?= $formFinishOrder->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
-    <?= $formFinishOrder->field($profile, 'name')->input('text',  ['id' => 'name'])?>
-    <?= $formFinishOrder->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
+        <?= $formFinishOrder->field($user, 'id')->hiddenInput(['id' => 'id_user'])->label(false)?>
+        <?= $formFinishOrder->field($profile, 'name')->input('text',  ['id' => 'name'])?>
+        <?= $formFinishOrder->field($profile, 'surname')->input('text',  ['id' => 'surname'])?>
+        <?= $formFinishOrder->field($profile, 'patrinimic')->input('text',  ['id' => 'patrinimic'])?>
     </div>
     <div class="col-lg-4">
         <?= $formFinishOrder->field($user, 'username')->input('tel',  ['id' => 'username', 'readonly' => true])?>
@@ -104,7 +104,6 @@ $this->title = 'Оформлление заказа';
         <?= $formFinishOrder->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
         <?= $formFinishOrder->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
     </div>
-
 
     <div class="col-lg-12">
     <?php
@@ -114,5 +113,5 @@ $this->title = 'Оформлление заказа';
     ?>
     </div>
     <?php $formFinishOrder::end()?>
-
 </div>
+

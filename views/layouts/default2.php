@@ -33,6 +33,20 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(54762694, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/54762694" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
     <title><?= Html::encode($this->title) ?></title>
     <script
             src="https://api-maps.yandex.ru/2.1/?apikey=16eacdd2-acfd-4122-b0c7-639d10363985&lang=ru_RU" type="text/javascript">
@@ -46,7 +60,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 <div class="container navbar-default navbar-fixed-top
 <!--visible-sm visible-xs-->
 " id="menu-mobile" align="center">
-    <div class="row">
+<!--    <div class="row">-->
         <div class="col-xs-3">
             <?php
 //                Без этой строчки не выпадают остальные меню
@@ -95,7 +109,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 
         </div>
 <!--        <div class="col-xs-1">1111111111</div>-->
-        <div class="col-xs-2">
+        <div class="col-xs-1 visible-md visible-lg">
             <?php
 
 //                widgets\Pjax::begin(['id' => 'pjax_message']);
@@ -117,7 +131,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 //                widgets\Pjax::end();
             ?>
         </div>
-        <div class="col-xs-1">
+        <div class="col-xs-2">
             <?php
                 if((Yii::$app->user->isGuest)):
             ?>
@@ -286,7 +300,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 </div>
 
 
-<div class="wrap" style=" padding-top: 100px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
+<div class="wrap" style=" padding-top: 150px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
 
     <?php if(Yii::$app->session->hasFlash('success')): ?>
     <div class="alert alert-success alert-dismissible" role="alert">

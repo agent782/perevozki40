@@ -122,6 +122,15 @@ a.desc:after {
         text-align: center;
         margin: 10px;
     }
+    div.homeContentForUser {
+        font-size: x-small;
+        align-content: left;
+        padding: 3px;
+        margin: 3px;
+    }
+    .footer {
+        font-size: xx-small;
+    }
 }
 
 .nav > li > form > button.logout:focus,
@@ -189,14 +198,14 @@ a.desc:after {
     position: fixed;
 }
 
-#homeContentForUser > div{
+.homeContentForUser > div{
     font-family: 'Josefin Sans', sans-serif;
     /*width: 300px;*/
     text-align: center;
-    font-size: larger;
+    font-size: inherit;
     font-weight: 900;
     /*height: 300px;*/
-    padding: 30px;
+    padding: 50px;
     margin: 10px;
     border: 4px #d3a7db;
     background-color: #821e82;
@@ -204,7 +213,7 @@ a.desc:after {
     align-content: center;
 }
 
-#homeContentForUser > div > button{
+.homeContentForUser > div > button{
     font-size: 20px;
     position: absolute;
     right: 20px;

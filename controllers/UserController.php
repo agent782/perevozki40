@@ -82,8 +82,13 @@ class UserController extends Controller
     {
         $user = Yii::$app->user->identity;
         if(!$user) return $this->redirect('/default/login');
+        $profile = $user->profile;
         $modelStart = new SignUpClientFormStart();
         $modelStart->email = $user->email;
+        $modelStart->name = $profile->name;
+        $modelStart->surname = $profile->surname;
+        $modelStart->patrinimic = $profile->patrinimic;
+        $modelStart->phone = $user->username;
         $modelStart->id_user = $user->id;
         if ($modelStart->load(Yii::$app->request->post())) {
             if ($modelProfile = $modelStart->saveProfile()) {
@@ -272,6 +277,7 @@ class UserController extends Controller
     }
 
     public function actionChangePhone(){
+
         $session = Yii::$app->session;
         $User = Yii::$app->user->identity;
         $Profile = $User->profile;

@@ -20,6 +20,10 @@ class SignupCarOwnerForm extends Model
     const SCENARIO_WITHOUT_DRIVER_LICENSE = 'without_driver_license';
 
     public $id_user = null;
+    public $surname;
+    public $name;
+    public $patrinimic;
+    public $phone;
     public $bithday;
     public $photo;
     public $passport_number;
@@ -43,7 +47,7 @@ class SignupCarOwnerForm extends Model
         return [
             [['id_user'], 'integer'],
             [['email', 'bithday', 'country', 'passport_number', 'passport_place', 'passport_date',
-                'reg_address', 'assignAgreement'], 'required'],
+                'reg_address', 'assignAgreement', 'surname', 'name', 'patrinimic'], 'required'],
             [['is_driver'], 'required', 'message' => 'Выберите один из вариантов'],
 //            ['phone2', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['phone2',  'string', 'length' => [10], 'message' => 'Некорректный номер', 'tooLong' => 'Некорректный номер','tooShort' => 'Некорректный номер',],
@@ -66,7 +70,8 @@ class SignupCarOwnerForm extends Model
                 'tooSmall' => 'Проверьте дату.'],
             ['assignAgreement', 'compare', 'compareValue' => 1, 'operator' => '==',
                 'message' => 'Вы должны быть согласны с условиями использования сервиса.'],
-            [['driver_licence_date', 'driver_licence_number', 'driver_licence_place'], 'validateDriverLicense', 'skipOnEmpty' => false]
+            [['driver_licence_date', 'driver_licence_number', 'driver_licence_place'], 'validateDriverLicense', 'skipOnEmpty' => false],
+            ['phone', 'safe']
         ];
     }
 
@@ -83,6 +88,10 @@ class SignupCarOwnerForm extends Model
     public function attributeLabels()
     {
         return [
+            'surname' => 'Фамилия',
+            'name' => 'Имя',
+            'patrinimic' => 'Отчество',
+            'phone' => 'Телефон',
             'bithday' => 'Дата рождения',
             'passport_series' => 'Серия паспорта',
             'passport_number' => 'Номер паспорта',
@@ -151,6 +160,9 @@ class SignupCarOwnerForm extends Model
         if($this->photo) {
             $modelProfile->photo = $this->uploadPhoto();
         }
+        $modelProfile->surname = $this->surname;
+        $modelProfile->name = $this->name;
+        $modelProfile->patrinimic = $this->patrinimic;
         $modelProfile->phone2 = $this->phone2;
         $modelProfile->email2 = $this->email2;
         $modelProfile->bithday = ($this->bithday);

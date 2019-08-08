@@ -32,7 +32,11 @@
     <div class="col-md-4 col-sm-4">
 
         <?= $form->field($modelStart, 'id_user')->hiddenInput()->label(false);?>
+        <?= $form->field($modelStart, 'surname');?>
+        <?= $form->field($modelStart, 'name');?>
+        <?= $form->field($modelStart, 'patrinimic');?>
         <?= $form->field($modelStart, 'email') ->input('email')?>
+        <?= $form->field($modelStart, 'phone', ['inputOptions' => ['disabled' => true]]);?>
         <?= $form->field($modelStart, 'phone2')
             ->widget(MaskedInput::className(),[
                 'mask' => '+7(999)999-99-99',

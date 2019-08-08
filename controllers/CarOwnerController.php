@@ -43,6 +43,10 @@ class CarOwnerController extends Controller
         $modelStart->id_user = $user->id;
         $modelProfile = Profile::find()->where(['id_user' => \Yii::$app->user->id])->one();
         if($modelProfile){
+            $modelStart->name = $modelProfile->name;
+            $modelStart->surname = $modelProfile->surname;
+            $modelStart->patrinimic = $modelProfile->patrinimic;
+            $modelStart->phone = $user->username;
             $modelStart->phone2 = $modelProfile->phone2;
             $modelStart->email2 = $modelProfile->email2;
             $modelStart->bithday = $modelProfile->bithday;
