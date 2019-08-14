@@ -143,11 +143,7 @@ $pass_columns = [
         'format' => 'raw',
         'value' => function(\app\models\PriceZone $model){
             if($model->hasAllBodyTypies()) {
-                return 'Любой'
-//                            . ShowMessageWidget::widget([
-//                                'helpMessage' => $model->bodiesColumn
-//                            ])
-                    ;
+                return 'Любой';
             } else {
                 return $model->bodyTypiesText
                     . ' '
@@ -195,6 +191,17 @@ $spec_columns = [
         'attribute' => 'bodyTypiesText',
         'label' => 'Типы кузова',
         'format' => 'raw',
+        'value' => function(\app\models\PriceZone $model){
+            if($model->hasAllBodyTypies()) {
+                return 'Любой';
+            } else {
+                return $model->bodyTypiesText
+                    . ' '
+                    . ShowMessageWidget::widget([
+                        'helpMessage' => $model->bodiesColumn
+                    ]);
+            }
+        }
     ],
     [
         'label' => 'Тоннаж (т.)',

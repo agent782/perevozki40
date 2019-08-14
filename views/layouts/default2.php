@@ -80,6 +80,16 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Тарифные зоны',
                             'url' => '/price-zone'
+                        ],
+                        [
+                            'label' => 'О сервисе',
+                        ],
+                        [
+                            'label' => 'Партнеры',
+                        ],
+                        [
+                            'label' => 'Контакты',
+                            'url' => Url::to('/default/contacts')
                         ]
                     ];
                     ?>
@@ -111,7 +121,6 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 <!--        <div class="col-xs-1">1111111111</div>-->
         <div class="col-xs-1 visible-md visible-lg">
             <?php
-
 //                widgets\Pjax::begin(['id' => 'pjax_message']);
             if(Yii::$app->user->id) {
 
@@ -189,7 +198,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                                 :'Уведомления',
                             'url' => '/message',
                             'class' => 'incircle',
-                            'encode' => false
+                            'encode' => false,
                         ],
                         [
                             'label' => 'Заказы (Водитель)',
@@ -209,6 +218,8 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Юридические лица',
                             'url' => '/company',
+                            'visible' => (Yii::$app->user->can('client')
+                                || Yii::$app->user->can('car_owner'))
                         ],
                         [
                             'label' => 'Запрос на выплату',

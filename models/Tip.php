@@ -55,9 +55,11 @@ class Tip extends \yii\db\ActiveRecord
         } else {
             $Model = $model->formName();
         }
+        $tip = self::findOne(['model' => $Model, 'attribute' => $attr]);
+        if(!$tip) return false;
         return
             ShowMessageWidget::widget([
-               'helpMessage' => self::findOne(['model' => $Model, 'attribute' => $attr])->description,
+               'helpMessage' => $tip->description,
                 'header' => 'Подсказка',
                 'ToggleButton' => $ToggleButton
             ]);

@@ -326,7 +326,9 @@ class PriceZone extends \yii\db\ActiveRecord
                             . '<p>' . $this->length_min . ' - ' . $this->length_max . 'м. - Длина кузова </p>';
                         break;
                     case Vehicle::BODY_dump:
-                        $result .= '<p>' . $this->volume_min . ' - ' . $this->volume_max . 'м3. - объем кузова </p>';
+                        $result .=
+                            '<p>' . $this->tonnage_min . ' - ' . $this->tonnage_max . 'т. - Грузоподъемность </p>'
+                            .'<p>' . $this->volume_min . ' - ' . $this->volume_max . 'м3. - объем кузова </p>';
                         break;
                     case Vehicle::BODY_crane:
                         $result .=

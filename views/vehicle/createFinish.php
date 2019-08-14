@@ -11,6 +11,7 @@
     use app\components\widgets\ShowMessageWidget;
     use yii\widgets\MaskedInput;
     use app\models\Vehicle;
+    use app\models\Tip;
 $this->registerJsFile('/js/signup.js');
 $this->title = Html::encode('Регистрационные данные транспортного средства.');
 //$Vehicles = Vehicle::find()
@@ -70,7 +71,8 @@ $classiferVehicleIds = [];
         return $return;
         }
         ])
-        ->label('Доступные тарифные зоны для вашего ТС:')
+        ->label('Доступные тарифные зоны для вашего ТС:'
+            . Tip::getTipButtonModal($VehicleForm, 'price_zones'))
             ?>
         <br>
         <?= $form->field($VehicleForm, 'photo')->fileInput([

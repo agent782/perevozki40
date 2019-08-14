@@ -466,13 +466,14 @@ class Order extends \yii\db\ActiveRecord
 //        $priceZones = $priceZones->all();
         $count = 0;
         foreach ($priceZones as $priceZone) {
+            if($count >= $limit) return $result;
             foreach ($this->body_typies as $body_type) {
-                if ($priceZone->hasBodyType($body_type)) {
+                if ($priceZone->hasBodyType($body_type)
+                    && !array_key_exists($priceZone->unique_index, $result)) {
                     $result[$priceZone->unique_index] = 'Тарифная зона ' . $priceZone->id;
                     $count++;
                 }
             }
-            if($count >= $limit) break;
         }
         return $result;
     }

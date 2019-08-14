@@ -2,7 +2,7 @@
 html,
 body {
     height: 100%;
-    background-color: #f8e2f8;
+    background-color: white;
 }
 
 .wrap {
@@ -148,10 +148,10 @@ a.desc:after {
     top: 0px;
     width: auto;
     text-align: center;
-    color: #d3a7db;
+    color: #400450;
     font-size: 18px;
     padding: 15px;
-    background: #f8e2f8;
+    background: white;
     border: 5px;
     border-color: #821e82;
     margin: 3px;
@@ -199,7 +199,7 @@ a.desc:after {
 }
 
 .homeContentForUser > div{
-    font-family: 'Josefin Sans', sans-serif;
+    font-family: "Comic Sans MS", cursive, sans-serif;
     /*width: 300px;*/
     text-align: center;
     font-size: inherit;
@@ -281,6 +281,33 @@ a.desc:after {
     background:#d3a7db;
     text-align:center;
     color:#821e82;
+}
+
+/*Главная страница*/
+
+.general-dark, .general-light{
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    text-align: center;
+    margin: 20px;
+    padding: 30px;
+}
+
+.general-dark{
+    color: white;
+    background-color: #400450;
+}
+
+.general-light{
+    color: #400450;
+    background-color: white;
+}
+
+.general-dark > label, .general-light > label{
+    font-size: large;
+}
+
+.contacts{
+    font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 

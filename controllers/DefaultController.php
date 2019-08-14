@@ -389,9 +389,18 @@ class DefaultController extends Controller
         return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/policy.docx');
 
     }
+
     public function actionDriverInstruction(){
         return Yii::$app->response->sendFile(Yii::getAlias('@app'). '/web/documents/driver_instruction.docx');
 
+    }
+
+    public function actionContacts(){
+        return $this->render('/default/contacts');
+    }
+
+    public function actionAbout(){
+        return $this->render('/default/about');
     }
 
 }

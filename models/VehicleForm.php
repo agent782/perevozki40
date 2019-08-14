@@ -218,18 +218,41 @@ class VehicleForm extends Model
                                 ['<=', 'length_min', ($this->length + 2)],
                             ]
                         ])
-//                        ->andFilterWhere(['<=', 'length_min', $this->length])
-//                        ->andFilterWhere(['longlength' => false])
-//                        ->orFilterWhere(['<=', 'length_min', $this->length + 2])
-//                        ->andFilterWhere(['longlength' => true])
                     ;
                 }
                 break;
             case Vehicle::TYPE_PASSENGER:
-
+                $priceZones = $priceZones
+                    ->andFilterWhere(['<=', 'passengers', $this->passengers]);
                 break;
             case Vehicle::TYPE_SPEC:
-
+                switch($this->bodyTypeId){
+                    case Vehicle::BODY_manipulator:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['<=', 'tonnage_min', $this->tonnage])
+                            ->andFilterWhere(['<=', 'length_min', $this->length])
+                            ->andFilterWhere(['<=', 'tonnage_spec_min', $this->tonnage_spec])
+                            ->andFilterWhere(['<=', 'length_spec_min', $this->length_spec])
+                        ;
+                        break;
+                    case Vehicle::BODY_dump:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['<=', 'tonnage_min', $this->tonnage])
+                            ->andFilterWhere(['<=', 'volume_min', $this->volume])
+                        ;
+                        break;
+                    case Vehicle::BODY_crane:
+                        $priceZones = $priceZones
+                            ->andFilterWhere(['<=', 'tonnage_spec_min', $this->tonnage_spec])
+                            ->andFilterWhere(['<=', 'length_spec_min', $this->length_spec])
+                        ;
+                        break;
+                    case Vehicle::BODY_excavator:case Vehicle::BODY_excavator_loader:
+                    $priceZones = $priceZones
+                        ->andFilterWhere(['<=', 'volume_spec', $this->volume_spec])
+                    ;
+                        break;
+                }
                 break;
         }
         $priceZones = $priceZones
