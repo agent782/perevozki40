@@ -11,6 +11,7 @@ use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * OrderController implements the CRUD actions for Order model.
@@ -78,6 +79,15 @@ class OrderController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin', 'finance', 'dispetcher']
+                    ],
+                ],
+            ]
         ];
     }
 
@@ -97,22 +107,6 @@ class OrderController extends Controller
             Company::find()->all(),
             'id', 'name'
         );
-
-//        if(Yii::$app->request->post('hasEditable')){
-//            $id_order = Yii::$app->request->post('editableKey');
-////            $out = Json::encode(['output'=>'','message'=>'']);
-//            $Order = Order::findOne($id_order);
-//            if(!$Order) return 1;
-//            $load = Yii::$app->request->post('Order');
-////            $Order->scenario = $Order::SCENARIO_UPDATE_PAID_STATUS;
-//            if($Order->load($load)){
-//                if($Order->save()){
-////                    echo $out;
-//                    return 1;
-//                }
-//            }
-//            return Yii::$app->request->post('editableKey');
-//        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,

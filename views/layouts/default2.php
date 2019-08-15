@@ -83,6 +83,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         ],
                         [
                             'label' => 'О сервисе',
+                            'url' => Url::to('/default/about')
                         ],
                         [
                             'label' => 'Партнеры',
@@ -144,7 +145,9 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
             <?php
                 if((Yii::$app->user->isGuest)):
             ?>
-                    <a href="/default/login"><button type="button"> <img src="/img/icons/cabinet.png" alt="Меню"/></button></a>
+                    <a href="/default/login"><button type="button" style="font-size: xx-small">
+                            <img src="/img/icons/cabinet.png" alt="Меню"/><br>Войти
+                        </button></a>
             <?php
                 else:
                     $cabinet_items = [
@@ -182,24 +185,25 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Профиль ('.Yii::$app->user->identity->profile->name . ' ' . Yii::$app->user->identity->profile->surname.')',
                             'url' => '/user',
                         ],
-                        [
-                            'label' => 'Баланс',
-                            'url' => '/user/balance',
-                        ],
+//                        [
+//                            'label' => 'Баланс',
+//                            'url' => '/user/balance',
+//                        ],
                         [
                             'label' => 'Сделать новый заказ',
                             'url' => Url::to(['/order/create', 'user_id' => Yii::$app->user->id]),
-                            'visible' => !Yii::$app->user->isGuest
+                            'visible' => (Yii::$app->user->can('user')
+                                || Yii::$app->user->can('client'))
                         ],
-                        [
-                            'label' => (Message::countNewMessage(Yii::$app->user->id))
-                                ?'Уведомления ' .
-                                    '<b class="incube-invert">' . \app\models\Message::countNewMessage(Yii::$app->user->id) . '</b>'
-                                :'Уведомления',
-                            'url' => '/message',
-                            'class' => 'incircle',
-                            'encode' => false,
-                        ],
+//                        [
+//                            'label' => (Message::countNewMessage(Yii::$app->user->id))
+//                                ?'Уведомления ' .
+//                                    '<b class="incube-invert">' . \app\models\Message::countNewMessage(Yii::$app->user->id) . '</b>'
+//                                :'Уведомления',
+//                            'url' => '/message',
+//                            'class' => 'incircle',
+//                            'encode' => false,
+//                        ],
                         [
                             'label' => 'Заказы (Водитель)',
                             'url' => '/order/vehicle',
@@ -224,7 +228,12 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Запрос на выплату',
                             'url' => '/request-payment/create',
-                            'visible' => Yii::$app->user->can('car-owner')
+                            'visible' => Yii::$app->user->can('car_owner')
+                        ],
+                        [
+                            'label' => 'Памятка водителю',
+                            'url' => Url::to('/default/driver-instruction'),
+                            'visible' => Yii::$app->user->can('car_owner')
                         ],
                         [
                             'label' => 'Заказы (Клиент)',
@@ -284,8 +293,10 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                     ];
             ?>
                     <div class="btn-group"> <!-- btn group 2, primary -->
-                        <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="/img/icons/cabinet.png" alt="Меню"/></button>
+                        <button type="button" class="dropdown-toggle" data-toggle="dropdown" style="font-size: xx-small">
+                            <img src="/img/icons/cabinet.png" alt="Меню"/>
+                            <br><?= Yii::$app->user->identity->profile->fioShort ?>
+                        </button>
                         <!-- Dropdown list -->
                         <div class="dropdown-menu"  role="menu">
                             <?=
@@ -375,7 +386,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 </div>
 <footer class="footer">
     <div class="container">
-        <p class="pull-left"><?=Html::a('Соглашением об использовании сервиса perevozki40.ru ',
+        <p class="pull-left"><?=Html::a('Соглашение об использовании сервиса perevozki40.ru ',
                 '/default/user-agreement', ['style' => 'color: white']
             )?> | <?=Html::a(' Соглашение о конфиденциальности ',
                 '/default/policy', ['style' => 'color: white']

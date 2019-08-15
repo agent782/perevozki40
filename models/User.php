@@ -123,8 +123,8 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['username', 'unique', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
-            ['username', 'required', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Введите номер телефона', 'message' => 'Введите Ваш номер телефона'],
+//            ['username', 'unique', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
+            ['username', 'required', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Введите Ваш номер телефона'],
             ['email', 'email'],
 //            ['username', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],
             ['username', 'validateLengthPhone', 'skipOnError'  => false , 'skipOnEmpty' => false],

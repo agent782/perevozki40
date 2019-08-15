@@ -268,6 +268,7 @@ class OrderController extends Controller
                     if(!$user_id) {
                         $user = new User();
                         $profile = new Profile();
+
                         $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
 
                         $session->set('route', $route);
@@ -330,7 +331,6 @@ class OrderController extends Controller
 
                 if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
                     $findUser = User::findOne(['username' => $user->username]);
-
                     $companies = ArrayHelper::map($profile->companies, 'id', 'name');
                     $user->scenario = User::SCENARIO_SAVE;
                     if(!$findUser){

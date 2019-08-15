@@ -4,7 +4,7 @@
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 ?>
 
-<div class="container">
+<div class="row">
 <?php
     if(Yii::$app->user->can('user')):
         $carusel_user_reg = [
@@ -49,7 +49,7 @@
 <?php
     endif;
 ?>
-    <div class="container general-light">
+    <div class="general-light">
         <label>
             Новые возможности
         </label>
@@ -59,7 +59,7 @@
         <p>Автоматическое оформление Договоров, счетов, актов и возможность скачивания в Личном кабинете</p>
         <p>Система оценок и отзывов</p>
     </div>
-<div class="container general-dark">
+<div class="general-dark">
     <label>
         Как это работает?
     </label>
@@ -71,12 +71,12 @@
         <p>После выполнения заказа Клиент получает уведомление о завершении</p>
             <?php
                 if(!Yii::$app->user->isGuest)
-                    echo '<br>' . Html::a('Бесплатная регистрация', 'signup', ['class' => 'btn btn-lg btn-warning'])
+                    echo '<br>' . Html::a('Бесплатная <br> регистрация', 'signup', ['class' => 'btn btn-lg btn-warning'])
             ?>
         </p>
     </div>
 </div>
-    <div class="container general-light">
+    <div class="general-light">
         <label>
             Транспорт
         </label>
@@ -85,6 +85,7 @@
         <p></p>
         <p>Мы сотрудничаем с проверенными годами водителями</p>
         <p>Естественный отбор благодаря системе оценок и отзывов</p>
-
+        <br>
+        <?= Html::a('Попробовать', '/order/create', ['class' => 'btn btn-lg btn-primary'])?>
     </div>
 </div>

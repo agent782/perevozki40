@@ -70,17 +70,17 @@ class OrderController extends Controller
         $dataProvider_expired_and_canceled = $searchModel->search(Yii::$app->request->queryParams);
 
         $dataProvider_newOrders->query
-            ->where(['in', Order::tableName().'.status', [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]]);
+            ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]]);
         $dataProvider_newOrders->sort->defaultOrder = [
             'valid_datetime' => SORT_ASC,
             'datetime_start' => SORT_ASC
         ];
         $dataProvider_in_process->query
-            ->where(['in', Order::tableName().'.status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]]);
+            ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]]);
         $dataProvider_arhive->query
-            ->where(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
+            ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
         $dataProvider_expired_and_canceled->query
-            ->where(['in', Order::tableName().'.status', [
+            ->andFilterWhere(['in', Order::tableName().'.status', [
                 Order::STATUS_EXPIRED,
                 Order::STATUS_CANCELED,
                 Order::STATUS_NOT_ACCEPTED

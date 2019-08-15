@@ -131,6 +131,11 @@ a.desc:after {
     .footer {
         font-size: xx-small;
     }
+    .general-light, .general-dark{
+        padding: 2px;
+        margin: 2px;
+    }
+
 }
 
 .nav > li > form > button.logout:focus,

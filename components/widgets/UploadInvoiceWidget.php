@@ -58,19 +58,16 @@ class UploadInvoiceWidget extends Widget
         echo $form->field($this->modelInvoice, 'upload_file')->fileInput([
             'id' => 'pathPhoto_'. $this->type_document .'_' . $this->index ,
         ])->label($this->fieldFileLable);
-
+        $id_date_field = 'mask_' . rand();
         echo $form->field($this->modelInvoice, 'number')->input('tel');
         echo $form->field($this->modelInvoice, 'date')
             ->widget(MaskedInput::class,[
             'mask' => '99.99.9999',
             'options' => [
                 'aria-required' => false,
-                'id' => 'mask_' . rand(),
+                'id' => $id_date_field,
             ],
-        ])->label('Дата '
-                .
-            )
-        ;
+        ])->label('Дата ');
 
 
         echo  Html::submitButton('Загрузить', ['class' => 'btn btn-primary']);

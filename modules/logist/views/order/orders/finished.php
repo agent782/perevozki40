@@ -63,6 +63,7 @@ use yii\helpers\ArrayHelper;
                     ]
                 ],
             ],
+
             [
                 'class' => \kartik\grid\EditableColumn::class,
                 'attribute' =>'type_payment',
