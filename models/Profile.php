@@ -220,6 +220,14 @@ class Profile extends \yii\db\ActiveRecord
             ->viaTable('XprofileXcompany',['id_profile' => 'id_user']);
     }
 
+    public function getSumRequestsPayments(){
+        $sum = 0;
+        foreach ($this->user->requestPayments as $request_payment){
+            $sum += $request_payment->cost;
+        }
+        return $sum;
+    }
+
     /**
      * @inheritdoc
      * @return ProfileQuery the active query used by this AR class.
@@ -751,5 +759,7 @@ class Profile extends \yii\db\ActiveRecord
             ['in', 'status', Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]
         ])->count();
     }
+
+
 }
 

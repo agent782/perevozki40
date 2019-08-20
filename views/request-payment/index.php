@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\RequestPaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Запрос на выплату';
+$this->title = 'Выплаты';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="request-payment-index">
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a('Получить', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Новый запрос', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -24,15 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'id_user',
+            'create_at',
             'cost',
             'type_payment',
-            'requisites:ntext',
+            'status',
+//            'requisites:ntext',
             //'url_files:ntext',
             //'status',
-            //'create_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

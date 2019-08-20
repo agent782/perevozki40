@@ -261,6 +261,17 @@ class CompanyController extends Controller
        switch ($type){
            case Document::TYPE_CONTRACT_CLIENT:
                $document = Document::findOne(['id_company' => $idCompany, 'type' => $type]);
+               if($document) {
+                   $path = Yii::getAlias('@client_contracts_forms/' . $document->url_download);
+                   if (file_exists($path && is_file($path))) {
+                       unlink($path);
+                       $document->url_download = null;
+                   }
+               }
+               $document = $modelCompany -> createDocument($type);
+               $path = Yii::getAlias('@client_contracts_forms/' . $document->url_download);
+               return Yii::$app->response->sendFile($path);
+
 
                if(!$document){
                    $document = $modelCompany -> createDocument($type);
@@ -274,7 +285,6 @@ class CompanyController extends Controller
 
                    if(file_exists($path)) {
                        $document->delete();
-
                    }
                    $modelCompany->createDocument($type);
                    return Yii::$app->response->sendFile($path);

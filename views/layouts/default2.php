@@ -191,7 +191,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
 //                        ],
                         [
                             'label' => 'Сделать новый заказ',
-                            'url' => Url::to(['/order/create', 'user_id' => Yii::$app->user->id]),
+                            'url' => Url::to(['/order/create']),
                             'visible' => (Yii::$app->user->can('user')
                                 || Yii::$app->user->can('client'))
                         ],
@@ -392,7 +392,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                 '/default/policy', ['style' => 'color: white']
             )?></p>
 
-        <p class="pull-right">&copy; Григоров Денис Евгеньевич <?= date('Y') ?></p>
+        <p class="pull-right">&copy; Денис Григоров <?= date('Y') ?></p>
 
     </div>
 </footer>

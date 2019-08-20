@@ -18,8 +18,11 @@ use yii\helpers\ArrayHelper;
 class TypePayment extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * @inheritdo
      */
+    const STATUS_NOT_ACTIVE = 0;
+    const STATUS_ACTIVE = 1;
+
     public static function tableName()
     {
         return 'typies_payment';
@@ -61,7 +64,7 @@ class TypePayment extends \yii\db\ActiveRecord
     }
 
     static public function getTypiesPaymentsArray(){
-        $TypiesPayment = self::find()->orderBy('type')->all();
+        $TypiesPayment = self::find()->where(['status' => self::STATUS_ACTIVE])->orderBy('type')->all();
         foreach ($TypiesPayment as $item){
             $item->type = $item->getTextWithIconDiscount();
         }

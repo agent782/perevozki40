@@ -73,27 +73,35 @@ class RequestPaymentController extends Controller
         if(!$user){
             throw new HttpException('Ошибка на сервере');
         }
-
+        $profile = $user-> profile;
         $model = new RequestPayment();
+        $model->id_user = $user->id;
         $min_cost = 1000;
-        $max_cost = $user->profile->balance['balance'];
+        $sum_request_payments = $profile->getSumRequestsPayments();
+        $max_cost = $profile->getBalanceCarOwner()['balance'] - $sum_request_payments;
 
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post())) {
             if($model->cost >= $min_cost && $model->cost <= $max_cost){
+                functions::setFlashSuccess('Статус платежа - "В очереди..."');
+                if($model->save()){
+                    return $this->redirect('/request-payment');
+                }
 
             } else {
                 if($model->cost < $min_cost) {
                     functions::setFlashWarning('Минимальная сумма для получения  - ' . $min_cost . ' р.');
                 }
                 if($model->cost > $max_cost) {
-                    functions::setFlashWarning('Максимальная сумма не может превышать Ваш баланс!');
+                    functions::setFlashWarning('Превышена максимальная сумма для выплаты!');
                 }
             }
         }
 
         return $this->render('create', [
             'model' => $model,
+            'max_cost' => $max_cost,
+            'min_cost' => $min_cost
         ]);
     }
 

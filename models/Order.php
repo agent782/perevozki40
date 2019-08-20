@@ -402,7 +402,7 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
-    public function getSuitableRates($distance, int $limit = 8){
+    public function getSuitableRates($distance, int $limit = 10){
         $result = [];
         $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
 
@@ -478,8 +478,8 @@ class Order extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getSuitableRatesCheckboxList($distance = null, $discount = null){
-        $suitable_rates = $this->getSuitableRates($distance);
+    public function getSuitableRatesCheckboxList($distance = null, $discount = null, $limit= 10){
+        $suitable_rates = $this->getSuitableRates($distance, $limit);
         $return = [];
         foreach ($suitable_rates as $id => $suitable_rate){
             $PriceZone = PriceZone::findOne(['unique_index' => $id]);

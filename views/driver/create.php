@@ -10,7 +10,7 @@ $this->title = 'Новый водитель';
 $this->params['breadcrumbs'][] = ['label' => 'Водители', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="driver-create">
+<div class="container driver-create">
 
     <h3><?= Html::encode($this->title) ?></h3>
 

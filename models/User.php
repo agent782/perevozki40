@@ -359,6 +359,11 @@ class User extends ActiveRecord implements IdentityInterface
         return $arr;
     }
 
+    public function getRequestPayments(){
+        return $this->hasMany(RequestPayment::class, ['id_user' => 'id']);
+    }
+
+
 
 
 

@@ -94,10 +94,6 @@ class Document extends \yii\db\ActiveRecord
        ];
     }
 
-    public function create(){
-
-    }
-
     public function updateDoc($id, $type){
 
     }
@@ -113,8 +109,8 @@ class Document extends \yii\db\ActiveRecord
         return false;
     }
     //создается договор для организации и возвращается $this
-    public function createPdfContractClient($idCompany){
-        $modelCompany = Company::findOne(['id' => $idCompany]);
+    public function createPdfContractClient(){
+        $modelCompany = $this->company;
         if(!$modelCompany) return false;
         $phpword =  new PhpWord();
 

@@ -44,7 +44,7 @@ class RequestPayment extends \yii\db\ActiveRecord
             [['id_user', 'type_payment', 'status'], 'integer'],
             [['cost'], 'number'],
             [['requisites', 'url_files'], 'string'],
-            ['date', 'default', 'value' => date('d.m.Y H:1')],
+            ['create_at', 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW]
         ];
     }
@@ -72,7 +72,7 @@ class RequestPayment extends \yii\db\ActiveRecord
             'url_files' => 'Url Files',
             'status' => 'Статус',
             'create_at' => 'Дата',
-            'file' => 'Скан счета на оплату'
+            'file' => 'Скан счета на оплату (при оплате на р/с ИП или ООО)'
         ];
     }
 }

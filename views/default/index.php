@@ -71,7 +71,7 @@
         <p>После выполнения заказа Клиент получает уведомление о завершении</p>
             <?php
                 if(!Yii::$app->user->isGuest)
-                    echo '<br>' . Html::a('Бесплатная <br> регистрация', 'signup', ['class' => 'btn btn-lg btn-warning'])
+                    echo '<br>' . Html::a('Бесплатная <br> регистрация', '/default/signup', ['class' => 'btn btn-lg btn-warning'])
             ?>
         </p>
     </div>

@@ -10,7 +10,7 @@ $this->title = 'Редактирование: ' . $model->surname . ' ' . $model
 //$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 //$this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="driver-update">
+<div class="container driver-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

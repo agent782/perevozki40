@@ -3,15 +3,20 @@
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use app\models\Payment;
+use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model app\models\RequestPayment */
 
 $this->title = 'Запрос на выплату';
 
 ?>
-<div class="request-payment-create">
-
+<div class="container request-payment-create">
+    <a href="<?= Url::to('/request-payment/index')?>">История выплат</a>
+    <br>
     <h3><?= Html::encode($this->title)?></h3>
+
+    <p>Возможная сумма для получения - <?= $max_cost ?> р.</p>
+    <p>Минимальная сумма для получения - <?= $min_cost ?> р.</p>
 
     <?php
         $form = ActiveForm::begin();

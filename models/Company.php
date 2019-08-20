@@ -238,19 +238,22 @@ class Company extends \yii\db\ActiveRecord
         return XprofileXcompany::find()->where(['id_company' => $id_company])->count();
     }
 
+
     public function createDocument ($type){
-        $document = new Document();
-        $document->type = $type;
-        $document->id_company = $this->id;
-        $document->id_user = Yii::$app->user->getId();
-        if($document->save()) {
-            switch ($type) {
-                case Document::TYPE_CONTRACT_CLIENT:
-                    $document->createPdfContractClient($this->id);
-            }
-            if ($document->save()) {
-                return $document;
-            }
+        $document = Document::findOne(['id_company' => $this->id, 'type' => $type]);
+        if(!$document) {
+            $document = new Document();
+            $document->type = $type;
+            $document->id_company = $this->id;
+            $document->id_user = Yii::$app->user->getId();
+            if(!$document->save()) return false;
+        }
+        switch ($type) {
+            case Document::TYPE_CONTRACT_CLIENT:
+                $document = $document->createPdfContractClient();
+        }
+        if ($document->save()) {
+            return $document;
         }
         return false;
     }

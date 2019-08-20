@@ -86,7 +86,6 @@ use app\components\widgets\ShowMessageWidget;
         'encode' => false,
         'onchange' => '
             if($(this).find("input:checked").val()  == 3 
-                && $("#id_user").val()
             ) {
                 $("#companies").show();  
                   $("#companies").removeAttr("checked");
@@ -100,22 +99,24 @@ use app\components\widgets\ShowMessageWidget;
         '
     ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
     <?php
-        $companiesHide = ($companies && $modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER && $modelOrdel->id_user) ? '' : 'hidden';
+        $companiesHide = ($modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER)
+            ? '' : 'hidden';
     ?>
     <div id="companies" <?= $companiesHide?> >
     <?= $form->field($modelOrder, 'id_company',[
         'enableAjaxValidation' => true,
     ])->radioList($companies)->label('Юр. лица: '. Html::a(Html::icon('plus', [
             'class' => 'btn btn-info',
-            'title' => 'Добавить водителя'
-        ]), ['/company/create',
+            'title' => 'Добавить юр. лицо'
+        ]), Url::to(['/company/create',
             'user_id' => $user_id,
             'redirect' => Url::to([
                 '/order/create',
                 'user_id' => $user_id,
                 'redirect' => $redirect,
             ])
-        ]))?>
+        ]), ['target' => '_blank'])
+    )?>
     </div>
     </div>
     <div class="col-lg-5">
