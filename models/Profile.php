@@ -718,7 +718,7 @@ class Profile extends \yii\db\ActiveRecord
                 'debit' => round($order->avans_client -
                         ($order->avans_client * $this->procentVehicle/100))
                     . ' (' . round(($order->cost_finish_vehicle - $order->avans_client)
-                        - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')**',
+                        - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')****',
                 'credit' => '',
                 'description' => '(ОПЛАЧЕН КЛИЕНТОМ ЧАСТИЧНО) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,

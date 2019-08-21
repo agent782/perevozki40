@@ -41,6 +41,7 @@ use kartik\grid\GridView;
             'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р.',
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_car_owner,
+                'responsiveWrap' => false,
                 'columns' => [
                     [
                         'label' => 'Дата',
@@ -49,6 +50,9 @@ use kartik\grid\GridView;
                     [
                         'label' => 'Дебет',
                         'attribute' => 'debit',
+                        'value' => function ($model){
+                            return $model['debit'];
+                        },
                         'contentOptions' => ['style' => 'color: green']
                     ],
                     [
@@ -63,13 +67,16 @@ use kartik\grid\GridView;
                 ]
             ]),
         ];
-        $comments .= '<p></p><comment>* Баланс по принятым Вами заказам на Ваши ТС.</comment></p>';
+        $comments .= '<p><comment>* Баланс по принятым Вами заказам на Ваши ТС.</comment></p>';
+        $comments .= '<p><comment>**** Сумма частичной оплаты Клиентом за заказ за вычетом процентов
+            (Оставшаяся неоплаченная Клиентом сумма по заказу за вычетом процентов)</comment></p>';
     }
     if($dataProvider_user){
         $items[] = [
             'label' => 'Ваш баланс клиента**: ' . $balance['user'] . 'р.',
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_user,
+                'responsiveWrap' => false,
                 'columns' => [
                     [
                         'label' => 'Дата',
@@ -92,7 +99,7 @@ use kartik\grid\GridView;
                 ]
             ]),
         ];
-        $comments .= '<p></p><comment>** Баланс по Вашим заказам за наличный расчет и с оплатой банковской картой</comment></p>';
+        $comments .= '<p><comment>** Баланс по Вашим заказам за наличный расчет и с оплатой банковской картой</comment></p>';
     }
     if($dataProviders_companies){
         $content = '';
@@ -105,6 +112,7 @@ use kartik\grid\GridView;
                 $content .= GridView::widget([
                     'dataProvider' => $dataProvider_company,
                     'pjax' => true,
+                    'responsiveWrap' => false,
                     'columns' => [
                         [
                             'label' => 'Дата',
@@ -146,11 +154,9 @@ use kartik\grid\GridView;
             'label' => 'Баланс Ваших юр. лиц***: ' . $balance['companies'] . 'р.',
             'content' => $content
         ];
-        $comments .= '<p></p><comment>*** Баланс по заказам с оплатой по безналичному расчету 
+        $comments .= '<p><comment>*** Баланс по заказам с оплатой по безналичному расчету 
 от Ваших юр. лиц. В том числе заказы, сделанные другими сотрудниками Ваших юр. лиц.</comment></p>';
     }
-
-
 
 ?>
 
