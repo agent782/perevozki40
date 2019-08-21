@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\components\widgets\ShowMessageWidget;
 
 /**
  * This is the model class for table "{{%loding_type}}".
@@ -71,6 +72,20 @@ class LoadingType extends \yii\db\ActiveRecord
             return self::find()->all();
         }
         return false;
+    }
 
+    static public function getLTypiesWithMessageButtonImg($id_vehicle_type){
+        $lTypies = self::getLoading_typies($id_vehicle_type);
+        $chkbox = [];
+        if(!$lTypies) return false;
+        foreach ($lTypies as $lType){
+            $chkbox[$lType->id] = $lType->type
+                . ShowMessageWidget::widget([
+                    'helpMessage' => '<img style="width: 99%" src= /img/imgLoadingTypies/' . $lType->image
+                        . '> </img> <br> <br>' ,
+                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
+                ]);
+        }
+        return $chkbox;
     }
 }

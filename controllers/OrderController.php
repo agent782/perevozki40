@@ -180,8 +180,10 @@ class OrderController extends Controller
         switch (Yii::$app->request->post('button')) {
             case 'next1':
                 if ($modelOrder->load(Yii::$app->request->post())) {
-                    $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+//                    $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
+                    $BTypies = BodyType::getBTypiesWithShowMessageImg($modelOrder->id_vehicle_type, true);
                     $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
+                    $LTypies = LoadingType::getLTypiesWithMessageButtonImg($modelOrder->id_vehicle_type);
                     $session->set('modelOrder', $modelOrder);
                     return $this->render('create2', [
                         'modelOrder' => $modelOrder,

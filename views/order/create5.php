@@ -121,11 +121,17 @@ use app\components\widgets\ShowMessageWidget;
     </div>
     <div class="col-lg-5">
         <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
-    <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие тарифы *.')
+    <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие по стоимости тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, [
             'id' => 'selected_rates',
             'encode' => false
-        ]);
+        ])
+        ->hint('Стоимость указана минимальная, рассчитана на основании указанного Вами маршрута и характеристик груза.
+        . На нее могут повлиять: 
+        изменение фактического маршрута, изменение характеристик груза, время погрузки/выгрузки,
+        "растентовка" сбоку/сверху, дополнительные расходы (платные дороги, платные въезды,
+        услуги грузчика и т.п.)'
+    );
     ?>
         <?php
         \yii\widgets\Pjax::end();

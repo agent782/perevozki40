@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 $this->registerJsFile('/js/order.js');
+
 ?>
 <div class="container">
 <?php
@@ -24,18 +25,20 @@ $this->registerJsFile('/js/order.js');
 ($modelOrder->id_vehicle_type != \app\models\Vehicle::TYPE_SPEC)
     ?
     $form->field($modelOrder, 'body_typies[]')->checkboxList(
-        ArrayHelper::map($BTypies, 'id', 'body'), ['id' => 'chkBodyTypies'])
+        $BTypies, ['id' => 'chkBodyTypies', 'encode' => false])
+    ->hint('Чем больше типов кузова выбрано, тем больше вероятность подбора ТС')
     :
-    $form->field($modelOrder, 'body_typies[]')->radioList(
-        ArrayHelper::map($BTypies, 'id', 'body'))
+    $form->field($modelOrder, 'body_typies[]')->radioList($BTypies, ['encode' => false])
 ?>
 <?php
     if($LTypies){
-       echo $form->field($modelOrder, 'loading_typies[]')->checkboxList(ArrayHelper::map($LTypies, 'id', 'type'),
+       echo $form->field($modelOrder, 'loading_typies[]')->checkboxList($LTypies,
             [
                 'id' => 'chkLoadingTypies',
-                'value' => [2]
-            ])->label('Необходимый тип погрузки/выгрузки.')->hint('Выбирайте дополнительные типы погрузки только при необходимости!');
+                'value' => [2],
+                'encode' => false
+            ])->label('Необходимый тип погрузки/выгрузки.')
+           ->hint('Выбирайте дополнительные типы погрузки только при необходимости!');
     }
     ?>
 <?=

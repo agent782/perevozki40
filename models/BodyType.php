@@ -88,4 +88,18 @@ class BodyType extends \yii\db\ActiveRecord
             ;
     }
 
+    static public function getBTypiesWithShowMessageImg($id_vehicle_type, bool $any = false){
+        $bTypies = self::getBodyTypies($id_vehicle_type, $any);
+        $chkbox = [];
+        foreach ($bTypies as $bType){
+            $chkbox[$bType->id] = $bType->body
+                . ShowMessageWidget::widget([
+                    'helpMessage' => '<img style="width: 99%" src= /img/imgBodyTypies/' . $bType->image
+                        . '> </img> <br> <br>' ,
+                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
+                ]);
+        }
+        ksort($chkbox);
+        return $chkbox;
+    }
 }

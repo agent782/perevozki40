@@ -117,7 +117,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
                 $return .= '<span>' . ucwords($label) . '</span>' . "\n";
                 $return .= '</label>';
                 $return .= ' ' . ShowMessageWidget::widget([
-                        'helpMessage' => '<img src= /img/imgLoadingTypies/' . $imgLTs[$value] . '> </img> <br> <br>' . $descLTs[$value],
+                        'helpMessage' => '<img style="width: 99%" src= /img/imgLoadingTypies/' . $imgLTs[$value] . '> </img> <br> <br>' . $descLTs[$value],
                         'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                     ]);
                 $return .= '<br>';

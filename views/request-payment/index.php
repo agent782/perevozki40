@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\RequestPayment;
+use app\components\widgets\ShowMessageWidget;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\RequestPaymentSearch */
@@ -26,13 +28,22 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
             'create_at',
             'cost',
-            'type_payment',
-            'status',
+            [
+                'label' => 'Тип оплаты',
+                'format' => 'raw',
+                'value' => function (RequestPayment $model){
+                    return $model->getTypePaymentText(true)
+                        . ShowMessageWidget::widget([
+                           'helpMessage' => $model->requisites
+                        ]);
+                }
+            ],
+            'statusText',
 //            'requisites:ntext',
             //'url_files:ntext',
             //'status',
 
-            ['class' => 'yii\grid\ActionColumn'],
+//            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>

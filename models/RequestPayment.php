@@ -16,6 +16,7 @@ use app\components\DateBehaviors;
  * @property string $url_files
  * @property int $status
  * @property int $create_at
+ * @property string statusText
  */
 class RequestPayment extends \yii\db\ActiveRecord
 {
@@ -71,8 +72,32 @@ class RequestPayment extends \yii\db\ActiveRecord
             'requisites' => 'Реквизиты получателя',
             'url_files' => 'Url Files',
             'status' => 'Статус',
+            'statusText' => 'Статус',
             'create_at' => 'Дата',
             'file' => 'Скан счета на оплату (при оплате на р/с ИП или ООО)'
         ];
+    }
+
+    public function getStatusText(){
+        switch ($this->status){
+            case self::STATUS_NEW:
+                return 'В обработке.';
+                break;
+            case self::STATUS_OK:
+                return 'Выполнено.';
+                break;
+            case self::STATUS_CANCEL:
+                return 'Отменено.';
+                break;
+            case self::STATUS_ERROR:
+                return 'Ошибка.';
+                break;
+        }
+        return false;
+    }
+
+    public function getTypePaymentText($short = false){
+        $type_payment = TypePayment::findOne($this->type_payment);
+        return ($short)?$type_payment->min_text:$type_payment->type;
     }
 }
