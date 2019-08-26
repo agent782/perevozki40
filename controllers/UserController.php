@@ -114,6 +114,11 @@ class UserController extends Controller
 //            $model3->scenario = User::SCENARIO_CHANGE_PASS;
             if ($model3->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model3);
+
+            $model4 = new Profile();
+//            $model3->scenario = User::SCENARIO_CHANGE_PASS;
+            if ($model3->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model4);
         }
     }
 

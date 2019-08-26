@@ -21,7 +21,7 @@ AppAsset::register($this);
 //	top: 0px;
 //}
 //');
-$this->params['breadcrumbs'][] = $this->title;
+//$this->params['breadcrumbs'][] = $this->title;
 $this->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
 \yii\helpers\Url::remember(); //Сохраняет адрес текущей страницы. Для кнопеи назад Url::previous().
 ?>
@@ -185,25 +185,12 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Профиль ('.Yii::$app->user->identity->profile->name . ' ' . Yii::$app->user->identity->profile->surname.')',
                             'url' => '/user',
                         ],
-//                        [
-//                            'label' => 'Баланс',
-//                            'url' => '/user/balance',
-//                        ],
                         [
                             'label' => 'Сделать новый заказ',
                             'url' => Url::to(['/order/create']),
                             'visible' => (Yii::$app->user->can('user')
                                 || Yii::$app->user->can('client'))
                         ],
-//                        [
-//                            'label' => (Message::countNewMessage(Yii::$app->user->id))
-//                                ?'Уведомления ' .
-//                                    '<b class="incube-invert">' . \app\models\Message::countNewMessage(Yii::$app->user->id) . '</b>'
-//                                :'Уведомления',
-//                            'url' => '/message',
-//                            'class' => 'incircle',
-//                            'encode' => false,
-//                        ],
                         [
                             'label' => 'Заказы (Водитель)',
                             'url' => '/order/vehicle',
@@ -318,10 +305,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
             <!--                <img src="/img/icons/cabinet.png" alt="Личный кабинет"/>-->
         </div>
     </div>
-
 </div>
-
-
 <div class="wrap" style=" padding-top: 150px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
 
     <?php if(Yii::$app->session->hasFlash('success')): ?>

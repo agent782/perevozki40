@@ -91,7 +91,7 @@ $this->title = 'Оформлление заказа';
             'labelOptions' => ['class' => 'col-lg-12 control-label'],
         ],
     ]);?>
-
+    <input id="role" value="<?= Yii::$app->user->identity->getRole()?>" hidden></input>
     <div class="col-lg-4">
         <?= $formFinishOrder->field($user, 'id')->hiddenInput(['id' => 'id_user'])->label(false)?>
         <?= $formFinishOrder->field($profile, 'name')->input('text',  ['id' => 'name'])?>

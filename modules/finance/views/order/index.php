@@ -145,6 +145,7 @@ $this->title = 'Журнал заказов';
             [
                 'class' => \kartik\grid\EditableColumn::class,
                 'attribute' => 'paid_status',
+                'label' => 'Оплата',
                 'value' => 'paidText',
                 'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses()),
                 'editableOptions' => [

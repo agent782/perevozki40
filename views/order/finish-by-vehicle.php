@@ -19,8 +19,8 @@ use app\models\Payment;
 /* @var $BTypies array*/
 /* @var $LTypies array*/
 /* @var $VehicleAttributes array*/
-$this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
-$this->registerJsFile('@web/js/route.js');
+//$this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
+//$this->registerJsFile('@web/js/route.js');
 $this->title = 'Фактические данные по заказу №' . $modelOrder->id;
 $this->registerJsFile('/js/order.js');
 

@@ -309,7 +309,7 @@ class User extends ActiveRecord implements IdentityInterface
        return $role = (new Query())
             ->select('item_name')
             ->from('auth_assignment')
-            ->where([user_id => $this->id])
+            ->where(['user_id' => $this->id])
             ->one()['item_name'];
 
     }

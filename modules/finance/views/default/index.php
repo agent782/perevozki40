@@ -1,17 +1,39 @@
-<div class="finance-default-index">
-    <h1><?= $this->context->action->uniqueId ?></h1>
-    <p>
-        This is the view content for action "<?= $this->context->action->id ?>".
-        The action belongs to the controller "<?= get_class($this->context) ?>"
-        in the "<?= $this->context->module->id ?>" module.
-    </p>
-    <p>
-        You may customize this page by editing the following file:<br>
-        <code><?= __FILE__ ?></code>
-    </p>
-    <p>
+<?php
 
-    </p>
+?>
+<div class="container finance-default-index">
+    <div class="row">
+        <div class="col-lg-4">
+            <label class="h4">Мониторинг</label>
+            <?php if($count_outstanding_invoices):?>
+            <p>Невыставленные счета - <?=$count_outstanding_invoices?></p>
+            <?php endif;?>
+            <?php if($count_outstanding_certificates):?>
+            <p>Невыписанные акты - <?=$count_outstanding_certificates?></p>
+            <?php endif;?>
+            <p>Договора на проверку</p>
+            <p>Запросы на выплату</p>
+        </div>
+        <div class="col-lg-8">
+            <label class="h4">Информация о пользователе</label>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-lg-4">
+            <label class="h4">Статистика</label>
+        </div>
+        <div class="col-lg-4">
+            <label class="h3">
+
+            </label>
+        </div>
+        <div class="col-lg-4">
+            <label class="h3">
+
+            </label>
+        </div>
+    </div>
 </div>
 
 

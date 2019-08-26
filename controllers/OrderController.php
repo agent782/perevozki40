@@ -163,7 +163,7 @@ class OrderController extends Controller
     {
 //        return var_dump(Yii::$app->request->post());
         if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
-//            $this->layout = 'logist';
+            $this->layout = 'logist';
         };
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
@@ -360,6 +360,7 @@ class OrderController extends Controller
                         $findUser->email = $user->email;
                         $findUser->scenario = User::SCENARIO_SAVE;
                         $findProfile = $findUser->profile;
+                        $findProfile->scenario = Profile::SCENARIO_SAFE_SAVE;
                         if(!$findProfile){
                             $profile->id_user = $findUser->id;
                             if(!$profile->save()){
@@ -379,6 +380,8 @@ class OrderController extends Controller
                             return $this->redirect('/logist/order');
                         }
                         if(!$findProfile->save()){
+                            return var_dump($findProfile->getErrors());
+
                             functions::setFlashWarning('Ошибка на сервере. Профиль не сохранен. Попробуйте позже.');
                             return $this->redirect('/logist/order');
                         }
@@ -415,24 +418,7 @@ class OrderController extends Controller
                     'profile' => $profile,
                 ]);
                 break;
-//            case 'logist_finish':
-//                $route = $session->get('route');
-//                $modelOrder = $session->get('modelOrder');
-//                $user = $session->get('user');
-//                $profile = $session->get('profile');
-//                $modelCompany = new Company();
-//                $XcompanyXprofile = new XprofileXcompany();
-//                if($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())){
-//
-//                }
-//
-//                $session->get('modelCompany');
-//                $session->get('XcompanyXprofile');
-//
-//                return 222222;
-//                break;
         }
-
 
         if(Yii::$app->request->isPjax) {
             $modelOrder = $session->get('modelOrder');

@@ -486,7 +486,7 @@ class Order extends \yii\db\ActiveRecord
             $return[$PriceZone->unique_index] = ' &asymp; ' . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
                 . ' руб.* '
                 . ShowMessageWidget::widget([
-                    'helpMessage' => $PriceZone->printHtml(),
+                    'helpMessage' => $PriceZone->getWithDiscount($discount)->printHtml(),
                     'header' => 'Тарифная зона №' . $PriceZone->id,
 //                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                 ])
@@ -526,7 +526,7 @@ class Order extends \yii\db\ActiveRecord
         $SettingClient = SettingClient::find()->limit(1)->one();
         $discount_cash = 0;
         $discount_card = 0;
-        if(!$user_id) {
+        if(!$user_id ) {
             $discount_cash = $SettingClient->not_registered_discount_cash;
             $discount_card = $SettingClient->not_registered_discount_card;
         } else {
@@ -535,13 +535,16 @@ class Order extends \yii\db\ActiveRecord
                 $discount_cash = $SettingClient->user_discount_cash;
                 $discount_card = $SettingClient->user_discount_card;
             }
-            if ($user->canRole('client') || $user->canRole('car_owner')) {
+            else if ($user->canRole('client') || $user->canRole('car_owner')) {
                 $discount_cash = $SettingClient->client_discount_cash;
                 $discount_card = $SettingClient->client_discount_card;
             }
-            if ($user->canRole('client') || $user->canRole('vip_car_owner')) {
+            else if ($user->canRole('vip_client') || $user->canRole('vip_car_owner')) {
                 $discount_cash = $SettingClient->vip_client_discount_cash;
                 $discount_card = $SettingClient->vip_client_discount_card;
+            } else {
+                $discount_cash = $SettingClient->not_registered_discount_cash;
+                $discount_card = $SettingClient->not_registered_discount_card;
             }
         }
         if($type_payment == Payment::TYPE_CASH) return $discount_cash;

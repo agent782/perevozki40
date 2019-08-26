@@ -38,10 +38,13 @@ class DocumentController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = '@app/modules/finance/views/layouts/finance';
         $Documents = Document::find();
         $searchModel = new DocumentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+        $dataProvider->sort->defaultOrder = [
+            'date' => SORT_DESC
+        ];
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
