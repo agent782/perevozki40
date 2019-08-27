@@ -41,7 +41,7 @@ class RequestPaymentController extends Controller
         $searchModel = new RequestPaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->sort->defaultOrder = [
-            'date' => SORT_DESC
+            'create_at' => SORT_DESC
         ];
         return $this->render('index', [
             'searchModel' => $searchModel,

@@ -112,19 +112,21 @@ class DefaultController extends Controller
         $session = Yii::$app->session;
         if($session->get('modelProfile')) $modelProfile = $session->get('modelProfile');
 
-       //Для аякс валидации на уникальность телефона
-//        if (Yii::$app->request->isAjax) {
-//            Yii::$app->response->format = Response::FORMAT_JSON;
-//            return ActiveForm::validate($modelUser);
-//        }
         switch (Yii::$app->request->post('button')){
             case 'signup1':
                 $session->remove('modelUser');
-                if($modelProfile->load(Yii::$app->request->post())){
+                if($modelProfile->load(Yii::$app->request->post()) && $modelProfile->validate()){
                     $session->remove('modelVerifyPhone');
-                    $session->set('modelProfile', $modelProfile);
                     $session->set('modelUser', $modelUser);
-                    return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser', 'modelPhoneForm']));
+//                    $session->set('modelProfile', $modelProfile);
+                    $_SESSION['modelProfile'] = $modelProfile;
+                    return $this->render('signup2', compact([
+//                        'modelVerifyPhone',
+                            'modelProfile',
+                            'modelUser',
+//                            'modelPhoneForm'
+                        ])
+                    );
                 }
                 break;
             case 'signup2':
@@ -196,7 +198,8 @@ class DefaultController extends Controller
                             }
                             functions::setFlashWarning('ОШИБКА НА СЕРВЕРЕ. Попробуйте позже.');
 
-                            return $this->render('signup4', compact(['modelVerifyPhone', 'modelProfile', 'modelUser', 'modelSignupUserForm']));
+                            return $this->render('signup4',
+                                compact(['modelVerifyPhone', 'modelProfile', 'modelUser', 'modelSignupUserForm']));
                         }
                     }
                     functions::setFlashWarning('ОШИБКА НА СЕРВЕРЕ. Попробуйте позже.');

@@ -6,7 +6,7 @@
  * Time: 12:02
  */
 //    use yii\bootstrap\ActiveForm;
-    use kartik\form\ActiveForm;
+    use yii\bootstrap\ActiveForm;
     use yii\bootstrap\Html;
     $this->title = 'Регистрация (1/4)';
 ?>

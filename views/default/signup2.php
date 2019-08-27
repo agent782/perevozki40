@@ -9,6 +9,7 @@ use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
 use yii\widgets\MaskedInput;
 $this->title = 'Регистрация (2/4)';
+//var_dump($_SESSION['modelProfile']->name);
 ?>
 
 
@@ -25,7 +26,8 @@ $form = ActiveForm::begin([
     'validationUrl' => \yii\helpers\Url::to(['validate-phone']), // Добавить URL валидации
 ]);
 ?>
-<?= $form->field( $modelUser, 'username')
+    <?= $form->field($modelProfile, 'name')->hiddenInput()->label(false)?>
+<?= $form->field( $modelUser, 'username', ['errorOptions' => ['class' => 'help-block' ,'encode' => false]])
     ->textInput(['autofocus' => true])
     ->widget(MaskedInput::className(),[
         'mask' => '+7(999)999-99-99',

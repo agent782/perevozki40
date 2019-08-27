@@ -411,9 +411,13 @@ class Order extends \yii\db\ActiveRecord
                 $priceZones = $priceZones
                     ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
                     ->andFilterWhere(['>=', 'volume_max', $this->volume])
-                    ->andFilterWhere(['>=', 'length_max', $this->length])
+                    ->andFilterWhere(['>=', 'length_max', $this->length]);
+                if(!$this->longlength) {
+                    $priceZones = $priceZones->andFilterWhere(['longlength' => $this->longlength]);
+                }
 //                    ->andFilterWhere(['longlength' => $this->longlength])
-                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])->all()
+                $priceZones = $priceZones->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+                    ->all()
                 ;
                 break;
             case Vehicle::TYPE_PASSENGER:

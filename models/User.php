@@ -14,6 +14,7 @@ use yii\data\SqlDataProvider;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 use yii\web\IdentityInterface;
 use app\models\Profile;
 
@@ -123,7 +124,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-//            ['username', 'unique', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Пользователь с таким номером телефона уже зарегистрирован'],
+            ['username', 'unique', 'skipOnError'  => false , 'skipOnEmpty' => false,
+                'message' => 'Пользователь с таким номером телефона уже зарегистрирован. '
+                    . Html::a('Восстановить пароль', '/default/login')
+            ],
             ['username', 'required', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Введите Ваш номер телефона'],
             ['email', 'email'],
 //            ['username', 'match', 'pattern' => '/^\+7\([0-9]{3}\)[0-9]{3}\-[0-9]{2}\-[0-9]{2}$/'],

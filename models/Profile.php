@@ -114,10 +114,10 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_user', 'name'], 'required'],
-                [['surname'], 'required', 'when' => function(){
-                    return Yii::$app->user->can('admin');
-                }, 'whenClient' => "function(){
+            [['name'], 'required'],
+                [['surname'], 'required',
+                    'when' => [$this, 'notAdminOrDispetcher'],
+                    'whenClient' => "function(){
                     if ($('#role').val() != 'admin'
                         ||  $('#role').val() != 'dispetcher') return false;
                     return true;
@@ -766,6 +766,12 @@ class Profile extends \yii\db\ActiveRecord
             'id_company' => $id_company,
             ['in', 'status', Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]
         ])->count();
+    }
+
+    static public function notAdminOrDispetcher(){
+        $user = Yii::$app->user;
+        if($user->can('admin') || $user->can('dispetcher')) return false;
+        return true;
     }
 
 

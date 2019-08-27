@@ -50,8 +50,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     <title><?= Html::encode($this->title) ?></title>
     <script
             src="https://api-maps.yandex.ru/2.1/?apikey=16eacdd2-acfd-4122-b0c7-639d10363985&lang=ru_RU" type="text/javascript">
-    </script>
-<!--    <script charset="UTF-8" src="//cdn.sendpulse.com/js/push/ed2cce3784ec8246afa34633f9a33b2a_0.js" async></script>-->
+   </script>
     <?php $this->head() ?>
 </head>
 <body>
@@ -305,7 +304,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
             <!--                <img src="/img/icons/cabinet.png" alt="Личный кабинет"/>-->
         </div>
     </div>
-</div>
+
 <div class="wrap" style=" padding-top: 150px; margin: 0px 40px 40px 40px; padding-bottom: 80px;">
 
     <?php if(Yii::$app->session->hasFlash('success')): ?>

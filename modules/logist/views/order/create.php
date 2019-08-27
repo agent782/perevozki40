@@ -24,7 +24,7 @@ $this->title = 'Оформлление заказа';
 ?>
 
 <div class="container order-create">
-
+    <input id="role" hidden value="<?= Yii::$app->user->identity->getRole()?>">
     <h3><?= Html::encode($this->title) ?></h3>
     <label>Поиск клиента:</label>
     <?=
