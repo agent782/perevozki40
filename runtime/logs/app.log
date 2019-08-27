@@ -1,0 +1,449 @@
+2019-08-26 14:53:45 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][ParseError] ParseError: syntax error, unexpected 'var_dump' (T_STRING) in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:127
+Stack trace:
+#0 [internal function]: yii\BaseYii::autoload('app\\controllers...')
+#1 [internal function]: spl_autoload_call('app\\controllers...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(637): class_exists('app\\controllers...')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(596): yii\base\Module->createControllerByID('default')
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(522): yii\base\Module->createController('signup')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#8 {main}
+2019-08-26 14:53:45 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'JZGCRPb_8a4zobWC98d475-vbw2HVQkQrunVJogp1cYW5dYCsZinm3DrzPWVrSnY1-UkZcEteiHJ2rNN_n-R9w=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 14:59:50 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][yii\base\ErrorException:256] yii\base\ErrorException: Exception (Unknown Property) 'yii\base\UnknownPropertyException' with message 'Getting unknown property: app\models\User::surname' 
+
+in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Component.php:154
+
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/BaseActiveRecord.php(298): yii\base\Component->__get('surname')
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/helpers/BaseHtml.php(2227): yii\db\BaseActiveRecord->__get('surname')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/helpers/BaseHtml.php(1353): yii\helpers\BaseHtml::getAttributeValue(Object(app\models\User), 'surname')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/helpers/BaseHtml.php(1407): yii\helpers\BaseHtml::activeInput('text', Object(app\models\User), 'surname', Array)
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/ActiveField.php(404): yii\helpers\BaseHtml::activeTextInput(Object(app\models\User), 'surname', Array)
+#5 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-widget-activeform/src/ActiveField.php(799): yii\widgets\ActiveField->textInput(Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/ActiveField.php(204): kartik\form\ActiveField->textInput()
+#7 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-widget-activeform/src/ActiveField.php(787): yii\widgets\ActiveField->render(NULL)
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/ActiveField.php(176): kartik\form\ActiveField->render()
+#9 /mnt/hgfs/H/test.loc/views/default/signup.php(22): yii\widgets\ActiveField->__toString()
+#10 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\controllers\DefaultController))
+#13 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('signup', Array, Object(app\controllers\DefaultController))
+#14 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(213): yii\base\Controller->render('signup', Array)
+#15 [internal function]: app\controllers\DefaultController->actionSignup()
+#16 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#17 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#18 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#19 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#20 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#21 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#22 {main} in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/ErrorHandler.php:317
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleError(256, 'Exception (Unkn...', '/mnt/hgfs/H/tes...', 317, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/ErrorHandler.php(317): trigger_error('Exception (Unkn...', 256)
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/ActiveField.php(178): yii\base\ErrorHandler::convertExceptionToError(Object(yii\base\UnknownPropertyException))
+#3 /mnt/hgfs/H/test.loc/views/default/signup.php(22): yii\widgets\ActiveField->__toString()
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', '[<span class="s...')
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\controllers\DefaultController))
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('signup', Array, Object(app\controllers\DefaultController))
+#8 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(213): yii\base\Controller->render('signup', Array)
+#9 [internal function]: app\controllers\DefaultController->actionSignup()
+#10 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#13 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#14 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#15 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#16 {main}
+    in /mnt/hgfs/H/test.loc/views/default/signup.php:22
+    in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:213
+2019-08-26 14:59:50 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'dq18Iqa2NrOwXxAEntEiNIG2Qe1vKWfvbCxzZb49HBtF2Shk4dFghvMVaXP8u3MDyfwKhSlRFN4LHxUOyGtYKg=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 15:13:07 [192.168.0.3][-][-][error][yii\web\HeadersAlreadySentException] yii\web\HeadersAlreadySentException: Headers already sent in /mnt/hgfs/H/test.loc/controllers/DefaultController.php on line 129. in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Response.php:366
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Response.php(339): yii\web\Response->sendHeaders()
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Response->send()
+#2 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#3 {main}
+2019-08-26 15:13:07 [192.168.0.3][-][-][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'n4QI3VS7FQHVCQPA9fewVnN08KliJ64ambYCE8tZj0as8FybE9xDNJZDereXneFhOz67wSRf3Sv-hWR4vQ_Ldw=='
+    'User' => [
+        'username' => '9999999999'
+        'captcha' => 'picifag'
+    ]
+    'button' => 'signup2'
+]
+2019-08-26 15:20:38 [192.168.0.3][-][-][error][yii\web\HeadersAlreadySentException] yii\web\HeadersAlreadySentException: Headers already sent in /mnt/hgfs/H/test.loc/controllers/DefaultController.php on line 129. in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Response.php:366
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Response.php(339): yii\web\Response->sendHeaders()
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(392): yii\web\Response->send()
+#2 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#3 {main}
+2019-08-26 15:20:37 [192.168.0.3][-][-][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'GhVYU94b5QXS1YM3rdid-ZOsSRqipqjFe8E3_x1KOmopYQwVmXyzMJGf-kDPsszO2-YCcuTe2_Qc8lGUaxx-Ww=='
+    'User' => [
+        'username' => '9999999999'
+        'captcha' => 'uiyzpu'
+    ]
+    'button' => 'signup2'
+]
+2019-08-26 15:23:39 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][ParseError] ParseError: syntax error, unexpected ';', expecting ',' or ')' in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:122
+Stack trace:
+#0 [internal function]: yii\BaseYii::autoload('app\\controllers...')
+#1 [internal function]: spl_autoload_call('app\\controllers...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(637): class_exists('app\\controllers...')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(596): yii\base\Module->createControllerByID('default')
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(522): yii\base\Module->createController('signup')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#8 {main}
+2019-08-26 15:23:38 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'b4dPMAj5x5F1eY53zFGTOpcN9ysU0_JexXaQEj8d3sVc8xt2T56RpDYz9wCuO8IN30e8Q1KrgW-iRfZ5SUua9A=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 15:43:29 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][ParseError] ParseError: syntax error, unexpected ')' in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:126
+Stack trace:
+#0 [internal function]: yii\BaseYii::autoload('app\\controllers...')
+#1 [internal function]: spl_autoload_call('app\\controllers...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(637): class_exists('app\\controllers...')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(596): yii\base\Module->createControllerByID('default')
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(522): yii\base\Module->createController('signup')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#8 {main}
+2019-08-26 15:43:29 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => '5APRSUrh1eqBGOSXD2YvGfOJDfjzv91OfYrKWAQAKx_Xd4UPDYaD38JSneBtDH4uu8NGkLXHrn8auawzclZvLg=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 15:43:46 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: modelUser in /mnt/hgfs/H/test.loc/views/default/signup2.php:29
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/views/default/signup2.php(29): yii\base\ErrorHandler->handleError(8, 'Undefined varia...', '/mnt/hgfs/H/tes...', 29, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\controllers\DefaultController))
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('signup2', Array, Object(app\controllers\DefaultController))
+#5 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(124): yii\base\Controller->render('signup2')
+#6 [internal function]: app\controllers\DefaultController->actionSignup()
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#10 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#12 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#13 {main}
+2019-08-26 15:43:46 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => '5APRSUrh1eqBGOSXD2YvGfOJDfjzv91OfYrKWAQAKx_Xd4UPDYaD38JSneBtDH4uu8NGkLXHrn8auawzclZvLg=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 15:45:17 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][ParseError] ParseError: syntax error, unexpected ')' in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:123
+Stack trace:
+#0 [internal function]: yii\BaseYii::autoload('app\\controllers...')
+#1 [internal function]: spl_autoload_call('app\\controllers...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(637): class_exists('app\\controllers...')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(596): yii\base\Module->createControllerByID('default')
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(522): yii\base\Module->createController('signup')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#8 {main}
+2019-08-26 15:45:17 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => '5APRSUrh1eqBGOSXD2YvGfOJDfjzv91OfYrKWAQAKx_Xd4UPDYaD38JSneBtDH4uu8NGkLXHrn8auawzclZvLg=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 15:49:39 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][ParseError] ParseError: syntax error, unexpected ')' in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:123
+Stack trace:
+#0 [internal function]: yii\BaseYii::autoload('app\\controllers...')
+#1 [internal function]: spl_autoload_call('app\\controllers...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(637): class_exists('app\\controllers...')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(596): yii\base\Module->createControllerByID('default')
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(522): yii\base\Module->createController('signup')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#8 {main}
+2019-08-26 15:49:39 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'eq06s8wVUcSAlZA_nUDlMwCqtW6GCXDUkDCqgS8iN4hJ2W71i3IH8cPf6Uj_KrQESOD-BsBxA-X3A8zqWXRzuQ=='
+    'User' => [
+        'username' => '8888888888'
+        'captcha' => 'aolalh'
+    ]
+    'button' => 'signup2'
+]
+2019-08-26 15:50:00 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][yii\base\ErrorException:8] yii\base\ErrorException: Trying to get property of non-object in /mnt/hgfs/H/test.loc/controllers/DefaultController.php:134
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(134): yii\base\ErrorHandler->handleError(8, 'Trying to get p...', '/mnt/hgfs/H/tes...', 134, Array)
+#1 [internal function]: app\controllers\DefaultController->actionSignup()
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#7 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#8 {main}
+2019-08-26 15:50:00 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'eq06s8wVUcSAlZA_nUDlMwCqtW6GCXDUkDCqgS8iN4hJ2W71i3IH8cPf6Uj_KrQESOD-BsBxA-X3A8zqWXRzuQ=='
+    'User' => [
+        'username' => '8888888888'
+        'captcha' => 'aolalh'
+    ]
+    'button' => 'signup2'
+]
+2019-08-26 15:54:24 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: modelProfile in /mnt/hgfs/H/test.loc/views/default/signup2.php:29
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/views/default/signup2.php(29): yii\base\ErrorHandler->handleError(8, 'Undefined varia...', '/mnt/hgfs/H/tes...', 29, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\controllers\DefaultController))
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('signup2', Array, Object(app\controllers\DefaultController))
+#5 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(127): yii\base\Controller->render('signup2', Array)
+#6 [internal function]: app\controllers\DefaultController->actionSignup()
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#10 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#12 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#13 {main}
+2019-08-26 15:54:24 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'uZshWC4xGdSld3uWkpcjxde9fDv3_DCIOWUMnfiegeKK73UeaVZP4eY9AuHw_XLyn_c3U7GEQ7leVmr2jsjF0w=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-26 16:12:54 [192.168.0.3][-][-][error][yii\base\InvalidConfigException] yii\base\InvalidConfigException: Unknown bootstrapping component ID: debug in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php:317
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(69): yii\base\Application->bootstrap()
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(273): yii\web\Application->bootstrap()
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/BaseObject.php(109): yii\base\Application->init()
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(206): yii\base\BaseObject->__construct(Array)
+#4 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->__construct(Array)
+#5 {main}
+2019-08-26 16:12:54 [192.168.0.3][-][-][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => '55Nk2kgZTWW-piL3IzGt2GTt5YI0wdtTCjT92QJsVCfU5zCcD34bUP3sW4BBW_zvLKeu6nK5qGJtB5uydDoQFg=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-27 09:07:14 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][yii\base\ErrorException:2] yii\base\ErrorException: call_user_func() expects parameter 1 to be a valid callback, no array or string given in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/validators/Validator.php:256
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleError(2, 'call_user_func(...', '/mnt/hgfs/H/tes...', 256, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/validators/Validator.php(256): call_user_func(false, Object(app\models\Profile), 'surname')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Model.php(367): yii\validators\Validator->validateAttributes(Object(app\models\Profile), Array)
+#3 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(120): yii\base\Model->validate()
+#4 [internal function]: app\controllers\DefaultController->actionSignup()
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#10 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#11 {main}
+2019-08-27 09:07:14 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'YKHp_aLZhcV2x42XciD8Lf1W31GGqsKH1tOMaEbMU6BT1b275b7T8DWN9OAQSq0atRyUOcDSsbax4OoDMJoXkQ=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-27 09:17:17 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][error][yii\base\ErrorException:2] yii\base\ErrorException: call_user_func() expects parameter 1 to be a valid callback, no array or string given in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/validators/Validator.php:256
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleError(2, 'call_user_func(...', '/mnt/hgfs/H/tes...', 256, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/validators/Validator.php(256): call_user_func(true, Object(app\models\Profile), 'surname')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Model.php(367): yii\validators\Validator->validateAttributes(Object(app\models\Profile), Array)
+#3 /mnt/hgfs/H/test.loc/controllers/DefaultController.php(120): yii\base\Model->validate()
+#4 [internal function]: app\controllers\DefaultController->actionSignup()
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('signup', Array)
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('default/signup', Array)
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#10 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#11 {main}
+2019-08-27 09:17:16 [192.168.0.3][-][fpq9un1m0bv8k82re4tgbrd4nc][info][application] $_GET = []
+
+$_POST = [
+    '_csrf' => 'YKHp_aLZhcV2x42XciD8Lf1W31GGqsKH1tOMaEbMU6BT1b275b7T8DWN9OAQSq0atRyUOcDSsbax4OoDMJoXkQ=='
+    'Profile' => [
+        'surname' => ''
+        'name' => 'fdnbfdng'
+        'patrinimic' => ''
+        'sex' => '0'
+    ]
+    'button' => 'signup1'
+]
+2019-08-27 14:47:57 [192.168.0.3][164][01cufp981shbgbdka07g1t8co4][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined index: date in /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/data/Sort.php:225
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/data/Sort.php(225): yii\base\ErrorHandler->handleError(8, 'Undefined index...', '/mnt/hgfs/H/tes...', 225, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/data/ActiveDataProvider.php(113): yii\data\Sort->getOrders()
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/data/BaseDataProvider.php(101): yii\data\ActiveDataProvider->prepareModels()
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/data/BaseDataProvider.php(114): yii\data\BaseDataProvider->prepare()
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/data/BaseDataProvider.php(155): yii\data\BaseDataProvider->getModels()
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(190): yii\data\BaseDataProvider->getCount()
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(158): yii\widgets\BaseListView->renderSummary()
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(326): yii\widgets\BaseListView->renderSection('{summary}')
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(135): yii\grid\GridView->renderSection('{summary}')
+#9 [internal function]: yii\widgets\BaseListView->yii\widgets\{closure}(Array)
+#10 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(138): preg_replace_callback('/{\\w+}/', Object(Closure), '{summary}\n{item...')
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(301): yii\widgets\BaseListView->run()
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Widget.php(140): yii\grid\GridView->run()
+#13 /mnt/hgfs/H/test.loc/views/request-payment/index.php(41): yii\base\Widget::widget(Array)
+#14 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#15 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#16 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\controllers\RequestPaymentController))
+#17 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('index', Array, Object(app\controllers\RequestPaymentController))
+#18 /mnt/hgfs/H/test.loc/controllers/RequestPaymentController.php(48): yii\base\Controller->render('index', Array)
+#19 [internal function]: app\controllers\RequestPaymentController->actionIndex()
+#20 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#21 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#22 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('index', Array)
+#23 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('request-payment...', Array)
+#24 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#25 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#26 {main}
+2019-08-27 14:47:57 [192.168.0.3][164][01cufp981shbgbdka07g1t8co4][info][application] $_GET = []
+
+$_POST = []
+2019-08-27 15:49:03 [192.168.0.3][-][-][error][ParseError] ParseError: syntax error, unexpected '->' (T_OBJECT_OPERATOR) in /mnt/hgfs/H/test.loc/models/Order.php:416
+Stack trace:
+#0 [internal function]: yii\BaseYii::autoload('app\\models\\Orde...')
+#1 [internal function]: spl_autoload_call('app\\models\\Orde...')
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Session.php(137): session_start()
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Session.php(630): yii\web\Session->open()
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/User.php(683): yii\web\Session->get('__id')
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/User.php(192): yii\web\User->renewAuthStatus()
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/User.php(360): yii\web\User->getIdentity()
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Component.php(139): yii\web\User->getIsGuest()
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2-debug/src/panels/UserPanel.php(79): yii\base\Component->__get('isGuest')
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/BaseObject.php(109): yii\debug\panels\UserPanel->init()
+#10 [internal function]: yii\base\BaseObject->__construct(Array)
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/di/Container.php(384): ReflectionClass->newInstanceArgs(Array)
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/di/Container.php(156): yii\di\Container->build('yii\\debug\\panel...', Array, Array)
+#13 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/BaseYii.php(349): yii\di\Container->get('yii\\debug\\panel...', Array, Array)
+#14 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2-debug/src/Module.php(182): yii\BaseYii::createObject(Array)
+#15 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2-debug/src/Module.php(154): yii\debug\Module->initPanels()
+#16 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/BaseObject.php(109): yii\debug\Module->init()
+#17 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(158): yii\base\BaseObject->__construct(Array)
+#18 [internal function]: yii\base\Module->__construct('debug', Object(yii\web\Application), Array)
+#19 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/di/Container.php(384): ReflectionClass->newInstanceArgs(Array)
+#20 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/di/Container.php(156): yii\di\Container->build('yii\\debug\\Modul...', Array, Array)
+#21 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/BaseYii.php(349): yii\di\Container->get('yii\\debug\\Modul...', Array, Array)
+#22 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(427): yii\BaseYii::createObject(Array, Array)
+#23 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(315): yii\base\Module->getModule('debug')
+#24 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(69): yii\base\Application->bootstrap()
+#25 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(273): yii\web\Application->bootstrap()
+#26 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/BaseObject.php(109): yii\base\Application->init()
+#27 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(206): yii\base\BaseObject->__construct(Array)
+#28 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->__construct(Array)
+#29 {main}
+2019-08-27 15:49:03 [192.168.0.3][-][-][info][application] $_GET = []
+
+$_POST = []
+2019-08-27 15:49:19 [192.168.0.3][164][bffi9kkpi8p8bits8t22j271no][error][yii\base\ErrorException:8] yii\base\ErrorException: Undefined variable: priceZone in /mnt/hgfs/H/test.loc/models/Order.php:416
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/models/Order.php(416): yii\base\ErrorHandler->handleError(8, 'Undefined varia...', '/mnt/hgfs/H/tes...', 416, Array)
+#1 /mnt/hgfs/H/test.loc/models/Order.php(708): app\models\Order->getSuitableRates(0)
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/ActiveQuery.php(233): app\models\Order->afterFind()
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/Query.php(238): yii\db\ActiveQuery->populate(Array)
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/ActiveQuery.php(133): yii\db\Query->all(NULL)
+#5 /mnt/hgfs/H/test.loc/models/Profile.php(532): yii\db\ActiveQuery->all()
+#6 /mnt/hgfs/H/test.loc/models/Profile.php(490): app\models\Profile->getBalanceClient()
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Component.php(139): app\models\Profile->getBalance()
+#8 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/BaseActiveRecord.php(298): yii\base\Component->__get('balance')
+#9 /mnt/hgfs/H/test.loc/views/layouts/default2.php(358): yii\db\BaseActiveRecord->__get('balance')
+#10 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(399): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\controllers\OrderController))
+#13 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(385): yii\base\Controller->renderContent('<div class="ord...')
+#14 /mnt/hgfs/H/test.loc/controllers/OrderController.php(437): yii\base\Controller->render('create', Array)
+#15 [internal function]: app\controllers\OrderController->actionCreate('/client')
+#16 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#17 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#18 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('create', Array)
+#19 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('order/create', Array)
+#20 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#21 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#22 {main}
+2019-08-27 15:49:18 [192.168.0.3][164][bffi9kkpi8p8bits8t22j271no][info][application] $_GET = []
+
+$_POST = []
