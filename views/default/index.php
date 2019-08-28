@@ -5,6 +5,15 @@
 ?>
 
 <div class="row">
+    <div class="alert-warning" style="text-align: center">
+        <label class="h2">
+            Сервис находится на стадии тестирования. Уже скоро будут доступны все возможности!
+        </label>
+        <p><?= Html::a('Рассчитать стоимость', '/order/create',
+            ['class' => 'btn btn-lg btn-danger'])?>
+        </p>
+    </div>
+
 <?php
     if(Yii::$app->user->can('user')):
         $carusel_user_reg = [

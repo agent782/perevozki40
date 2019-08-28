@@ -103,23 +103,32 @@ use app\components\widgets\ShowMessageWidget;
             ? '' : 'hidden';
     ?>
     <div id="companies" <?= $companiesHide?> >
+        <?php
+            $link_add_company = (Yii::$app->user->isGuest)
+                ? ''
+                : Html::a(Html::icon('plus', [
+                'class' => 'btn btn-info',
+                'title' => 'Добавить юр. лицо'
+            ]), Url::to(['/company/create',
+                'user_id' => $user_id,
+                'redirect' => Url::to([
+                    '/order/create',
+                    'user_id' => $user_id,
+                    'redirect' => $redirect,
+                ])
+            ]), ['target' => '_blank'])
+        ;
+        ?>
     <?= $form->field($modelOrder, 'id_company',[
         'enableAjaxValidation' => true,
-    ])->radioList($companies)->label('Юр. лица: '. Html::a(Html::icon('plus', [
-            'class' => 'btn btn-info',
-            'title' => 'Добавить юр. лицо'
-        ]), Url::to(['/company/create',
-            'user_id' => $user_id,
-            'redirect' => Url::to([
-                '/order/create',
-                'user_id' => $user_id,
-                'redirect' => $redirect,
-            ])
-        ]), ['target' => '_blank'])
-    )?>
+        ])->radioList($companies)->label('Юр. лица: '. $link_add_company)?>
     </div>
     </div>
     <div class="col-lg-5">
+        <label>Маршрут.</label>
+        <comment>
+            <?= $route->fullRoute?>
+        </comment>
         <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
     <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие по стоимости тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, [
@@ -139,18 +148,23 @@ use app\components\widgets\ShowMessageWidget;
         <comment>
             Чем больше тарифов выбрано, тем больше ТС подойдут под Ваш заказ.
         </comment>
+        <br><br>
     </div>
 
 <div class="col-lg-12">
+    <?= Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])?>
     <?=
-        Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])
-    ?>
-
-    <?= Html::submitButton('Оформить заказ', [
+    (!Yii::$app->user->isGuest)
+        ? Html::submitButton('Оформить заказ', [
         'class' => 'btn btn-success',
         'name' => 'button',
         'value' => 'next5'
-    ])?>
+    ])
+        : 'Для заказа услуг он-лайн необходимо '
+            . Html::a('ВОЙТИ ИЛИ ЗАРЕГИСТРИРОВАТЬСЯ.', '/default/login', ['class' => 'btn btn-info'])
+    ?>
+    <p class="h4">Остались вопросы? <a href="tel:+74843990949">Позвоните нам!</a> </p>
+
 </div>
 <?php
     ActiveForm::end();

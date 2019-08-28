@@ -58,6 +58,14 @@ class OrderController extends Controller
                             return 1;
                         }
                     ],
+                    [
+                        'allow' => true,
+                        'roles' => ['?'],
+                        'actions' => ['create', 'validate-order'],
+                        'denyCallback' => function(){
+                            return 1;
+                        }
+                    ],
                 ],
             ]
         ];
@@ -162,18 +170,19 @@ class OrderController extends Controller
     public function actionCreate($redirect = '/client')
     {
 //        return var_dump(Yii::$app->request->post());
-        if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
-            $this->layout = 'logist';
-        };
         $session = Yii::$app->session;
         $modelOrder = $session->get('modelOrder');
         if (!$modelOrder) $modelOrder = new Order();
+        if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
+            $this->layout = 'logist';
+        };
+
         $TypiesPayment = TypePayment::getTypiesPaymentsArray();
-//        $companies =[];
-//        if($user_id){
-//            $modelOrder->scenario = Order::SCENARIO_NEW_ORDER;
+        $companies =[];
         $user = Yii::$app->user->identity;
-        $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
+        if($user) {
+            $companies = ArrayHelper::map($user->profile->companies, 'id', 'name');
+        }
 //        }
 //        else $user = User::findOne(['id' => $user_id]);
 
@@ -239,8 +248,9 @@ class OrderController extends Controller
                 if ($route->load(Yii::$app->request->post())) {
 //                    if(!$user_id) $user_id = Yii::$app->user->id;
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
+                    $user_id = ($user)?$user->id:null;
                     $modelOrder->suitable_rates = $modelOrder
-                        ->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user->id));
+                        ->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id));
 //                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
 //                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);
@@ -251,7 +261,7 @@ class OrderController extends Controller
                         'modelOrder' => $modelOrder,
                         'TypiesPayment' => $TypiesPayment,
                         'companies' => $companies,
-                        'user_id' => $user->id,
+                        'user_id' => $user_id,
                         'redirect' => $redirect
                     ]);
                 }
@@ -264,7 +274,16 @@ class OrderController extends Controller
                     functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     return $this->redirect('create');
                 }
-
+                if(Yii::$app->user->isGuest) {
+                    return $this->render('create5', [
+                        'route' => $route,
+                        'modelOrder' => $modelOrder,
+                        'TypiesPayment' => $TypiesPayment,
+                        'companies' => $companies,
+                        'user_id' => $user_id,
+                        'redirect' => $redirect
+                    ]);
+                }
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     if(!$modelOrder->selected_rates) break;
 //                    return var_dump($user_id);
@@ -422,12 +441,15 @@ class OrderController extends Controller
 
         if(Yii::$app->request->isPjax) {
             $modelOrder = $session->get('modelOrder');
+            $user_id = ($user)?$user->id:null;
             $route = $session->get('route');
             $modelOrder->type_payment = Yii::$app->request->post('type_payment');
             $modelOrder->suitable_rates =
-                $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user->id));
-            if(Yii::$app->request->post('datetime_start'))$modelOrder->datetime_start = Yii::$app->request->post('datetime_start');
-            if(Yii::$app->request->post('valid_datetime'))$modelOrder->valid_datetime = Yii::$app->request->post('valid_datetime');
+                $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user_id));
+            if(Yii::$app->request->post('datetime_start'))$modelOrder->datetime_start =
+                Yii::$app->request->post('datetime_start');
+            if(Yii::$app->request->post('valid_datetime'))$modelOrder->valid_datetime =
+                Yii::$app->request->post('valid_datetime');
             $session->set('modelOrder', $modelOrder);
             return $this->renderAjax('selectedRates', [
                 'modelOrder' => $modelOrder,

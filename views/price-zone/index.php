@@ -316,6 +316,7 @@ $spec_columns = [
 ];
 ?>
 <div class="container price-zone-index">
+    <button class="btn btn-lg btn-danger">При расчете наличными с водителем - СКИДКА 9% !!!</button>
 
     <h4><?= Html::encode($this->title) ?></h4>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

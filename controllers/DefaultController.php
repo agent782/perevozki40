@@ -103,6 +103,7 @@ class DefaultController extends Controller
 
     //Регистрация
     public function actionSignup(){
+        return $this->redirect('/');
 
         $modelUser = new User();
         $modelProfile = new Profile();
@@ -155,7 +156,8 @@ class DefaultController extends Controller
                     $session->set('modelUser', $modelUser);
                     return $this->render('signup3', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                 }
-                return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
+                return $this->render('signup2', compact([
+                    'modelVerifyPhone', 'modelProfile', 'modelUser']));
                 break;
             case 'signup3':
                 if(!$session->has('modelProfile')

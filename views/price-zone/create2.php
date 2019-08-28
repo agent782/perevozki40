@@ -16,15 +16,6 @@ $form = ActiveForm::begin([
 
 ]);
 
-//switch ($model->veh_type) {
-//    case Vehicle::TYPE_TRUCK:
-//        echo 111111;
-//        break;
-//    case Vehicle::TYPE_PASSENGER:
-//        echo 222222;
-//        break;
-//    case Vehicle::TYPE_SPEC:
-
 $body_typies= \app\models\BodyType::find()->where(['id_type_vehicle' => $model->veh_type])
     ->orderBy(['body' => SORT_ASC])
     ->all();
