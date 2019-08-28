@@ -1034,10 +1034,12 @@ class Order extends \yii\db\ActiveRecord
 
     public function getClientInfo($html = true){
         $return = '';
-        $return .= $this->profile->fioFull
-            . '<br>'
-            . 'Телефон: '. functions::getHtmlLinkToPhone($this->user->username, $html);
-        if($this->profile->phone2) $return .= ' (доп. тел.: ' . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
+        if($this->profile && $this->user) {
+            $return .= $this->profile->fioFull
+                . '<br>'
+                . 'Телефон: ' . functions::getHtmlLinkToPhone($this->user->username, $html);
+            if ($this->profile->phone2) $return .= ' (доп. тел.: ' . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
+        }
         if($this->id_company) $return .= '<br>' .$this->company->name . '<br>';
 
         return $return;
@@ -1123,6 +1125,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function changeStatus($newStatus, $id_client, $id_vehicle = null){
+        if(!$id_client) return false;
         $url_client = Url::to(['/order/client'], true);
         $url_vehicle = Url::to(['/order/vehicle'], true);
         $email_from = Yii::$app->params['logistEmail'];

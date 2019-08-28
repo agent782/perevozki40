@@ -925,3 +925,108 @@ $_POST = [
     ]
     'button' => 'next5'
 ]
+2019-08-28 15:47:21 [192.168.0.3][1][v16c3hcc9ajcu9scuh27o7qqj2][error][yii\base\ErrorException:8] yii\base\ErrorException: Trying to get property of non-object in /mnt/hgfs/H/test.loc/models/Order.php:1037
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/models/Order.php(1037): yii\base\ErrorHandler->handleError(8, 'Trying to get p...', '/mnt/hgfs/H/tes...', 1037, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Component.php(139): app\models\Order->getClientInfo()
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/BaseActiveRecord.php(298): yii\base\Component->__get('clientInfo')
+#3 /mnt/hgfs/H/test.loc/modules/logist/views/order/orders/new_orders.php(72): yii\db\BaseActiveRecord->__get('clientInfo')
+#4 [internal function]: yii\base\View->{closure}(Object(app\models\Order), 23, 0, Object(kartik\grid\DataColumn))
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/DataColumn.php(230): call_user_func(Object(Closure), Object(app\models\Order), 23, 0, Object(kartik\grid\DataColumn))
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/DataColumn.php(244): yii\grid\DataColumn->getDataCellValue(Object(app\models\Order), 23, 0)
+#7 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/DataColumn.php(242): yii\grid\DataColumn->renderDataCellContent(Object(app\models\Order), 23, 0)
+#8 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/GridView.php(1303): kartik\grid\DataColumn->renderDataCell(Object(app\models\Order), 23, 0)
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(494): kartik\grid\GridView->renderTableRow(Object(app\models\Order), 23, 0)
+#10 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/GridView.php(1283): yii\grid\GridView->renderTableBody()
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(358): kartik\grid\GridView->renderTableBody()
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(160): yii\grid\GridView->renderItems()
+#13 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(326): yii\widgets\BaseListView->renderSection('{items}')
+#14 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(135): yii\grid\GridView->renderSection('{items}')
+#15 [internal function]: yii\widgets\BaseListView->yii\widgets\{closure}(Array)
+#16 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(138): preg_replace_callback('/{\\w+}/', Object(Closure), '{summary}\n<div ...')
+#17 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(301): yii\widgets\BaseListView->run()
+#18 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/GridView.php(1204): yii\grid\GridView->run()
+#19 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Widget.php(140): kartik\grid\GridView->run()
+#20 /mnt/hgfs/H/test.loc/modules/logist/views/order/orders/new_orders.php(131): yii\base\Widget::widget(Array)
+#21 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#22 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#23 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, NULL)
+#24 /mnt/hgfs/H/test.loc/modules/logist/views/order/index.php(29): yii\base\View->render('orders/new_orde...', Array)
+#25 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#26 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#27 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\modules\logist\controllers\OrderController))
+#28 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('index', Array, Object(app\modules\logist\controllers\OrderController))
+#29 /mnt/hgfs/H/test.loc/modules/logist/controllers/OrderController.php(102): yii\base\Controller->render('index', Array)
+#30 [internal function]: app\modules\logist\controllers\OrderController->actionIndex()
+#31 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#32 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#33 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('', Array)
+#34 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('logist/order', Array)
+#35 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#36 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#37 {main}
+2019-08-28 15:47:20 [192.168.0.3][1][v16c3hcc9ajcu9scuh27o7qqj2][info][application] $_GET = []
+
+$_POST = []
+2019-08-28 15:49:21 [192.168.0.3][1][v16c3hcc9ajcu9scuh27o7qqj2][error][yii\base\ErrorException:8] yii\base\ErrorException: Trying to get property of non-object in /mnt/hgfs/H/test.loc/models/Order.php:1041
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/models/Order.php(1041): yii\base\ErrorHandler->handleError(8, 'Trying to get p...', '/mnt/hgfs/H/tes...', 1041, Array)
+#1 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Component.php(139): app\models\Order->getClientInfo()
+#2 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/db/BaseActiveRecord.php(298): yii\base\Component->__get('clientInfo')
+#3 /mnt/hgfs/H/test.loc/modules/logist/views/order/orders/new_orders.php(72): yii\db\BaseActiveRecord->__get('clientInfo')
+#4 [internal function]: yii\base\View->{closure}(Object(app\models\Order), 23, 0, Object(kartik\grid\DataColumn))
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/DataColumn.php(230): call_user_func(Object(Closure), Object(app\models\Order), 23, 0, Object(kartik\grid\DataColumn))
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/DataColumn.php(244): yii\grid\DataColumn->getDataCellValue(Object(app\models\Order), 23, 0)
+#7 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/DataColumn.php(242): yii\grid\DataColumn->renderDataCellContent(Object(app\models\Order), 23, 0)
+#8 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/GridView.php(1303): kartik\grid\DataColumn->renderDataCell(Object(app\models\Order), 23, 0)
+#9 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(494): kartik\grid\GridView->renderTableRow(Object(app\models\Order), 23, 0)
+#10 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/GridView.php(1283): yii\grid\GridView->renderTableBody()
+#11 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(358): kartik\grid\GridView->renderTableBody()
+#12 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(160): yii\grid\GridView->renderItems()
+#13 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(326): yii\widgets\BaseListView->renderSection('{items}')
+#14 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(135): yii\grid\GridView->renderSection('{items}')
+#15 [internal function]: yii\widgets\BaseListView->yii\widgets\{closure}(Array)
+#16 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/widgets/BaseListView.php(138): preg_replace_callback('/{\\w+}/', Object(Closure), '{summary}\n<div ...')
+#17 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/grid/GridView.php(301): yii\widgets\BaseListView->run()
+#18 /mnt/hgfs/H/test.loc/vendor/kartik-v/yii2-grid/src/GridView.php(1204): yii\grid\GridView->run()
+#19 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Widget.php(140): kartik\grid\GridView->run()
+#20 /mnt/hgfs/H/test.loc/modules/logist/views/order/orders/new_orders.php(131): yii\base\Widget::widget(Array)
+#21 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#22 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#23 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, NULL)
+#24 /mnt/hgfs/H/test.loc/modules/logist/views/order/index.php(29): yii\base\View->render('orders/new_orde...', Array)
+#25 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(348): require('/mnt/hgfs/H/tes...')
+#26 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(257): yii\base\View->renderPhpFile('/mnt/hgfs/H/tes...', Array)
+#27 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/View.php(156): yii\base\View->renderFile('/mnt/hgfs/H/tes...', Array, Object(app\modules\logist\controllers\OrderController))
+#28 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(384): yii\base\View->render('index', Array, Object(app\modules\logist\controllers\OrderController))
+#29 /mnt/hgfs/H/test.loc/modules/logist/controllers/OrderController.php(102): yii\base\Controller->render('index', Array)
+#30 [internal function]: app\modules\logist\controllers\OrderController->actionIndex()
+#31 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#32 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#33 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('', Array)
+#34 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('logist/order', Array)
+#35 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#36 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#37 {main}
+2019-08-28 15:49:20 [192.168.0.3][1][v16c3hcc9ajcu9scuh27o7qqj2][info][application] $_GET = []
+
+$_POST = []
+2019-08-28 15:51:09 [192.168.0.3][1][v16c3hcc9ajcu9scuh27o7qqj2][error][yii\base\ErrorException:8] yii\base\ErrorException: Trying to get property of non-object in /mnt/hgfs/H/test.loc/models/Order.php:1131
+Stack trace:
+#0 /mnt/hgfs/H/test.loc/models/Order.php(1131): yii\base\ErrorHandler->handleError(8, 'Trying to get p...', '/mnt/hgfs/H/tes...', 1131, Array)
+#1 /mnt/hgfs/H/test.loc/controllers/OrderController.php(712): app\models\Order->changeStatus(5, NULL, NULL)
+#2 [internal function]: app\controllers\OrderController->actionCanceledByClient('23', NULL, '/order/client')
+#3 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/InlineAction.php(57): call_user_func_array(Array, Array)
+#4 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Controller.php(157): yii\base\InlineAction->runWithParams(Array)
+#5 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Module.php(528): yii\base\Controller->runAction('canceled-by-cli...', Array)
+#6 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/web/Application.php(103): yii\base\Module->runAction('order/canceled-...', Array)
+#7 /mnt/hgfs/H/test.loc/vendor/yiisoft/yii2/base/Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#8 /mnt/hgfs/H/test.loc/web/index.php(12): yii\base\Application->run()
+#9 {main}
+2019-08-28 15:51:09 [192.168.0.3][1][v16c3hcc9ajcu9scuh27o7qqj2][info][application] $_GET = [
+    'id_order' => '23'
+]
+
+$_POST = [
+    '_csrf' => 'QU3AbPGAftUOrDWNAr5lh-noGV8gxkIVFhmiZcUYzfQwOq4ulNk1pG_bYMJ66gDQ3d9OCneuNnx9XP01omC1tw=='
+]
