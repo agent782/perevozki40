@@ -43,4 +43,3 @@ ActiveForm::end();
 ?>
 </div>
 
-КОД<?= var_dump($modelVerifyPhone->getVerifyCode())?><br>

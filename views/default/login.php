@@ -14,7 +14,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="container">
 <div class="site-login">
     <h4><?= Html::encode($this->title) ?></h4>
-
+    <h4 class="alert-warning">
+        РАЗДЕЛ "ЛИЧНЫЙ КАБИНЕТ" НАХОДИТСЯ НА СТАДИИ ТЕСТИРОВАНИЯ
+    </h4>
+    <comment class="alert-warning">
+        Уже скоро будет доступна регистрация на сервисе, заказ онлайн, электронная бухгалтерия, оповещения и многое другое!
+    </comment>
     <?php $form = ActiveForm::begin([
         'id' => 'login-form',
         'layout' => 'horizontal',
