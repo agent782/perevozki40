@@ -67,6 +67,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
                     ]])->input('number', [
                         'onchange' => 'setVolume();',
                     ]);
+                    echo '<comment class = "alert-warning">Для бортовых открытых ТС указывайте максимальную высоту груза, которую ТС может перевозить. </comment>';
                     echo $form->field($VehicleForm, 'volume', ['inputOptions' => [
                         'id' => 'volume',
                         'type' => 'tel'
@@ -140,7 +141,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
         var w = $("#width").val();
         var h = $("#height").val();
         if(l && w && h){
-            $("#volume").val(l*w*h);
+            $("#volume").val(Math.floor(l*w*h));
         } else $("#volume").val("");
     };
 </script>

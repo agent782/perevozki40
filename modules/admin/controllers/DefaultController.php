@@ -47,14 +47,14 @@ class DefaultController extends Controller
         if(!Yii::$app->user->can('admin')){
             throw new HttpException(403, 'Вы не админ!!!');
         }
-        if(Yii::$app->db->createCommand()->truncateTable('Orders')->execute()
-            && Yii::$app->db->createCommand()->truncateTable('XorderXloadingtype')->execute()
-            && Yii::$app->db->createCommand()->truncateTable('XorderXrate')->execute()
-            && Yii::$app->db->createCommand()->truncateTable('XorderXtypebody')->execute()
-            && Yii::$app->db->createCommand()->truncateTable('routes')->execute()
-        ){
-            functions::setFlashSuccess('Журнал заказов очищен');
-        } else functions::setFlashWarning('Что то пошло не так...');
+        Yii::$app->db->createCommand()->truncateTable('XorderXloadingtype')->execute();
+        Yii::$app->db->createCommand()->truncateTable('XorderXrate')->execute();
+        Yii::$app->db->createCommand()->truncateTable('XorderXtypebody')->execute();
+        Yii::$app->db->createCommand()->truncateTable('routes')->execute();
+        Yii::$app->db->createCommand()->truncateTable('Orders')->execute();
+
+        functions::setFlashSuccess('Журнал заказов очищен');
+
         return $this->redirect('/admin/default/system-tools');
     }
 
@@ -62,11 +62,10 @@ class DefaultController extends Controller
         if(!Yii::$app->user->can('admin')){
             throw new HttpException(403, 'Вы не админ!!!');
         }
-        if(Yii::$app->db->createCommand()->truncateTable('price_zone')->execute()
-            && Yii::$app->db->createCommand()->truncateTable('XorderXrate')->execute()
-        ){
-            functions::setFlashSuccess('Прайс-лист очищен');
-        } else functions::setFlashWarning('Что то пошло не так...');
+        Yii::$app->db->createCommand()->truncateTable('price_zone')->execute();
+        Yii::$app->db->createCommand()->truncateTable('XorderXrate')->execute();
+
+        functions::setFlashSuccess('Прайс-лист очищен');
         return $this->redirect('/admin/default/system-tools');
     }
 

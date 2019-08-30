@@ -404,14 +404,15 @@ class Order extends \yii\db\ActiveRecord
 
     public function getSuitableRates($distance, int $limit = 10){
         $result = [];
-        $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
+        $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])
+            ->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
 
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
-                    ->andFilterWhere(['>=', 'volume_max', $this->volume])
-                    ->andFilterWhere(['>=', 'length_max', $this->length]);
+                    ->andFilterWhere(['>', 'tonnage_max', $this->tonnage])
+                    ->andFilterWhere(['>', 'volume_max', $this->volume])
+                    ->andFilterWhere(['>', 'length_max', $this->length]);
                 if(!$this->longlength) {
                     $priceZones = $priceZones->andFilterWhere(['longlength' => $this->longlength]);
                 }
@@ -431,22 +432,22 @@ class Order extends \yii\db\ActiveRecord
                 switch ($this->body_typies[1]){
                     case Vehicle::BODY_manipulator:
                         $priceZones = $priceZones
-                            ->andFilterWhere(['>=', 'tonnage_spec_max', $this->tonnage_spec])
-                            ->andFilterWhere(['>=', 'length_spec_max', $this->length_spec])
-                            ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
-                            ->andFilterWhere(['>=', 'length_max', $this->length])
+                            ->andFilterWhere(['>', 'tonnage_spec_max', $this->tonnage_spec])
+                            ->andFilterWhere(['>', 'length_spec_max', $this->length_spec])
+                            ->andFilterWhere(['>', 'tonnage_max', $this->tonnage])
+                            ->andFilterWhere(['>', 'length_max', $this->length])
                         ;
                         break;
                     case Vehicle::BODY_dump:
                         $priceZones = $priceZones
-                            ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
-                            ->andFilterWhere(['>=', 'volume_max', $this->volume])
+                            ->andFilterWhere(['>', 'tonnage_max', $this->tonnage])
+                            ->andFilterWhere(['>', 'volume_max', $this->volume])
                         ;
                         break;
                     case Vehicle::BODY_crane:
                         $priceZones = $priceZones
-                            ->andFilterWhere(['>=', 'tonnage_spec_max', $this->tonnage_spec])
-                            ->andFilterWhere(['>=', 'length_spec_max', $this->length_spec])
+                            ->andFilterWhere(['>', 'tonnage_spec_max', $this->tonnage_spec])
+                            ->andFilterWhere(['>', 'length_spec_max', $this->length_spec])
                         ;
                         break;
                     case Vehicle::BODY_excavator:
@@ -558,8 +559,8 @@ class Order extends \yii\db\ActiveRecord
 
     public function getFinishPriceZone(){
         $result = [];
-        $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type]);
-
+        $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])
+            ->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
@@ -1414,7 +1415,7 @@ class Order extends \yii\db\ActiveRecord
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
         $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
         $return .= $this->getShortInfoForClient() . ' <br>';
-        $return .= ($showPriceForVehicle) ? 'Тарифная зона №' . $this->id_pricezone_for_vehicle . '. <br>' : '';
+        $return .= ($showPriceForVehicle) ? 'Тарифная зона №' . $this->getNumberPriceZoneForVehicle($html) . '. <br>' : '';
         $return .= ($showPriceZones) ? 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>' :'';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
@@ -1424,7 +1425,7 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getFullFinishInfo($showClientPhone = false, $realRoute = null){
+    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true){
         if($this->realRoute) $real_route = $this->realRoute;
         else {
             if(!$realRoute) return false;
@@ -1435,7 +1436,7 @@ class Order extends \yii\db\ActiveRecord
         $return .= 'Время возвращения: ' .  $this->datetime_finish .'<br>';
         $return .= 'Маршрут: ' . $real_route->fullRoute . '<br>';
         $return .= $this->getShortInfoForClient(true) . ' <br>';
-        $return .= 'Тарифная зона №' . $this->id_price_zone_real . '. <br>';
+        $return .= 'Тарифная зона №' . $this->getNumberPriceZoneReal($html) . '. <br>';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
             ?'Заказчик:' . $this->clientInfo . ' <br>'
@@ -1735,6 +1736,24 @@ class Order extends \yii\db\ActiveRecord
             self::PAID_YES_AVANS => 'Частично оплачен'
         ];
     }
-}
+
+    public function getNumberPriceZoneForVehicle($html){
+        $pricezone = PriceZone::findOne(['unique_index' => $this->id_pricezone_for_vehicle]);
+        if($pricezone){
+            return $pricezone->getPriceZoneForCarOwner($this->id_car_owner)->getIdWithButton($html);
+        }
+        return null;
+    }
+
+    public function getNumberPriceZoneReal($html){
+        $pricezone = PriceZone::findOne(['unique_index' => $this->id_price_zone_real]);
+        if($pricezone){
+            return $pricezone->getPriceZoneForCarOwner($this->id_car_owner)->getIdWithButton($html);
+        }
+        return null;
+    }
+
+
+ }
 
 

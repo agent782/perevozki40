@@ -53,8 +53,8 @@ $this->registerJsFile('/js/order.js');
         <?= $form->field($modelOrder, 'real_datetime_start',[
             'enableClientValidation' => true
         ])->widget(DateTimePicker::className(),[
-//                'name' => 'dp_1',
-                //        'type' => DateTimePicker::TYPE_INPUT,
+                'name' => 'dp_1',
+//                'type' => DateTimePicker::TYPE_INPUT,
                 'options' => [
                     'placeholder' => 'Ввод даты/времени...',
                     'onchange' => '$("#order-valid_datetime").val($("#order-datetime_start").val())'
@@ -62,6 +62,7 @@ $this->registerJsFile('/js/order.js');
                 'convertFormat' => true,
 //                'value'=> date("d.m.Y H:i",time()),
                 'pluginOptions' => [
+                    'zIndexOffset' => 10,
                     'format' => 'dd.MM.yyyy H:i',
                     'autoclose'=>true,
                     'weekStart'=>1, //неделя начинается с понедельника
@@ -72,11 +73,15 @@ $this->registerJsFile('/js/order.js');
                 ],
             ]
         )?>
-        <?= $form->field($modelOrder, 'datetime_finish')
+        <?= $form->field($modelOrder, 'datetime_finish',[
+            'enableClientValidation' => true
+        ])
             ->widget(DateTimePicker::className(),[
-                'name' => 'dp_3',
-                //        'type' => DateTimePicker::TYPE_INPUT,
-                'options' => ['placeholder' => 'Ввод даты/времени...'],
+                'name' => 'dp_2',
+//                'type' => DateTimePicker::TYPE_INPUT,
+                'options' => [
+                    'placeholder' => 'Ввод даты/времени...',
+                ],
                 'convertFormat' => true,
 
 //                'value'=> '',

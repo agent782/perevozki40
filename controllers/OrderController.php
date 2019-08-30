@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\components\functions\emails;
 use app\models\Payment;
 use app\models\Profile;
 use app\models\setting\SettingVehicle;
@@ -351,6 +352,7 @@ class OrderController extends Controller
                 $modelOrder = $session->get('modelOrder');
                 $route = $session->get('route');
                 $user = $session->get('user');
+                $user = new User();
                 $profile = $session->get('profile');
                 $modelCompany = new Company();
                 $XcompanyXprofile = new XprofileXcompany();
@@ -358,8 +360,8 @@ class OrderController extends Controller
                 if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
                     $findUser = User::findOne(['username' => $user->username]);
                     $companies = ArrayHelper::map($profile->companies, 'id', 'name');
-                    $user->scenario = User::SCENARIO_SAVE;
                     if(!$findUser){
+                        $user->scenario = User::SCENARIO_SAVE;
                         $user->setPassword(123456);
                         $user->generateAuthKey();
                         $user->status = User::STATUS_WAIT_ACTIVATE;
@@ -368,9 +370,11 @@ class OrderController extends Controller
                             $profile->id_user = $user->id;
                             $profile->scenario = Profile::SCENARIO_SAFE_SAVE;
                             if(!$profile->save()){
+                                $user->delete();
                                 functions::setFlashWarning('Ошибка на сервере. Профиль не создан. Попробуйте позже.');
                                 return $this->redirect('/logist/order');
                             }
+                            emails::sendAfterUserRegistration($user->id);
                         } else{
                             functions::setFlashWarning('Ошибка на сервере. Пользователь не создан. Попробуйте позже.');
                             return $this->redirect('/logist/order');

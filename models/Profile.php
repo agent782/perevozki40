@@ -136,7 +136,9 @@ class Profile extends \yii\db\ActiveRecord
             [['bithday'], 'date', 'format' => 'php:d.m.Y'],
             ['is_driver', 'default', 'value' => 0],
             [['history_updates', 'update_to_check'], 'safe'],
-            ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT]
+            ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT],
+            ['sex', 'default', 'value' => null]
+
         ];
     }
 

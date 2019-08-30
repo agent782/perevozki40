@@ -58,7 +58,6 @@ class CarOwnerController extends Controller
             $modelStart->is_driver = $modelProfile->is_driver;
             $modelStart->reg_address = $modelProfile->reg_address;
             $modelStart->photo = $modelProfile->photo;
-
         }
         else $modelProfile = new Profile();
 

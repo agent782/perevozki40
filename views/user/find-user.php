@@ -82,7 +82,7 @@ $this->title = 'Поиск пользователя';
         $form = ActiveForm::begin();
     ?>
     <div class="col-lg-12">
-        <?= Html::submitButton('Далее', ['class' => 'btn btn-success'])?>
+<!--        --><?//= Html::submitButton('Далее', ['class' => 'btn btn-success'])?>
     </div>
     <br><br><br>
     <label id="label">Новый пользователь</label>

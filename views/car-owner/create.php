@@ -169,3 +169,9 @@ $this->registerJsFile('/js/signup.js');
         ?>
     </div>
 </div>
+
+<script>
+    $(function () {
+        $('#is_driver').trigger('change');
+    })
+</script>

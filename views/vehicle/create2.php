@@ -20,7 +20,7 @@ $this->title = 'Новое транспортное средство.';
 
 ?>
 <div class="vehicle-create2" >
-
+    <input id="role" hidden value="<?= Yii::$app->user->identity->getRole()?>">
     <h4><?= Html::encode($this->title) ?></h4>
     <br>
 

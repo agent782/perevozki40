@@ -30,10 +30,11 @@ use kartik\grid\GridView;
 
     '));
     $balanceCSS = 'color: red';
-    if($balance['user'] < 0 || $balance['car_owner'] < 0 || $balance['companies'] < 0) {
-        $balanceCSS = 'color: red';
+    if($balance) {
+        if ($balance['user'] < 0 || $balance['car_owner'] < 0 || $balance['companies'] < 0) {
+            $balanceCSS = 'color: red';
+        }
     }
-
     $items = [];
     $comments = '';
     if($dataProvider_car_owner){
@@ -71,7 +72,7 @@ use kartik\grid\GridView;
         $comments .= '<p><comment>**** Сумма частичной оплаты Клиентом за заказ за вычетом процентов
             (Оставшаяся неоплаченная Клиентом сумма по заказу за вычетом процентов)</comment></p>';
     }
-    if($dataProvider_user){
+    if($dataProvider_user && $balance){
         $items[] = [
             'label' => 'Ваш баланс клиента**: ' . $balance['user'] . 'р.',
             'content' => GridView::widget([

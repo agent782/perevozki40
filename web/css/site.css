@@ -200,7 +200,7 @@ a.desc:after {
     overflow-y:auto;
     overflow-x:hidden;
     height:80%;
-    position: fixed;
+    /*position: fixed;*/
 }
 
 .homeContentForUser > div{
@@ -314,5 +314,4 @@ a.desc:after {
 .contacts{
     font-family: "Comic Sans MS", cursive, sans-serif;
 }
-
 

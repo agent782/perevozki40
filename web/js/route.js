@@ -60,7 +60,7 @@ $(document).ready(function () {
             SuggestView[i].events.add('select', function (e) {
                 createRoute();
             });
-            // createRoute();
+            createRoute();
         }
 
         function alertObj(o){

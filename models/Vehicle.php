@@ -174,9 +174,11 @@ class Vehicle extends \yii\db\ActiveRecord
             [['tonnage', 'length', 'width', 'height', 'volume','loadingTypeIds',
                 'passengers',
                 'tonnage_spec', 'length_spec', 'volume_spec'],
-                'required', 'on' => [self::SCENARIO_UPDATE_TRUCK, self::SCENARIO_UPDATE_PASS,
+                'required',
+                'on' => [self::SCENARIO_UPDATE_TRUCK, self::SCENARIO_UPDATE_PASS,
                 self::SCENARIO_UPDATE_SPEC_BODY_manipulator, self::SCENARIO_UPDATE_SPEC_BODY_crane,
-                self::SCENARIO_UPDATE_SPEC_BODY_dump, self::SCENARIO_UPDATE_SPEC_BODY_excavator]],
+                self::SCENARIO_UPDATE_SPEC_BODY_dump, self::SCENARIO_UPDATE_SPEC_BODY_excavator],
+            ],
             [['id_user', 'passengers', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume'], 'number'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y h:i')],
@@ -726,5 +728,11 @@ class Vehicle extends \yii\db\ActiveRecord
     public function getVehicleProcentPrice(){
         // Пока что у всех 9%
         return \app\models\setting\SettingVehicle::find()->limit(1)->one()->procent_vehicle;
+    }
+
+    static public function notAdminOrDispetcher(){
+        $user = Yii::$app->user;
+        if($user->can('admin') || $user->can('dispetcher')) return false;
+        return true;
     }
 }

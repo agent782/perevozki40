@@ -85,8 +85,8 @@ $this->title = 'Оформлление заказа';
     <h2 id="label">Новый клиент</h2>
     <?php $formFinishOrder = ActiveForm::begin([
         'action' => '/order/create',
-        'enableAjaxValidation' => true,
-        'validationUrl' => \yii\helpers\Url::to(['/user/validate-user']),
+//        'enableAjaxValidation' => true,
+//        'validationUrl' => \yii\helpers\Url::to(['/user/validate-user']),
         'fieldConfig' => [
             'labelOptions' => ['class' => 'col-lg-12 control-label'],
         ],

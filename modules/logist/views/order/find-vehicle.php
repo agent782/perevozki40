@@ -29,7 +29,7 @@ echo \kartik\grid\GridView::widget([
         ['class' => 'kartik\grid\SerialColumn'],
         [
             'attribute' => 'id_user',
-            'group' => true,
+//            'group' => true,
             'format' => 'raw',
             'value' => function($model){
                 return $model->profile->fioFull . ' (ID ' . $model->profile->id_user . ')';

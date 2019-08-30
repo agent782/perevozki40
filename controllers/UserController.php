@@ -115,10 +115,10 @@ class UserController extends Controller
             if ($model3->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model3);
 
-            $model4 = new Profile();
+            $model4 = new Pro();
 //            $model3->scenario = User::SCENARIO_CHANGE_PASS;
             if ($model3->load(Yii::$app->request->post()))
-                return \yii\widgets\ActiveForm::validate($model4);
+                return \yii\widgets\ActiveForm::validate($model3);
         }
     }
 
@@ -380,6 +380,7 @@ class UserController extends Controller
         $Profile = Profile::findOne($id_user);
         if(!$Profile) throw new HttpException(404, 'Страница не найдена');
         $User = $Profile->user;
+        $balance = [];
         $Balance = $Profile->balance;
         $dataProvider_car_owner = [];
         $dataProvider_user = [];

@@ -590,4 +590,11 @@ class PriceZone extends \yii\db\ActiveRecord
         return $return;
     }
 
+    public function getIdWithButton($button = true){
+        return ($button)
+            ? $this->id . ShowMessageWidget::widget([
+                'helpMessage' => $this->printHtml()
+            ])
+            : $this->id;
+    }
 }

@@ -34,7 +34,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <!-- Yandex.Metrika counter -->
-    <script type="text/javascript" >
+    <script type="text/javascript">
         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
             m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
         (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
@@ -69,7 +69,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                 <button type="button" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="/img/icons/menu.png" alt="Меню"/></button>
                 <!-- Dropdown list -->
-                <div class="dropdown-menu"  role="menu">
+                <div class="dropdown-menu"  role="menu" style="position: fixed">
                     <?php
                     $menu_items = [
                         [
@@ -284,7 +284,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             <br><?= Yii::$app->user->identity->profile->fioShort ?>
                         </button>
                         <!-- Dropdown list -->
-                        <div class="dropdown-menu"  role="menu">
+                        <div class="dropdown-menu"  role="menu" style="position: fixed">
                             <?=
                             Nav::widget([
                                 'options' => [

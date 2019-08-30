@@ -78,10 +78,16 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'ТС и водитель',
                 'format' => 'raw',
-                'value' => function($model){
-                    $fio = ($model->driver)
-                        ? $model->driver->fio
-                        : $model->profile->fioFull;
+                'value' => function(Order $model){
+                    $driver = $model->driver;
+                    if($driver) {
+                        $fio = $driver->fio;
+                    } else {
+                        $car_owner = $model->carOwner;
+                        if($car_owner){
+                            $fio = $car_owner->fioFull;
+                        }
+                    }
                     return $model->vehicle->brandAndNumber
                         . ' (' . $fio . ')';
                 }
