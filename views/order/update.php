@@ -14,10 +14,9 @@ use yii\helpers\Url;
 /* @var $BTypies array*/
 /* @var $LTypies array*/
 /* @var $VehicleAttributes array*/
-$this->registerJsFile('https://api-maps.yandex.ru/2.1/?lang=ru_RU');
 $this->registerJsFile('@web/js/route.js');
 $this->title = 'Изменение заказа №' . $modelOrder->id;
-$this->registerJsFile('/js/order.js');
+//$this->registerJsFile('/js/order.js');
 
 ?>
 
