@@ -46,6 +46,11 @@ class UploadInvoiceWidget extends Widget
             'toggleButton' => $this->ToggleButton,
 //            'id' => 'modal_' .  rand()
         ]);
+        $order = Order::findOne(['id' => $this->id_order]);
+        $profile = null;
+        if($order)
+            $profile = $order->profile;
+            $company = $order->company;
 //var_dump($this->modelInvoice);
         $form = ActiveForm::begin([
             'id' => 'form_'. $this->type_document .'_' . $this->index,
@@ -68,7 +73,12 @@ class UploadInvoiceWidget extends Widget
                 'id' => $id_date_field,
             ],
         ])->label('Дата ');
-
+        if($profile){
+            echo $profile->fioFull . ' : ' . $profile->email . '(' . $profile->email2 . ')<br>';
+        }
+        if($company){
+            echo $company->name . ' : ' . $company->email . '(' . $company->email2 . ',' . $company->email3 . ')<br>';
+        }
 
         echo  Html::submitButton('Загрузить', ['class' => 'btn btn-primary']);
         ActiveForm::end();

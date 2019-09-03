@@ -19,6 +19,7 @@ use Yii;
  * @property string $url_confirm
  * @property int $create_at
  * @property int $update_at
+ * @property Order $order;
  */
 class Invoice extends \yii\db\ActiveRecord
 {
@@ -105,6 +106,10 @@ class Invoice extends \yii\db\ActiveRecord
                 return false;
                 break;
         }
+    }
+
+    public function getOrder(){
+        return $this->hasOne(Order::class, ['id' => 'id_order']);
     }
 
 }
