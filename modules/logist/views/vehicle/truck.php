@@ -35,11 +35,14 @@
                         }
                     ],
                     [
-                        'label' => 'Пользователь',
+                        'label' => 'Владелец',
                         'format' => 'raw',
                         'value' => function(\app\models\Vehicle $model){
                             $res ='';
                             $res .= '(ID ' . $model->id_user . ') ' . $model->profile->fioShort;
+                            if($model->user->old_id){
+                                $res .= '(' . $model->user->old_id . ')';
+                            }
                             return Html::a(
                                     $res, Url::to(['/finance/profile/view', 'id' => $model->id_user]))
                             ;

@@ -62,7 +62,10 @@ use \app\models\XprofileXcompany;
         [
             'label' => 'Информация',
             'format' => 'raw',
-            'attribute'=>'shortInfoForClient'
+            'attribute'=>'shortInfoForClient',
+            'value' => function (Order $model){
+                return $model->getShortInfoForClient(true);
+            }
         ],
         [
             'label' => 'Заказчик',
@@ -115,7 +118,7 @@ use \app\models\XprofileXcompany;
                         . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Изменить заказ']), [
                                 '/order/update',
                                 'id_order' => $model->id,
-                                'redirect' => '/order/client'
+                                'redirect' => '/logist/order'
                             ])
                         . ' '
                         . Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Отменить заказ']), Url::to([

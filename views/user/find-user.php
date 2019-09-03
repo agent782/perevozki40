@@ -17,7 +17,6 @@ $this->title = 'Поиск пользователя';
 <div class="find-user">
 
     <h3><?= Html::encode($this->title) ?></h3>
-<!--    <label>Поиск ТС:</label>-->
     <?=
     AutoComplete::widget([
         'clientOptions' => [
@@ -82,7 +81,6 @@ $this->title = 'Поиск пользователя';
         $form = ActiveForm::begin();
     ?>
     <div class="col-lg-12">
-<!--        --><?//= Html::submitButton('Далее', ['class' => 'btn btn-success'])?>
     </div>
     <br><br><br>
     <label id="label">Новый пользователь</label>
@@ -98,6 +96,7 @@ $this->title = 'Поиск пользователя';
         <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
         <?= $form->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
         <?= $form->field($profile, 'is_driver')->radioList(['Нет', 'Да'], ['id' => 'is_driver'])->label('Водитель')?>
+        <?= $form->field($user, 'old_id')?>
     </div>
     <div class="col-lg-8" id="info">
 

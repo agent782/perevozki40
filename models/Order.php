@@ -222,7 +222,7 @@ class Order extends \yii\db\ActiveRecord
             'passengers', 'status', 'create_at', 'update_at'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'body_typies', 'passengers', 'cargo', 'selected_rates', 'type_payment',
@@ -957,11 +957,11 @@ class Order extends \yii\db\ActiveRecord
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $return .= 'Вес: ' . $tonnage . ' т. ';
-                $return .= ' Длина: ';
-                $return .= ($length)?$length. 'м ':'--.  * ';
-//                $return .= ($height)?$height. 'м * ':'-- * ';
-//                $return .= ($width)?$width . 'м ':'-- ';
-
+//                $return .= ' Длина: ';
+                $return .= ($length)?$length. 'м *':'--.  * ';
+                $return .= ($height)?$height. 'м * ':'-- * ';
+                $return .= ($width)?$width . 'м ':'-- ';
+                $return .= ' (Д*В*Ш)';
                 $return .= 'Объем: ';
                 $return .= ($volume)?$volume.' м3 ':'-- ';
                 $return .= ($longlength)?' Груз-длинномер.<br>':'<br>';

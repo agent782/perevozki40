@@ -38,6 +38,7 @@ use app\models\Profile;
  * @property Profile $profile
  * @property string $sms_code_for_reset_password
  * @property integer $send_last_sms_time
+ * @property string $old_id
  *
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -72,13 +73,14 @@ class User extends ActiveRecord implements IdentityInterface
             'updated_at',
             'active_at',
             'status',
-            'new_username'
+            'new_username',
+            'old_id'
         ];
         $scenarios[self::SCENARIO_CHANGE_PASS] = [
-            'old_pass', 'new_pass','new_pass_repeat'
+            'old_pass', 'new_pass','new_pass_repeat', 'old_id'
         ];
         $scenarios[self::SCENARIO_SAVE_WITHOUT_USERNAME] = [
-            'email', 'update_at'
+            'email', 'update_at', 'old_id'
         ];
 
         return $scenarios;
@@ -142,7 +144,8 @@ class User extends ActiveRecord implements IdentityInterface
 //            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
             [['push_ids', 'new_username', 'send_last_sms_time'], 'safe'],
-            ['sms_code_for_reset_password', 'string', 'max' => 10]
+            ['sms_code_for_reset_password', 'string', 'max' => 10],
+            ['old_id', 'string' , 'max' => 31]
         ];
     }
 
@@ -168,7 +171,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'username' => 'Номер телефона',
             'email' => 'Адрес электронной почты',
-            'captcha' => 'Проверочный код'
+            'captcha' => 'Проверочный код',
+            'old_id' => 'Предыдущее условное обозначение'
         ];
     }
 
