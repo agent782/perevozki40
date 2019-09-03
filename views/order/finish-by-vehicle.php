@@ -97,7 +97,7 @@ $this->registerJsFile('/js/order.js');
         ?>
 
         <?php if($longlength) {
-            echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
+            echo $form->field($modelOrder, 'real_longlength')->radioList(['Нет', 'Да'])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
                     'helpMessage' => Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,
                 ])

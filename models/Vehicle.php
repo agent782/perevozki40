@@ -553,7 +553,7 @@ class Vehicle extends \yii\db\ActiveRecord
         return $res;
     }
 
-    public function canOrder($Order){
+    public function canOrder(Order $Order){
         if ($this->id_vehicle_type != $Order->id_vehicle_type) return false;
         $hasPriceZone = 0;
         foreach ($Order->priceZones as $priceZone){
@@ -566,14 +566,23 @@ class Vehicle extends \yii\db\ActiveRecord
             case Vehicle::TYPE_TRUCK:
                 if(
                     $this->tonnage >= $Order->tonnage
-                    && $this->length >= $Order->length
+//                    && $this->length >= $Order->length
                     && $this->height >= $Order->height
                     && $this->width >= $Order->width
                     && $this->passengers >=$Order->passengers
                     && $this->volume >= $Order->volume
                     && $this->hasLoadingTypies($Order->loadingTypies)
-                )
-                    return true;
+                ){
+                    if($Order->longlength){
+                        if($this->longlength){
+                            if(($this->length + 2) >= $Order->length) return true;
+                        } else {
+                            if($this->length >= $Order->length) return true;
+                        }
+                    } else{
+                        if($this->length >= $Order->length) return true;
+                    }
+                }
                 break;
             case Vehicle::TYPE_PASSENGER:
                 if(
@@ -655,6 +664,7 @@ class Vehicle extends \yii\db\ActiveRecord
         $cost_h = $tmpPriceZone->r_h;
 //        $id_rate = $tmpPriceZone->id;
         foreach ($pricezonesForVehicle as $priceZone) {
+
             if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
                 $cost_r = $priceZone->r_km;
                 $cost_h = $priceZone->r_h;

@@ -729,6 +729,7 @@ class OrderController extends Controller
         $modelOrder->copyValueToRealValue();
         $route = $modelOrder->route;
         $realRoute = new Route();
+
         $realRoute->routeStart = $route->routeStart;
         $realRoute->routeFinish = $route->routeFinish;
         for($i=1;$i<9;$i++) {
@@ -737,6 +738,7 @@ class OrderController extends Controller
         }
 
         $modelOrder->real_datetime_start = $modelOrder->datetime_start;
+        $modelOrder->real_longlength = $modelOrder->longlength;
 //        $modelOrder->datetime_finish = date('d.m.Y H:i', time())
         $longlength = $modelOrder->vehicle->longlength;
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
@@ -830,7 +832,7 @@ class OrderController extends Controller
 
         $sesssion->set('modelOrder', $modelOrder);
         $sesssion->set('realRoute', $realRoute);
-
+//        return var_dump($modelOrder->longlength);
         return $this->render('/order/finish-by-vehicle',[
             'modelOrder' => $modelOrder,
             'realRoute' => $realRoute,

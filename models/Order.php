@@ -246,7 +246,7 @@ class Order extends \yii\db\ActiveRecord
         ];
         $scenarios[self::SCENARIO_FINISH_TRUCK] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle', 'real_h_loading',
-            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning', 'ClientPaidCash'
+            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning', 'ClientPaidCash', 'real_longlength'
         ];
         $scenarios[self::SCENARIO_FINISH_PASS] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
@@ -957,10 +957,11 @@ class Order extends \yii\db\ActiveRecord
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $return .= 'Вес: ' . $tonnage . ' т. ';
-                $return .= ($length)?$length. 'м * ':'--.  * ';
-                $return .= ($height)?$height. 'м * ':'-- * ';
-                $return .= ($width)?$width . 'м ':'-- ';
-                $return .= ' (Д*В*Ш). ';
+                $return .= ' Длина: ';
+                $return .= ($length)?$length. 'м ':'--.  * ';
+//                $return .= ($height)?$height. 'м * ':'-- * ';
+//                $return .= ($width)?$width . 'м ':'-- ';
+
                 $return .= 'Объем: ';
                 $return .= ($volume)?$volume.' м3 ':'-- ';
                 $return .= ($longlength)?' Груз-длинномер.<br>':'<br>';
@@ -1414,7 +1415,7 @@ class Order extends \yii\db\ActiveRecord
     public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false, $showPriceZones = true, $html = true){
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
         $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
-        $return .= $this->getShortInfoForClient() . ' <br>';
+        $return .= $this->getShortInfoForClient(true) . ' <br>';
         $return .= ($showPriceForVehicle) ? 'Тарифная зона №' . $this->getNumberPriceZoneForVehicle($html) . '. <br>' : '';
         $return .= ($showPriceZones) ? 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>' :'';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
@@ -1425,7 +1426,7 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true){
+    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true, $finish = false){
         if($this->realRoute) $real_route = $this->realRoute;
         else {
             if(!$realRoute) return false;
@@ -1435,7 +1436,7 @@ class Order extends \yii\db\ActiveRecord
         $return .= '<br>Время выезда: ' .  $this->real_datetime_start .'<br>';
         $return .= 'Время возвращения: ' .  $this->datetime_finish .'<br>';
         $return .= 'Маршрут: ' . $real_route->fullRoute . '<br>';
-        $return .= $this->getShortInfoForClient(true) . ' <br>';
+        $return .= $this->getShortInfoForClient(true, true) . ' <br>';
         $return .= 'Тарифная зона №' . $this->getNumberPriceZoneReal($html) . '. <br>';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         $return .= ($showClientPhone)
@@ -1569,6 +1570,7 @@ class Order extends \yii\db\ActiveRecord
                 $this->real_tonnage = $this->tonnage;
                 $this->real_length = $this->length;
                 $this->real_volume = $this->volume;
+                $this->real_longlength = $this->longlength;
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $this->real_passengers = $this->passengers;
