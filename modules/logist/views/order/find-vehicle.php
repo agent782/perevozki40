@@ -16,7 +16,7 @@ use yii\helpers\Url;
 ?>
 <?= Html::a('Назад', '/logist/order', ['class' => 'btn btn-success'])?>
 <h2>Заказ №<?=$modelOrder->id?></h2>
-<?= $modelOrder->fullNewInfo?>
+<?= $modelOrder->getFullNewInfo(true)?>
 <?php
 echo \kartik\grid\GridView::widget([
     'dataProvider' => $dataProvider,

@@ -97,8 +97,9 @@ use yii\helpers\ArrayHelper;
                 'label' => 'ТС и водитель',
                 'format' => 'raw',
                 'value' => function($model){
-                    if($model->vehicle && $model->driver){
-                        return $model->vehicle->brandAndNumber . ' (' . $model->driver->fio . ')';
+                    if($model->vehicle){
+                        return  $model->vehicle->brandAndNumber
+                        . ' (' . $model->profile->fioFull . ')';
                     }
 
                 }
