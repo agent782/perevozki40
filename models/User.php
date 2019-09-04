@@ -45,6 +45,7 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_WAIT_ACTIVATE = 1;
+    const STATUS_AUTO_REGISTRATION = 2;
     const STATUS_ACTIVE = 10;
 
     const SCENARIO_SAVE = 'save';

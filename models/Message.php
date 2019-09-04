@@ -14,6 +14,7 @@ use yii\helpers\Url;
  * @property int $type
  * @property string $title
  * @property string $text
+ * @property string $text_push
  * @property string $url
  * @property int $status
  * @property int $id_to_user
@@ -58,7 +59,7 @@ class Message extends \yii\db\ActiveRecord
                 'sms_status', 'push_status', 'id_order'], 'integer'],
             [['id_to_user'], 'required'],
             [['title', 'url'], 'string', 'max' => 255],
-            [['text'], 'string'],
+            [['text', 'text_push'], 'string'],
             ['create_at', 'default', 'value' => date('d.m.Y H:i:s')],
             ['status','default', 'value' => self::STATUS_SEND],
             [[ 'can_review_client', 'can_review_vehicle', 'id_to_review', 'id_from_review'], 'safe']
@@ -119,7 +120,7 @@ class Message extends \yii\db\ActiveRecord
 
                     'title' => $this->title,
 
-                    'text' => $this->text,
+                    'text' => $this->text_push,
 
                     'url' => $this->url,
 
@@ -159,7 +160,7 @@ class Message extends \yii\db\ActiveRecord
 
     public function  changeStatus($newStatus){
         $this->status = $newStatus;
-        $this->save();
+        $this->save(false);
     }
 
     static public function countNewMessage($id_user){
