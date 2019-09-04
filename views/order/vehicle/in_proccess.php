@@ -60,10 +60,10 @@ use yii\bootstrap\Tabs;
                 'format' => 'raw',
                 'attribute' => 'id_pricezone_for_vehicle',
                 'value' => function($modelOrder){
-                    return \app\models\PriceZone::findOne($modelOrder
-                        ->id_pricezone_for_vehicle)
-                        ->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent)
-                        ->getTextWithShowMessageButton($modelOrder->route->distance);
+                    return \app\models\PriceZone::findOne(['unique_index' =>$modelOrder
+                        ->id_pricezone_for_vehicle])
+                        ->getTextWithShowMessageButton($modelOrder->route->distance,
+                            SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
                 }
             ],
             [
