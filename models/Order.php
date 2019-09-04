@@ -1169,7 +1169,7 @@ class Order extends \yii\db\ActiveRecord
                         . $this->getFullNewInfo(false, true, false, false) . '<br>'
                         .'. <br> Клиент при желании может оценить Ваше действие, что повлияет на Ваш рейтинг водителя.'
                     ;
-                    $message_push_vehicle = 'Вы отказались от заказа. Предупредите Клиента, что по заказу ищется другое ТС!';
+                    $message_push_vehicle = 'Вы отказались от заказа. Предупредите Клиента, что по заказу идет поиск другого ТС!';
                     $message_client = 'Водитель (ТC: '. $vehicle->brandAndNumber .') отказался от заказа.<br> Поиск ТС продолжится до '
                         . $valid_datetime
                         . '<br>. Вы можете оценить действия водителя в Личном кабинете, в разделе Уведомления. <br>'
@@ -1201,8 +1201,6 @@ class Order extends \yii\db\ActiveRecord
                         $this->deleteEventChangeStatusToExpired();
                         $this->setEventChangeStatusToExpired();
 
-                        $message_push_client = 'Заказ №' . $this->id . ' изменен. Спасибо за Ваш заказ.';
-
                     break;
                     case self::STATUS_CANCELED: case self::STATUS_EXPIRED:
                         $title_client = 'Заказ №' . $this->id . ' изменен и добавлен в поиск.';
@@ -1210,28 +1208,27 @@ class Order extends \yii\db\ActiveRecord
                         $this->discount = $this->getDiscount($this->id_user);
                         $this->setEventChangeStatusToExpired();
 
-                        $message_push_client = 'Заказ №' . $this->id . ' изменен и добавлен в поиск. Спасибо за Ваш заказ.';
-
                     break;
                 }
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
                     . $this->getFullNewInfo(true, false, true, false);
+                $message_push_client = 'Спасибо за Ваш заказ.';
                 $this->discount = $this->getDiscount($this->id_user);
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
                 $vehicle = $this->vehicle;
-                $title_client = 'Заказ №'.$this->id.' принят водителем (' . $vehicle->brandAndNumber . ').';
+                $title_client = 'Заказ №'.$this->id.' принят водителем. ';
                 $title_vehicle = 'Вы приняли заказ №'.$this->id.'.';
                 $message_vehicle = 'Вы приняли заказ №'
                     . $this->id  . '<br>'
                     . $this->getFullInfoAboutVehicle(true, true, true, false) . '<br>'
                     . $this->getFullNewInfo(false, true, false, false)
                     . '<br><strong>Телефоны клиента в разделе Заказы на вкладке "В процессе...". </strong><br>';
-                $message_push_vehicle = 'Вы приняли заказ №' . $this->id;
+                $message_push_vehicle = '';
                 $message_client = $this->getFullInfoAboutVehicle(false, false, false)
                     . '<br><strong>Телефоны, паспорт и ВУ водителя в разделе Заказы на вкладке "В процессе...". </strong><br><br>'
                     . $this->getFullNewInfo(true,true, false, false);
-                $message_push_client = 'Заказ №'.$this->id.' принят водителем (' . $vehicle->brandAndNumber . ').';
+                $message_push_client = $vehicle->brandAndNumber;
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
                 $this->id_car_owner = $vehicle->user->id;
@@ -1253,7 +1250,7 @@ class Order extends \yii\db\ActiveRecord
                 $message_vehicle = $this->CalculateAndPrintFinishCost(false, true)['text'];
                 $message_push_vehicle = 'Заказ №'.$this->id.'. Вы подтвердили выполнение заказа.';
                 $message_client = $this->CalculateAndPrintFinishCost(false, false, true)['text'];
-                $message_push_client = 'Заказ №'.$this->id.' выполнен.';
+                $message_push_client = 'Спасибо, что Вы с нами!';
                 $email_to_vehicle = true;
                 $push_to_vehicle = true;
 
@@ -1279,7 +1276,7 @@ class Order extends \yii\db\ActiveRecord
                     $title_client = 'Заказ №'.$this->id.' отменен.';
                     $message_client = 'Вы отменили Ваш заказ.  <br>'
                         . $this->getFullNewInfo(true, false, true, false);
-                    $message_push_client = 'Заказ №'.$this->id.' отменен. Вы отменили Ваш заказ.';
+                    $message_push_client = 'Вы отменили Ваш заказ.';
                     $this->deleteEventChangeStatusToExpired();
                 }
                 if($this->status == self::STATUS_VEHICLE_ASSIGNED){
@@ -1295,8 +1292,8 @@ class Order extends \yii\db\ActiveRecord
                         . $this->getFullNewInfo(false, true, false, false) . '<br>'
                         .'. <br> При желании Вы можете оценить действие Клиента, что повлияет на его рейтинг клиента.'
                     ;
-                    $message_push_vehicle = 'Заказ №'.$this->id.' отменен клиентом.';
-                    $message_client = 'Вы отменили Заказ. Пожалуйста, позвоните водителю и сообщите об отмене заказа <br>'
+                    $message_push_vehicle = '';
+                    $message_client = 'Пожалуйста, позвоните водителю и сообщите об отмене заказа <br>'
                         . $this->vehicleFioAndPhone . '<br>'
                         . $this->getFullNewInfo(true, false, true, false) . '<br>';
                     $message_push_client = 'Заказ №'.$this->id.'. Вы отменили заказ. Сообщите пожалуйста водителю об отмене!';
