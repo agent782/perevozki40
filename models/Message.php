@@ -136,7 +136,7 @@ class Message extends \yii\db\ActiveRecord
                         "type" => "unicast",
                         "id" => $this->idPushall,
                         "key" => $this->keyPushall,
-                        "text" => $this->text,
+                        "text" => $this->text_push,
                         "title" => 'perevozki40.ru ' . $this->title,
                         'priority' => '1',
                         'url' => $this->url,
