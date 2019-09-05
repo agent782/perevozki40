@@ -1248,7 +1248,7 @@ class Order extends \yii\db\ActiveRecord
                 $title_client = 'Заказ №'.$this->id.' выполнен.';
                 $title_vehicle = 'Заказ №'.$this->id.'. Вы подтвердили выполнение заказа.';
                 $message_vehicle = $this->CalculateAndPrintFinishCost(false, true)['text'];
-                $message_push_vehicle = 'Заказ №'.$this->id.'. Вы подтвердили выполнение заказа.';
+                $message_push_vehicle = 'Спасибо!';
                 $message_client = $this->CalculateAndPrintFinishCost(false, false, true)['text'];
                 $message_push_client = 'Спасибо, что Вы с нами!';
                 $email_to_vehicle = true;
@@ -1711,6 +1711,7 @@ class Order extends \yii\db\ActiveRecord
             }
             $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
             $return['text'] =  $text;
+            $return['cost'] = round($return['cost']);
             return $return;
         }
         return ['text' => 'error', 'cost' => 0];

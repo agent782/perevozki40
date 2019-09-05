@@ -5,6 +5,7 @@ namespace app\modules\finance\controllers;
 use Yii;
 use app\models\Company;
 use app\models\CompanySearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -26,6 +27,15 @@ class CompanyController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin', 'finance', 'dispetcher']
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -36,14 +46,13 @@ class CompanyController extends Controller
     public function actionIndex()
     {
         $searchModel = new CompanySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->searchAll(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
-
     /**
      * Displays a single Company model.
      * @param integer $id

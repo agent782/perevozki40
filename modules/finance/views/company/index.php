@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
+use app\models\Company;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CompanySearch */
@@ -22,48 +23,31 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+//        'pjax' => true,
+        'responsiveWrap' => false,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+//            ['class' => 'yii\grid\SerialColumn'],
             'id',
+            [
+                'attribute' => 'name',
+                'filter' => \yii\jui\AutoComplete::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'name',
+                    'clientOptions' => [
+                        'source' => Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
+                        'autoFill' => true,
+                    ]
+                ])
+            ],
             'inn',
-            'name',
-            'address',
-            'address_real',
-            //'address_post',
-            //'value',
-            //'address_value',
-            //'branch_type',
-            //'capital',
-            //'email:email',
-            //'email2:email',
-            //'email3:email',
-            //'kpp',
-            //'management_name',
-            //'management_post',
-            //'name_full',
-            //'name_short',
-            //'ogrn',
-            //'ogrn_date',
-            //'okpo',
-            //'okved',
-            //'opf_short',
-            //'phone',
-            //'phone2',
-            //'phone3',
-            //'citizenship',
-            //'state_actuality_date',
-            //'state_registration_date',
-            //'state_liquidation_date',
-            //'state_status',
-            //'data_type',
-            //'status',
-            //'raiting',
-            //'created_at',
-            //'updated_at',
-            //'FIO_contract',
-            //'basis_contract',
-            //'job_contract',
+            [
+                'label' => 'Баланс',
+                'format' => 'raw',
+                'value' => function (Company $company){
+                    return $company->balance['balance'];
+                }
+            ],
+
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

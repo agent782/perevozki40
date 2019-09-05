@@ -283,4 +283,12 @@ class OrderController extends Controller
             'modelOrder' => $modelOrder
         ]);
     }
+
+    public function actionFinishOnlySum($id_order, $redirect = '/logist/order'){
+        $order = Order::findOne($id_order);
+        if(!$order) {
+            functions::setFlashWarning('Заказ не найден');
+            return $this->redirect();
+        }
+    }
 }

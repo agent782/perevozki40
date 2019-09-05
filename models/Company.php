@@ -43,8 +43,9 @@ use app\components\functions\functions;
  * @property integer $data-type
  * @property integer $status
  * @property integer $raiting
- * @property integer $create_at
- * @property integer $update_at
+ * @property integer $created_at
+ * @property integer $updated_at
+ * @property array $balance
  */
 
 
@@ -88,7 +89,6 @@ class Company extends \yii\db\ActiveRecord
                 'tooSmall' => 'Проверьте дату.',
                 'tooBig' => 'Вы из будущего?)'
             ],
-
             [[
                     'name',
                     'address_real',
@@ -117,6 +117,7 @@ class Company extends \yii\db\ActiveRecord
                 ], 'safe'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['raiting', 'default', 'value' => 0],
+            [['created_at', 'updated_at'], 'default', 'value' => date('d.m.Y')]
         ];
     }
 
@@ -171,10 +172,10 @@ class Company extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            DateBehaviors::class,
             'convertDate' => [
                 'class' => DateBehaviors::className(),
-                'dateAttributes' => ['ogrn_date'],
+                'dateAttributes' => ['ogrn_date', 'created_at', 'updated_at'],
                 'format' => DateBehaviors::FORMAT_DATE,
             ],
 //            'encryption' => [
@@ -289,6 +290,35 @@ class Company extends \yii\db\ActiveRecord
             ];
         }
 
+        return $return;
+    }
+
+    public function getBalance(){
+        $return = [
+            'balance' => 0,
+            'orders' => []
+        ];
+        foreach ($this->orders as $order) {
+            $return['balance'] -= $order->cost_finish;
+//            $return[$this->id]['balance'] -= $order->cost_finish;
+            $return['orders'][] = [
+                'date' => $order->datetime_finish,
+                'credit' => $order->cost_finish,
+                'description' => 'Заказ № ' . $order->id,
+                'id_order' => $order->id,
+            ];
+        }
+        foreach ($this->payments as $payment) {
+            $return['balance'] += $payment->cost;
+//            $return[$this->id]['balance'] += $payment->cost;
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'debit' => $payment->cost,
+                'description' => $payment->comments,
+                'id_paiment' => $payment->id
+            ];
+        }
+        array_multisort($return['orders'], SORT_DESC);
         return $return;
     }
 

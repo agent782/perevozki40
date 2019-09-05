@@ -206,12 +206,6 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'visible' => Yii::$app->user->can('car_owner'),
                         ],
                         [
-                            'label' => 'Юридические лица',
-                            'url' => '/company',
-                            'visible' => (Yii::$app->user->can('client')
-                                || Yii::$app->user->can('car_owner'))
-                        ],
-                        [
                             'label' => 'Запрос на выплату',
                             'url' => '/request-payment/create',
                             'visible' => Yii::$app->user->can('car_owner')
@@ -225,6 +219,12 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Заказы (Клиент)',
                             'url' => '/order/client',
                             'visible' => !Yii::$app->user->isGuest
+                        ],
+                        [
+                            'label' => 'Юридические лица',
+                            'url' => '/company',
+                            'visible' => (Yii::$app->user->can('client')
+                                || Yii::$app->user->can('car_owner'))
                         ],
                         [
                             'label' => 'Договора с клиентами',

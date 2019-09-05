@@ -11,6 +11,7 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use app\components\widgets\FinishOrderOnlySumWidget;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -117,22 +118,7 @@ use yii\bootstrap\Tabs;
                                 'id_order' => $model->id,
                                 'redirect' => '/logist/order'
                             ]),['class' => 'btn btn-sm btn-success']) . '<br><br>'
-                        . Html::a('Отменить', Url::to([
-                            '/order/canceled-by-client',
-                            'id_order' => $model->id,
-                            'id_vehicle' => $model->id_vehicle,
-                            'redirect' => '/logist/order'
-                        ]),
-                            [
-                                'class' => 'btn-xs btn-warning',
-                                ['data-confirm' => Yii::t('yii',
-                                'Заказ в процессе выполнения! 
-                                Пожалуйста, перед нажатием кнопки "ОК" позвоните водителю, принявшему Ваш заказ и предупредите об отмене.<br><br> Водитель: ' .
-                                $model->vehicleFioAndPhone)
-                                . '<br><br><i> Водитель имеет возможность оценить корректность Ваших действий, что может повлиять на Ваш рейтинг Клиента.</i>',
-                                'data-method' => 'post']
-                            ])
-                        . '<br><br>'
+                        . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]). '<br><br>'
                         . Html::a('Удалить ТС', Url::to([
                             '/order/canceled-by-vehicle',
                             'id_order' => $model->id,
@@ -142,7 +128,23 @@ use yii\bootstrap\Tabs;
                             ['data-confirm' => Yii::t('yii',
                                 'Отказ от заказа может повлиять на Ваш рейтинг! Отказаться от заказа?'),
                                 'data-method' => 'post',
-                                'class' => 'btn btn-xs btn-warning']);
+                                'class' => 'btn btn-xs btn-warning'])
+                        . '<br><br>'
+                        . Html::a('Отменить', Url::to([
+                            '/order/canceled-by-client',
+                            'id_order' => $model->id,
+                            'id_vehicle' => $model->id_vehicle,
+                            'redirect' => '/logist/order'
+                        ]),
+                            [
+                                'class' => 'btn-xs btn-warning',
+                                ['data-confirm' => Yii::t('yii',
+                                        'Заказ в процессе выполнения! 
+                                Пожалуйста, перед нажатием кнопки "ОК" позвоните водителю, принявшему Ваш заказ и предупредите об отмене.<br><br> Водитель: ' .
+                                        $model->vehicleFioAndPhone)
+                                    . '<br><br><i> Водитель имеет возможность оценить корректность Ваших действий, что может повлиять на Ваш рейтинг Клиента.</i>',
+                                    'data-method' => 'post']
+                            ])
                         ;
                 }
 
