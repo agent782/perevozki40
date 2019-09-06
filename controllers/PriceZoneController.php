@@ -53,6 +53,11 @@ class PriceZoneController extends Controller
      */
     public function actionIndex()
     {
+        if(Yii::$app->user->can('dispetcher')
+            || Yii::$app->user->can('admin')){
+            $this->layout = 'logist';
+        }
+
         $searchModel = new PriceZoneSearch();
         $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams,
             Vehicle::TYPE_TRUCK,

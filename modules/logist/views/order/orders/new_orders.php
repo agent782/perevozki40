@@ -24,6 +24,11 @@ use \app\models\XprofileXcompany;
     ],
     'responsiveWrap' => false,
     'pjax'=>true,
+    'pjaxSettings' => [
+        'options' => [
+            'id' => 'pjax_new_orders'
+        ]
+    ],
     'columns' => [
 //        [
 //            'class' => 'kartik\grid\ExpandRowColumn',

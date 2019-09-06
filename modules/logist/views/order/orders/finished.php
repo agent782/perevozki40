@@ -24,6 +24,11 @@ use yii\helpers\ArrayHelper;
         ],
         'responsiveWrap' => false,
         'pjax' => true,
+        'pjaxSettings' => [
+            'options' => [
+                'id' => 'pjax_finished_orders'
+            ]
+        ],
         'columns' => [
 //            [
 //                'class' => 'kartik\grid\ExpandRowColumn',

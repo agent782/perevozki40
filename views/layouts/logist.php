@@ -133,5 +133,13 @@ AppAsset::register($this);
 
 <?php $this->endBody() ?>
 </body>
+<script>
+    $(function () {
+        setInterval(() => $.pjax.reload({container:'#pjax_new_orders'}), 2*60*1000);
+        setInterval(() => $.pjax.reload({container:'#pjax_in_proccess_orders'}), 5*60*1000);
+        setInterval(() => $.pjax.reload({container:'#pjax_finished_orders'}), 6*60*1000);
+        setInterval(() => $.pjax.reload({container:'#pjax_canceled_orders'}), 5*60*1000);
+    });
+</script>
 </html>
 <?php $this->endPage() ?>

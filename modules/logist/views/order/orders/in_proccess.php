@@ -31,6 +31,11 @@ use app\components\widgets\FinishOrderOnlySumWidget;
 //        'persistResize'=>true,
         'responsiveWrap' => false,
         'pjax'=>true,
+        'pjaxSettings' => [
+            'options' => [
+                'id' => 'pjax_in_proccess_orders'
+            ]
+        ],
         'columns' => [
 //            [
 //                'class' => 'kartik\grid\ExpandRowColumn',

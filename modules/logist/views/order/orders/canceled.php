@@ -21,7 +21,12 @@ use yii\bootstrap\Tabs;
             'class' => 'minRoute'
         ],
         'responsiveWrap' => false,
-        'pjax'=>true,
+        'pjax' => true,
+        'pjax'=>true,'pjaxSettings' => [
+            'options' => [
+                'id' => 'pjax_canceled_orders'
+            ]
+        ],
         'columns' => [
             [
                 'class' => 'kartik\grid\ExpandRowColumn',
@@ -56,7 +61,10 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Информация',
                 'format' => 'raw',
-                'attribute'=>'shortInfoForClient'
+                'attribute'=>'shortInfoForClient',
+                'value' => function(Order $order){
+                    return $order->getShortInfoForClient(true);
+                }
             ],
             [
                 'label' => 'Заказчик',
