@@ -152,3 +152,15 @@ use app\components\widgets\FinishOrderOnlySumWidget;
         ]
     ]); ?>
 </div>
+
+<script>
+    $(function () {
+        $('#close_button').on('click', function () {
+            $('.modal').modal('hide');
+        })
+
+        $('#cost').on('input keyup', function () {
+            $('#cost_vehicle').val($(this).val());
+        })
+    })
+</script>

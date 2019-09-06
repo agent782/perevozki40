@@ -290,5 +290,16 @@ class OrderController extends Controller
             functions::setFlashWarning('Заказ не найден');
             return $this->redirect();
         }
+        if($order->load(Yii::$app->request->post())){
+            $order->datetime_finish = $order->real_datetime_start;
+            $order->changeStatus($order::STATUS_CONFIRMED_VEHICLE, $order->id_user, $order->id_vehicle, false);
+//            if($order->save()){
+//
+//                functions::setFlashSuccess('Заказ №' . $order->id .' завершен и сохранен');
+//            } else {
+//                functions::setFlashWarning('Ощибка сохранения. Заказ не завершен');
+//            }
+            return $this->redirect($redirect);
+        }
     }
 }

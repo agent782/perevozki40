@@ -332,7 +332,10 @@ class Order extends \yii\db\ActiveRecord
             'cost' => 'Сумма',
             'ClientPhone' => 'Телефон клиента',
             'id_company' => 'Юр. лицо ',
-            'avans_client' => 'Аванс'
+            'avans_client' => 'Аванс',
+            'cost_finish' => 'Сумма для клиента',
+            'cost_finish_vehicle
+            ' => 'Сумма для водителя'
 
         ];
     }
@@ -1126,7 +1129,7 @@ class Order extends \yii\db\ActiveRecord
         ;
     }
 
-    public function changeStatus($newStatus, $id_client, $id_vehicle = null){
+    public function changeStatus($newStatus, $id_client, $id_vehicle = null, $changeFinishCosts = true){
         if(!$id_client) return false;
         $url_client = Url::to(['/order/client'], true);
         $url_vehicle = Url::to(['/order/vehicle'], true);
@@ -1233,7 +1236,7 @@ class Order extends \yii\db\ActiveRecord
                 $push_to_vehicle = true;
                 $this->id_car_owner = $vehicle->user->id;
                 $this->discount = $this->getDiscount($id_client);
-
+                $this->datetime_access = date('d.m.Y H:i');
                 $this->deleteEventChangeStatusToExpired();
 
                 break;
@@ -1265,8 +1268,10 @@ class Order extends \yii\db\ActiveRecord
 
                 if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
                 else $this->paid_status = self::PAID_NO;
-                $this->cost_finish = $this->getFinishCost(false);
-                $this->cost_finish_vehicle = $this->finishCostForVehicle;
+                if($changeFinishCosts) {
+                    $this->cost_finish = $this->getFinishCost(false);
+                    $this->cost_finish_vehicle = $this->finishCostForVehicle;
+                }
                 break;
             case self::STATUS_CONFIRMED_CLIENT:
 
@@ -1309,7 +1314,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->id_car_owner = null;
                     $this->id_driver = null;
                     $this->id_pricezone_for_vehicle = null;
-
+                    $this->datetime_access = null;
                     break;
                 }
                 break;
