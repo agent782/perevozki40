@@ -607,7 +607,10 @@ class Profile extends \yii\db\ActiveRecord
                     'balance' => 0,
                     'orders' => []
                 ];
-                foreach ($company->orders as $order) {
+                $orders = $company->getOrders()
+                    ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+                    ->all();
+                foreach ($orders as $order){
                     $return['balance'] -= $order->cost_finish;
                     $return[$company->id]['balance'] -= $order->cost_finish;
                     $return[$company->id]['orders'][] = [
