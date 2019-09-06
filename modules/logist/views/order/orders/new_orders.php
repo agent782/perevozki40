@@ -129,6 +129,7 @@ use \app\models\XprofileXcompany;
                         . Html::a(Html::icon('remove', ['class' => 'btn-lg','title' => 'Отменить заказ']), Url::to([
                             '/order/canceled-by-client',
                             'id_order' => $model->id,
+                            'redirect' => '/logist/order'
                         ]),
                             ['data-confirm' => Yii::t('yii',
                                 'Пока заказ не принят водителем, Вы можете отменить его без потери рейтинга. Отменить заказ?'),
