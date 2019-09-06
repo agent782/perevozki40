@@ -222,27 +222,33 @@ class Order extends \yii\db\ActiveRecord
             'passengers', 'status', 'create_at', 'update_at'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength',
+            'cargo'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'body_typies', 'passengers', 'cargo', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
+            'cargo'
         ];
         $scenarios[self::SCENARIO_UPDATE_MANIPULATOR] = [
             'tonnage', 'tonnage_spec', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
+            'cargo'
         ];
         $scenarios[self::SCENARIO_UPDATE_DUMP] = [
             'tonnage', 'volume', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
+            'cargo'
         ];
         $scenarios[self::SCENARIO_UPDATE_CRANE] = [
             'tonnage_spec', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
+            'cargo'
         ];
         $scenarios[self::SCENARIO_UPDATE_EXCAVATOR] = [
             'volume_spec', 'selected_rates', 'type_payment',
-            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at'
+            'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
+            'cargo'
         ];
         $scenarios[self::SCENARIO_FINISH_TRUCK] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle', 'real_h_loading',
@@ -297,7 +303,7 @@ class Order extends \yii\db\ActiveRecord
             'tonnage_spec' => 'Грузоподъемность механизма(стрелы).',
             'length_spec' => 'Длина механизма(стрелы).',
             'volume_spec' => 'Объем механизма(ковша).',
-            'cargo' => 'Описание груза.',
+            'cargo' => 'Комментарии. Описание груза.',
             'datetime_start' => 'Дата и время подачи ТС.',
             'datetime_finish' => 'Дата и время возвращения в г.Обнинск после завершения заказа.',
             'datetime_access' => 'Дата и  время подтверждения Заказчиком.',

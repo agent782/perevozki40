@@ -129,7 +129,7 @@ $this->title = 'Изменение заказа №' . $modelOrder->id;
         ?>
 
         <?php if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK) {
-            echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'], ['value' => 0])->label(
+            echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
                     'helpMessage' => '',
                     'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
@@ -146,7 +146,7 @@ $this->title = 'Изменение заказа №' . $modelOrder->id;
             ]);
         }
         if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_SPEC){
-            echo $form->field($modelOrder, 'cargo')->textarea()->label('Описание работ');
+            echo $form->field($modelOrder, 'cargo')->textarea()->label('Комментарии. Описание работ.');
         }
 
         ?>
