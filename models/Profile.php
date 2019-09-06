@@ -611,14 +611,24 @@ class Profile extends \yii\db\ActiveRecord
                     ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
                     ->all();
                 foreach ($orders as $order){
-                    $return['balance'] -= $order->cost_finish;
-                    $return[$company->id]['balance'] -= $order->cost_finish;
-                    $return[$company->id]['orders'][] = [
-                        'date' => $order->datetime_finish,
-                        'credit' => $order->cost_finish,
-                        'description' => 'Заказ № ' . $order->id,
-                        'id_order' => $order->id,
-                    ];
+                    if($order->type_payment != Payment::TYPE_CASH) {
+                        $return['balance'] -= $order->cost_finish;
+                        $return[$company->id]['balance'] -= $order->cost_finish;
+                        $return[$company->id]['orders'][] = [
+                            'date' => $order->datetime_finish,
+                            'credit' => $order->cost_finish,
+                            'description' => 'Заказ № ' . $order->id,
+                            'id_order' => $order->id,
+                        ];
+                    } else {
+                        $return[$company->id]['orders'][] = [
+                            'date' => $order->datetime_finish,
+                            'credit' => $order->cost_finish,
+                            'debit' => $order->cost_finish,
+                            'description' => 'Заказ № ' . $order->id,
+                            'id_order' => $order->id,
+                        ];
+                    }
                 }
                 foreach ($company->payments as $payment) {
                     $return['balance'] += $payment->cost;
