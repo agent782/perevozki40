@@ -625,7 +625,7 @@ class Profile extends \yii\db\ActiveRecord
                             'date' => $order->datetime_finish,
                             'credit' => $order->cost_finish,
                             'debit' => $order->cost_finish,
-                            'description' => 'Заказ № ' . $order->id,
+                            'description' => 'Заказ № ' . $order->id . '. Оплачен водителю.',
                             'id_order' => $order->id,
                         ];
                     }

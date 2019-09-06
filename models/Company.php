@@ -299,7 +299,7 @@ class Company extends \yii\db\ActiveRecord
             'orders' => []
         ];
         foreach ($this->orders as $order) {
-            
+
             if($order->type_payment != Payment::TYPE_CASH) {
                 $return['balance'] -= $order->cost_finish;
 //            $return[$this->id]['balance'] -= $order->cost_finish;
@@ -314,7 +314,7 @@ class Company extends \yii\db\ActiveRecord
                     'date' => $payment->date,
                     'debit' => $payment->cost,
                     'credit' => $payment->cost,
-                    'description' => $payment->comments,
+                    'description' => $payment->comments . ' Оплачен наличными водителю.',
                     'id_paiment' => $payment->id
                 ];
             }

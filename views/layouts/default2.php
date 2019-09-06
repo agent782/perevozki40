@@ -153,7 +153,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Диспетчерская',
                             'url' => '/logist',
-                            'visible' => Yii::$app->user->can('logist') || Yii::$app->user->can( 'admin')
+                            'visible' => Yii::$app->user->can('dispetcher') || Yii::$app->user->can( 'admin')
                         ],
                         [
                             'label' => 'Админка',
@@ -189,6 +189,12 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'url' => Url::to(['/order/create']),
                             'visible' => (Yii::$app->user->can('user')
                                 || Yii::$app->user->can('client'))
+                        ],
+                        [
+                            'label' => Html::icon('plus') . 'Повторный заказ',
+                            'encode' => false,
+                            'url' => '/order/re-order',
+                            'visible' => Yii::$app->user->can('car_owner'),
                         ],
                         [
                             'label' => 'Заказы (Водитель)',
