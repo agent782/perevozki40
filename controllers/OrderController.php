@@ -744,7 +744,7 @@ class OrderController extends Controller
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
         $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
-        $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
+        $TypiesPayment = TypePayment::getTypiesPaymentsArray();
         $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         $paymrnt_typies = ArrayHelper::map(TypePayment::find()->all(),'id', 'type');
         $modelOrder->setScenarioForFinish();
@@ -846,7 +846,11 @@ class OrderController extends Controller
         ]);
     }
 
-    public function actionReOrder($id_user = null, $redirect = '/order/vehicle'){
+    public function actionReOrder(){
+        return $this->render('/order/re-order');
+    }
+
+    public function actionReOrderFinish($id_user = null, $redirect = '/order/vehicle'){
         if(!$id_user) $user = Yii::$app->user->identity;
         else $user = User::findOne($id_user);
         $Profile = $user->profile;
@@ -854,8 +858,10 @@ class OrderController extends Controller
             functions::setFlashWarning('Ошибка на сервере. Попробуйте позже');
             return $this->redirect($redirect);
         }
-
+        $session = Yii::$app->session;
         $modelOrder = new Order();
+        $realRoute = new Route();
+
         if (!$user->getDrivers()->count() && !$Profile->is_driver) {
             functions::setFlashWarning('У Вас не добавлен ни один водитель!');
             return $this->redirect($redirect);
@@ -878,18 +884,44 @@ class OrderController extends Controller
             }
         }
 
-        if($modelOrder->load(Yii::$app->request->post())){
+        switch (Yii::$app->request->post('button')){
+            case 'next1':
+                if($modelOrder->load(Yii::$app->request->post())){
+                    $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
+                    $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
+                    $longlength = $modelOrder->vehicle->longlength;
+                    $modelOrder->real_longlength = 0;
+                    $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
 
-            $longlength = $modelOrder->vehicle->longlength;
-            $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+                    return $this->render('/order/re-order-finish2', [
+                        'modelOrder' => $modelOrder,
+                        'longlength' => $longlength,
+                        'VehicleAttributes' => $VehicleAttributes,
+                        'realRoute' => $realRoute,
+                        'redirect' => $redirect
+                    ]);
+                }
+                break;
+            case 'next2':
+                if($modelOrder->load(Yii::$app->request->post())
+                    && $realRoute->load(Yii::$app->request->post())){
+                    $TypiesPayment = TypePayment::getTypiesPaymentsArray();
 
-            return $this->render('/order/re-order2', [
-                'modelOrder' => $modelOrder,
 
-            ]);
+
+                    $session->set('modelOrder', $modelOrder);
+                    $session->set('realRoute', $realRoute);
+                    return $this->render('/order/re-order-finish3', [
+                        'realRoute' => $realRoute,
+                        'modelOrder' => $modelOrder,
+                        'TypiesPayment' => $TypiesPayment,
+
+                    ]);
+                }
+                break;
         }
 
-        return $this->render('/order/re-order', [
+        return $this->render('/order/re-order-finish', [
             'modelOrder' => $modelOrder,
             'driversArr' => $driversArr,
             'vehicles' => $vehicles

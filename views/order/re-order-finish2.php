@@ -19,7 +19,7 @@ use app\models\Payment;
 /* @var $BTypies array*/
 /* @var $LTypies array*/
 /* @var $VehicleAttributes array*/
-$this->title = 'Фактические данные по заказу №' . $modelOrder->id;
+$this->title = 'Информация о заказе.';
 $this->registerJsFile('/js/order.js');
 
 ?>
@@ -87,7 +87,6 @@ $this->registerJsFile('/js/order.js');
                 ]
             ])
         ?>
-
         <?php if($longlength) {
             echo $form->field($modelOrder, 'real_longlength')->radioList(['Нет', 'Да'])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
@@ -137,7 +136,7 @@ $this->registerJsFile('/js/order.js');
             [
                 'class' => 'btn btn-success',
                 'name' => 'button',
-                'value' => 'next'
+                'value' => 'next2'
             ])?>
     </div>
 

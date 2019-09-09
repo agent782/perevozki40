@@ -109,6 +109,7 @@ use app\components\widgets\ShowMessageWidget;
 * @property integer $id_review_vehicle
 * @property integer $id_review_client
  * @property float $avans_client
+ * @property bool $re
 
 
  */
@@ -205,7 +206,8 @@ class Order extends \yii\db\ActiveRecord
             ['real_h_loading', 'default', 'value' => 0],
             ['real_remove_awning', 'default' , 'value' => 0],
             ['type_payment', 'validateForUser'],
-            [['avans_client'], 'number']
+            [['avans_client'], 'number'],
+            [['re'], 'default', 'value' => false]
         ];
     }
 
@@ -219,7 +221,7 @@ class Order extends \yii\db\ActiveRecord
             'passengers','id_company', 'status', 'create_at', 'update_at'];
         $scenarios[self::SCENARIO_LOGIST_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
-            'passengers', 'status', 'create_at', 'update_at'];
+            'passengers', 'status', 'create_at', 'update_at', 're'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength',
@@ -340,8 +342,8 @@ class Order extends \yii\db\ActiveRecord
             'id_company' => 'Юр. лицо ',
             'avans_client' => 'Аванс',
             'cost_finish' => 'Сумма для клиента',
-            'cost_finish_vehicle
-            ' => 'Сумма для водителя'
+            'cost_finish_vehicle' => 'Сумма для водителя',
+            'comment' => 'Комментарии:'
 
         ];
     }
