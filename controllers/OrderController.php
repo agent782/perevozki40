@@ -846,4 +846,54 @@ class OrderController extends Controller
         ]);
     }
 
+    public function actionReOrder($id_user = null, $redirect = '/order/vehicle'){
+        if(!$id_user) $user = Yii::$app->user->identity;
+        else $user = User::findOne($id_user);
+        $Profile = $user->profile;
+        if(!$user || !$Profile){
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже');
+            return $this->redirect($redirect);
+        }
+
+        $modelOrder = new Order();
+        if (!$user->getDrivers()->count() && !$Profile->is_driver) {
+            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
+            return $this->redirect($redirect);
+        }
+        $driversArr = ArrayHelper::map($user->getDrivers()->all(), 'id', 'fio');
+        if($Profile->is_driver){
+//            return var_dump(['0' => $UserModel->profile->fioFull]);
+            $driversArr['0'] = $Profile->fioFull;
+        }
+        $vehicles = [];
+        $Vehicles = $user->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+
+        foreach ($Vehicles as $vehicle) {
+            if ($vehicle) {
+                $vehicles[$vehicle->id] =
+                    $vehicle->brand
+                    . ' (' . $vehicle->regLicense->reg_number . ') '
+                    . ' <br> '
+                ;
+            }
+        }
+
+        if($modelOrder->load(Yii::$app->request->post())){
+
+            $longlength = $modelOrder->vehicle->longlength;
+            $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+
+            return $this->render('/order/re-order2', [
+                'modelOrder' => $modelOrder,
+
+            ]);
+        }
+
+        return $this->render('/order/re-order', [
+            'modelOrder' => $modelOrder,
+            'driversArr' => $driversArr,
+            'vehicles' => $vehicles
+        ]);
+
+    }
 }

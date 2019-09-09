@@ -370,7 +370,7 @@ $spec_columns = [
         ]) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
             'style' => 'font-size: 10px'
@@ -401,7 +401,7 @@ $spec_columns = [
         ]) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProviderPass,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
             'style' => 'font-size: 10px'
@@ -430,7 +430,7 @@ $spec_columns = [
         ]) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProviderSpec,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
             'style' => 'font-size: 10px'
