@@ -15,7 +15,6 @@ use yii\bootstrap\Html;
 <?php
     $form = ActiveForm::begin();
 ?>
-<?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, ['encode' => false])?>
 
 <?= $form->field($modelOrder, 'comment')->textarea([
     'placeholder' => 'Заказчик, телефон, Организация ...'

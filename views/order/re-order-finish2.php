@@ -87,6 +87,8 @@ $this->registerJsFile('/js/order.js');
                 ]
             ])
         ?>
+        <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, ['encode' => false])?>
+
         <?php if($longlength) {
             echo $form->field($modelOrder, 'real_longlength')->radioList(['Нет', 'Да'])->label(
                 'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([

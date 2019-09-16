@@ -3,7 +3,8 @@
 namespace app\models;
 
 use Yii;
-use streltcov\YandexUtils\GeoCoder;
+use deka6pb\geocoder\Geocoder;
+
 
 /**
  * This is the model class for table "{{%routes}}".
@@ -80,10 +81,29 @@ class Route extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-        $this->startCity = GeoCoder::search($this->routeStart)->one()->getLocality();
-        if(!$this->startCity) $this->startCity = $this->routeStart;
-        $this->finishCity = GeoCoder::search($this->routeFinish)->one()->getLocality();
-        if(!$this->finishCity) $this->finishCity = $this->routeFinish;
+        $coder = Geocoder::build(Geocoder::TYPE_YANDEX);
+        $obj_start = $coder::findOneByAddress($this->routeStart);
+        $obj_finish = $coder::findOneByAddress($this->routeFinish);
+
+        if($obj_start){
+            if($obj_start->data){
+                $this->startCity = $obj_start->data['city'];
+            }else {
+                $this->startCity = $this->routeStart;
+            }
+        } else {
+            $this->startCity = $this->routeStart;
+        }
+
+        if($obj_finish){
+            if($obj_finish->data){
+                $this->finishCity = $obj_finish->data['city'];
+            }else {
+                $this->finishCity = $this->routeFinish;
+            }
+        } else {
+            $this->finishCity = $this->routeFinish;
+        }
 
         self::optimizationPoints();
 

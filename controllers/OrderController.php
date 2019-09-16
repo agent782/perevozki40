@@ -7,6 +7,7 @@ use app\models\Profile;
 use app\models\setting\SettingVehicle;
 use app\models\VehicleType;
 use app\models\XprofileXcompany;
+use function Couchbase\fastlzCompress;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use app\models\Message;
@@ -29,7 +30,6 @@ use app\models\BodyType;
 use app\models\LoadingType;
 use app\models\PriceZone;
 use yii\helpers\ArrayHelper;
-use streltcov\YandexUtils\GeoCoder;
 use yii2tech\crontab\CronJob;
 use yii2tech\crontab\CronTab;
 /**
@@ -316,7 +316,6 @@ class OrderController extends Controller
                     }
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
-//                    return  GeoCoder::search($route->routeStart)->one()->getLocality();
                     if ($route->save()) {
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;
@@ -763,7 +762,6 @@ class OrderController extends Controller
                     $modelOrder->cost = $modelOrder->CalculateAndPrintFinishCost(false)['cost'];
                     $sesssion->set('modelOrder', $modelOrder);
                     $sesssion->set('realRoute', $realRoute);
-
                     return $this->render('/order/finish-by-vehicle2', [
                         'modelOrder' => $modelOrder,
                         'realRoute' => $realRoute,
@@ -886,41 +884,63 @@ class OrderController extends Controller
 
         switch (Yii::$app->request->post('button')){
             case 'next1':
+
+                $modelOrder = $session->get('modelOrder');
+                $realRoute = $session->get('realRoute');
+                if(!$modelOrder || !$realRoute) break;
                 if($modelOrder->load(Yii::$app->request->post())){
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
+                    $modelOrder->id_vehicle = $vehicle->id;
+
                     $longlength = $modelOrder->vehicle->longlength;
                     $modelOrder->real_longlength = 0;
                     $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+                    $TypiesPayment = TypePayment::getTypiesPaymentsArray();
 
+                    $session->set('modelOrder', $modelOrder);
+                    $session->set('realRoute', $realRoute);
                     return $this->render('/order/re-order-finish2', [
                         'modelOrder' => $modelOrder,
                         'longlength' => $longlength,
                         'VehicleAttributes' => $VehicleAttributes,
                         'realRoute' => $realRoute,
+                        'TypiesPayment' => $TypiesPayment,
                         'redirect' => $redirect
                     ]);
                 }
                 break;
             case 'next2':
+//                $modelOrder = new Order();
+                $modelOrder = $session->get('modelOrder');
+                $realRoute = $session->get('realRoute');
+                if(!$modelOrder || !$realRoute) break;
                 if($modelOrder->load(Yii::$app->request->post())
                     && $realRoute->load(Yii::$app->request->post())){
-                    $TypiesPayment = TypePayment::getTypiesPaymentsArray();
 
+                    $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
+                    $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
+                    $CalculateAndPrintFinishCost = $modelOrder->CalculateAndPrintFinishCost(true, true, false);
+                    $modelOrder->cost =
+                        $modelOrder->CalculateAndPrintFinishCost(false,false,false)['cost'];
 
+                    $modelOrder->cost_finish = $modelOrder->finishCost;
+                    $modelOrder->cost_finish_vehicle = $modelOrder->finishCostForVehicle;
+
+                    return $modelOrder->cost_finish . ' ' . $modelOrder->cost_finish_vehicle;
 
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
                     return $this->render('/order/re-order-finish3', [
                         'realRoute' => $realRoute,
                         'modelOrder' => $modelOrder,
-                        'TypiesPayment' => $TypiesPayment,
-
+                        'CalculateAndPrintFinishCost' => $CalculateAndPrintFinishCost
                     ]);
                 }
                 break;
         }
-
+        $session->set('modelOrder', $modelOrder);
+        $session->set('realRoute', $realRoute);
         return $this->render('/order/re-order-finish', [
             'modelOrder' => $modelOrder,
             'driversArr' => $driversArr,

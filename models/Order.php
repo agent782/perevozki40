@@ -572,6 +572,8 @@ class Order extends \yii\db\ActiveRecord
         $result = [];
         $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])
             ->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
+        if(!$priceZones->count()) return false;
+
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
@@ -628,6 +630,7 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
 
+
         foreach ($priceZones as $priceZone) {
             if ($priceZone->hasBodyType($this->vehicle->bodyType->id)){
                 $result[] = $priceZone;
@@ -647,10 +650,11 @@ class Order extends \yii\db\ActiveRecord
             }
         }
 //        return $real_pricezone->id;
-        if($real_pricezone->r_km < $pricezone_for_vehicle->r_km || $real_pricezone->r_h < $pricezone_for_vehicle->r_h){
-            $real_pricezone = $pricezone_for_vehicle;
+        if($real_pricezone && $pricezone_for_vehicle) {
+            if ($real_pricezone->r_km < $pricezone_for_vehicle->r_km || $real_pricezone->r_h < $pricezone_for_vehicle->r_h) {
+                $real_pricezone = $pricezone_for_vehicle;
+            }
         }
-
         return $real_pricezone->unique_index;
     }
 
@@ -1630,6 +1634,7 @@ class Order extends \yii\db\ActiveRecord
         $distance = $this->real_km;
         $hour = $this->real_h;
         $real_pz = PriceZone::findOne(['unique_index' => $this->id_price_zone_real]);
+        if(!$real_pz || !$distance) return ['text' => 'Ошибка на сервере', 'cost' => 0];
         if($forVehicle) $real_pz = $real_pz->getWithDiscount(self::getVehicleProcentPrice());
         if(!$real_pz || !$distance) return ['text' => 'Ошибка на сервере', 'cost' => 0];
         if($distance){
@@ -1722,9 +1727,11 @@ class Order extends \yii\db\ActiveRecord
             if($this->discount && !$forVehicle) {
                 $text .= '<br>Скидка: ' . $this->discount . ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
             }
+            $cost = round($cost);
             $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
             $return['text'] =  $text;
             $return['cost'] = round($return['cost']);
+
             return $return;
         }
         return ['text' => 'error', 'cost' => 0];
@@ -1736,7 +1743,7 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function getFinishCost($html = true){
-
+        if(!$this->cost) return false;
         if($html){
             return ($this->discount)
                 ? '<s>' . $this->cost . '</s> '
