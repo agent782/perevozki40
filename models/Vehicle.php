@@ -647,7 +647,23 @@ class Vehicle extends \yii\db\ActiveRecord
         return true;
     }
 
-    public function getMinRate(Order $Order){
+    public function getMinRate(Order $Order = null){
+        if(!$Order){
+            $PriceZones = $this->priceZonesSelect;
+            $tmpPriceZone = new PriceZone();
+            $tmpPriceZone->attributes = $PriceZones[0]->attributes;
+            $cost_r = $tmpPriceZone->r_km;
+            $cost_h = $tmpPriceZone->r_h;
+            foreach ($this->priceZonesSelect as $priceZone){
+                if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
+                    $cost_r = $priceZone->r_km;
+                    $cost_h = $priceZone->r_h;
+//                $id_rate = $priceZone->id;
+                    $tmpPriceZone->attributes = $priceZone->attributes;
+                }
+            }
+            return ($tmpPriceZone) ? $tmpPriceZone : null;
+        }
         if(!$this->canOrder($Order)) return null;
         $pricezonesForVehicle = [];
         foreach ($Order->priceZones as $OrderPriceZone) {

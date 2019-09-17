@@ -884,7 +884,6 @@ class OrderController extends Controller
 
         switch (Yii::$app->request->post('button')){
             case 'next1':
-
                 $modelOrder = $session->get('modelOrder');
                 $realRoute = $session->get('realRoute');
                 if(!$modelOrder || !$realRoute) break;
@@ -892,6 +891,8 @@ class OrderController extends Controller
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
                     $modelOrder->id_vehicle = $vehicle->id;
+                    $modelOrder->body_typies[] = $vehicle->bodyType->id;
+                    $modelOrder->id_pricezone_for_vehicle = $vehicle->getMinRate()->unique_index;
 
                     $longlength = $modelOrder->vehicle->longlength;
                     $modelOrder->real_longlength = 0;
@@ -920,22 +921,36 @@ class OrderController extends Controller
 
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
+
                     $CalculateAndPrintFinishCost = $modelOrder->CalculateAndPrintFinishCost(true, true, false);
                     $modelOrder->cost =
                         $modelOrder->CalculateAndPrintFinishCost(false,false,false)['cost'];
-
                     $modelOrder->cost_finish = $modelOrder->finishCost;
                     $modelOrder->cost_finish_vehicle = $modelOrder->finishCostForVehicle;
-
-                    return $modelOrder->cost_finish . ' ' . $modelOrder->cost_finish_vehicle;
 
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
                     return $this->render('/order/re-order-finish3', [
                         'realRoute' => $realRoute,
                         'modelOrder' => $modelOrder,
-                        'CalculateAndPrintFinishCost' => $CalculateAndPrintFinishCost
+                        'CalculateAndPrintFinishCost' => $CalculateAndPrintFinishCost,
+                        'redirect' => $redirect
                     ]);
+                }
+                break;
+            case 'next3':
+//                $modelOrder = new Order();
+                $modelOrder = $session->get('modelOrder');
+                $realRoute = $session->get('realRoute');
+                if(!$modelOrder || !$realRoute) break;
+                if($modelOrder->load(Yii::$app->request->post())){
+                    return var_dump($modelOrder->getErrors());
+                    if($realRoute->save()){
+                        if($modelOrder->save()){
+                            functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрировкан и завершен!');
+                        }
+                    }
+                    functions::setFlashWarning('Ошибка на сервере!');
                 }
                 break;
         }

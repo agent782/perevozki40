@@ -595,9 +595,9 @@ class Order extends \yii\db\ActiveRecord
                     case Vehicle::BODY_manipulator:
                         $priceZones = $priceZones
                             ->andFilterWhere(['>=', 'tonnage_spec_max', $this->real_tonnage_spec])
-                            ->andFilterWhere(['<=', 'length_spec_max', $this->real_length_spec])
-                            ->andFilterWhere(['<=', 'tonnage_max', $this->real_tonnage])
-                            ->andFilterWhere(['<=', 'length_max', $this->real_length])
+                            ->andFilterWhere(['>=', 'length_spec_max', $this->real_length_spec])
+                            ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
+                            ->andFilterWhere(['>=', 'length_max', $this->real_length])
                         ;
                         break;
                     case Vehicle::BODY_dump:
@@ -608,8 +608,8 @@ class Order extends \yii\db\ActiveRecord
                         break;
                     case Vehicle::BODY_crane:
                         $priceZones = $priceZones
-                            ->andFilterWhere(['<=', 'tonnage_spec_min', $this->real_tonnage_spec])
-                            ->andFilterWhere(['<=', 'length_spec_min', $this->real_length_spec])
+                            ->andFilterWhere(['>=', 'tonnage_spec_max', $this->real_tonnage_spec])
+                            ->andFilterWhere(['>=', 'length_spec_max', $this->real_length_spec])
                         ;
                         break;
                     case Vehicle::BODY_excavator:
@@ -630,13 +630,11 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
 
-
         foreach ($priceZones as $priceZone) {
             if ($priceZone->hasBodyType($this->vehicle->bodyType->id)){
                 $result[] = $priceZone;
             }
         }
-//        return $result;
         $pricezone_for_vehicle = PriceZone::findOne(['unique_index' => $this->id_pricezone_for_vehicle]);
         if(!$result) return $pricezone_for_vehicle->id;
         $real_pricezone = $result[0];
@@ -1674,13 +1672,7 @@ class Order extends \yii\db\ActiveRecord
                     $text .= '<br>Стоимость 1 км: ' . $real_pz->r_km . 'р. ';
 //                    $text .= '<br>Фактический пробег: ' . $this->real_km . 'км. ';
 
-                    if($min_cost > $real_cost){
-                        $cost = $min_cost;
-                        $text .= '<br>Минимальная оплата при пробеге более 120км.: ' . $real_pz->min_price;
-                    } else {
-                        $cost = $real_cost;
-                    }
-                    $text .= '<br>Итого за пробег: ' . $cost . 'р. ';
+                    $text .= '<br>Итого за пробег: ' . $real_cost . 'р. ';
                     $text .= '<br>Время потраченное на погрузку/разгрузку/ожидание: ' . $this->real_h_loading . 'ч. ';
                     $text .= '<br>Бесплатное время на погрузку/разгрузку/ожидание: ' . $real_pz->h_loading . 'ч. ';
                     if($this->real_h_loading && ($this->real_h_loading - $real_pz->h_loading)>0){
@@ -1689,6 +1681,19 @@ class Order extends \yii\db\ActiveRecord
                         $text .= '<br>Итого за лишнее время на погрузку/разгрузку/ожидание: ';
                         $text .=  $real_pz->r_loading * ($this->real_h_loading - $real_pz->h_loading);
                         $text .= 'р. ';
+                    }
+                    if($this->real_remove_awning && $real_pz->remove_awning) {
+                        $text .= '<br>Количество "растентовок" сверху или сбоку: ' . $this->real_remove_awning . '. ';
+                        $text .= '<br>Стоимость одной "растентовки" одной стороны: ' . $real_pz->remove_awning . 'р. ';
+                        $cost += $this->real_remove_awning * $real_pz->remove_awning;
+                        $text .= '<br>Итого за "растентовку": ' . $this->real_remove_awning * $real_pz->remove_awning;
+                    }
+
+                    if($min_cost > $real_cost){
+                        $cost = $min_cost;
+                        $text .= '<br>Минимальная оплата при пробеге более 120км.: ' . $real_pz->min_price;
+                    } else {
+                        $cost = $real_cost;
                     }
 //                    $text .= '<br>Время потраченное на погрузку/разгрузку/ожидание: ' . $this->real_h_loading . 'ч. ';
 //                    $text .= '<br>Бесплатное время на погрузку/разгрузку/ожидание: ' . $real_pz->h_loading . 'ч. ';
@@ -1704,12 +1709,7 @@ class Order extends \yii\db\ActiveRecord
                 $text .= '<br>Время работы (с учетом дороги от/до г.Обнинск): ' . $this->real_h . 'ч. ';
                 $text .= '<br>Стоимость 1 часа: ' . $real_pz->r_h . 'р. ';
             }
-            if($this->real_remove_awning && $real_pz->remove_awning) {
-                $text .= '<br>Количество "растентовок" сверху или сбоку: ' . $this->real_remove_awning . '. ';
-                $text .= '<br>Стоимость одной "растентовки" одной стороны: ' . $real_pz->remove_awning . 'р. ';
-                $cost += $this->real_remove_awning * $real_pz->remove_awning;
-                $text .= '<br>Итого за "растентовку": ' . $this->real_remove_awning * $real_pz->remove_awning;
-            }
+
 
             if($this->additional_cost){
                 $cost += $this->additional_cost;
@@ -1748,7 +1748,7 @@ class Order extends \yii\db\ActiveRecord
             return ($this->discount)
                 ? '<s>' . $this->cost . '</s> '
                 . '<strong> '
-                . round($this->cost - (($this->cost - $this->additional_cost) * $this->discount/100))
+                . round($this->cost - (($this->cost - intval($this->additional_cost)) * $this->discount/100))
                 . '</strong>'
                 : $this->cost;
         } else{

@@ -123,11 +123,10 @@ $this->registerJsFile('/js/order.js');
             }
         ?>
         <?= $form->field($modelOrder,'additional_cost')->input('tel')->label(
-            'Дополнительные рассходы' . ShowMessageWidget::widget([
+            'Дополнительные рассходы (руб.)' . ShowMessageWidget::widget([
                 'helpMessage' => Tip::findOne(['model' => 'Order', 'attribute' =>'additional_cost'])->description
             ])
-        )
-        ->hint('Обязательно распишите в комментариях на след. странице! Потребуются подтверждающие чеки.')?>
+        ) ?>
     </div>
 <br><br>
     <div class="col-lg-11">
