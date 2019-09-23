@@ -134,7 +134,9 @@ $this->registerJsFile('/js/order.js');
                 'helpMessage' => Tip::findOne(['model' => 'Order', 'attribute' =>'additional_cost'])->description
             ])
         )
-        ->hint('Обязательно распишите в комментариях на след. странице! Потребуются подтверждающие чеки.')?>
+        ->hint('Обязательно распишите в комментариях! Потребуются подтверждающие чеки.')?>
+        <?= $form->field($modelOrder, 'comment_vehicle')->textarea();?>
+
     </div>
 <br><br>
     <div class="col-lg-11">

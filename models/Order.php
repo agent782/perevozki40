@@ -163,6 +163,7 @@ class Order extends \yii\db\ActiveRecord
     public $selected_rates;
     public $ClientPhone;
     public $ClientPaidCash;
+    public $hand_vehicle_cost;
 
     /**
      * @inheritdoc
@@ -200,7 +201,7 @@ class Order extends \yii\db\ActiveRecord
             [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
                 'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle','id_car_owner'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
-                'volume_spec'], 'number'],
+                'volume_spec', 'hand_vehicle_cost'], 'number'],
             [['cargo', 'comment_vehicle'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW],
@@ -258,27 +259,27 @@ class Order extends \yii\db\ActiveRecord
         ];
         $scenarios[self::SCENARIO_FINISH_TRUCK] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle', 'real_h_loading',
-            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning', 'ClientPaidCash', 'real_longlength'
+            'real_tonnage', 'real_length', 'real_volume', 'real_remove_awning', 'ClientPaidCash', 'real_longlength', 'hand_vehicle_cost'
         ];
         $scenarios[self::SCENARIO_FINISH_PASS] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_passengers', 'ClientPaidCash'
+            'real_passengers', 'ClientPaidCash', 'hand_vehicle_cost'
         ];
         $scenarios[self::SCENARIO_FINISH_MANIPULATOR] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_tonnage', 'real_length', 'real_tonnage_spec', 'real_length_spec', 'ClientPaidCash'
+            'real_tonnage', 'real_length', 'real_tonnage_spec', 'real_length_spec', 'ClientPaidCash', 'hand_vehicle_cost'
         ];
         $scenarios[self::SCENARIO_FINISH_DUMP] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_tonnage', 'real_volume', 'ClientPaidCash'
+            'real_tonnage', 'real_volume', 'ClientPaidCash', 'hand_vehicle_cost'
         ];
         $scenarios[self::SCENARIO_FINISH_CRANE] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_tonnage_spec', 'real_length_spec', 'ClientPaidCash'
+            'real_tonnage_spec', 'real_length_spec', 'ClientPaidCash', 'hand_vehicle_cost'
         ];
         $scenarios[self::SCENARIO_FINISH_EXCAVATOR] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle','real_h_loading',
-            'real_volume_spec', 'ClientPaidCash'
+            'real_volume_spec', 'ClientPaidCash', 'hand_vehicle_cost'
         ];
         $scenarios[self::SCENARIO_ADD_ID_COMPANY] = ['id_company'];
         $scenarios[self::SCENARIO_UPDATE_PAID_STATUS] = ['paid_status'];
@@ -295,7 +296,10 @@ class Order extends \yii\db\ActiveRecord
             'cost', 'cost_finish', 'cost_finish_vehicle', 're'
         ];
         $scenarios[self::SCENARIO_RE_CREATE] = [
-            'id_user','id_vehicle_type', 'tonnage', 'type_payment', 'datetime_start',
+            'id_user','id_vehicle_type',
+            'tonnage', 'length', 'volume', 'passengers',
+            'tonnage','length', 'tonnage_spec', 'length_spec', 'volume', 'volume_spec',
+            'type_payment', 'datetime_start',
             'passengers','id_company', 'status', 'create_at', 'update_at', 'comment'
         ];
         return $scenarios;
@@ -1772,20 +1776,23 @@ class Order extends \yii\db\ActiveRecord
 //                    $text .= '<br>Итого за лишнее время на погрузку/разгрузку/ожидание: ';
 //                    $text .=  (($this->real_h_loading - $real_pz->h_loading)>0) ? $real_pz->h_loading * ($this->real_h_loading - $real_pz->h_loading) : '0';
 //                    $text .= 'р. ';
-
+                    if($this->additional_cost){
+                        $cost += $this->additional_cost;
+                        $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                    }
                 }
             } else {
                 $real_cost = $this->real_h * $real_pz->r_h;
                 ($min_cost > $real_cost)? $cost = $min_cost : $cost = $real_cost;
                 $text .= '<br>Время работы (с учетом дороги от/до г.Обнинск): ' . $this->real_h . 'ч. ';
                 $text .= '<br>Стоимость 1 часа: ' . $real_pz->r_h . 'р. ';
+
+                if($this->additional_cost){
+                    $cost += $this->additional_cost;
+                    $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                }
             }
 
-
-            if($this->additional_cost){
-                $cost += $this->additional_cost;
-                $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
-            }
             if($withDiscount){
                 $cost = $this->getFinishCost(false);
             }
@@ -1832,7 +1839,9 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function getFinishCostForVehicle(){
-        return round($this->CalculateAndPrintFinishCost(false, true, false)['cost']);
+        if(!$this->cost) return false;
+        return round($this->cost - ($this->cost * $this->getVehicleProcentPrice()/100));
+//        return round($this->CalculateAndPrintFinishCost(false, true, false)['cost']);
     }
 
     public function getVehicleProcentPrice(){

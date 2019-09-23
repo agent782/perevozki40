@@ -8,13 +8,28 @@
 /* @var $this \yii\web\View
  */
 use yii\bootstrap\Html;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
-$this->title = Html::encode('Регистрация повторного заказа.');
+$this->title = Html::encode('Регистрация и завершение повторного заказа.');
 ?>
 
 <h4><?=$this->title?></h4>
-<?= Html::a('Принял', '/order/re-order-new', ['class' => 'btn btn-lg btn-success'])?>
-<p>или</p>
-<?= Html::a('Принял и выполнил', '/order/re-order-finish', ['class' => 'btn btn-lg btn-success'])?>
+
 <br><br>
 
+<?php
+    $form = ActiveForm::begin();
+?>
+<?= $form->field($modelOrder, 'id_vehicle')->radioList($vehicles, [
+    'encode' => false
+])?>
+<?= $form->field($modelOrder, 'id_driver')->radioList($driversArr)?>
+<?= Html::submitButton('Далее', [
+    'class' => 'btn btn-success',
+    'name' => 'button',
+    'value' => 'next1'
+])?>
+<?php
+    $form::end();
+?>

@@ -38,6 +38,13 @@ $this->title = 'Фактические данные по заказу №' . $mo
         <?= $finishCostText?>
         <strong>
             <p>Способ оплаты: <?= $modelOrder->paymentText?></p>
+            <?php
+                if(!$modelOrder->cost) {
+                    echo $form->field($modelOrder, 'hand_vehicle_cost')->input('tel')
+                        ->label('Сумма к оплате Клиентом водителю:');
+                }
+            ?>
+
         </strong>
        <br><br>
         <i>Тарифная зона при принятии заказа: </i>
@@ -49,7 +56,6 @@ $this->title = 'Фактические данные по заказу №' . $mo
             ?>
         </i>
         <br><br>
-        <?= $form->field($modelOrder, 'comment_vehicle')->textarea();?>
 
     </div>
     <div class="col-lg-4">

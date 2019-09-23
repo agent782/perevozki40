@@ -804,6 +804,9 @@ class OrderController extends Controller
                     return $this->redirect($redirect);
                 }
                 if($modelOrder->load(Yii::$app->request->post())){
+//                    return var_dump($modelOrder->getFinishCost(false));
+                    if(!$modelOrder->cost) $modelOrder->cost =
+                        $modelOrder->hand_vehicle_cost * 100 / (100 - $modelOrder->getVehicleProcentPrice());
                     if ($realRoute->save()){
                         $modelOrder->id_route_real = $realRoute->id;
                         if($modelOrder->save()){
@@ -812,6 +815,7 @@ class OrderController extends Controller
                                 $modelOrder->type_payment = Payment::TYPE_CASH;
                                 $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                             }
+//                            return var_dump($modelOrder->cost);
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
                         } else {
                             functions::setFlashWarning('Ошибка на сервере');
@@ -844,11 +848,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function actionReOrder(){
-        return $this->render('/order/re-order');
-    }
-
-    public function actionReOrderFinish($id_user = null, $redirect = '/order/vehicle'){
+    public function actionReOrder($id_user = null, $redirect = '/order/vehicle'){
         if(!$id_user) $user = Yii::$app->user->identity;
         else $user = User::findOne($id_user);
         $Profile = $user->profile;
@@ -893,7 +893,7 @@ class OrderController extends Controller
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle = $vehicle->id;
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
-                    $modelOrder->body_typies[] = $vehicle->bodyType->id;
+                    $modelOrder->body_typies[1] = $vehicle->bodyType->id;
 
                     $modelOrder->id_car_owner = $vehicle->id_user;
 
@@ -906,7 +906,7 @@ class OrderController extends Controller
 
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
-                    return $this->render('/order/re-order-finish2', [
+                    return $this->render('/order/re-order2', [
                         'modelOrder' => $modelOrder,
                         'longlength' => $longlength,
                         'VehicleAttributes' => $VehicleAttributes,
@@ -925,7 +925,6 @@ class OrderController extends Controller
                     && $realRoute->load(Yii::$app->request->post())
                 ) {
 
-//                    $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
 
@@ -952,7 +951,7 @@ class OrderController extends Controller
                         $modelOrder->id_pricezone_for_vehicle = $min_rate->unique_index;
                     } else {
                         functions::setFlashWarning('Указанные данные по заказу не подходят для выбранного ТС');
-                        return $this->render('/order/re-order-finish', [
+                        return $this->render('/order/re-order', [
                             'modelOrder' => $modelOrder,
                             'driversArr' => $driversArr,
                             'vehicles' => $vehicles
@@ -962,7 +961,7 @@ class OrderController extends Controller
 
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
-                    return $this->render('/order/re-order-finish3', [
+                    return $this->render('/order/re-order3', [
                         'realRoute' => $realRoute,
                         'modelOrder' => $modelOrder,
                         'redirect' => $redirect
@@ -986,7 +985,7 @@ class OrderController extends Controller
         }
         $session->set('modelOrder', $modelOrder);
         $session->set('realRoute', $realRoute);
-        return $this->render('/order/re-order-finish', [
+        return $this->render('/order/re-order', [
             'modelOrder' => $modelOrder,
             'driversArr' => $driversArr,
             'vehicles' => $vehicles
@@ -994,47 +993,4 @@ class OrderController extends Controller
 
     }
 
-    public function actionReCreate($id_user = null, $redirect = '/order/vehicle'){
-        if(!$id_user) $user = Yii::$app->user->identity;
-        else $user = User::findOne($id_user);
-        $Profile = $user->profile;
-        if(!$user || !$Profile){
-            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже');
-            return $this->redirect($redirect);
-        }
-        $session = Yii::$app->session;
-        $modelOrder = new Order();
-        $modelOrder->id_user = $user->id;
-        $realRoute = new Route();
-
-        if (!$user->getDrivers()->count() && !$Profile->is_driver) {
-            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
-            return $this->redirect($redirect);
-        }
-        $driversArr = ArrayHelper::map($user->getDrivers()->all(), 'id', 'fio');
-        if($Profile->is_driver){
-//            return var_dump(['0' => $UserModel->profile->fioFull]);
-            $driversArr['0'] = $Profile->fioFull;
-        }
-        $vehicles = [];
-        $Vehicles = $user->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
-
-        foreach ($Vehicles as $vehicle) {
-            if ($vehicle) {
-                $vehicles[$vehicle->id] =
-                    $vehicle->brand
-                    . ' (' . $vehicle->regLicense->reg_number . ') '
-                    . ' <br> '
-                ;
-            }
-        }
-
-        $session->set('modelOrder', $modelOrder);
-        $session->set('realRoute', $realRoute);
-        return $this->render('/order/re-order-finish', [
-            'modelOrder' => $modelOrder,
-            'driversArr' => $driversArr,
-            'vehicles' => $vehicles
-        ]);
-    }
 }

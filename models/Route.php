@@ -86,7 +86,7 @@ class Route extends \yii\db\ActiveRecord
         $obj_finish = $coder::findOneByAddress($this->routeFinish);
 
         if($obj_start){
-            if($obj_start->data){
+            if($obj_start->data && $obj_start->data['city']){
                 $this->startCity = $obj_start->data['city'];
             }else {
                 $this->startCity = $this->routeStart;
@@ -96,7 +96,7 @@ class Route extends \yii\db\ActiveRecord
         }
 
         if($obj_finish){
-            if($obj_finish->data){
+            if($obj_finish->data && $obj_finish->data['city']){
                 $this->finishCity = $obj_finish->data['city'];
             }else {
                 $this->finishCity = $this->routeFinish;
