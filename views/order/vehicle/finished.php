@@ -11,6 +11,7 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use app\models\Tip;
 ?>
 <div>
     <?= GridView::widget([
@@ -96,11 +97,23 @@ use yii\bootstrap\Tabs;
                 'label' => 'Заказчик',
                 'format' => 'raw',
                 'value' => function(Order $modelOrder){
+                    if($modelOrder->id_user == $modelOrder->id_car_owner){
+                        return '"Повторный заказ" <br>' . $modelOrder->comment;
+                    }
                     return ($modelOrder->paid_status == Order::PAID_YES)
                         ? $modelOrder->getClientInfoWithoutPhone()
                         : $modelOrder->getClientInfo()
                         ;
                 }
+            ],
+            [
+                'attribute' => 're',
+                'format' => 'raw',
+                'label' => Html::icon('star'). ' ' . Tip::getTipButtonModal('Order', 're'),
+                'value' => function (Order $Order){
+                    return ($Order->re)?Html::icon('star'):'';
+                },
+                'encodeLabel' => false
             ],
             [
                 'label' => 'Действия',

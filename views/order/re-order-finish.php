@@ -9,6 +9,7 @@
  */
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 $this->title = Html::encode('Регистрация и завершение повторного заказа.');
 ?>

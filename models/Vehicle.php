@@ -561,7 +561,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 if ($priceZone->id == $pZone->id) $hasPriceZone = 1;
             }
         }
-        if(!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) return false;
+        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) && !$Order->re) return false;
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:
                 if(
@@ -669,7 +669,7 @@ class Vehicle extends \yii\db\ActiveRecord
         foreach ($Order->priceZones as $OrderPriceZone) {
             foreach ($this->priceZonesSelect as $priceZone){
                 if($OrderPriceZone->id == $priceZone->id){
-                    $pricezonesForVehicle[]=$OrderPriceZone;
+                    $pricezonesForVehicle[] = $OrderPriceZone;
                 }
             }
         }

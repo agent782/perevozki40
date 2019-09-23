@@ -191,7 +191,7 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                                 || Yii::$app->user->can('client'))
                         ],
                         [
-                            'label' => Html::icon('plus') . 'Повторный заказ',
+                            'label' => Html::icon('star') . 'Повторный заказ',
                             'encode' => false,
                             'url' => '/order/re-order',
                             'visible' => Yii::$app->user->can('car_owner'),

@@ -168,7 +168,7 @@ class OrderController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($redirect = '/client')
+    public function actionCreate($redirect = '/client', $re = false)
     {
 //        return var_dump(Yii::$app->request->post());
         $session = Yii::$app->session;
@@ -858,6 +858,8 @@ class OrderController extends Controller
         }
         $session = Yii::$app->session;
         $modelOrder = new Order();
+        $modelOrder->id_user = $user->id;
+        $modelOrder->re = true;
         $realRoute = new Route();
 
         if (!$user->getDrivers()->count() && !$Profile->is_driver) {
@@ -882,22 +884,25 @@ class OrderController extends Controller
             }
         }
 
-        switch (Yii::$app->request->post('button')){
+        switch (Yii::$app->request->post('button')) {
             case 'next1':
                 $modelOrder = $session->get('modelOrder');
                 $realRoute = $session->get('realRoute');
-                if(!$modelOrder || !$realRoute) break;
-                if($modelOrder->load(Yii::$app->request->post())){
+                if (!$modelOrder || !$realRoute) break;
+                if ($modelOrder->load(Yii::$app->request->post())) {
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
-                    $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
                     $modelOrder->id_vehicle = $vehicle->id;
+                    $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
                     $modelOrder->body_typies[] = $vehicle->bodyType->id;
-                    $modelOrder->id_pricezone_for_vehicle = $vehicle->getMinRate()->unique_index;
 
-                    $longlength = $modelOrder->vehicle->longlength;
-                    $modelOrder->real_longlength = 0;
-                    $VehicleAttributes = $modelOrder->getArrayAttributesForSetFinishPricezone();
+                    $modelOrder->id_car_owner = $vehicle->id_user;
+
+                    $longlength = $vehicle->longlength;
+                    $modelOrder->longlength = 0;
+                    $VehicleAttributes = $modelOrder->getArrayAttributesForReCreate();
                     $TypiesPayment = TypePayment::getTypiesPaymentsArray();
+
+                    $modelOrder->scenario = Order::SCENARIO_RE_CREATE;
 
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
@@ -915,25 +920,51 @@ class OrderController extends Controller
 //                $modelOrder = new Order();
                 $modelOrder = $session->get('modelOrder');
                 $realRoute = $session->get('realRoute');
-                if(!$modelOrder || !$realRoute) break;
-                if($modelOrder->load(Yii::$app->request->post())
-                    && $realRoute->load(Yii::$app->request->post())){
+                if (!$modelOrder || !$realRoute) break;
+                if ($modelOrder->load(Yii::$app->request->post())
+                    && $realRoute->load(Yii::$app->request->post())
+                ) {
 
-                    $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
+//                    $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
+                    $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
 
-                    $CalculateAndPrintFinishCost = $modelOrder->CalculateAndPrintFinishCost(true, true, false);
-                    $modelOrder->cost =
-                        $modelOrder->CalculateAndPrintFinishCost(false,false,false)['cost'];
-                    $modelOrder->cost_finish = $modelOrder->finishCost;
-                    $modelOrder->cost_finish_vehicle = $modelOrder->finishCostForVehicle;
+                    $modelOrder->selected_rates = array_keys($modelOrder->getSuitableRates
+                    (
+                        $realRoute->distance,
+                        20
+                    ));
+//                    return var_dump($modelOrder->scenario);
+                    if ($realRoute->save()) {
+                        $modelOrder->id_route = $realRoute->id;
+                        if (!$modelOrder->save()) {
+                            $realRoute->delete();
+                            functions::setFlashWarning('Ошибка на сервере!');
+                            break;
+//                            return $this->redirect($redirect);
+                        }
+                    } else {
+                        functions::setFlashWarning('Ошибка на сервере!');
+                        break;
+                    }
+//
+                    if ($min_rate = $vehicle->getMinRate($modelOrder)) {
+                        $modelOrder->id_pricezone_for_vehicle = $min_rate->unique_index;
+                    } else {
+                        functions::setFlashWarning('Указанные данные по заказу не подходят для выбранного ТС');
+                        return $this->render('/order/re-order-finish', [
+                            'modelOrder' => $modelOrder,
+                            'driversArr' => $driversArr,
+                            'vehicles' => $vehicles
+                        ]);
+                    }
+
 
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
                     return $this->render('/order/re-order-finish3', [
                         'realRoute' => $realRoute,
                         'modelOrder' => $modelOrder,
-                        'CalculateAndPrintFinishCost' => $CalculateAndPrintFinishCost,
                         'redirect' => $redirect
                     ]);
                 }
@@ -942,17 +973,16 @@ class OrderController extends Controller
 //                $modelOrder = new Order();
                 $modelOrder = $session->get('modelOrder');
                 $realRoute = $session->get('realRoute');
-                if(!$modelOrder || !$realRoute) break;
-                if($modelOrder->load(Yii::$app->request->post())){
-                    return var_dump($modelOrder->getErrors());
-                    if($realRoute->save()){
-                        if($modelOrder->save()){
-                            functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрировкан и завершен!');
-                        }
-                    }
-                    functions::setFlashWarning('Ошибка на сервере!');
-                }
-                break;
+                if (!$modelOrder || !$realRoute) break;
+                if ($modelOrder->load(Yii::$app->request->post())) {
+
+                    $modelOrder->changeStatus(
+                        Order::STATUS_VEHICLE_ASSIGNED,
+                        $modelOrder->id_car_owner,
+                        $modelOrder->id_vehicle);
+                    functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрировкан!');
+                    return $this->redirect($redirect);
+                } else return var_dump($modelOrder->getErrors());
         }
         $session->set('modelOrder', $modelOrder);
         $session->set('realRoute', $realRoute);
@@ -962,5 +992,49 @@ class OrderController extends Controller
             'vehicles' => $vehicles
         ]);
 
+    }
+
+    public function actionReCreate($id_user = null, $redirect = '/order/vehicle'){
+        if(!$id_user) $user = Yii::$app->user->identity;
+        else $user = User::findOne($id_user);
+        $Profile = $user->profile;
+        if(!$user || !$Profile){
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже');
+            return $this->redirect($redirect);
+        }
+        $session = Yii::$app->session;
+        $modelOrder = new Order();
+        $modelOrder->id_user = $user->id;
+        $realRoute = new Route();
+
+        if (!$user->getDrivers()->count() && !$Profile->is_driver) {
+            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
+            return $this->redirect($redirect);
+        }
+        $driversArr = ArrayHelper::map($user->getDrivers()->all(), 'id', 'fio');
+        if($Profile->is_driver){
+//            return var_dump(['0' => $UserModel->profile->fioFull]);
+            $driversArr['0'] = $Profile->fioFull;
+        }
+        $vehicles = [];
+        $Vehicles = $user->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+
+        foreach ($Vehicles as $vehicle) {
+            if ($vehicle) {
+                $vehicles[$vehicle->id] =
+                    $vehicle->brand
+                    . ' (' . $vehicle->regLicense->reg_number . ') '
+                    . ' <br> '
+                ;
+            }
+        }
+
+        $session->set('modelOrder', $modelOrder);
+        $session->set('realRoute', $realRoute);
+        return $this->render('/order/re-order-finish', [
+            'modelOrder' => $modelOrder,
+            'driversArr' => $driversArr,
+            'vehicles' => $vehicles
+        ]);
     }
 }

@@ -23,7 +23,6 @@ $this->title = 'Фактические данные по заказу №' . $mo
 //var_dump($modelOrder);
 //echo '<br><br>';
 //var_dump($realRoute);
-echo $modelOrder->vehicle->bodyTypeText;
 ?>
 
 <div class="order-finish container">

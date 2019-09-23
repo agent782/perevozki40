@@ -53,17 +53,23 @@ use yii\bootstrap\Tabs;
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'attribute' => 'clientInfo'
+                'attribute' => 'clientInfo',
+                'value' => function(Order $modelOrder){
+                    if($modelOrder->id_user == $modelOrder->id_car_owner){
+                        return '"Повторный заказ" <br>' . $modelOrder->comment;
+                    }
+                    return  $modelOrder->getClientInfo();
+                }
             ],
             [
                 'label' => 'Тариф',
                 'format' => 'raw',
                 'attribute' => 'id_pricezone_for_vehicle',
-                'value' => function($modelOrder){
+                'value' => function(Order $modelOrder){
                     return \app\models\PriceZone::findOne(['unique_index' =>$modelOrder
                         ->id_pricezone_for_vehicle])
-                        ->getTextWithShowMessageButton($modelOrder->route->distance,
-                            SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
+                        ->getWithDiscount($modelOrder->getVehicleProcentPrice())
+                        ->getTextWithShowMessageButton($modelOrder->route->distance, true);
                 }
             ],
             [

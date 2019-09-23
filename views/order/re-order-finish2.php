@@ -42,7 +42,7 @@ $this->registerJsFile('/js/order.js');
 <br><br>
     <div class="col-lg-4">
 
-        <?= $form->field($modelOrder, 'real_datetime_start',[
+        <?= $form->field($modelOrder, 'datetime_start',[
             'enableClientValidation' => true
         ])->widget(DateTimePicker::className(),[
                 'name' => 'dp_1',
@@ -58,46 +58,14 @@ $this->registerJsFile('/js/order.js');
                     'format' => 'dd.MM.yyyy H:i',
                     'autoclose'=>true,
                     'weekStart'=>1, //неделя начинается с понедельника
-                    'startDate' => $modelOrder->create_at, //самая ранняя возможная дата
+//                    'startDate' => $modelOrder->create_at, //самая ранняя возможная дата
 //                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
                     'todayBtn'=>true, //снизу кнопка "сегодня",
 
                 ],
             ]
         )?>
-        <?= $form->field($modelOrder, 'datetime_finish',[
-            'enableClientValidation' => true
-        ])
-            ->widget(DateTimePicker::className(),[
-                'name' => 'dp_2',
-//                'type' => DateTimePicker::TYPE_INPUT,
-                'options' => [
-                    'placeholder' => 'Ввод даты/времени...',
-                ],
-                'convertFormat' => true,
 
-//                'value'=> '',
-                'pluginOptions' => [
-                    'format' => 'dd.MM.yyyy H:i',
-                    'autoclose'=>true,
-                    'weekStart'=>1, //неделя начинается с понедельника
-//                    'startDate' => date($modelOrder->real_datetime_start), //самая ранняя возможная дата
-//                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
-                    'todayBtn'=>true, //снизу кнопка "сегодня"
-                ]
-            ])
-        ?>
-        <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, ['encode' => false])?>
-
-        <?php if($longlength) {
-            echo $form->field($modelOrder, 'real_longlength')->radioList(['Нет', 'Да'])->label(
-                'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
-                    'helpMessage' => Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,
-                ])
-//                ,['encode' => true]
-            );
-        }
-        ?>
         <?php
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
@@ -108,25 +76,16 @@ $this->registerJsFile('/js/order.js');
             ]);
         }
         ?>
-
-        <?= $form->field($modelOrder, 'real_km')
-            ->input('tel', ['id' => 'real_distance'])
-            ->label('Реальный пробег')
-        ;?>
-        <div id="real_h_loading">
-            <?= $form->field($modelOrder, 'real_h_loading')->input('tel')?>
-        </div>
-        <?php
-            if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND)
-                || $modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_SIDEWAYS)){
-                echo $form->field($modelOrder, 'real_remove_awning')->input('tel');
-            }
+        <?php if($longlength) {
+            echo $form->field($modelOrder, 'longlength')->radioList(['Нет', 'Да'])->label(
+                'Груз длинномер ' . \app\components\widgets\ShowMessageWidget::widget([
+                    'helpMessage' => Tip::findOne(['model' => 'Order','attribute' => 'longlength'])->description,
+                ])
+            );
+        }
         ?>
-        <?= $form->field($modelOrder,'additional_cost')->input('tel')->label(
-            'Дополнительные рассходы (руб.)' . ShowMessageWidget::widget([
-                'helpMessage' => Tip::findOne(['model' => 'Order', 'attribute' =>'additional_cost'])->description
-            ])
-        ) ?>
+        <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, ['encode' => false])?>
+
     </div>
 <br><br>
     <div class="col-lg-11">
