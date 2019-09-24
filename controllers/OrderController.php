@@ -963,11 +963,11 @@ class OrderController extends Controller
                             'vehicles' => $vehicles
                         ]);
                     }
-                    
+
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
                 }
                 break;
+        }
     }
-
 }
