@@ -949,6 +949,12 @@ class OrderController extends Controller
 //
                     if ($min_rate = $vehicle->getMinRate($modelOrder)) {
                         $modelOrder->id_pricezone_for_vehicle = $min_rate->unique_index;
+                        $modelOrder->changeStatus(
+                            Order::STATUS_VEHICLE_ASSIGNED,
+                            $modelOrder->id_car_owner,
+                            $modelOrder->id_vehicle);
+                        functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрировкан!');
+                        return $this->redirect($redirect);
                     } else {
                         functions::setFlashWarning('Указанные данные по заказу не подходят для выбранного ТС');
                         return $this->render('/order/re-order', [
@@ -957,40 +963,11 @@ class OrderController extends Controller
                             'vehicles' => $vehicles
                         ]);
                     }
-
-
+                    
                     $session->set('modelOrder', $modelOrder);
                     $session->set('realRoute', $realRoute);
-                    return $this->render('/order/re-order3', [
-                        'realRoute' => $realRoute,
-                        'modelOrder' => $modelOrder,
-                        'redirect' => $redirect
-                    ]);
                 }
                 break;
-            case 'next3':
-//                $modelOrder = new Order();
-                $modelOrder = $session->get('modelOrder');
-                $realRoute = $session->get('realRoute');
-                if (!$modelOrder || !$realRoute) break;
-                if ($modelOrder->load(Yii::$app->request->post())) {
-
-                    $modelOrder->changeStatus(
-                        Order::STATUS_VEHICLE_ASSIGNED,
-                        $modelOrder->id_car_owner,
-                        $modelOrder->id_vehicle);
-                    functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрировкан!');
-                    return $this->redirect($redirect);
-                } else return var_dump($modelOrder->getErrors());
-        }
-        $session->set('modelOrder', $modelOrder);
-        $session->set('realRoute', $realRoute);
-        return $this->render('/order/re-order', [
-            'modelOrder' => $modelOrder,
-            'driversArr' => $driversArr,
-            'vehicles' => $vehicles
-        ]);
-
     }
 
 }
