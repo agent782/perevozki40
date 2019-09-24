@@ -1106,9 +1106,8 @@ class Order extends \yii\db\ActiveRecord
 
         $return = '';
         if ($this->profile) {
-
-        $return .= $this->profile->fioFull
-            . '<br>';
+            $return .= $this->profile->fioFull
+                . '<br>';
         }
         if($this->id_company) $return .= $this->company->name . '<br>';
 
@@ -1373,7 +1372,9 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
         // Емэил Клиенту
-        if($id_client) {
+        if(
+            $this->id_car_owner != $this->id_user
+            || ($this->id_car_owner == $this->id_user && !$email_to_vehicle)) {
             functions::sendEmail(
                 $email_client,
                 $email_from,
@@ -1404,7 +1405,7 @@ class Order extends \yii\db\ActiveRecord
         }
 
         //Сообщение клиенту
-        if ($this->id_user) {
+        if ($id_client && $this->id_user != $this->id_car_owner) {
             if ($id_client) {
                 $Message_to_client = new Message([
                     'id_to_user' => $id_client,
