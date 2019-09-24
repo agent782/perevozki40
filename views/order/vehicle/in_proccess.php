@@ -55,7 +55,7 @@ use yii\bootstrap\Tabs;
                 'format' => 'raw',
                 'attribute' => 'clientInfo',
                 'value' => function(Order $modelOrder){
-                    if($modelOrder->id_user == $modelOrder->id_car_owner){
+                    if(!$modelOrder->id_user){
                         return '"Повторный заказ" <br>' . $modelOrder->comment;
                     }
                     return  $modelOrder->getClientInfo();

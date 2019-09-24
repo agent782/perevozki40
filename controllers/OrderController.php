@@ -858,7 +858,7 @@ class OrderController extends Controller
         }
         $session = Yii::$app->session;
         $modelOrder = new Order();
-        $modelOrder->id_user = $user->id;
+//        $modelOrder->id_user = $user->id;
         $modelOrder->re = true;
         $realRoute = new Route();
 
@@ -963,11 +963,17 @@ class OrderController extends Controller
                             'vehicles' => $vehicles
                         ]);
                     }
-
-                    $session->set('modelOrder', $modelOrder);
-                    $session->set('realRoute', $realRoute);
                 }
                 break;
         }
+        $session->set('modelOrder', $modelOrder);
+        $session->set('realRoute', $realRoute);
+        return $this->render('/order/re-order', [
+            'modelOrder' => $modelOrder,
+            'driversArr' => $driversArr,
+            'vehicles' => $vehicles
+        ]);
+
     }
+
 }

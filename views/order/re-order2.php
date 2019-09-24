@@ -85,6 +85,9 @@ $this->registerJsFile('/js/order.js');
         }
         ?>
         <?= $form->field($modelOrder, 'type_payment')->radioList($TypiesPayment, ['encode' => false])?>
+        <?= $form->field($modelOrder, 'comment')->textarea([
+            'placeholder' => 'Заказчик, телефон, Организация ...'
+        ])->label('Информация о Клиенте')?>
 
     </div>
 <br><br>

@@ -97,7 +97,7 @@ use app\models\Tip;
                 'label' => 'Заказчик',
                 'format' => 'raw',
                 'value' => function(Order $modelOrder){
-                    if($modelOrder->id_user == $modelOrder->id_car_owner){
+                    if(!$modelOrder->id_user){
                         return '"Повторный заказ" <br>' . $modelOrder->comment;
                     }
                     return ($modelOrder->paid_status == Order::PAID_YES)

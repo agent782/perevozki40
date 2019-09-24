@@ -1101,12 +1101,15 @@ class Order extends \yii\db\ActiveRecord
             return $return;
     }
 
-    public function getClientInfoWithoutPhone(){
+    public function getClientInfoWithoutPhone()
+    {
 
         $return = '';
+        if ($this->profile) {
+
         $return .= $this->profile->fioFull
-            . '<br>'
-        ;
+            . '<br>';
+        }
         if($this->id_company) $return .= $this->company->name . '<br>';
 
         return $return;
@@ -1370,9 +1373,7 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
         // Емэил Клиенту
-        if(
-            $this->id_car_owner != $this->id_user
-            || ($this->id_car_owner == $this->id_user && !$email_to_vehicle)) {
+        if($id_client) {
             functions::sendEmail(
                 $email_client,
                 $email_from,
@@ -1403,7 +1404,7 @@ class Order extends \yii\db\ActiveRecord
         }
 
         //Сообщение клиенту
-        if ($id_client && $this->id_user != $this->id_car_owner) {
+        if ($this->id_user) {
             if ($id_client) {
                 $Message_to_client = new Message([
                     'id_to_user' => $id_client,

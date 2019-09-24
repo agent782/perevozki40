@@ -23,8 +23,10 @@ $this->title = Html::encode('Регистрация и завершение по
 ?>
 <?= $form->field($modelOrder, 'id_vehicle')->radioList($vehicles, [
     'encode' => false
-])?>
-<?= $form->field($modelOrder, 'id_driver')->radioList($driversArr)?>
+])->label('Выберите ТС:')?>
+<?= $form->field($modelOrder, 'id_driver')->radioList($driversArr)
+    ->label('Выберите водителя:')
+?>
 <?= Html::submitButton('Далее', [
     'class' => 'btn btn-success',
     'name' => 'button',
