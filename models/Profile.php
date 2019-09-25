@@ -531,6 +531,7 @@ class Profile extends \yii\db\ActiveRecord
         $orders_cash = Order::find()->where(['id_user' => $this->id_user,])
             ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
             ->andWhere(['type_payment' => Payment::TYPE_CASH])
+            ->andWhere(['!=', 'id_car_owner', $this->id_user])
             ->all();
         $orders_card = Order::find()->where(['id_user' => $this->id_user,])
             ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
@@ -712,14 +713,15 @@ class Profile extends \yii\db\ActiveRecord
         }
 
         foreach ($orders_not_paid as $order){
-            $return['not_paid'] += round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $cost = round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $return['not_paid'] += $cost;
             $return['orders_not_paid'][] = [
                 'date' => $order->datetime_finish,
                 'id_order' => $order->id,
             ];
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'debit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)) . '*',
+                'debit' => $cost,
                 'credit' => '',
                 'description' => '(НЕ ОПЛАЧЕН) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,

@@ -33,6 +33,7 @@ $this->title = 'Фактические данные по заказу №' . $mo
     \yii\widgets\Pjax::begin(['id' => 'update']);
     $form = ActiveForm::begin()
     ?>
+    <?= $form->field($modelOrder, 'id_user')->hiddenInput()->label(false)?>
     <div class="col-lg-4">
         <strong>Тарифная зона после изменения данных по заказу: </strong>
         <?= $finishCostText?>
@@ -69,7 +70,8 @@ $this->title = 'Фактические данные по заказу №' . $mo
 
     <div class="col-lg-11">
         <?php if ($modelOrder->type_payment !== Payment::TYPE_CASH){
-            echo $form->field($modelOrder, 'ClientPaidCash')->checkbox(['label' => 'Клиент оплатил наличными или на банковскую карту']);
+            echo $form->field($modelOrder, 'ClientPaidCash')
+                ->checkbox(['label' => 'Клиент оплатил наличными или на банковскую карту']);
     }?>
     </div>
     <div class="col-lg-11">

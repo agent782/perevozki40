@@ -95,7 +95,7 @@ $this->registerJsFile('/js/order.js');
         <?=
         Html::a('Отмена', $redirect, ['class' => 'btn btn-warning'])
         ?>
-        <?= Html::submitButton('Далее',
+        <?= Html::submitButton('Зарегистрировать',
             [
                 'class' => 'btn btn-success',
                 'name' => 'button',

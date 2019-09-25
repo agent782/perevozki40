@@ -103,17 +103,21 @@ class OrderController extends Controller
             ->andWhere(['id_user' => Yii::$app->user->id]);
         $dataProvider_in_process->query
             ->where(['in', Order::tableName().'.status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]])
-            ->andWhere(['id_user' => Yii::$app->user->id]);
+            ->andWhere(['id_user' => Yii::$app->user->id])
+            ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id])
+        ;
         $dataProvider_arhive->query
             ->where(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
-            ->andWhere(['id_user' => Yii::$app->user->id]);
+            ->andWhere(['id_user' => Yii::$app->user->id])
+            ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id]);
         $dataProvider_arhive->sort->defaultOrder = [
             'paid_status' => SORT_ASC,
             'datetime_finish' => SORT_DESC
         ];
         $dataProvider_expired_and_canceled->query
             ->where(['in', Order::tableName().'.status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
-            ->andWhere(['id_user' => Yii::$app->user->id]);
+            ->andWhere(['id_user' => Yii::$app->user->id])
+            ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id]);
 
         return $this->render('client', [
             'searchModel' => $searchModel,
@@ -759,7 +763,9 @@ class OrderController extends Controller
                 if($modelOrder->load(Yii::$app->request->post()) && $realRoute->load(Yii::$app->request->post())) {
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
+                    $modelOrder->hand_vehicle_cost = $modelOrder->getFinishCostForVehicle();
                     $modelOrder->cost = $modelOrder->CalculateAndPrintFinishCost(false)['cost'];
+
                     $sesssion->set('modelOrder', $modelOrder);
                     $sesssion->set('realRoute', $realRoute);
                     return $this->render('/order/finish-by-vehicle2', [
@@ -826,7 +832,7 @@ class OrderController extends Controller
                     $sesssion->remove('modelOrder');
                     $sesssion->remove('realRoute');
                     return $this->redirect($redirect);
-                }
+                } else return var_dump($modelOrder->load(Yii::$app->request->post()));
                 break;
             default:
                 break;
@@ -858,7 +864,7 @@ class OrderController extends Controller
         }
         $session = Yii::$app->session;
         $modelOrder = new Order();
-//        $modelOrder->id_user = $user->id;
+        $modelOrder->id_user = $user->id;
         $modelOrder->re = true;
         $realRoute = new Route();
 

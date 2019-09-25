@@ -39,7 +39,7 @@ use kartik\grid\GridView;
     $comments = '';
     if($dataProvider_car_owner){
         $items[] = [
-            'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р.',
+            'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р. (' . $balance['not_paid'] . '*****)' ,
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_car_owner,
                 'responsiveWrap' => false,
@@ -51,6 +51,7 @@ use kartik\grid\GridView;
                     [
                         'label' => 'Дебет',
                         'attribute' => 'debit',
+                        'format' => 'raw',
                         'value' => function ($model){
                             return $model['debit'];
                         },
@@ -71,6 +72,7 @@ use kartik\grid\GridView;
         $comments .= '<p><comment>* Баланс по принятым Вами заказам на Ваши ТС.</comment></p>';
         $comments .= '<p><comment>**** Сумма частичной оплаты Клиентом за заказ за вычетом процентов
             (Оставшаяся неоплаченная Клиентом сумма по заказу за вычетом процентов)</comment></p>';
+        $comments .= '<p>***** Сумма неоплаченных Клиентами "безнальных" заказов</p>';
     }
     if($dataProvider_user && $balance){
         $items[] = [

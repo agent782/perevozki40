@@ -33,6 +33,7 @@ class OrderController extends Controller
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';
                 } ,
+                'scenario' => Order::SCENARIO_CHANGE_PAID_STATUS
             ],
             'changePaidCarOwnerStatus' => [
                 'class' => EditableColumnAction::class ,
@@ -52,7 +53,8 @@ class OrderController extends Controller
                 } ,
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';
-                } ,
+                },
+                'scenario' => Order::SCENARIO_CHANGE_TYPE_PAYMENT
             ],
             'set_avans_client' => [
                 'class' => EditableColumnAction::class ,
@@ -63,6 +65,7 @@ class OrderController extends Controller
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';
                 } ,
+                'scenario' => Order::SCENARIO_CHANGE_AVANS_CLIENT
             ]
 
         ]);

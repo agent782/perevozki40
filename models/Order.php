@@ -157,6 +157,12 @@ class Order extends \yii\db\ActiveRecord
 
     const SCENARIO_RE_CREATE = 're_create';
 
+    const SCENARIO_CHANGE_PAID_STATUS = 'change_paid_status';
+    const SCENARIO_CHANGE_AVANS_CLIENT = 'change_avans_client';
+    const SCENARIO_CHANGE_TYPE_PAYMENT = 'change_type_payment';
+
+
+
     public $body_typies;
     public $loading_typies;
     public $suitable_rates;
@@ -302,6 +308,11 @@ class Order extends \yii\db\ActiveRecord
             'type_payment', 'datetime_start',
             'passengers','id_company', 'status', 'create_at', 'update_at', 'comment'
         ];
+        $scenarios[self::SCENARIO_CHANGE_PAID_STATUS] = ['paid_status'];
+        $scenarios[self::SCENARIO_CHANGE_AVANS_CLIENT] = ['avans_client'];
+        $scenarios[self::SCENARIO_CHANGE_TYPE_PAYMENT] = ['type_payment'];
+
+
         return $scenarios;
     }
 
@@ -1183,6 +1194,8 @@ class Order extends \yii\db\ActiveRecord
             $vehicle = Vehicle::findOne($this->id_vehicle);
             $email_vehicle = User::findOne($vehicle->id_user)->email;
         }
+        $push_to_client = true;
+        $email_to_client = true;
         $push_to_vehicle = false;
         $email_to_vehicle = false;
         $message_can_review_client = false;
@@ -1264,6 +1277,16 @@ class Order extends \yii\db\ActiveRecord
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
                 $vehicle = $this->vehicle;
+                if($this->re){
+                    $email_to_client = false;
+                    $push_to_client = false;
+                    $title_vehicle = 'Повторный заказ №'.$this->id.' зарегистрирован.';
+                    $message_vehicle = $this->getFullNewInfo(false, true, false, false);
+                    $email_to_vehicle = true;
+                    $push_to_vehicle = true;
+                    $this->datetime_access = date('d.m.Y H:i');
+                    break;
+                }
                 $title_client = 'Заказ №'.$this->id.' принят водителем. ';
                 $title_vehicle = 'Вы приняли заказ №'.$this->id.'.';
                 $message_vehicle = 'Вы приняли заказ №'
@@ -1315,6 +1338,16 @@ class Order extends \yii\db\ActiveRecord
                 if($changeFinishCosts) {
                     $this->cost_finish = $this->getFinishCost(false);
                     $this->cost_finish_vehicle = $this->finishCostForVehicle;
+                }
+                if($this->re){
+                    if($this->id_user == $this->id_car_owner){
+                        $email_to_client = false;
+                        $push_to_client = false;
+                        $message_can_review_client = false;
+                        $message_can_review_vehicle = false;
+                        $title_vehicle = 'Заказ №'.$this->id.'. Вы подтвердили выполнение повторного заказа.';
+                        $message_vehicle = $this->CalculateAndPrintFinishCost(false, true)['text'];
+                    }
                 }
                 break;
             case self::STATUS_CONFIRMED_CLIENT:
@@ -1372,9 +1405,7 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
         // Емэил Клиенту
-        if(
-            $this->id_car_owner != $this->id_user
-            || ($this->id_car_owner == $this->id_user && !$email_to_vehicle)) {
+        if($email_to_client) {
             functions::sendEmail(
                 $email_client,
                 $email_from,
@@ -1389,7 +1420,7 @@ class Order extends \yii\db\ActiveRecord
             );
         }
         //Емэил Водителю
-        if($email_to_vehicle) {
+        if($id_vehicle &&$email_to_vehicle) {
             functions::sendEmail(
                 $email_vehicle,
                 $email_from,
@@ -1405,37 +1436,36 @@ class Order extends \yii\db\ActiveRecord
         }
 
         //Сообщение клиенту
-        if ($id_client && $this->id_user != $this->id_car_owner) {
-            if ($id_client) {
-                $Message_to_client = new Message([
-                    'id_to_user' => $id_client,
-                    'title' => $title_client,
-                    'text' => $message_client,
-                    'text_push' => $message_push_client,
-                    'url' => $url_client,
-                    'push_status' => Message::STATUS_NEED_TO_SEND,
-                    'email_status' => Message::STATUS_NEED_TO_SEND,
-                    'can_review_client' => $message_can_review_client,
-                    'can_review_vehicle' => false,
-                    'id_order' => $this->id,
-                    'id_to_review' => $client_id_to_review,
-                    'id_from_review' => $client_id_from_review
-                ]);
-                $Message_to_client->sendPush();
-            }
-
-            if ($message_can_review_client) {
-                $review_client = new Review([
-                    'id_order' => $this->id,
-                    'id_message' => $Message_to_client->id,
-                    'event' => $event_review,
-                    'type' => Review::TYPE_TO_VEHICLE,
-                    'id_user_from' => $id_client,
-                    'id_user_to' => $vehicle->user->id,
-                ]);
-                $review_client->save(false);
-            }
+        if ($id_client && $push_to_client) {
+            $Message_to_client = new Message([
+                'id_to_user' => $id_client,
+                'title' => $title_client,
+                'text' => $message_client,
+                'text_push' => $message_push_client,
+                'url' => $url_client,
+                'push_status' => Message::STATUS_NEED_TO_SEND,
+                'email_status' => Message::STATUS_NEED_TO_SEND,
+                'can_review_client' => $message_can_review_client,
+                'can_review_vehicle' => false,
+                'id_order' => $this->id,
+                'id_to_review' => $client_id_to_review,
+                'id_from_review' => $client_id_from_review
+            ]);
+            $Message_to_client->sendPush();
         }
+
+        if ($message_can_review_client) {
+            $review_client = new Review([
+                'id_order' => $this->id,
+                'id_message' => $Message_to_client->id,
+                'event' => $event_review,
+                'type' => Review::TYPE_TO_VEHICLE,
+                'id_user_from' => $id_client,
+                'id_user_to' => $vehicle->user->id,
+            ]);
+            $review_client->save(false);
+        }
+
         //Сообщение водителю
         if($id_vehicle && $push_to_vehicle) {
             $Message_to_vehicle = new Message([

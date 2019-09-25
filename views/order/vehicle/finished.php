@@ -97,12 +97,13 @@ use app\models\Tip;
                 'label' => 'Заказчик',
                 'format' => 'raw',
                 'value' => function(Order $modelOrder){
-                    if(!$modelOrder->id_user){
+                    if($modelOrder->id_user == $modelOrder->id_car_owner){
                         return '"Повторный заказ" <br>' . $modelOrder->comment;
                     }
+                    $re = ($modelOrder->re)?'"Повторный заказ"':'';
                     return ($modelOrder->paid_status == Order::PAID_YES)
-                        ? $modelOrder->getClientInfoWithoutPhone()
-                        : $modelOrder->getClientInfo()
+                        ? $re . $modelOrder->getClientInfoWithoutPhone()
+                        : $re . $modelOrder->getClientInfo()
                         ;
                 }
             ],
