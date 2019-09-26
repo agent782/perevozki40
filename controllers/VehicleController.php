@@ -49,7 +49,8 @@ class VehicleController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'select-pricezones', 'update-pricezones', 'validate-vehicle-form', 'validate-vehicle'],
+                        'actions' => ['index', 'create', 'select-pricezones', 'update-pricezones',
+                            'validate-vehicle-form', 'validate-vehicle'],
                         'roles' => ['car_owner']
                     ],
                     [
@@ -296,7 +297,6 @@ class VehicleController extends Controller
         if ($model->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
 
             if ($model->validate() && $modelRegLicense->validate()) {
-
                 $model->unlinkAll('loadingtypes', true);
                 $model->unlinkAll('price_zones', true);
                 $model->update_at = date('d.m.Y H:i:s');

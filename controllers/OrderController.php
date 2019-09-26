@@ -700,7 +700,10 @@ class OrderController extends Controller
             functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
             return $this->redirect($redirect);
         }
-
+        if($order->re){
+            $order->changeStatus($order::STATUS_CANCELED, $order->id_user, $order->id_car_owner);
+            return $this->redirect($redirect);
+        }
         ($order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle));
 //        return;
 
@@ -832,7 +835,7 @@ class OrderController extends Controller
                     $sesssion->remove('modelOrder');
                     $sesssion->remove('realRoute');
                     return $this->redirect($redirect);
-                } else return var_dump($modelOrder->load(Yii::$app->request->post()));
+                } else                         functions::setFlashWarning('Ошибка на сервере');
                 break;
             default:
                 break;
@@ -944,11 +947,13 @@ class OrderController extends Controller
                         $modelOrder->id_route = $realRoute->id;
                         if (!$modelOrder->save()) {
                             $realRoute->delete();
+                            return var_dump($modelOrder->getErrors());
                             functions::setFlashWarning('Ошибка на сервере!');
                             break;
 //                            return $this->redirect($redirect);
                         }
                     } else {
+                        return 2;
                         functions::setFlashWarning('Ошибка на сервере!');
                         break;
                     }

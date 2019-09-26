@@ -1387,6 +1387,16 @@ class Order extends \yii\db\ActiveRecord
                     $vehicle_id_from_review = $vehicle->user->id;
                     $event_review = Review::EVENT_ORDER_CANCELED;
 
+                    if($this->id_user == $this->id_car_owner){
+                        $title_vehicle = 'Вы удалили повторный Заказ №'.$this->id.'.';
+                        $message_vehicle = '';
+                        ;
+                        $email_to_client = false;
+                        $push_to_client = false;
+                        $this->id_user = null;
+                        $message_can_review_vehicle = false;
+                        $message_can_review_client = false;
+                    }
                     $this->id_vehicle = null;
                     $this->id_car_owner = null;
                     $this->id_driver = null;

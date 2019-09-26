@@ -39,7 +39,7 @@ class PriceZoneController extends Controller
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete'],
+                        'actions' => ['create', 'update', 'delete', 'view'],
                         'roles' => ['admin']
                     ]
                 ]
