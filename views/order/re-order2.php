@@ -41,6 +41,12 @@ $this->registerJsFile('/js/order.js');
     </div>
 <br><br>
     <div class="col-lg-4">
+        <?= $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false)?>
+        <?php
+        if(array_key_exists(1, $modelOrder->body_typies));
+            echo $form->field($modelOrder, 'body_typies[1]')->hiddenInput()->label(false);
+        ?>
+
 
         <?= $form->field($modelOrder, 'datetime_start',[
             'enableClientValidation' => true

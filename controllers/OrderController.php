@@ -63,9 +63,9 @@ class OrderController extends Controller
                         'allow' => true,
                         'roles' => ['?'],
                         'actions' => ['create', 'validate-order'],
-                        'denyCallback' => function(){
-                            return 1;
-                        }
+//                        'denyCallback' => function(){
+//                            return 1;
+//                        }
                     ],
                 ],
             ]
@@ -608,18 +608,6 @@ class OrderController extends Controller
         }
     }
 
-    public function actionValidateOrder()
-    {
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-            $model = new Order();
-            if ($model->load(Yii::$app->request->post()))
-                return \yii\widgets\ActiveForm::validate($model);
-        }
-        throw new \yii\web\BadRequestHttpException('Bad request!');
-    }
-
     public function actionAcceptOrder($id_order, $id_user, $redirect = '/order/vehicle')
     {
         $OrderModel = Order::findOne($id_order);
@@ -727,6 +715,13 @@ class OrderController extends Controller
         $sesssion = Yii::$app->session;
 
         $modelOrder = self::findModel($id_order);
+        if($modelOrder->status != Order::STATUS_VEHICLE_ASSIGNED
+            || ($modelOrder->id_car_owner != Yii::$app->user->id
+            && Profile::notAdminOrDispetcher())
+        ){
+            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            return $this->redirect($redirect);
+        }
 
         if(!$modelOrder){
             functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
@@ -827,15 +822,17 @@ class OrderController extends Controller
 //                            return var_dump($modelOrder->cost);
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
                         } else {
+                            return 1;
                             functions::setFlashWarning('Ошибка на сервере');
                         }
                     } else  {
+                        return 2;
                         functions::setFlashWarning('Ошибка на сервере');
                     }
                     $sesssion->remove('modelOrder');
                     $sesssion->remove('realRoute');
                     return $this->redirect($redirect);
-                } else                         functions::setFlashWarning('Ошибка на сервере');
+                }                        functions::setFlashWarning('Ошибка на сервере');
                 break;
             default:
                 break;
@@ -899,6 +896,7 @@ class OrderController extends Controller
                 $realRoute = $session->get('realRoute');
                 if (!$modelOrder || !$realRoute) break;
                 if ($modelOrder->load(Yii::$app->request->post())) {
+                    if(!$modelOrder->id_vehicle) break;
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle = $vehicle->id;
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
@@ -933,10 +931,9 @@ class OrderController extends Controller
                 if ($modelOrder->load(Yii::$app->request->post())
                     && $realRoute->load(Yii::$app->request->post())
                 ) {
-
                     $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
-
+                    if(!$modelOrder->body_typies) break;
                     $modelOrder->selected_rates = array_keys($modelOrder->getSuitableRates
                     (
                         $realRoute->distance,
@@ -953,7 +950,6 @@ class OrderController extends Controller
 //                            return $this->redirect($redirect);
                         }
                     } else {
-                        return 2;
                         functions::setFlashWarning('Ошибка на сервере!');
                         break;
                     }
@@ -987,4 +983,14 @@ class OrderController extends Controller
 
     }
 
+    public function actionValidateOrder(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model = new Order();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
 }
