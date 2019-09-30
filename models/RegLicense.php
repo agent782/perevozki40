@@ -125,13 +125,14 @@ class RegLicense extends \yii\db\ActiveRecord
             ->andWhere(['!=','status' , Vehicle::STATUS_FULL_DELETED])
             ->all()
             ;
+
         if($vehicles) {
             foreach ($vehicles as $vehicle) {
                 if($vehicle->regLicense
                     && $this->id != $vehicle->regLicense->id
                 ) {
                     if ($this->reg_number == $vehicle->regLicense->reg_number) {
-                        $this->addError($attribute, 'У Вас уже добавлено ТС с таким гос. номером.');
+                        return $this->addError($attribute, 'У Вас уже добавлено ТС с таким гос. номером.');
                     }
                 }
             }

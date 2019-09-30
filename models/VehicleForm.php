@@ -204,7 +204,7 @@ class VehicleForm extends Model
                         ->andFilterWhere(['longlength' => $this->longlength])
                         ->andFilterWhere(['<=', 'length_min', $this->length])
                         ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
-                        ->all();
+                    ;
                 } else {
                     $priceZones = $priceZones
                         ->andFilterWhere([

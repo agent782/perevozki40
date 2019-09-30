@@ -19,7 +19,7 @@ $this->title = 'Новое транспортное средство.';
 //$this->params['breadcrumbs'][] = $this->title;
 
 ?>
-<div class="vehicle-create2" >
+<div class="vehicle-create2">
     <input id="role" hidden value="<?= Yii::$app->user->identity->getRole()?>">
     <h4><?= Html::encode($this->title) ?></h4>
     <br>
