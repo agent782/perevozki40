@@ -1365,17 +1365,20 @@ class Order extends \yii\db\ActiveRecord
                     $finishContacts = new OrdersFinishContacts();
                     $finishContacts->id_order = $this->id;
                 }
-                if($client = $this->profile && $this->id_user != $this->id_car_owner) {
+                $client = Profile::findOne($id_client);
+                if($client && $this->id_user != $this->id_car_owner) {
                     $finishContacts->client_surname = $client->surname;
                     $finishContacts->client_name = $client->name;
                     $finishContacts->client_phone = $client->phone;
                 }
-                if($car_owner = $this->carOwner){
+                $car_owner = $this->carOwner;
+                if($car_owner){
                     $finishContacts->car_owner_surname = $car_owner->surname;
                     $finishContacts->car_owner_name = $car_owner->name;
                     $finishContacts->car_owner_phone = $car_owner->phone;
                 }
-                if($driver = $this->driver){
+                $driver = $this->driver
+                if($driver){
                     $finishContacts->driver_surname = $driver->surname;
                     $finishContacts->driver_name = $driver->name;
                     $finishContacts->driver_phone = $driver->phone;

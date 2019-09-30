@@ -762,6 +762,7 @@ class OrderController extends Controller
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
                     $modelOrder->hand_vehicle_cost = $modelOrder->getFinishCostForVehicle();
+                    if(!$modelOrder->hand_vehicle_cost) $modelOrder->hand_vehicle_cost = 0;
                     $modelOrder->cost = $modelOrder->CalculateAndPrintFinishCost(false)['cost'];
 
                     $sesssion->set('modelOrder', $modelOrder);
@@ -822,11 +823,9 @@ class OrderController extends Controller
 //                            return var_dump($modelOrder->cost);
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
                         } else {
-                            return 1;
                             functions::setFlashWarning('Ошибка на сервере');
                         }
                     } else  {
-                        return 2;
                         functions::setFlashWarning('Ошибка на сервере');
                     }
                     $sesssion->remove('modelOrder');
