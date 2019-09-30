@@ -1377,7 +1377,7 @@ class Order extends \yii\db\ActiveRecord
                     $finishContacts->car_owner_name = $car_owner->name;
                     $finishContacts->car_owner_phone = $car_owner->phone;
                 }
-                $driver = $this->driver
+                $driver = $this->driver;
                 if($driver){
                     $finishContacts->driver_surname = $driver->surname;
                     $finishContacts->driver_name = $driver->name;
