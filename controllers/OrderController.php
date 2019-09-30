@@ -214,6 +214,7 @@ class OrderController extends Controller
                 }
 
                 if ($modelOrder->load(Yii::$app->request->post())) {
+
                     $VehicleAttributes = Vehicle::getArrayAttributes($modelOrder->id_vehicle_type, $modelOrder->body_typies);
                     $session->set('modelOrder', $modelOrder);
 
@@ -229,9 +230,6 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
-
-//                    var_dump($modelOrder->getErrors());
-//                    return;
                     $route = new Route();
 //                    if($session->get('route')) $route = $session->get('route');
 //                    $session->set('modelOrder', $modelOrder);
@@ -251,6 +249,7 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($route->load(Yii::$app->request->post())) {
+
 //                    if(!$user_id) $user_id = Yii::$app->user->id;
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
                     $user_id = ($user)?$user->id:null;
@@ -320,6 +319,7 @@ class OrderController extends Controller
                     }
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
+
                     if ($route->save()) {
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;

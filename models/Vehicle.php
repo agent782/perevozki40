@@ -561,7 +561,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 if ($priceZone->id == $pZone->id) $hasPriceZone = 1;
             }
         }
-        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) && $Order->re) return false;
+        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) && !$Order->re) return false;
 
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:

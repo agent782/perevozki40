@@ -444,6 +444,13 @@ class Order extends \yii\db\ActiveRecord
             }
             return;
         }
+        if (($this->id_vehicle_type == Vehicle::TYPE_TRUCK)
+            && !$this->$attribute
+        ) {
+            $this->addError($attribute, 'Необходимо заполнить "Общий вес груза".');
+        }
+        return;
+
     }
 
     public function validateForUser($attribute){
@@ -1355,9 +1362,10 @@ class Order extends \yii\db\ActiveRecord
 
                 $finishContacts = $this->finishContacts;
                 if(!$finishContacts) {
-                    $finishContacts = new OrdersFinishContacts(['id_order' => $this->id]);
+                    $finishContacts = new OrdersFinishContacts();
+                    $finishContacts->id_order = $this->id;
                 }
-                if($client = $this->profile) {
+                if($client = $this->profile && $this->id_user != $this->id_car_owner) {
                     $finishContacts->client_surname = $client->surname;
                     $finishContacts->client_name = $client->name;
                     $finishContacts->client_phone = $client->phone;
@@ -1379,6 +1387,7 @@ class Order extends \yii\db\ActiveRecord
                         $finishContacts->vehicle_number = $reg_lic->reg_number;
                     }
                 }
+                $finishContacts->save();
 
                 if($this->re){
                     if($this->id_user == $this->id_car_owner){

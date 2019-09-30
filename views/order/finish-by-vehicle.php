@@ -45,7 +45,7 @@ $this->registerJsFile('/js/order.js');
     ]);
     ?>
     <?php
-    if(is_array($modelOrder->body_typies)) {
+    if(is_array($modelOrder->body_typies  && $modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC)) {
         echo $form->field($modelOrder, 'body_typies[1]')->hiddenInput()->label(false);
     }
     ?>
