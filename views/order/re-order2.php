@@ -43,8 +43,14 @@ $this->registerJsFile('/js/order.js');
     <div class="col-lg-4">
         <?= $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false)?>
         <?php
-        if(array_key_exists(1, $modelOrder->body_typies  && $modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC));
-            echo $form->field($modelOrder, 'body_typies[1]')->hiddenInput()->label(false);
+//        if(is_array($modelOrder->body_typies)
+//            && array_key_exists(0, $modelOrder->body_typies)
+//            && $modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC
+//        ){
+            echo $form->field($modelOrder, 'body_typies')->checkboxList([
+                    $modelOrder->body_typies[0] => $modelOrder->body_typies[0]
+                ], ['hidden' => true])->label(false);
+//        }
         ?>
 
 

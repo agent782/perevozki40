@@ -899,7 +899,7 @@ class OrderController extends Controller
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle = $vehicle->id;
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
-                    $modelOrder->body_typies[1] = $vehicle->bodyType->id;
+                    $modelOrder->body_typies[] = $vehicle->bodyType->id;
 
                     $modelOrder->id_car_owner = $vehicle->id_user;
 
@@ -974,6 +974,10 @@ class OrderController extends Controller
         }
         $session->set('modelOrder', $modelOrder);
         $session->set('realRoute', $realRoute);
+        if(!$modelOrder){
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте еще раз');
+            return $this->redirect('/order/re-order');
+        };
         return $this->render('/order/re-order', [
             'modelOrder' => $modelOrder,
             'driversArr' => $driversArr,

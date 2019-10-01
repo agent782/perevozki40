@@ -718,7 +718,8 @@ class Order extends \yii\db\ActiveRecord
                 foreach ($this->body_typies as $body_type_ld) {
                     if($body_type_ld) {
                         $BodyType = BodyType::findOne(['id' => $body_type_ld]);
-                        $this->link('bodyTypies', $BodyType);
+                        if(!$this->hasBodyType($BodyType))
+                            $this->link('bodyTypies', $BodyType);
                     }
                 }
             }

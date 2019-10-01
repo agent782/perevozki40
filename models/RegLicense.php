@@ -128,11 +128,13 @@ class RegLicense extends \yii\db\ActiveRecord
 
         if($vehicles) {
             foreach ($vehicles as $vehicle) {
-                if($vehicle->regLicense
-                    && $this->id != $vehicle->regLicense->id
+                $regLicense = $vehicle->regLicense;
+                if($regLicense
+                    && $this->id != $regLicense->id
                 ) {
-                    if ($this->reg_number == $vehicle->regLicense->reg_number) {
-                        return $this->addError($attribute, 'У Вас уже добавлено ТС с таким гос. номером.');
+                    if ($this->reg_number == $regLicense->reg_number) {
+                        $this->addError($attribute, 'У Вас уже добавлено ТС с таким гос. номером.');
+                        break;
                     }
                 }
             }
