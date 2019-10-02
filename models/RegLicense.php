@@ -132,7 +132,7 @@ class RegLicense extends \yii\db\ActiveRecord
                 if($regLicense
                     && $this->id != $regLicense->id
                 ) {
-                    if ($this->reg_number == $regLicense->reg_number) {
+                    if (mb_ereg_replace(' ', '', $this->reg_number) == $regLicense->reg_number) {
                         $this->addError($attribute, 'У Вас уже добавлено ТС с таким гос. номером.');
                         break;
                     }

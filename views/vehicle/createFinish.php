@@ -123,7 +123,6 @@ $classiferVehicleIds = [];
                 ],
             'clientOptions'=>[
                 'removeMaskOnSubmit' => true,
-
             ],
         ])?>
     <?= $form->field($modelRegLicense, 'number')

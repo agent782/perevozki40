@@ -44,11 +44,7 @@ $this->registerJsFile('/js/order.js');
         'validationUrl' => '/order/validate-order',
     ]);
     ?>
-    <?php
-    if(is_array($modelOrder->body_typies  && $modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC)) {
-        echo $form->field($modelOrder, 'body_typies[1]')->hiddenInput()->label(false);
-    }
-    ?>
+
     <div class="col-lg-8">
         <?= $this->render('/route/_form', ['route' => $realRoute, 'form' => $form])?>
     </div>

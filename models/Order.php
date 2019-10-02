@@ -450,7 +450,6 @@ class Order extends \yii\db\ActiveRecord
             $this->addError($attribute, 'Необходимо заполнить "Общий вес груза".');
         }
         return;
-
     }
 
     public function validateForUser($attribute){
