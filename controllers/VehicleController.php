@@ -420,7 +420,7 @@ class VehicleController extends Controller
                 $passengers = $post['passengers'];
 
                 $priceZones = $priceZones
-                    ->andFilterWhere(['>=', 'passengers', $passengers])
+                    ->andFilterWhere(['<=', 'passengers', $passengers])
                     ->all();
                 break;
             case Vehicle::TYPE_SPEC:

@@ -379,7 +379,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['>=', 'passengers', $modelVehicle->passengers])
+                    ->andFilterWhere(['<=', 'passengers', $modelVehicle->passengers])
                     ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
                     ->all()
                 ;

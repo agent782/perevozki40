@@ -2,6 +2,7 @@
 
 namespace app\modules\logist\controllers;
 
+use app\models\Order;
 use yii\web\Controller;
 
 /**
@@ -15,6 +16,8 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
+        $model = new Order();
+        echo $model->id_1;
         return $this->render('index');
     }
 }
