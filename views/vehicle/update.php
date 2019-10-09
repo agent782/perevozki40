@@ -134,7 +134,7 @@ $this->registerJsFile('/js/update_price_zones.js');
                         $return .= '<span>' . ucwords($label) . '</span>' . "\n";
                         $return .= '</label>';
                         $return .= ' ' . ShowMessageWidget::widget([
-                                'helpMessage' => '<img src= /img/imgBodyTypes/' . $imgBTs[$value] . '> </img> <br> <br>' . $descBTs[$value],
+                                'helpMessage' => '<img src= /img/imgBodyTypies/' . $imgBTs[$value] . '> </img> <br> <br>' . $descBTs[$value],
                                 'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                             ]);
                         $return .= '<br>';
@@ -188,7 +188,7 @@ $this->registerJsFile('/js/update_price_zones.js');
                         $return .= '<span>' . ucwords($label) . '</span>' . "\n";
                         $return .= '</label>';
                         $return .= ' ' . ShowMessageWidget::widget([
-                                'helpMessage' => '<img src= /img/imgLoadingTypes/' . $imgLTs[$value] . '> </img> <br> <br>' . $descLTs[$value],
+                                'helpMessage' => '<img src= /img/imgLoadingTypies/' . $imgLTs[$value] . '> </img> <br> <br>' . $descLTs[$value],
                                 'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                             ]);
                         $return .= '<br>';
