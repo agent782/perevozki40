@@ -16,9 +16,6 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $model = 1;
-        return $model->id;
-
         return $this->render('index');
     }
 }
