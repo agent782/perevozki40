@@ -46,7 +46,8 @@ class RequestPayment extends \yii\db\ActiveRecord
             [['cost'], 'number'],
             [['requisites', 'url_files'], 'string'],
             ['create_at', 'default', 'value' => date('d.m.Y H:i')],
-            ['status', 'default', 'value' => self::STATUS_NEW]
+            ['status', 'default', 'value' => self::STATUS_NEW],
+            ['file', 'file', 'maxSize' => 7000000]
         ];
     }
     public function behaviors()

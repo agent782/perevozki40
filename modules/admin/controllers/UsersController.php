@@ -245,7 +245,7 @@ class UsersController extends Controller
                 $Profile->save(false);
                 functions::setFlashWarning('Данные для редактирования не найдены!');
             } else {
-                $Profile->update_to_check = [];
+                $Profile->update_to_check = '';
                 $Profile->check_update_status = $Profile::CHECK_UPDATE_STATUS_NO;
                 $Profile->save(false);
                 functions::setFlashInfo('Изменение данных пользователя отменены');

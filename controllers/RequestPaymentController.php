@@ -3,10 +3,11 @@
 namespace app\controllers;
 
 use app\components\functions\functions;
+use app\models\Payment;
 use app\models\User;
 use Yii;
 use app\models\RequestPayment;
-use app\RequestPaymentSearch;
+use app\models\RequestPaymentSearch;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -40,6 +41,7 @@ class RequestPaymentController extends Controller
     {
         $searchModel = new RequestPaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->andFilterWhere(['id_user' => Yii::$app->user->id]);
         $dataProvider->sort->defaultOrder = [
             'create_at' => SORT_DESC
         ];
@@ -87,6 +89,13 @@ class RequestPaymentController extends Controller
             if($model->cost >= $min_cost && $model->cost <= $max_cost){
                 functions::setFlashSuccess('Статус платежа - "В очереди..."');
                 if($model->save()){
+                    if($model->url_files = functions::saveImage($model,
+                        'file',
+                        Yii::getAlias('@requestPaymentInvoices/'),
+                        $model->id
+                    )) {
+                        $model->save();
+                    }
                     return $this->redirect('/request-payment');
                 }
 
