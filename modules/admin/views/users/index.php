@@ -22,15 +22,15 @@ echo GridView::widget([
     'columns' => [
         'id',
         'username',
-        [
-            'attribute' => 'profile.photoFullPath',
-            'format' => ['image',['width'=>'60']],
-            'value' => function($model) {
-                if($model->profile) {
-                    return $model->profile->photoFullPath;
-                }
-            },
-        ],
+//        [
+//            'attribute' => 'profile.photoFullPath',
+//            'format' => ['image',['width'=>'60']],
+//            'value' => function($model) {
+//                if($model->profile) {
+//                    return $model->profile->photoFullPath;
+//                }
+//            },
+//        ],
 //        'profile.photoFullPath:image',
         'profile.name',
         'status',
