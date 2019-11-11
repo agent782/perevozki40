@@ -24,9 +24,9 @@ class ResetPasswordSmsForm extends Model
     {
         return [
             [['sms_code', 'password', 'repeat_password', 'phone'], 'required'],
+            ['captcha', 'captcha'],
 //            ['phone', 'exist', 'targetClass' => User::class, 'targetAttribute' => 'username'],
             ['repeat_password', 'compare', 'compareAttribute' => 'password'],
-            ['captcha', 'captcha'],
 //            ['sms_code', 'compare', 'compareAttribute' => '_sms_сode', 'message' => 'Код неверный!' . $this->_sms_code],
         ];
     }
