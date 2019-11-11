@@ -33,14 +33,14 @@ use app\models\ResetPasswordForm;
 class DefaultController extends Controller
 {
 
-    public function actions()
-    {
-        return [
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction'
-            ]
-        ];
-    }
+//    public function actions()
+//    {
+//        return [
+//            'captcha' => [
+//                'class' => 'yii\captcha\CaptchaAction'
+//            ]
+//        ];
+//    }
 
     public function behaviors()
     {
