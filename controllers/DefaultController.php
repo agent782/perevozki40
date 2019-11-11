@@ -37,8 +37,9 @@ class DefaultController extends Controller
     {
         return [
             'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction'
-            ]
+                'class' => 'yii\captcha\CaptchaAction',
+                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
         ];
     }
 
@@ -65,8 +66,6 @@ class DefaultController extends Controller
         ];
     }
 
-
-
     public function actionIndex(){
 //        $auth = new auth_item();
         return $this->render('index');
@@ -82,6 +81,16 @@ class DefaultController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             if($urlBack = Yii::$app->request->get('urlBack')){
                 return $this->redirect($urlBack);
+            }
+            $user = Yii::$app->user;
+            if($user->can('admin')){
+                return $this->redirect('/logist');
+            }
+            if($user->can('dispetcher')){
+                return $this->redirect('/logist');
+            }
+            if($user->can('finance')){
+                return $this->redirect('/finance');
             }
             return $this->redirect('/');
         }
@@ -145,11 +154,11 @@ class DefaultController extends Controller
                     }
                     $modelVerifyPhone->generateCode();
                     $sms = new Sms($modelUser->username, $modelVerifyPhone->getVerifyCode());
-                    // Отправка кода
-//                    if (!$sms->sendAndSave()) {
-//                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
-//                        break;
-//                    }
+//                     Отправка кода
+                    if (!$sms->sendAndSave()) {
+                        functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                        break;
+                    }
                     $session->set('timeout_new_code', time()+300);
 
                     $session->set('modelVerifyPhone', $modelVerifyPhone);

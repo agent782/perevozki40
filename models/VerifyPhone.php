@@ -34,7 +34,9 @@ class VerifyPhone extends Model
 
     public function validateCode($attribute, $params){
         if($this->$attribute != $this->_verifyCode)
-            $this->addError($attribute, 'Код неверный ' . $this->verifyCode);
+            $this->addError($attribute, 'Код неверный '
+//                . $this->verifyCode
+            );
             return;
     }
 

@@ -16,9 +16,9 @@ use yii\widgets\MaskedInput;
 $this->registerJsFile('/js/signup.js');
 $this->registerJsFile('/js/jsibox_basic.js');
 $this->title = 'Редактирование данных: ' . $model->brand . ' ' . $model->regLicense->reg_number;
-$this->params['breadcrumbs'][] = ['label' => 'Vehicles', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+//$this->params['breadcrumbs'][] = ['label' => 'Vehicles', 'url' => ['index']];
+//$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+//$this->params['breadcrumbs'][] = 'Update';
 
 $vehTypeId = $model->id_vehicle_type;
 
@@ -36,11 +36,9 @@ $this->registerJsFile('/js/update_price_zones.js');
 
 ?>
 <!--</script>-->
-<input id="id_vehicle" value="<?=$model->id?>" hidden></input>
-<input id="vehtype" value="<?=$model->id_vehicle_type?>" hidden></input>
+
 <div class="container-fluid">
-
-
+    <h2><?= Html::encode($this->title) ?></h2>
     <?php
         $form = \yii\bootstrap\ActiveForm::begin([
             'enableAjaxValidation' => true,
@@ -50,7 +48,9 @@ $this->registerJsFile('/js/update_price_zones.js');
     echo $form->field($modelRegLicense, 'id_user')->hiddenInput()->label(false);
 
     ?>
-        <h2><?= Html::encode($this->title) ?></h2>
+
+    <input id="id_vehicle" value="<?=$model->id?>" hidden></input>
+    <input id="vehtype" value="<?=$model->id_vehicle_type?>" hidden></input>
     <div class="row">
 
         <div class="col-lg-4">
@@ -134,7 +134,7 @@ $this->registerJsFile('/js/update_price_zones.js');
                         $return .= '<span>' . ucwords($label) . '</span>' . "\n";
                         $return .= '</label>';
                         $return .= ' ' . ShowMessageWidget::widget([
-                                'helpMessage' => '<img src= /img/imgBodyTypes/' . $imgBTs[$value] . '> </img> <br> <br>' . $descBTs[$value],
+                                'helpMessage' => '<img src= /img/imgBodyTypies/' . $imgBTs[$value] . '> </img> <br> <br>' . $descBTs[$value],
                                 'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                             ]);
                         $return .= '<br>';
@@ -188,7 +188,7 @@ $this->registerJsFile('/js/update_price_zones.js');
                         $return .= '<span>' . ucwords($label) . '</span>' . "\n";
                         $return .= '</label>';
                         $return .= ' ' . ShowMessageWidget::widget([
-                                'helpMessage' => '<img src= /img/imgLoadingTypes/' . $imgLTs[$value] . '> </img> <br> <br>' . $descLTs[$value],
+                                'helpMessage' => '<img src= /img/imgLoadingTypies/' . $imgLTs[$value] . '> </img> <br> <br>' . $descLTs[$value],
                                 'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                             ]);
                         $return .= '<br>';

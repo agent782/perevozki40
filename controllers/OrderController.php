@@ -63,9 +63,9 @@ class OrderController extends Controller
                         'allow' => true,
                         'roles' => ['?'],
                         'actions' => ['create', 'validate-order'],
-                        'denyCallback' => function(){
-                            return 1;
-                        }
+//                        'denyCallback' => function(){
+//                            return 1;
+//                        }
                     ],
                 ],
             ]
@@ -214,6 +214,7 @@ class OrderController extends Controller
                 }
 
                 if ($modelOrder->load(Yii::$app->request->post())) {
+
                     $VehicleAttributes = Vehicle::getArrayAttributes($modelOrder->id_vehicle_type, $modelOrder->body_typies);
                     $session->set('modelOrder', $modelOrder);
 
@@ -229,9 +230,6 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
-
-//                    var_dump($modelOrder->getErrors());
-//                    return;
                     $route = new Route();
 //                    if($session->get('route')) $route = $session->get('route');
 //                    $session->set('modelOrder', $modelOrder);
@@ -251,6 +249,7 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($route->load(Yii::$app->request->post())) {
+
 //                    if(!$user_id) $user_id = Yii::$app->user->id;
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
                     $user_id = ($user)?$user->id:null;
@@ -320,6 +319,7 @@ class OrderController extends Controller
                     }
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
+
                     if ($route->save()) {
                         $modelOrder->id_route = $route->id;
                         $modelOrder->id_user = Yii::$app->user->id;
@@ -608,18 +608,6 @@ class OrderController extends Controller
         }
     }
 
-    public function actionValidateOrder()
-    {
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-            $model = new Order();
-            if ($model->load(Yii::$app->request->post()))
-                return \yii\widgets\ActiveForm::validate($model);
-        }
-        throw new \yii\web\BadRequestHttpException('Bad request!');
-    }
-
     public function actionAcceptOrder($id_order, $id_user, $redirect = '/order/vehicle')
     {
         $OrderModel = Order::findOne($id_order);
@@ -727,6 +715,13 @@ class OrderController extends Controller
         $sesssion = Yii::$app->session;
 
         $modelOrder = self::findModel($id_order);
+        if($modelOrder->status != Order::STATUS_VEHICLE_ASSIGNED
+            || ($modelOrder->id_car_owner != Yii::$app->user->id
+            && Profile::notAdminOrDispetcher())
+        ){
+            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            return $this->redirect($redirect);
+        }
 
         if(!$modelOrder){
             functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
@@ -767,6 +762,7 @@ class OrderController extends Controller
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
                     $modelOrder->hand_vehicle_cost = $modelOrder->getFinishCostForVehicle();
+                    if(!$modelOrder->hand_vehicle_cost) $modelOrder->hand_vehicle_cost = 0;
                     $modelOrder->cost = $modelOrder->CalculateAndPrintFinishCost(false)['cost'];
 
                     $sesssion->set('modelOrder', $modelOrder);
@@ -835,7 +831,7 @@ class OrderController extends Controller
                     $sesssion->remove('modelOrder');
                     $sesssion->remove('realRoute');
                     return $this->redirect($redirect);
-                } else                         functions::setFlashWarning('Ошибка на сервере');
+                }                        functions::setFlashWarning('Ошибка на сервере');
                 break;
             default:
                 break;
@@ -899,10 +895,11 @@ class OrderController extends Controller
                 $realRoute = $session->get('realRoute');
                 if (!$modelOrder || !$realRoute) break;
                 if ($modelOrder->load(Yii::$app->request->post())) {
+                    if(!$modelOrder->id_vehicle) break;
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle = $vehicle->id;
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
-                    $modelOrder->body_typies[1] = $vehicle->bodyType->id;
+                    $modelOrder->body_typies[] = $vehicle->bodyType->id;
 
                     $modelOrder->id_car_owner = $vehicle->id_user;
 
@@ -933,10 +930,9 @@ class OrderController extends Controller
                 if ($modelOrder->load(Yii::$app->request->post())
                     && $realRoute->load(Yii::$app->request->post())
                 ) {
-
                     $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
-
+                    if(!$modelOrder->body_typies) break;
                     $modelOrder->selected_rates = array_keys($modelOrder->getSuitableRates
                     (
                         $realRoute->distance,
@@ -953,7 +949,6 @@ class OrderController extends Controller
 //                            return $this->redirect($redirect);
                         }
                     } else {
-                        return 2;
                         functions::setFlashWarning('Ошибка на сервере!');
                         break;
                     }
@@ -979,6 +974,10 @@ class OrderController extends Controller
         }
         $session->set('modelOrder', $modelOrder);
         $session->set('realRoute', $realRoute);
+        if(!$modelOrder){
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте еще раз');
+            return $this->redirect('/order/re-order');
+        };
         return $this->render('/order/re-order', [
             'modelOrder' => $modelOrder,
             'driversArr' => $driversArr,
@@ -987,4 +986,14 @@ class OrderController extends Controller
 
     }
 
+    public function actionValidateOrder(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model = new Order();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
 }

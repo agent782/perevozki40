@@ -5,6 +5,7 @@ namespace app\modules\finance\controllers;
 use app\models\Document;
 use app\models\Order;
 use app\models\Payment;
+use app\models\RequestPayment;
 use yii\web\Controller;
 use app\models\DocumentSearch;
 use Yii;
@@ -22,10 +23,12 @@ class DefaultController extends Controller
     {
         $count_outstanding_invoices = self::getCountOutstandingInvoices();
         $count_outstanding_certificates = self::getCountOutstandingCertificate();
+        $count_request_payment = self::getCountRequestPayment();
 
         return $this->render('index', [
             'count_outstanding_invoices' => $count_outstanding_invoices,
-            'count_outstanding_certificates' => $count_outstanding_certificates
+            'count_outstanding_certificates' => $count_outstanding_certificates,
+            'count_request_payment' => $count_request_payment
         ]);
 
 
@@ -52,6 +55,13 @@ class DefaultController extends Controller
             if(!$order->certificate) $count++;
         }
         return $count;
+    }
+
+    protected function getCountRequestPayment(){
+        return RequestPayment::find()
+            ->where(['status' => RequestPayment::STATUS_NEW])
+            ->count();
+
     }
 
 }

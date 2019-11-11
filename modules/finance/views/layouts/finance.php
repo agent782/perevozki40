@@ -46,7 +46,7 @@ AppAsset::register($this);
             ['label' => 'Главная', 'url' => '/finance'],
             ['label' => 'Журнал заказов', 'url' => '/finance/order'],
             ['label' => 'Платежи', 'url' => '/finance/payment'],
-            ['label' => 'Заявки на выплаты', 'url' => '/finance'],
+            ['label' => 'Заявки на выплаты', 'url' => '/finance/request-payment'],
             ['label' => 'Контрагенты', 'url' => '/finance/company'],
             ['label' => 'Договора', 'url' => '/document'],
 //            ['label' => 'Машины', 'url' => '/logist/vehicle'],

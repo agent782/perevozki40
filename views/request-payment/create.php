@@ -15,7 +15,7 @@ $this->title = 'Запрос на выплату';
     <br>
     <h3><?= Html::encode($this->title)?></h3>
 
-    <p>Возможная сумма для получения - <?= $max_cost ?> р.</p>
+    <p>Возможная сумма для получения - <?= ($max_cost>0)?$max_cost:0 ?> р.</p>
     <p>Минимальная сумма для получения - <?= $min_cost ?> р.</p>
 
     <?php
@@ -38,6 +38,15 @@ $this->title = 'Запрос на выплату';
 
 <script>
     $(document).ready(function () {
+        if($('#type_payment').val() === '2'){
+            $('#label_requisites').text('Номер банковской карты и ФИО владельца');
+            $('#file').attr('disabled', true);
+            $('#file').val('');
+        }
+        if($('#type_payment').val() === '3'){
+            $('#label_requisites').text('Название организации или ИП');
+            $('#file').attr('disabled', false);
+        }
         $('#type_payment').on('change', function () {
             if($('#type_payment').val() === '2'){
                 $('#label_requisites').text('Номер банковской карты и ФИО владельца');
@@ -48,7 +57,6 @@ $this->title = 'Запрос на выплату';
                 $('#label_requisites').text('Название организации или ИП');
                 $('#file').attr('disabled', false);
             }
-
         });
     });
 </script>

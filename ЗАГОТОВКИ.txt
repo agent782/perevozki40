@@ -1,3 +1,35 @@
+++++++++++++++++++++++++++
+29/09/2019
+Orders
+
+Finished
+Client FIO TEL
+Vehicle Brand Number
+Car_owner FIO TEL
+Driver FIO TEL
+
+Finish_Order_Contacts
+
+id_order
+client Ssurname
+client Name
+client Patrinimic
+client phone
+car_owner Surname
+car_owner Name
+car_owner Patrinimic
+car_owner phone
+driver Surname
+driver Name
+driver Patrinimic
+driver phone
+vehicle brand
+vehicle number
+
+
+
+
+
 ________________________
 GIT ______
 

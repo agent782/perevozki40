@@ -57,7 +57,7 @@ class functions
         if (file_exists($path)) {
             //echo "The directory {$path} exists";
         } else {
-            mkdir($path, 0775, true);
+            mkdir($path, 0755, true);
             //echo "The directory {$path} was successfully created.";
         }
     }

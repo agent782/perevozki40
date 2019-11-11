@@ -11,6 +11,7 @@
 use app\models\ResetPasswordSmsForm;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\MaskedInput;
+//use softark\mbcaptcha\Captcha;
 use yii\captcha\Captcha;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
@@ -32,7 +33,9 @@ use yii\helpers\Url;
             ]
         ])
     ?>
-    <?= $form->field($model, 'captcha')->widget(Captcha::class)?>
+    <?= $form->field($model, 'captcha')->widget(Captcha::class, [
+//        'captchaAction' => 'default/captcha'
+    ])?>
     <?= Html::submitButton('Отправить код по СМС', ['class' => 'btn btn-info', 'name' => 'button', 'value' => 'send_sms'])?>
     <br><br>
     <?= Html::submitButton('У меня есть код из СМС', [

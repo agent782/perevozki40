@@ -227,7 +227,8 @@ class VehicleController extends Controller
                         }
 //                        return var_dump($VehicleForm);
                     }
-                    functions::setFlashWarning('Ощибка сервера. ВУ не сохранено.');
+                    functions::setFlashWarning('Ошибка сервера. СР не сохранено.');
+                    return var_dump($modelRegLicense->getErrors());
                     return $this->redirect($redirect);
                 }
 
@@ -419,7 +420,7 @@ class VehicleController extends Controller
                 $passengers = $post['passengers'];
 
                 $priceZones = $priceZones
-                    ->andFilterWhere(['>=', 'passengers', $passengers])
+                    ->andFilterWhere(['<=', 'passengers', $passengers])
                     ->all();
                 break;
             case Vehicle::TYPE_SPEC:

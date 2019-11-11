@@ -379,7 +379,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['>=', 'passengers', $modelVehicle->passengers])
+                    ->andFilterWhere(['<=', 'passengers', $modelVehicle->passengers])
                     ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
                     ->all()
                 ;
@@ -562,11 +562,12 @@ class Vehicle extends \yii\db\ActiveRecord
             }
         }
         if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) && !$Order->re) return false;
+
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:
                 if(
                     $this->tonnage >= $Order->tonnage
-//                    && $this->length >= $Order->length
+                    && $this->length >= $Order->length
                     && $this->height >= $Order->height
                     && $this->width >= $Order->width
                     && $this->passengers >=$Order->passengers
@@ -583,6 +584,7 @@ class Vehicle extends \yii\db\ActiveRecord
                         if($this->length >= $Order->length) return true;
                     }
                 }
+
                 break;
             case Vehicle::TYPE_PASSENGER:
                 if(

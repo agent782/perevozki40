@@ -2,6 +2,7 @@
 
 namespace app\modules\logist\controllers;
 
+use app\models\Order;
 use yii\web\Controller;
 
 /**

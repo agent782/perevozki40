@@ -7,6 +7,7 @@
  */
 use yii\bootstrap\ActiveForm;
 use yii\bootstrap\Html;
+use app\models\Vehicle;
 //var_dump($VehicleAttributes);
 ?>
 
@@ -19,10 +20,14 @@ use yii\bootstrap\Html;
         'validationUrl' => '/order/validate-order',
     ]);
 ?>
-
     <?= $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false)?>
     <?php
-        $modelOrder->body_typies = $modelOrder->body_typies;
+        if(array_key_exists(1, $modelOrder->body_typies) && $modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC) {
+            echo $form->field($modelOrder, 'body_typies[1]')->hiddenInput()->label(false);
+        }
+    ?>
+    <?php
+//        $modelOrder->body_typies = $modelOrder->body_typies;
 //    if($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_SPEC)
 //        echo $form->field($modelOrder, 'body_typies[]')->checkboxList($modelOrder->body_typies)->label(false)
     ?>

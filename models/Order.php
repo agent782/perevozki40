@@ -110,6 +110,7 @@ use app\components\widgets\ShowMessageWidget;
 * @property integer $id_review_client
  * @property float $avans_client
  * @property bool $re
+ * @property OrdersFinishContacts $finishContacts
 
 
  */
@@ -205,7 +206,8 @@ class Order extends \yii\db\ActiveRecord
                 'real_length_spec', 'real_volume_spec', 'cost', 'id_review_vehicle', 'id_review_client'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
             [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
-                'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle','id_car_owner'], 'integer'],
+                'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle',
+                'id_car_owner'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
                 'volume_spec', 'hand_vehicle_cost'], 'number'],
             [['cargo', 'comment_vehicle'], 'string'],
@@ -430,8 +432,21 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function validateTonnage($attribute){
-        if(($this->id_vehicle_type == Vehicle::TYPE_TRUCK || $this->body_typies == Vehicle::BODY_dump || $this->body_typies == Vehicle::BODY_manipulator)
-            && !$this->$attribute){
+        if(is_array($this->body_typies)) {
+            if (($this->id_vehicle_type == Vehicle::TYPE_TRUCK
+                    || in_array(Vehicle::BODY_dump, $this->body_typies)
+                    || in_array(Vehicle::BODY_manipulator, $this->body_typies)
+//                || $this->body_typies[1] == Vehicle::BODY_manipulator
+                )
+                && !$this->$attribute
+            ) {
+                $this->addError($attribute, 'Необходимо заполнить "Общий вес груза".');
+            }
+            return;
+        }
+        if (($this->id_vehicle_type == Vehicle::TYPE_TRUCK)
+            && !$this->$attribute
+        ) {
             $this->addError($attribute, 'Необходимо заполнить "Общий вес груза".');
         }
         return;
@@ -702,7 +717,8 @@ class Order extends \yii\db\ActiveRecord
                 foreach ($this->body_typies as $body_type_ld) {
                     if($body_type_ld) {
                         $BodyType = BodyType::findOne(['id' => $body_type_ld]);
-                        $this->link('bodyTypies', $BodyType);
+                        if(!$this->hasBodyType($BodyType))
+                            $this->link('bodyTypies', $BodyType);
                     }
                 }
             }
@@ -817,6 +833,10 @@ class Order extends \yii\db\ActiveRecord
     public function getLoadingTypies(){
         return $this->hasMany(LoadingType::className(), ['id' => 'id_loading_type'])
             ->viaTable('XorderXloadingtype', ['id_order' => 'id']);
+    }
+
+    public function getFinishContacts(){
+        return $this->hasOne(OrdersFinishContacts::class, ['id_order' => 'id']);
     }
 
     public function getPriceZones(){
@@ -1339,6 +1359,39 @@ class Order extends \yii\db\ActiveRecord
                     $this->cost_finish = $this->getFinishCost(false);
                     $this->cost_finish_vehicle = $this->finishCostForVehicle;
                 }
+
+                $finishContacts = $this->finishContacts;
+                if(!$finishContacts) {
+                    $finishContacts = new OrdersFinishContacts();
+                    $finishContacts->id_order = $this->id;
+                }
+                $client = Profile::findOne($id_client);
+                if($client && $this->id_user != $this->id_car_owner) {
+                    $finishContacts->client_surname = $client->surname;
+                    $finishContacts->client_name = $client->name;
+                    $finishContacts->client_phone = $client->phone;
+                }
+                $car_owner = $this->carOwner;
+                if($car_owner){
+                    $finishContacts->car_owner_surname = $car_owner->surname;
+                    $finishContacts->car_owner_name = $car_owner->name;
+                    $finishContacts->car_owner_phone = $car_owner->phone;
+                }
+                $driver = $this->driver;
+                if($driver){
+                    $finishContacts->driver_surname = $driver->surname;
+                    $finishContacts->driver_name = $driver->name;
+                    $finishContacts->driver_phone = $driver->phone;
+                }
+                if($vehicle){
+                    $reg_lic = $vehicle->regLicense;
+                    if($reg_lic) {
+                        $finishContacts->vehicle_brand = $reg_lic->brand;
+                        $finishContacts->vehicle_number = $reg_lic->reg_number;
+                    }
+                }
+                $finishContacts->save();
+
                 if($this->re){
                     if($this->id_user == $this->id_car_owner){
                         $email_to_client = false;
@@ -1710,6 +1763,7 @@ class Order extends \yii\db\ActiveRecord
 
     public function copyValueToRealValue(){
         if(!$this) return false;
+        if(!$this->vehicle) return false;
         $body_type = $this->vehicle->bodyType->id;
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:
