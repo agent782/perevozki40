@@ -64,9 +64,7 @@ class DefaultController extends Controller
 
         ];
     }
-
-
-
+    
     public function actionIndex(){
 //        $auth = new auth_item();
         return $this->render('index');
