@@ -33,7 +33,7 @@ use yii\helpers\Url;
         ])
     ?>
     <?= $form->field($model, 'captcha')->widget(Captcha::class, [
-        'captchaAction' => 'default/captcha'
+//        'captchaAction' => 'default/captcha'
     ])?>
     <?= Html::submitButton('Отправить код по СМС', ['class' => 'btn btn-info', 'name' => 'button', 'value' => 'send_sms'])?>
     <br><br>
