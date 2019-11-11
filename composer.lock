@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "09b82c43da2457f318680a6d7f10db4e",
-    "content-hash": "5fc15629befe398d2b450a0d9b3be455",
+    "hash": "630f0482f39d8c18a2c271ea8a2d305b",
+    "content-hash": "0e3d47c950420aa9d3a38551e9dd95c7",
     "packages": [
         {
             "name": "3ch3r46/bootui-datetimepicker",
@@ -4621,6 +4621,101 @@
                 "fixtures"
             ],
             "time": "2018-07-12 10:23:15"
+        },
+        {
+            "name": "gregwar/captcha",
+            "version": "v1.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Gregwar/Captcha.git",
+                "reference": "cf953dd79748406e0292cea8c565399681e4d345"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/cf953dd79748406e0292cea8c565399681e4d345",
+                "reference": "cf953dd79748406e0292cea8c565399681e4d345",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.0",
+                "symfony/finder": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.4"
+            },
+            "type": "captcha",
+            "autoload": {
+                "psr-4": {
+                    "Gregwar\\": "src/Gregwar"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Grégoire Passault",
+                    "email": "g.passault@gmail.com",
+                    "homepage": "http://www.gregwar.com/"
+                },
+                {
+                    "name": "Jeremy Livingston",
+                    "email": "jeremy.j.livingston@gmail.com"
+                }
+            ],
+            "description": "Captcha generator",
+            "homepage": "https://github.com/Gregwar/Captcha",
+            "keywords": [
+                "bot",
+                "captcha",
+                "spam"
+            ],
+            "time": "2018-08-17 22:57:28"
+        },
+        {
+            "name": "juliardi/yii2-captcha",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/juliardi/yii2-captcha.git",
+                "reference": "79c0525ba5c1705a20f731831767877e4a9e06f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/juliardi/yii2-captcha/zipball/79c0525ba5c1705a20f731831767877e4a9e06f8",
+                "reference": "79c0525ba5c1705a20f731831767877e4a9e06f8",
+                "shasum": ""
+            },
+            "require": {
+                "gregwar/captcha": "1.*",
+                "yiisoft/yii2": "~2.0.0"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "juliardi\\captcha\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muhammad Safri Juliardi",
+                    "email": "ardi93@gmail.com"
+                }
+            ],
+            "description": "Captcha library wrapper for Yii2",
+            "keywords": [
+                "captcha",
+                "extension",
+                "yii2"
+            ],
+            "time": "2017-11-14 05:11:33"
         },
         {
             "name": "phar-io/manifest",

@@ -11,7 +11,8 @@
 use app\models\ResetPasswordSmsForm;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\MaskedInput;
-use yii\captcha\Captcha;
+use juliardi\captcha\Captcha;
+//use yii\captcha\Captcha;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 ?>
