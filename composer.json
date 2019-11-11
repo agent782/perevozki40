@@ -48,7 +48,8 @@
         "kartik-v/yii2-checkbox-x": "dev-master",
         "kartik-v/yii2-money": "@dev",
         "kartik-v/yii2-export": "dev-master",
-        "deka6pb/yii2-geocoder": "@dev"
+        "deka6pb/yii2-geocoder": "@dev",
+        "softark/yii2-mb-captcha": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",
@@ -58,8 +59,7 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0",
         "codeception/base": "^2.2.3",
         "codeception/verify": "~0.3.1",
-        "codeception/specify": "~0.4.3",
-        "juliardi/yii2-captcha": "*"
+        "codeception/specify": "~0.4.3"
     },
     "config": {
         "process-timeout": 1800,
