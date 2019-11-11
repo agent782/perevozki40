@@ -64,7 +64,7 @@ class DefaultController extends Controller
 
         ];
     }
-    
+
     public function actionIndex(){
 //        $auth = new auth_item();
         return $this->render('index');
@@ -111,7 +111,7 @@ class DefaultController extends Controller
 
     //Регистрация
     public function actionSignup(){
-        return $this->redirect('/');
+//        return $this->redirect('/');
 
         $modelUser = new User();
         $modelProfile = new Profile();
