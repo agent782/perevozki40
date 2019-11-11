@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\grid\GridView;
 use app\models\RequestPayment;
 use app\components\widgets\ShowMessageWidget;
@@ -39,6 +39,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             'statusText',
+            [
+                'label' => 'Действия',
+                'format' => 'raw',
+                'value' => function(RequestPayment $model){
+                    return Html::a(Html::icon('remove'),
+                        ['/request-payment/cancel', 'id' => $model->id],
+                        ['title' => 'Отменить запрос', 'data-confirm' => 'Отменить заявку?']
+                    );
+                }
+            ]
 //            'requisites:ntext',
             //'url_files:ntext',
             //'status',

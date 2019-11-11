@@ -11,8 +11,11 @@
             <?php if($count_outstanding_certificates):?>
             <p>Невыписанные акты - <?=$count_outstanding_certificates?></p>
             <?php endif;?>
+            <?php if($count_request_payment):?>
+                <p>Запросы на выплату - <?=$count_request_payment?></p>
+            <?php endif;?>
             <p>Договора на проверку</p>
-            <p>Запросы на выплату</p>
+
         </div>
         <div class="col-lg-8">
             <label class="h4">Информация о пользователе</label>

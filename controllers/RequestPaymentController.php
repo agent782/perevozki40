@@ -130,4 +130,14 @@ class RequestPaymentController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionCancel($id, $redirect = '/request-payment'){
+        $model = self::findModel($id);
+        if($model){
+            if($model->status == $model::STATUS_NEW){
+                $model->delete();
+            }
+        }
+        return $this->redirect($redirect);
+    }
 }
