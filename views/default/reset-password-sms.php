@@ -45,5 +45,4 @@ use yii\helpers\Url;
     <?php
         $form::end();
     ?>
-    <?= phpinfo()?>
 </div>
