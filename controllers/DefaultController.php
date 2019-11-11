@@ -280,7 +280,7 @@ class DefaultController extends Controller
     }
 
     public function actionResetPasswordSms(){
-        $model = new ResetPasswordSmsForm();
+        $model = new ResetPasswordSmsForm()
 
         switch (Yii::$app->request->post('button')){
             case 'send_sms':
