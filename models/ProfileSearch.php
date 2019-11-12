@@ -18,7 +18,7 @@ class ProfileSearch extends Profile
     {
         return [
             [['id_user', 'bithday', 'status_client', 'status_vehicle', 'raiting_client', 'raiting_vehicle', 'id_passport', 'is_driver', 'id_driver_license'], 'integer'],
-            [['phone2', 'email2', 'name', 'surname', 'patrinimic', 'sex', 'photo', 'reg_address'], 'safe'],
+            [['phone2', 'email2', 'name', 'surname', 'patrinimic', 'sex', 'photo', 'reg_address', 'old_id'], 'safe'],
         ];
     }
 

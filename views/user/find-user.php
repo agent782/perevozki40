@@ -38,6 +38,8 @@ $this->title = 'Поиск пользователя';
                $("#surname").val(ui.item.surname);
                $("#patrinimic").val(ui.item.patrinimic);
                $("#info").html(ui.item.info);
+               $("#old_id").val(ui.item.old_id);
+
                
 //               $.pjax.reload({
 //                          url : "/logist/order/pjax-info-vehicle",
@@ -64,6 +66,7 @@ $this->title = 'Поиск пользователя';
                        $("#surname").val("");
                        $("#patrinimic").val("");
                        $("#info").html("");
+                       $("#old_id").val("");
                        $("#surname").focus();
                 }
             }'),
@@ -96,7 +99,7 @@ $this->title = 'Поиск пользователя';
         <?= $form->field($profile, 'phone2')->input('tel',  ['id' => 'phone2'])?>
         <?= $form->field($profile, 'email2')->input('email',  ['id' => 'email2'])?>
         <?= $form->field($profile, 'is_driver')->radioList(['Нет', 'Да'], ['id' => 'is_driver'])->label('Водитель')?>
-        <?= $form->field($user, 'old_id')?>
+        <?= $form->field($user, 'old_id')->input('text',  ['id' => 'old_id'])?>
     </div>
     <div class="col-lg-8" id="info">
 

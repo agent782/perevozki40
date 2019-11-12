@@ -58,6 +58,7 @@ use yii\bootstrap\Html;
  * @property Passport $passport
  * @property integer $procentVehicle
  * @property array $balance
+ * @property string $old_id
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -137,7 +138,8 @@ class Profile extends \yii\db\ActiveRecord
             ['is_driver', 'default', 'value' => 0],
             [['history_updates', 'update_to_check'], 'safe'],
             ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT],
-            ['sex', 'default', 'value' => null]
+            ['sex', 'default', 'value' => null],
+            ['old_id', 'string', 'max' => 32]
 
         ];
     }
@@ -249,6 +251,10 @@ class Profile extends \yii\db\ActiveRecord
 
     public function getSex(){
         return $this->sex ? 'Женский' : 'Мужской';
+    }
+
+    public function getOld_id(){
+        return $this->user->old_id;
     }
 
     public function getUrlPhoto(){
@@ -459,10 +465,17 @@ class Profile extends \yii\db\ActiveRecord
                 'is_driver' => $profile->is_driver,
                 'value' => ($search)
                     ?$profile->id_user
-                    :$profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
-                'label' => $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                    :$profile->phone . ' (' . $profile->phone2 . ') ' .
+                    $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                'label' => ($profile->old_id)
+                    ? $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull
+                        . ' (ID ' . $profile->id_user . ' "'. $profile->old_id .'")'
+                    : $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull
+                    . ' (ID ' . $profile->id_user . ')'
+                ,
                 'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
-                'info' => $profile->profileInfo . ' ' . $profile->getRating()
+                'info' => $profile->profileInfo . ' ' . $profile->getRating(),
+                'old_id' => $profile->old_id
             ];
         }
 

@@ -59,7 +59,14 @@ class RegLicense extends \yii\db\ActiveRecord
     {
         return [
             ['id', 'integer'],
-            [['number', 'reg_number', 'date', 'place'], 'required'],
+            [['number', 'reg_number', 'date', 'place'], 'required',
+                'when' => [Profile::class, 'notAdminOrDispetcher'],
+                'whenClient' => "function(){
+                    if ($('#role').val() != 'admin'
+                        ||  $('#role').val() != 'dispetcher') return false;
+                    return true;
+                }"
+            ],
             [['status'], 'default', 'value' => self::STATUS_ON_CHECKING],
             [['reg_number'], 'string', 'max' => 16],
             [['brand'], 'string', 'max' => 64],
