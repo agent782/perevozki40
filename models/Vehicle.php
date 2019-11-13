@@ -567,7 +567,7 @@ class Vehicle extends \yii\db\ActiveRecord
             case Vehicle::TYPE_TRUCK:
                 if(
                     $this->tonnage >= $Order->tonnage
-                    && $this->length >= $Order->length
+//                    && $this->length >= $Order->length
                     && $this->height >= $Order->height
                     && $this->width >= $Order->width
                     && $this->passengers >=$Order->passengers
