@@ -19,6 +19,7 @@
 //            'value' => $id_vehicle
         ]
     )->label('Выберите ТС')?>
+
     <?php
         if (!$UserModel->getDrivers()->count() && !$Profile->is_driver){
             echo $form->field($Profile, 'is_driver')->checkbox()->label('Водитель - ' . $Profile->fioFull);

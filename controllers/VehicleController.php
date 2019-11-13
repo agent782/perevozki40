@@ -255,7 +255,8 @@ class VehicleController extends Controller
             functions::setFlashWarning('Такого ТС не существует.');
             return $this->redirect($redirect);
         }
-        if($model->hasOrder(Order::STATUS_VEHICLE_ASSIGNED)){
+        if($model->hasOrder(Order::STATUS_VEHICLE_ASSIGNED)
+            && Profile::notAdminOrDispetcher()){
             functions::setFlashWarning('У этого ТС есть незавершенные заказы! Нельзя редактировать это ТС. Прежде завершите заказ.');
             return $this->redirect($redirect);
         }
