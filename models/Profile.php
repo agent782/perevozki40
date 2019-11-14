@@ -254,7 +254,9 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getOld_id(){
-        return $this->user->old_id;
+        if($this->user) {
+            return $this->user->old_id;
+        }
     }
 
     public function getUrlPhoto(){

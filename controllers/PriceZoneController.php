@@ -57,6 +57,9 @@ class PriceZoneController extends Controller
             || Yii::$app->user->can('admin')){
             $this->layout = 'logist';
         }
+        if(Yii::$app->user->can('buh')){
+            $this->layout = '@app/modules/finance/views/layouts/finance';
+        }
 
         $searchModel = new PriceZoneSearch();
         $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams,

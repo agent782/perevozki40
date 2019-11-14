@@ -89,7 +89,7 @@ class DefaultController extends Controller
             if($user->can('dispetcher')){
                 return $this->redirect('/logist');
             }
-            if($user->can('finance')){
+            if($user->can('buh')){
                 return $this->redirect('/finance');
             }
             return $this->redirect('/');

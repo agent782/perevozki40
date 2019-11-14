@@ -87,7 +87,7 @@ class OrderController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin', 'finance', 'dispetcher']
+                        'roles' => ['admin', 'buh', 'dispetcher']
                     ],
                 ],
             ]
