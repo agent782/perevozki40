@@ -137,6 +137,7 @@ use yii\helpers\ArrayHelper;
                                 'id_order' => $model->id,
                                 'redirect' => '/logist/order'
                             ]),['class' => 'btn btn-sm btn-success'])
+                            . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]). '<br><br>'
                             ;
                 }
             ]
