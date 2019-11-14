@@ -54,7 +54,7 @@ class Payment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['date', 'cost', 'type','id_user','status', 'direction', 'calculation_with', 'comments'], 'required'],
+            [['date', 'cost', 'type','id_user','status', 'direction', 'calculation_with'], 'required'],
             [['id_company', 'id_our_company'], 'validateTypeBankTransfer', 'skipOnEmpty' => false],
             [['cost'], 'number'],
             [['type','id_user', 'id_implementer', 'id_company',
