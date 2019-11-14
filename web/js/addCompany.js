@@ -8,15 +8,17 @@ $(document).ready(function () {
         count: 5,
         /* Вызывается, когда пользователь выбирает одну из подсказок */
         onSelect: function(suggestion) {
-            if(!$('#phone2').val()) {
+            $('#phone').val('');
+            $('#email').val('');
+            if(!$('#phone').val()) {
                 $('#phone2').hide();
                 $('label[for="phone2"]').hide();
             }
-            if(!$('#phone3').val()) {
+            if(!$('#phone2').val()) {
                 $('#phone3').hide();
                 $('label[for="phone3"]').hide();
             }
-            if(!$('#email2').val()) {
+            if(!$('#email').val()) {
                 $('#email2').hide();
                 $('label[for="email2"]').hide();
             }
@@ -24,10 +26,29 @@ $(document).ready(function () {
                 $('#email3').hide();
                 $('label[for="email3"]').hide();
             }
+            if(suggestion.data.inn){
+                $.ajax({
+                    type: 'POST',
+                    url: '/company/ajax-load-values',
+                    data: {
+                        'inn':suggestion.data.inn
+                    },
+                    success: function(data){
+                        data = JSON.parse(data);
+                        if(data){
+                            $('#phone').val(data.phone);
+                            $('#email').val(data.email);
+                        }
+                    }
+                });
+            }
+
+            $('#inn').val(suggestion.data.inn);
+
             // console.log(suggestion);
             $('#formCompany').attr('hidden', false);
             $('#Label').val(suggestion.value);
-            $('#inn').val(suggestion.data.inn);
+
             if($('#kpp').val()) {
                 $('#kpp').val(suggestion.data.kpp);
             } else $('#kpp').val('0');

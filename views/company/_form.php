@@ -19,15 +19,19 @@ $this->registerJsFile('/js/addCompany.js');
 
 
         <?= $form->field($XcompanyXprofile, 'job_post')->input('text', ['placeholder' => 'Менеджер по логистике'])?>
-        <?= $form->field($modelCompany, 'phone')->widget(MaskedInput::class,[
-            'mask' => '+7(999)999-99-99',
-            'clientOptions'=>[
-                'removeMaskOnSubmit' => true,
-                'removeMaskOnSubmit' => true,
-            ],
-            'options' => [
-                'type' => 'tel',
-                'autocorrect' => 'off',
+        <?= $form->field($modelCompany, 'phone')
+//            ->input('tel', ['id' => 'phone'])
+            ->widget(MaskedInput::class,[
+//                'id' => 'phone',
+                'mask' => '+7(999)999-99-99',
+                'clientOptions'=>[
+                    'removeMaskOnSubmit' => true,
+                    'removeMaskOnSubmit' => true,
+                ],
+                'options' => [
+                    'id' => 'phone',
+                    'type' => 'tel',
+                    'autocorrect' => 'off',
             ]
         ])
         ?>

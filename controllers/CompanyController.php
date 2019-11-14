@@ -42,7 +42,7 @@ class CompanyController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions'=>['index', 'create', 'validate-add-company', 'validate-date'],
+                        'actions'=>['index', 'create', 'validate-add-company', 'validate-date', 'ajax-load-values'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -312,6 +312,16 @@ class CompanyController extends Controller
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionAjaxLoadValues(){
+        $post = Yii::$app->request->post();
+        $inn = $post['inn'];
+        $Company = '';
+        if($Company = Company::find()->where(['inn' => $inn])->asArray()->one()){
+
+        }
+        return json_encode($Company);
     }
 }
 
