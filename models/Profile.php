@@ -465,13 +465,14 @@ class Profile extends \yii\db\ActiveRecord
                 'is_driver' => $profile->is_driver,
                 'value' => ($search)
                     ?$profile->id_user
-                    :$profile->phone . ' (' . $profile->phone2 . ') ' .
-                    $profile->fioFull . ' (ID ' . $profile->id_user . ')',
+                    :$profile->phone . ' (' . $profile->phone2 . ') '
+                    . $profile->fioFull . ' (ID ' . $profile->id_user . ')'
+                ,
                 'label' => ($profile->old_id)
                     ? $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull
-                        . ' (ID ' . $profile->id_user . ' "'. $profile->old_id .'")'
+                        . ' (ID ' . $profile->id_user . ' "'. $profile->old_id .'" ' . $profile->getCompaniesString() . ')'
                     : $profile->phone . ' (' . $profile->phone2 . ') ' . $profile->fioFull
-                    . ' (ID ' . $profile->id_user . ')'
+                    . ' (ID ' . $profile->id_user . ' ' . $profile->getCompaniesString() . ')'
                 ,
                 'companies' => ArrayHelper::map($profile->companies, 'id', 'name'),
                 'info' => $profile->profileInfo . ' ' . $profile->getRating(),
@@ -804,6 +805,13 @@ class Profile extends \yii\db\ActiveRecord
         return true;
     }
 
+    public function getCompaniesString(){
+        $return = '';
+        foreach ($this->companies as $company){
+            $return .= $company->name_short . ' ';
+        }
+        return $return;
+    }
 
 }
 

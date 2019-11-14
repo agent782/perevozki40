@@ -30,7 +30,8 @@ $this->title = 'Оформлление заказа';
     <?=
     AutoComplete::widget([
         'clientOptions' => [
-            'source' => Url::to(['/logist/order/autocomplete']),
+//            'source' => Url::to(['/logist/order/autocomplete']),
+            'source' => \app\models\Profile::getArrayForAutoComplete(false),
             'autoFill' => true,
             'minLength' => '0',
             'select' => new JsExpression('function(event, ui) {

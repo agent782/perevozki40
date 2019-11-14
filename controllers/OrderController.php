@@ -293,9 +293,7 @@ class OrderController extends Controller
 //                    return var_dump($user_id);
                     //Оформление заказа оператором
 //                    if(!$user_id) {
-                    if(Yii::$app->user->can('admin')
-                        || Yii::$app->user->can('dispetcher')
-                    ){
+                    if(!Profile::notAdminOrDispetcher()){
                         $user = new User();
                         $profile = new Profile();
 
