@@ -12,6 +12,7 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use yii\helpers\ArrayHelper;
+use app\components\widgets\FinishOrderOnlySumWidget;
 ?>
 
 <div>
