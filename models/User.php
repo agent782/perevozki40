@@ -128,7 +128,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['username', 'unique', 'skipOnError'  => false , 'skipOnEmpty' => false,
-                'message' => 'Пользователь с таким номером телефона уже зарегистрирован. '
+                'message' => 'Пользователь с таким номером телефона уже зарегистрирован. 
+                Если Вы уже являетесь нашим Клиентом, возможно, Вы были зарегистрированы автоматически.'
                     . Html::a('Восстановить пароль', '/default/login')
             ],
             ['username', 'required', 'skipOnError'  => false , 'skipOnEmpty' => false, 'message' => 'Введите Ваш номер телефона'],

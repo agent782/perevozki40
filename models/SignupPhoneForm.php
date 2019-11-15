@@ -17,7 +17,8 @@ class SignupPhoneForm extends Model
 
     public function rules(){
         return [
-            ['phone', 'unique', 'targetAttribute' => 'username','targetClass' => '\app\models\User',  'message' => 'Пользователь с таким номером телефона уже зарегистрирован']
+            ['phone', 'unique', 'targetAttribute' => 'username','targetClass' => '\app\models\User',
+                'message' => 'Пользователь с таким номером телефона уже зарегистрирован']
         ];
     }
 }
