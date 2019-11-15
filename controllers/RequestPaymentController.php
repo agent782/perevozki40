@@ -86,6 +86,12 @@ class RequestPaymentController extends Controller
 
 
         if ($model->load(Yii::$app->request->post())) {
+            //Если есть незавершенные заказы
+            if($profile->hasOrdersInProccess()){
+                functions::setFlashWarning('У Вас есть незавершенные заказы. Завершить их и повторить запрос.');
+                return $this->redirect('/request-payment');
+            }
+
             if($model->cost >= $min_cost && $model->cost <= $max_cost){
                 functions::setFlashSuccess('Статус платежа - "В очереди..."');
                 if($model->save()){

@@ -815,5 +815,19 @@ class Profile extends \yii\db\ActiveRecord
         return $return;
     }
 
+    public function hasOrdersInProccess($days = 0){
+        $orders_in_proccess = Order::find()
+            ->where(['id_car_owner' => $this->id_user])
+            ->andWhere(['status' => Order::STATUS_IN_PROCCESSING])
+            ->all();
+
+        foreach ($orders_in_proccess as $order){
+            if((time() - strtotime($order->datetimeStart)) > 60*60*24*$days){
+                return true;
+            }
+            return false;
+        }
+    }
+
 }
 
