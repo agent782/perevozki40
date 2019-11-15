@@ -112,7 +112,7 @@ class DefaultController extends Controller
 
     //Регистрация
     public function actionSignup(){
-        return $this->redirect('/');
+//        return $this->redirect('/');
 
         $modelUser = new User();
         $modelProfile = new Profile();
