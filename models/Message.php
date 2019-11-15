@@ -101,7 +101,7 @@ class Message extends \yii\db\ActiveRecord
         return $this->hasOne(Review::class, ['id_message' => 'id']);
     }
 
-    public function sendPush()
+    public function sendPush(bool $save = true)
     {
         if ($push_ids = User::findOne($this->id_to_user)->push_ids) {
             foreach ($push_ids as $push_id) {
@@ -155,7 +155,7 @@ class Message extends \yii\db\ActiveRecord
         } else {
             $this->push_status = self::STATUS_NEED_TO_SEND;
         }
-        $this->save();
+        if($save) $this->save();
     }
 
     public function  changeStatus($newStatus){

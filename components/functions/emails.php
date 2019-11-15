@@ -9,6 +9,7 @@
 namespace app\components\functions;
 
 use app\models\Invoice;
+use app\models\Message;
 use app\models\Order;
 use app\models\Profile;
 use Yii;
@@ -128,5 +129,28 @@ class emails
             ]
 
         );
+    }
+
+    static public function sendToAdminChangeOrder ($id_order, $idAdmin = 1, $emailAdmin = 'logist@perevozki40.ru', $push = true, $email = true){
+        $order = Order::findOne($id_order);
+        if(!$order) return false;
+        if($push){
+            $mes = new Message([
+               'id_to_user' => $idAdmin,
+                'id_order' => $id_order,
+                'title' => 'Заказ №' . $id_order . ' - ' . $order->statusText,
+                'text' => ''
+            ]);
+            $mes->sendPush(false);
+        }
+
+        if(email){
+            functions::sendEmail(
+                $emailAdmin,
+                null,
+                'Заказ №' . $id_order . ' - ' . $order->statusText,
+                []
+            );
+        }
     }
 }

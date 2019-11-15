@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\emails;
 use app\components\functions\functions;
 use app\models\setting\Setting;
 use app\models\setting\SettingVehicle;
@@ -767,6 +768,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
+            emails::sendToAdminChangeOrder();
             parent::afterSave($insert, $changedAttributes);
         }
     }
