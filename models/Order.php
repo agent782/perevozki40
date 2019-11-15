@@ -768,7 +768,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
-            emails::sendToAdminChangeOrder();
+            emails::sendToAdminChangeOrder($this->id);
             parent::afterSave($insert, $changedAttributes);
         }
     }

@@ -14,6 +14,7 @@ use app\models\Order;
 use app\models\Profile;
 use Yii;
 use app\components\functions\functions;
+use yii\helpers\Url;
 
 class emails
 {
@@ -139,12 +140,13 @@ class emails
                'id_to_user' => $idAdmin,
                 'id_order' => $id_order,
                 'title' => 'Заказ №' . $id_order . ' - ' . $order->statusText,
-                'text' => ''
+                'text' => '',
+                'url' => Url::to('/logist/order', true)
             ]);
             $mes->sendPush(false);
         }
 
-        if(email){
+        if($email){
             functions::sendEmail(
                 $emailAdmin,
                 null,
