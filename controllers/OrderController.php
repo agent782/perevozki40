@@ -677,11 +677,15 @@ class OrderController extends Controller
         ]);
     }
 
-    public function actionCanceledByVehicle($id_order, $id_user, $redirect = '/order/vehicle')
+    public function actionCanceledByVehicle($id_order, $id_user, $redirect = '/order/vehicle', $days = 3)
     {
         $user = User::findOne($id_user);
         $order = Order::findOne($id_order);
-
+        //Нельзя отменить принятый водителем заказ спустя энное количество дней
+        if((time() - strtotime($order->datetime_start)) > 60*60*24*$days){
+            functions::setFlashWarning('Прошло более ' . $days . ' дней с момента принятия заказа. Нельзя его отменить!');
+            return $this->redirect($redirect);
+        }
         if (!$user || !$order) {
             functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
             return $this->redirect($redirect);
@@ -697,13 +701,18 @@ class OrderController extends Controller
 
     }
 
-    public function actionCanceledByClient($id_order, $id_vehicle = null, $redirect = '/order/client')
+    public function actionCanceledByClient($id_order, $id_vehicle = null, $redirect = '/order/client', $days = 3)
     {
         $order = Order::findOne($id_order);
         if (!$order) {
             functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
             return $this->redirect($redirect);
         }
+//Нельзя отменить принятый водителем заказ спустя энное количество дней
+            if((time() - strtotime($order->datetime_start)) > 60*60*24*$days){
+                functions::setFlashWarning('Прошло более ' . $days . ' дней с момента принятия заказа. Нельзя его отменить!');
+                return $this->redirect($redirect);
+            }
 
         $order->changeStatus($order::STATUS_CANCELED, $order->id_user, $id_vehicle);
         return $this->redirect($redirect);
