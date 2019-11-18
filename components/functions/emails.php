@@ -182,7 +182,7 @@ class emails
 
         if(!$emailAdmin) $emailAdmin = Yii::$app->params['adminEmail']['email'];
         $user = User::findOne($id_user);
-        $sub = $user->rolesString . '№' . $user->id . ' сохранен';
+        $sub = $user->rolesString . ' №' . $user->id . ' сохранен';
 
         if($email){
             functions::sendEmail(

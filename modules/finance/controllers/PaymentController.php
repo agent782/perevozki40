@@ -74,10 +74,10 @@ class PaymentController extends Controller
         $model->date = date('d.m.Y');
         $model->id_implementer = Yii::$app->user->id;
         $model->id_our_company = SettingFinance::find()->one()->id_default_company;
-//        $model->status = $model::STATUS_SUCCESS;
-//        $model->calculation_with = $model::CALCULATION_WITH_CLIENT;
-//        $model->direction = $model::DEBIT;
-//        $model->type = Payment::TYPE_BANK_TRANSFER;
+        $model->status = $model::STATUS_SUCCESS;
+        $model->calculation_with = $model::CALCULATION_WITH_CLIENT;
+        $model->direction = $model::DEBIT;
+        $model->type = Payment::TYPE_BANK_TRANSFER;
         $companies = Company::getArrayForAutoComplete();
         $profiles = Profile::getArrayForAutoComplete();
         $our_companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
@@ -109,12 +109,24 @@ class PaymentController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $companies = Company::getArrayForAutoComplete();
+        $profiles = Profile::getArrayForAutoComplete();
+        $our_companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                functions::setFlashSuccess('Платеж проведен.');
+            } else {
+                functions::setFlashWarning('Платеж не проведен.');
+            }
+            return $this->redirect('index');
         }
 
         return $this->render('update', [
             'model' => $model,
+            'companies' => $companies,
+            'profiles' => $profiles,
+            'our_companies' => $our_companies
         ]);
     }
 
