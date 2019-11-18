@@ -100,7 +100,10 @@ $this->registerJs(
             // 'rp',
             // 'lp',
             'statusText',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {delete}'
+            ],
         ],
     ]);
     ?>
@@ -146,7 +149,10 @@ $this->registerJs(
                 }
             ],
             'statusText',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {delete}'
+            ],
         ],
     ]);
     ?>
@@ -196,7 +202,10 @@ $this->registerJs(
             'volume_spec',
             'statusText',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {delete}'
+            ],
         ],
     ]);
     ?>

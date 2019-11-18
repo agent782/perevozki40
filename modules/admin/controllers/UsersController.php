@@ -23,23 +23,20 @@ class UsersController extends Controller
      *
      */
 
-//    public function behaviors()
-//    {
-//        return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'rules' => [
-////                    [
-////                        'actions' => ['check-users-updates'],
-////                        'allow' => true,
-////                        'roles' => ['@']
-////                    ],
-////                    [
-////                        'allow' => true,
-////                        'roles' => ['admin']
-////                    ],
-//                ]]];
-//    }
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'update', 'delete', 'check-users-updates', 'confirmProfileUpdate',
+                            'cancelProfileUpdate'],
+                        'allow' => true,
+                        'roles' => ['admin', 'finance', 'dispetcher']
+                    ],
+                ]]];
+    }
 
 
 
@@ -54,10 +51,12 @@ class UsersController extends Controller
 
     public function actionView($id)
     {
+        $this->layout = functions::getLayout();
         $model = $this->findModel($id);
         $profile = $model->profile;
         return $this->render('view', [
-            'model' => $model,'profile' => $profile,
+            'model' => $model,
+            'profile' => $profile,
         ]);
     }
 
@@ -66,18 +65,18 @@ class UsersController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Test();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+//    public function actionCreate()
+//    {
+//        $model = new Test();
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+//            return $this->render('create', [
+//                'model' => $model,
+//            ]);
+//        }
+//    }
 
     /**
      * Updates an existing Test model.

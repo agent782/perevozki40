@@ -163,4 +163,18 @@ class functions
         $s = str_replace(" ", "-", $s); // заменяем пробелы знаком минус
         return $s; // возвращаем результат
     }
+
+    static public function getLayout(){
+        $layout = 'default2';
+
+        $adminLayout = '@app/views/layouts/logist';
+        $logistLayout = 'logist';
+        $buhLayout = '@app/modules/finance/views/layouts/finance';
+
+        if(Yii::$app->user->can('admin')) $layout = $adminLayout;
+        if(Yii::$app->user->can('dispetcher')) $layout = $logistLayout;
+        if(Yii::$app->user->can('buh')) $layout = $buhLayout;
+
+        return $layout;
+    }
 }

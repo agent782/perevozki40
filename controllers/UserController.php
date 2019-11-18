@@ -378,6 +378,7 @@ class UserController extends Controller
         if(!$id_user) $id_user = Yii::$app->user->id;
 
         $Profile = Profile::findOne($id_user);
+//        return var_dump($Profile);
         if(!$Profile) throw new HttpException(404, 'Страница не найдена');
         $User = $Profile->user;
         $balance = [];

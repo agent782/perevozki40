@@ -82,7 +82,8 @@ class RequestPaymentController extends Controller
         $model->id_user = $user->id;
         $min_cost = 1000;
         $sum_request_payments = $profile->getSumRequestsPayments();
-        $max_cost = $profile->getBalanceCarOwner()['balance'] - $sum_request_payments;
+        $balanceCarOwner = $profile->getBalanceCarOwner();
+        $max_cost = $balanceCarOwner['balance'] - $sum_request_payments - $balanceCarOwner['not_paid'];
 
 
         if ($model->load(Yii::$app->request->post())) {

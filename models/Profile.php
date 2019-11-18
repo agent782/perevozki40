@@ -730,6 +730,7 @@ class Profile extends \yii\db\ActiveRecord
 
         foreach ($orders_not_paid as $order){
             $cost = round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $return['balance'] += $cost;
             $return['not_paid'] += $cost;
             $return['orders_not_paid'][] = [
                 'date' => $order->datetime_finish,
