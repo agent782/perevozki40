@@ -12,6 +12,8 @@ use app\models\Invoice;
 use app\models\Message;
 use app\models\Order;
 use app\models\Profile;
+use app\models\setting\SettingFinance;
+use app\models\User;
 use Yii;
 use app\components\functions\functions;
 use yii\helpers\Url;
@@ -89,8 +91,22 @@ class emails
                 break;
         }
         $sendToEmails = [];
-        if($profile->email) $sendToEmails[] = $profile->email;
-        if($profile->email2) $sendToEmails[] = $profile->email2;
+        $SettingFinance = SettingFinance::findOne();
+        if($SettingFinance->invoices_to_client_email) {
+            if ($profile->email) $sendToEmails[] = $profile->email;
+            if ($profile->email2) $sendToEmails[] = $profile->email2;
+        }
+        $company = $modelInvoice->company;
+        if($company){
+            if($SettingFinance->invoices_to_company_email){
+                if($company->email) $sendToEmails[] = $company->email;
+                if($company->email2) $sendToEmails[] = $company->email2;
+                if($company->email3) $sendToEmails[] = $company->email3;
+            }
+        }
+
+        if(!$sendToEmails) return false;
+
         $Order = Order::findOne($id_order);
         if($Order){
             if($Order->company){
@@ -132,7 +148,11 @@ class emails
         );
     }
 
-    static public function sendToAdminChangeOrder ($id_order, $idAdmin = 1, $emailAdmin = 'logist@perevozki40.ru', $push = true, $email = true){
+    static public function sendToAdminChangeOrder ($id_order, $idAdmin = 1
+        , $emailAdmin = null
+        , $push = true, $email = true){
+
+        if(!$emailAdmin) $emailAdmin = Yii::$app->params['logistEmail']['email'];
         $order = Order::findOne($id_order);
         if(!$order) return false;
         if($push){
@@ -153,6 +173,33 @@ class emails
                 'Заказ №' . $id_order . ' - ' . $order->statusText,
                 []
             );
+        }
+    }
+
+    static public function sendToAdminAfterSaveUser($id_user, $idAdmin = 1
+        , $emailAdmin = null
+        , $push = true, $email = true){
+
+        if(!$emailAdmin) $emailAdmin = Yii::$app->params['adminEmail']['email'];
+        $user = User::findOne($id_user);
+        $sub = $user->rolesString . '№' . $user->id . ' сохранен';
+
+        if($email){
+            functions::sendEmail(
+                $emailAdmin,
+                null,
+                $sub,
+                []
+            );
+        }
+        if($push){
+            $mes = new Message([
+                'id_to_user' => $idAdmin,
+                'title' => $sub,
+                'text' => '',
+                'url' => Url::to('/admin/users', true)
+            ]);
+            $mes->sendPush(false);
         }
     }
 }

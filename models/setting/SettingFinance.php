@@ -9,6 +9,8 @@ use Yii;
  *
  * @property int $id
  * @property int $id_default_company
+ * @property bool $invoices_to_client_email
+ * @property bool $invoices_to_company_email
  */
 class SettingFinance extends \yii\db\ActiveRecord
 {
@@ -28,6 +30,7 @@ class SettingFinance extends \yii\db\ActiveRecord
         return [
             [['id_default_company'], 'required'],
             [['id_default_company'], 'integer'],
+            [['invoices_to_company_email', 'invoices_to_client_email'], 'default', 'value' => false]
         ];
     }
 
