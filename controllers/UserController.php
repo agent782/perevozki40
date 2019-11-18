@@ -376,7 +376,7 @@ class UserController extends Controller
 
     public function actionBalance($id_user = null){
         if(!$id_user) $id_user = Yii::$app->user->id;
-
+        $this->layout = functions::getLayout();
         $Profile = Profile::findOne($id_user);
 //        return var_dump($Profile);
         if(!$Profile) throw new HttpException(404, 'Страница не найдена');
@@ -388,7 +388,7 @@ class UserController extends Controller
         $dataProviders_companies = [];
         $ids_companies = '';
 
-        if($User->canRole('user')) {
+        if($User->canRole('user')|| !Profile::notAdminOrDispetcher()) {
             $balance = [
                 'car_owner' => 0,
                 'not_paid' => 0,
@@ -396,7 +396,7 @@ class UserController extends Controller
                 'companies' => 0
             ];
         }
-        if($User->canRole('client') || $User->canRole('car_owner')) {
+        if($User->canRole('client') || $User->canRole('car_owner')|| !Profile::notAdminOrDispetcher()) {
             $balance = [
                 'car_owner' => 0,
                 'not_paid' => 0,
@@ -420,7 +420,7 @@ class UserController extends Controller
             }
             $ids_companies = substr($ids_companies, 0, -1);
         }
-        if($User->canRole('car_owner')){
+        if($User->canRole('car_owner')|| !Profile::notAdminOrDispetcher()){
             $balance = [
                 'car_owner' => $Balance['balance_car_owner']['balance'],
                 'not_paid' => $Balance['balance_car_owner']['not_paid'],

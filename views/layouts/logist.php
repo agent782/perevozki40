@@ -76,7 +76,8 @@ AppAsset::register($this);
             ),
         ],
     ]);
-    echo Html::input('text', '', \yii\helpers\Url::to('/admin/users/view', true), ['id' => 'urlTo']);
+    echo Html::input('text', '', \yii\helpers\Url::to('/admin/users/view', true)
+        , ['id' => 'urlTo', 'hidden' => true]);
     echo AutoComplete::widget([
         'clientOptions' => [
             'source' => \app\models\Profile::getArrayForAutoComplete(false),

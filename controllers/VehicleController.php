@@ -334,8 +334,26 @@ class VehicleController extends Controller
                     $modelRegLicense->id . '_2'
                 );
                 if ($tmpImage2) $modelRegLicense->image2 = $tmpImage2;
+                $model->status = Vehicle::STATUS_ONCHECKING;
                 if ($model->save() && $modelRegLicense->save()) {
-                    Yii::$app->session->setFlash('success', 'ТС сохранено.');
+                    functions::setFlashSuccess('ТС создано и отправлено на модерацию.');
+
+                    functions::sendEmail(
+                        [
+                            Yii::$app->params['logistEmail']['email'],
+                        ],
+                        null,
+                        'ТС изменено. ТС на проверке!',
+                        [
+                            'vehicle' => $model,
+                            'profile' => Profile::findOne(['id_user' => $model->id_user]),
+                        ],
+
+                        [
+                            'html' => 'views/toAdmin/VehicleOnCheck',
+                            'text' => 'views/toAdmin/VehicleOnCheck',
+                        ]
+                    );
 //                    return $this->redirect('/vehicle/index');
                 } else {
                     $model = $modelOLD;

@@ -504,7 +504,8 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getBalance(){
-        if($this->user->canRole('car_owner')) {
+        if($this->user->canRole('car_owner')
+            || !Profile::notAdminOrDispetcher()) {
             $balance_user = $this->getBalanceClient();
             $balance_companies = $this->getBalanceCompanies();
             $balance_car_owner = $this->getBalanceCarOwner();
