@@ -428,7 +428,7 @@ class User extends ActiveRecord implements IdentityInterface
         $roles = $this->roles;
         if($roles) {
             foreach ($roles as $role) {
-                $return .= $role . ' ';
+                $return .= $role->name . ' ';
             }
         }
         return $return;
