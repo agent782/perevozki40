@@ -27,7 +27,8 @@ $this->registerJs(
     <h2><?= Html::encode($this->title) ?></h2>
 
     <p>
-        <?= Html::a('Добавить транспортное средство', ['create', 'id_user' => Yii::$app->user->id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить транспортное средство', ['create', 'id_user' => Yii::$app->user->id],
+            ['class' => 'btn btn-success']) ?>
     </p>
     <?php
         if($dataProviderTruck->getCount()):

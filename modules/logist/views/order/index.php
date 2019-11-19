@@ -1,7 +1,9 @@
 <?php
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
+
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
@@ -17,6 +19,15 @@ $this->title = 'ЗАКАЗЫ';
 
     <p>
         <?= Html::a('Новый заказ', ['/order/create'], ['class' => 'btn btn-success']) ?>
+        <br><br>
+        <?= Html::a(Html::icon('star') . ' Заказ "авто"',
+            Url::to([
+                '/user/find-user',
+                'redirect' => '/order/re-order',
+                'redirect2' => '/logist/order'
+            ])
+        );
+        ?>
     </p>
         <?=
             \yii\bootstrap\Tabs::widget([

@@ -941,6 +941,7 @@ class OrderController extends Controller
                     $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     if(!$modelOrder->body_typies) break;
+//                    return var_dump($modelOrder->body_typies);
                     $modelOrder->selected_rates = array_keys($modelOrder->getSuitableRates
                     (
                         $realRoute->distance,
