@@ -117,7 +117,7 @@ AppAsset::register($this);
             }'),
         ],
         'options' => [
-            'id' => 'search',
+            'id' => 'search-all',
             'class' => 'form-control',
             'placeholder' => Yii::t('app', 'Поиск...'),
         ]
