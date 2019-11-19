@@ -176,8 +176,9 @@ class OrderController extends Controller
     {
 //        return var_dump(Yii::$app->request->post());
         $session = Yii::$app->session;
-        $modelOrder = $session->get('modelOrder');
-        if (!$modelOrder) $modelOrder = new Order();
+//        $modelOrder = $session->get('modelOrder');
+//        if (!$modelOrder)
+            $modelOrder = new Order();
         if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
             $this->layout = 'logist';
         };
