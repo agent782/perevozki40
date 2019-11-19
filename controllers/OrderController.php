@@ -907,7 +907,7 @@ class OrderController extends Controller
                     $vehicle = Vehicle::findOne($modelOrder->id_vehicle);
                     $modelOrder->id_vehicle = $vehicle->id;
                     $modelOrder->id_vehicle_type = $vehicle->id_vehicle_type;
-                    $modelOrder->body_typies[] = $vehicle->bodyType->id;
+                    $modelOrder->body_typies[1] = $vehicle->bodyType->id;
 
                     $modelOrder->id_car_owner = $vehicle->id_user;
 
