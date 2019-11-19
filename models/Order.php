@@ -206,7 +206,7 @@ class Order extends \yii\db\ActiveRecord
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
                 'real_length_spec', 'real_volume_spec', 'cost', 'id_review_vehicle', 'id_review_client'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
-            [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
+            [['real_remove_awning', 'id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
                 'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle',
                 'id_car_owner'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
