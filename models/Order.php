@@ -237,7 +237,7 @@ class Order extends \yii\db\ActiveRecord
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
             'passengers', 'status', 'create_at', 'update_at', 're'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
-            'body_typies', 'loading_typies', 'tonnage', 'selected_rates', 'type_payment',
+            'body_typies', 'loading_typies', 'tonnage', , 'length', 'width', 'height', 'volume', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength',
             'cargo'
         ];
