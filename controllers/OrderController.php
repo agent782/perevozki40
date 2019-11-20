@@ -723,16 +723,17 @@ class OrderController extends Controller
         $sesssion = Yii::$app->session;
 
         $modelOrder = self::findModel($id_order);
-        if($modelOrder->status != Order::STATUS_VEHICLE_ASSIGNED
-            || ($modelOrder->id_car_owner != Yii::$app->user->id
-            && Profile::notAdminOrDispetcher())
+        if(($modelOrder->status != Order::STATUS_VEHICLE_ASSIGNED
+            || $modelOrder->id_car_owner != Yii::$app->user->id)
+            && Profile::notAdminOrDispetcher()
         ){
-            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            return false;
+            functions::setFlashWarning('Ошибка на сервере., попробуте позже.');
             return $this->redirect($redirect);
         }
 
         if(!$modelOrder){
-            functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+            functions::setFlashWarning('Ошибка на сервере.., попробуте позже.');
             return $this->redirect($redirect);
         }
         $modelOrder->copyValueToRealValue();
