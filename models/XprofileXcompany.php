@@ -231,19 +231,16 @@ public function DeleteUploadPoaFile(){
     }
 
     public function getUrlsUpload(){
-        $urlsArray = unserialize($this->url_upload_poa);
-        if(is_array($urlsArray)){
-            $urlsHtml = '';
-            foreach ($urlsArray as $url){
-                $urlsHtml .= Html::a(
-                        $url,
-                        \yii\helpers\Url::to(['/poa/download-poa-on-check', 'url' => $url])
-                    )
-                    . '<br>';
-            }
-            return $urlsHtml;
-        }
-        return false;
+        $url = $this->url_upload_poa;
+        if(!$url) return false;
+
+        $urlHtml = Html::a(
+                $url,
+                \yii\helpers\Url::to(['/poa/download-poa-on-check', 'url' => $url])
+            )
+            . '<br>';
+
+        return $urlHtml;
     }
 
     public function UploadFilesExists(){

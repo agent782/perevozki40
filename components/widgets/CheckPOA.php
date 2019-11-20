@@ -31,20 +31,20 @@ class CheckPOA extends Widget
             'header' => 'Проверка и отправка подписанной доверенности',
             'toggleButton' => ['label' => 'Проверить и подписать', 'class' => 'btn btn-success'],
         ]);
-//        echo DetailView::widget([
-//            'model' => $this->model,
-//            'attributes' => [
-//                'fio',
-//                'company.name',
-//                'term_of_office',
-//                [
-//                    'label' => 'Скачать доверенность',
-//                    'attribute' => 'urlsUpload',
-//                    'format' => 'raw'
-//                ]
-//            ]
-//
-//        ]);
+        echo DetailView::widget([
+            'model' => $this->model,
+            'attributes' => [
+                'fio',
+                'company.name',
+                'term_of_office',
+                [
+                    'label' => 'Скачать доверенность',
+                    'attribute' => 'urlsUpload',
+                    'format' => 'raw'
+                ]
+            ]
+
+        ]);
 //echo phpinfo();
         $formConfirm = ActiveForm::begin([
             'action' => Url::to(['/poa/confirm-poa', 'id_company' => $this->model->id_company, 'id_user' => $this->model->id_profile, 'return' => $this->return ])
