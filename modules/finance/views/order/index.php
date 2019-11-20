@@ -218,19 +218,19 @@ $this->title = 'Журнал заказов';
                         return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
                 }
             ],
-            [
-                'class' => \kartik\grid\EditableColumn::class,
-                'attribute' => 'paid_car_owner_status',
-                'value' => 'paidCarOwnerText',
-                'filter' => Html::activeCheckboxList($searchModel, 'paid_car_owner_status', $searchModel->getArrayPaidStatuses()),
-                'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
-                    'data' => $searchModel->getArrayPaidStatuses(),
-                    'formOptions' => [
-                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaidCarOwnerStatus' ])
-                    ]
-                ],
-            ],
+//            [
+//                'class' => \kartik\grid\EditableColumn::class,
+//                'attribute' => 'paid_car_owner_status',
+//                'value' => 'paidCarOwnerText',
+//                'filter' => Html::activeCheckboxList($searchModel, 'paid_car_owner_status', $searchModel->getArrayPaidStatuses()),
+//                'editableOptions' => [
+//                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+//                    'data' => $searchModel->getArrayPaidStatuses(),
+//                    'formOptions' => [
+//                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaidCarOwnerStatus' ])
+//                    ]
+//                ],
+//            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
