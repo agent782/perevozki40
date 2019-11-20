@@ -829,7 +829,8 @@ class OrderController extends Controller
                                 $modelOrder->discount = $modelOrder->getDiscount($modelOrder->id_user);
                             }
 //                            return var_dump($modelOrder->cost);
-                            $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user, $modelOrder->id_vehicle);
+                            $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user
+                                , $modelOrder->id_vehicle);
                         } else {
                             functions::setFlashWarning('Ошибка на сервере');
                         }

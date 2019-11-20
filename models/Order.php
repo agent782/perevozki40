@@ -239,7 +239,7 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'length', 'width', 'height', 'volume', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength',
-            'cargo'
+            'cargo', 'ep', 'rp', 'lp'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'body_typies', 'passengers', 'cargo', 'selected_rates', 'type_payment',
@@ -1210,10 +1210,9 @@ class Order extends \yii\db\ActiveRecord
         if(!$id_client) return false;
         $url_client = Url::to(['/order/client'], true);
         $url_vehicle = Url::to(['/order/vehicle'], true);
-        $email_from = Yii::$app->params['logistEmail'];
+        $email_from = Yii::$app->params['robotEmail'];
         $email_client = User::findOne($id_client)->email;
-        if($id_vehicle) {
-            $vehicle = Vehicle::findOne($this->id_vehicle);
+        if($id_vehicle && $vehicle = Vehicle::findOne($id_vehicle)) {
             $email_vehicle = User::findOne($vehicle->id_user)->email;
         }
         $push_to_client = true;
@@ -1485,9 +1484,10 @@ class Order extends \yii\db\ActiveRecord
             );
         }
         //Емэил Водителю
-        if($id_vehicle &&$email_to_vehicle) {
+        if($id_vehicle && $email_to_vehicle) {
             functions::sendEmail(
                 $email_vehicle,
+//                Yii::$app->params['robotEmail'],
                 $email_from,
                 $title_vehicle,
                 [
