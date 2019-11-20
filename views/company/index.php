@@ -107,6 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'model' => $modelDocument,
                                 'typeDocument' => \app\models\Document::TYPE_CONTRACT_CLIENT,
                                 'completeRedirect' => '/company/index',
+                                'attribute' => 'upload_file[]',
                                 'action' => \yii\helpers\Url::to([
                                     'document/upload',
                                     'id' => $modelDocument->id,
@@ -126,6 +127,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 . \app\components\widgets\ButtonUpload::widget([
                                         'model' => $modelDocument,
                                         'typeDocument' => \app\models\Document::TYPE_CONTRACT_CLIENT,
+                                        'attribute' => 'upload_file[]',
                                         'action' => \yii\helpers\Url::to([
                                             'document/upload',
                                             'id' => $modelDocument->id,
