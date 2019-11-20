@@ -309,15 +309,16 @@ class Company extends \yii\db\ActiveRecord
                     'description' => 'Заказ № ' . $order->id,
                     'id_order' => $order->id,
                 ];
-            }else {
-                $return['orders'][] = [
-                    'date' => $payment->date,
-                    'debit' => $payment->cost,
-                    'credit' => $payment->cost,
-                    'description' => $payment->comments . ' Оплачен наличными водителю.',
-                    'id_paiment' => $payment->id
-                ];
             }
+//            else {
+//                $return['orders'][] = [
+//                    'date' => $payment->date,
+//                    'debit' => $payment->cost,
+//                    'credit' => $payment->cost,
+//                    'description' => $payment->comments . ' Оплачен наличными водителю.',
+//                    'id_paiment' => $payment->id
+//                ];
+//            }
         }
         foreach ($this->payments as $payment) {
                 $return['balance'] += $payment->cost;

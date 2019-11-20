@@ -743,6 +743,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 }
                 break;
         }
+        $return .= $this->description;
         return $return;
     }
 

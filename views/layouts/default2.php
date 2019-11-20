@@ -230,7 +230,9 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Юридические лица',
                             'url' => '/company',
                             'visible' => (Yii::$app->user->can('client')
-                                || Yii::$app->user->can('car_owner'))
+                                || Yii::$app->user->can('car_owner')
+                                || Yii::$app->user->can('buh')
+                            )
                         ],
                         [
                             'label' => 'Договора с клиентами',
