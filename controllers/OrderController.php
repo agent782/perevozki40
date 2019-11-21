@@ -160,10 +160,12 @@ class OrderController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionViewForVehicle($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        $model = $this->findModel($id);
+        $info = $order->CalculateAndPrintFinishCost(true, true)['text'];
+        return $this->render('vehicle/view', [
+            'model' => $model,
         ]);
     }
 
