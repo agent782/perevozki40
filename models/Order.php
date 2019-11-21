@@ -1360,6 +1360,7 @@ class Order extends \yii\db\ActiveRecord
                 if($changeFinishCosts) {
                     $this->cost_finish = $this->getFinishCost(false);
                     $this->cost_finish_vehicle = $this->finishCostForVehicle;
+                } else {
                     $message_vehicle = 'Итого к оплате: ' . $this->cost_finish_vehicle . ' р.';
                     $message_client = 'Итого к оплате: ' . $this->cost_finish . ' р.';
                 }
@@ -1407,9 +1408,7 @@ class Order extends \yii\db\ActiveRecord
                     }
                 }
                 break;
-            case self::STATUS_CONFIRMED_SET_SUM:
 
-                break;
             case self::STATUS_CANCELED:
                 if($this->status == self::STATUS_NEW || $this->status == self::STATUS_IN_PROCCESSING){
                     $title_client = 'Заказ №'.$this->id.' отменен.';
