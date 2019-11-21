@@ -778,8 +778,8 @@ class Profile extends \yii\db\ActiveRecord
 
             $return['orders'][] = [
                 'date' => $payment->date,
-                'credit' => $payment->cost,
-                'debit' => '',
+                'debit' => $payment->cost,
+                'credit' => '',
                 'description' => $payment->comments,
                 'id_order' => '',
                 'id_paiment' => $payment->id
