@@ -101,7 +101,7 @@ use yii\web\JsExpression;
     <?= $form->field($model, 'comments')->textarea(['rows' => 6]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Отметить заказы', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'select']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'select']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
