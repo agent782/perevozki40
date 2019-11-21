@@ -18,6 +18,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\IdentityInterface;
 use app\models\Profile;
+use yii\data\ArrayDataProvider;
 
 /**
  * User model
@@ -434,7 +435,90 @@ class User extends ActiveRecord implements IdentityInterface
         return $return;
     }
 
+    static public function arrayBalanceParamsForRender($id_user = null){
+        if(!$id_user) $id_user = Yii::$app->user->id;
+        $Profile = Profile::findOne($id_user);
+//        return var_dump($Profile);
+        if(!$Profile) throw new HttpException(404, 'Страница не найдена');
+        $User = $Profile->user;
+        $balance = [];
+        $Balance = $Profile->balance;
+        $dataProvider_car_owner = [];
+        $dataProvider_user = [];
+        $dataProviders_companies = [];
+        $ids_companies = '';
 
+        if($User->canRole('user')|| !Profile::notAdminOrDispetcher()) {
+            $balance = [
+                'car_owner' => 0,
+                'not_paid' => 0,
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => 0
+            ];
+        }
+        if($User->canRole('client') || $User->canRole('car_owner')|| !Profile::notAdminOrDispetcher()) {
+            $balance = [
+                'car_owner' => 0,
+                'not_paid' => 0,
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => $Balance['balance_companies']['balance']
+            ];
+            foreach ($Balance['balance_companies'] as $id_company => $orders){
+                if($company = Company::findOne($id_company)){
+                    $dataProviders_companies[$id_company] = new ArrayDataProvider([
+                        'allModels' => $Balance['balance_companies'][$id_company]['orders'],
+                        'pagination' => ['pageSize' => 15],
+                        'sort' => [
+                            'attributes' => ['date'],
+                            'defaultOrder' => [
+                                'date' => SORT_DESC
+                            ]
+                        ]
+                    ]);
+                    $ids_companies .= $id_company . ' ';
+                }
+            }
+            $ids_companies = substr($ids_companies, 0, -1);
+        }
+        if($User->canRole('car_owner')|| !Profile::notAdminOrDispetcher()){
+            $balance = [
+                'car_owner' => $Balance['balance_car_owner']['balance'],
+                'not_paid' => $Balance['balance_car_owner']['not_paid'],
+                'user' => $Balance['balance_user']['balance'],
+                'companies' => $Balance['balance_companies']['balance']
+            ];
+            $dataProvider_car_owner = new ArrayDataProvider([
+                'allModels' => $Balance['balance_car_owner']['orders'],
+                'pagination' => ['pageSize' => 15],
+                'sort' => [
+                    'attributes' => ['date'],
+                    'defaultOrder' => [
+                        'date' => SORT_DESC
+                    ]
+                ]
+            ]);
+        }
+
+        $dataProvider_user = new ArrayDataProvider([
+            'allModels' => $Balance['balance_user']['orders'],
+            'pagination' => ['pageSize' => 15],
+            'sort' => [
+                'attributes' => ['date'],
+                'defaultOrder' => [
+                    'date' => SORT_DESC
+                ]
+            ]
+        ]);
+
+        return [
+            'dataProvider_car_owner' => $dataProvider_car_owner,
+            'dataProvider_user' => $dataProvider_user,
+            'dataProviders_companies' => $dataProviders_companies,
+            'balance' => $balance,
+            'Balance' => $Balance,
+            'ids_companies' => $ids_companies
+        ];
+    }
 
 
 

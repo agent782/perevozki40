@@ -14,6 +14,7 @@ use yii\widgets\DetailView;
 use yii\bootstrap\Html;
 use yii\bootstrap\Tabs;
 use yii\helpers\Url;
+use app\models\User;
 
 $this->title = Html::encode('Информация о профиле');
 ?>
@@ -35,7 +36,7 @@ echo $profile->fioFull;
         ],
         [
             'label' => 'Баланс',
-            'url' => Url::to(['/user/balance', 'id_user' => $model->id])
+            'content' => $this->render('@app/views/user/balance', User::arrayBalanceParamsForRender($model->id))
         ]
     ]
 ])?>

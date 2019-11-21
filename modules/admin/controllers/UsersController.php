@@ -54,10 +54,11 @@ class UsersController extends Controller
         $this->layout = functions::getLayout();
         $model = $this->findModel($id);
         $profile = $model->profile;
-        return $this->render('view', [
+        return $this->render('view',
+            array_merge([
             'model' => $model,
             'profile' => $profile,
-        ]);
+        ], User::arrayBalanceParamsForRender($id)));
     }
 
     /**
