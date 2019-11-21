@@ -8,6 +8,7 @@ use app\components\widgets\UploadInvoiceWidget;
 use app\components\widgets\ShowMessageWidget;
 use yii\helpers\Url;
 use app\models\Invoice;
+use app\models\Order;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -204,9 +205,14 @@ $this->title = 'Журнал заказов';
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
                     $profile = $model->profile;
-                    return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    $return = '';
+                    if($model->re && $model->id_user == $model->id_car_owner){
+                        $return .= $model->comment;
+                    }
+                    $return .= ' ' . Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    return $return;
                 }
             ],
             [
