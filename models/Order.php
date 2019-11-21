@@ -128,6 +128,7 @@ class Order extends \yii\db\ActiveRecord
 //    const STATUS_PAID = 9;
     const STATUS_NOT_ACCEPTED = 9;
     const STATUS_WAIT = 10;
+    const STATUS_CONFIRMED_SET_SUM = 11;
 
     const PAID_NO = 0;
     const PAID_YES = 1;
@@ -1352,13 +1353,15 @@ class Order extends \yii\db\ActiveRecord
                 $client_id_from_review = $id_client;
                 $vehicle_id_to_review = $id_client;
                 $vehicle_id_from_review = $vehicle->user->id;
-                $event_review = Review::EVENT_ORDER_CANCELED;
+                $event_review = Review::EVENT_ORDER_COMPLETED;
 
                 if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
                 else $this->paid_status = self::PAID_NO;
                 if($changeFinishCosts) {
                     $this->cost_finish = $this->getFinishCost(false);
                     $this->cost_finish_vehicle = $this->finishCostForVehicle;
+                    $message_vehicle = 'Итого к оплате: ' . $this->cost_finish_vehicle . ' р.';
+                    $message_client = 'Итого к оплате: ' . $this->cost_finish . ' р.';
                 }
 
                 $finishContacts = $this->finishContacts;
@@ -1404,7 +1407,7 @@ class Order extends \yii\db\ActiveRecord
                     }
                 }
                 break;
-            case self::STATUS_CONFIRMED_CLIENT:
+            case self::STATUS_CONFIRMED_SET_SUM:
 
                 break;
             case self::STATUS_CANCELED:

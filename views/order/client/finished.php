@@ -23,21 +23,21 @@ use app\models\Invoice;
         'responsiveWrap' => false,
         'pjax'=>true,
         'columns' => [
-            [
-                'class' => 'kartik\grid\ExpandRowColumn',
-                'value' => function ($model, $key, $index, $column) {
-
-                    return GridView::ROW_COLLAPSED;
-                },
-                'enableRowClick' => true,
-                'allowBatchToggle'=>true,
-                'detail'=>function ($model) {
-                    return Yii::$app->controller->renderPartial('client/view', ['model'=>$model]);
-                },
-                'detailOptions'=>[
-                    'class'=> 'kv-state-enable',
-                ],
-            ],
+//            [
+//                'class' => 'kartik\grid\ExpandRowColumn',
+//                'value' => function ($model, $key, $index, $column) {
+//
+//                    return GridView::ROW_COLLAPSED;
+//                },
+//                'enableRowClick' => true,
+//                'allowBatchToggle'=>true,
+//                'detail'=>function ($model) {
+//                    return Yii::$app->controller->renderPartial('client/view', ['model'=>$model]);
+//                },
+//                'detailOptions'=>[
+//                    'class'=> 'kv-state-enable',
+//                ],
+//            ],
             'id',
             'datetime_finish',
             [
