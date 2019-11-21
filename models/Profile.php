@@ -720,9 +720,9 @@ class Profile extends \yii\db\ActiveRecord
         foreach ($orders_cash as $order){
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'credit' => round($order->cost_finish_vehicle * $this->procentVehicle/100),
-                'debit' => '',
-                'description' => 'Проценты за заказ № ' . $order->id,
+                'debit' => round($order->cost_finish_vehicle * $this->procentVehicle/100),
+                'credit' => '',
+                'description' => 'Заказ № ' . $order->id . '. Проценты.',
                 'id_order' => $order->id,
             ];
 
@@ -739,8 +739,8 @@ class Profile extends \yii\db\ActiveRecord
             ];
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'debit' => $cost,
-                'credit' => '',
+                'credit' => $cost,
+                'debit' => '',
                 'description' => '(НЕ ОПЛАЧЕН) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
             ];
@@ -778,8 +778,8 @@ class Profile extends \yii\db\ActiveRecord
 
             $return['orders'][] = [
                 'date' => $payment->date,
-                'debit' => $payment->cost,
-                'credit' => '',
+                'debit' => ($payment->direction == Payment::CREDIT) ? $payment->cost : '',
+                'credit' => ($payment->direction == Payment::DEBIT) ? $payment->cost : '',
                 'description' => $payment->comments,
                 'id_order' => '',
                 'id_paiment' => $payment->id
