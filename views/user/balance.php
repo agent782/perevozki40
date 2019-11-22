@@ -1,6 +1,8 @@
 <?php
 
 use kartik\grid\GridView;
+use app\models\Order;
+use app\components\widgets\ShowMessageWidget;
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -66,6 +68,20 @@ use kartik\grid\GridView;
                         'label' => 'Комментарий',
                         'attribute' => 'description',
                     ],
+                    [
+                        'label' => '',
+                        'format' => 'raw',
+                        'value' => function($model){
+                            if(array_key_exists('id_order',$model)) {
+                                $order = Order::findOne($model['id_order']);
+                                if ($order) {
+                                    return ShowMessageWidget::widget([
+                                        'helpMessage' => $order->getFullFinishInfo(false, null, true, true)
+                                    ]);
+                                }
+                            }
+                        }
+                    ]
                 ]
             ]),
         ];
@@ -99,6 +115,20 @@ use kartik\grid\GridView;
                         'label' => 'Комментарий',
                         'attribute' => 'description',
                     ],
+                    [
+                        'label' => '',
+                        'format' => 'raw',
+                        'value' => function($model){
+                            if(array_key_exists('id_order',$model)) {
+                                $order = Order::findOne($model['id_order']);
+                                if ($order) {
+                                    return ShowMessageWidget::widget([
+                                        'helpMessage' => $order->getFullFinishInfo(false, null, true, true)
+                                    ]);
+                                }
+                            }
+                        }
+                    ]
                 ]
             ]),
         ];
@@ -139,11 +169,25 @@ use kartik\grid\GridView;
                             'label' => 'Кто заказывал',
                             'value' => function($model){
                                 if(array_key_exists('id_order',$model)) {
-                                    $order = \app\models\Order::findOne($model['id_order']);
+                                    $order = Order::findOne($model['id_order']);
                                     if ($order) {
                                         if ($profile = $order->profile) {
                                             return $profile->fioFull;
                                         }
+                                    }
+                                }
+                            }
+                        ],
+                        [
+                            'label' => '',
+                            'format' => 'raw',
+                            'value' => function($model){
+                                if(array_key_exists('id_order',$model)) {
+                                    $order = Order::findOne($model['id_order']);
+                                    if ($order) {
+                                        return ShowMessageWidget::widget([
+                                            'helpMessage' => $order->getFullFinishInfo(false, null, true, true)
+                                        ]);
                                     }
                                 }
                             }

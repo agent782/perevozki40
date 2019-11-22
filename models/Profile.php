@@ -743,7 +743,7 @@ class Profile extends \yii\db\ActiveRecord
                 'date' => $order->datetime_finish,
                 'credit' => $cost,
                 'debit' => '',
-                'description' => '(НЕ ОПЛАЧЕН) Сумма к выплате за заказ № ' . $order->id,
+                'description' => '(НЕ ОПЛАЧЕН КЛИЕНТОМ) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
             ];
         }
@@ -819,7 +819,8 @@ class Profile extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function hasOrdersInProccess($days = 0){
+    public function hasOrdersInProccess($days = 0) : int {
+        $count = 0;
         $orders_in_proccess = Order::find()
             ->where(['id_car_owner' => $this->id_user])
             ->andWhere(['status' => Order::STATUS_IN_PROCCESSING])
@@ -827,10 +828,10 @@ class Profile extends \yii\db\ActiveRecord
 
         foreach ($orders_in_proccess as $order){
             if((time() - strtotime($order->datetimeStart)) > 60*60*24*$days){
-                return true;
+                $count ++;
             }
-            return false;
         }
+        return $count;
     }
 
 }
