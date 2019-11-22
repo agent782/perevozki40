@@ -192,15 +192,15 @@ $this->title = 'Журнал заказов';
                     $return .= ' ' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
                             ['/logist/order/add-company', 'id_order' => $model->id, 'redirect' => '/finance/order']);
                     return $return;
-                },
-                'filter' => \yii\jui\AutoComplete::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'companyName',
-                    'clientOptions' => [
-                        'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
-                        'autoFill' => true,
-                    ]
-                ])
+                }
+//                'filter' => \yii\jui\AutoComplete::widget([
+//                    'model' => $searchModel,
+//                    'attribute' => 'companyName',
+//                    'clientOptions' => [
+//                        'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
+//                        'autoFill' => true,
+//                    ]
+//                ])
             ],
             [
                 'label' => 'Заказчик',

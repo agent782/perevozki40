@@ -127,7 +127,8 @@ $this->registerJsFile('/js/order.js');
         <?php
             if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND)
                 || $modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_SIDEWAYS)){
-                echo $form->field($modelOrder, 'real_remove_awning')->input('tel');
+                echo $form->field($modelOrder, 'real_remove_awning')->input('tel',
+                    ['readonly' => true])->hint('Будет доступно позже.');
             }
         ?>
         <?= $form->field($modelOrder,'additional_cost')->input('tel')->label(
