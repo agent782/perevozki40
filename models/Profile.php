@@ -634,7 +634,7 @@ class Profile extends \yii\db\ActiveRecord
                         $return[$company->id]['balance'] -= $order->cost_finish;
                         $return[$company->id]['orders'][] = [
                             'date' => $order->datetime_finish,
-                            'credit' => $order->cost_finish,
+                            'debit' => $order->cost_finish,
                             'description' => 'Заказ № ' . $order->id,
                             'id_order' => $order->id,
                         ];
@@ -653,7 +653,9 @@ class Profile extends \yii\db\ActiveRecord
                     $return[$company->id]['balance'] += $payment->cost;
                     $return[$company->id]['orders'][] = [
                         'date' => $payment->date,
-                        'debit' => $payment->cost,
+                        'debit' => ($payment->direction == Payment::CREDIT) ? $payment->cost : '',
+                        'credit' => ($payment->direction == Payment::DEBIT) ? $payment->cost : '',
+//                        'debit' => $payment->cost,
                         'description' => $payment->comments,
                         'id_paiment' => $payment->id
                     ];
