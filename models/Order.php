@@ -1608,9 +1608,9 @@ class Order extends \yii\db\ActiveRecord
         $return .= 'Тарифная зона №' . $this->getNumberPriceZoneReal($html) . '. <br>';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         if($this->id_user != $this->id_car_owner) {
-        $return .= ($showClientPhone)
-            ?'Заказчик:' . $this->clientInfo . ' <br>'
-            :'Заказчик:' . $this->clientInfoWithoutPhone . ' <br>';
+            $return .= ($showClientPhone)
+                ?'Заказчик:' . $this->clientInfo . ' <br>'
+                :'Заказчик:' . $this->clientInfoWithoutPhone . ' <br>';
         } else {
             $return .= '"Повторный заказ" <br>' . $this->comment;
         }
@@ -1972,6 +1972,17 @@ class Order extends \yii\db\ActiveRecord
         return null;
     }
 
+    public function PrintFinishCalculate($html = true, $forVehicle = false, $withDiscount = false){
+        $return = '';
+        if($this->cost){
+            $return .= $this->CalculateAndPrintFinishCost($html, $forVehicle, $withDiscount)['text'];
+        } else {
+            $return .= 'Стоимость заказа: ';
+            $return .= ($forVehicle) ? $this->cost_finish_vehicle : $this->cost_finish;
+            $return .= ' руб.';
+        }
+        return $return;
+    }
 
  }
 

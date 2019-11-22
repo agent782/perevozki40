@@ -8,4 +8,4 @@
 ?>
 Заказ № <?= $model->id?>
 <br>
-<?= $model->CalculateAndPrintFinishCost(true, true)['text']?>
+<?= $model->PrintFinishCalculate(true, true)?>

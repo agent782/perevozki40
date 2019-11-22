@@ -292,6 +292,7 @@ class OrderController extends Controller
         }
         if($order->load(Yii::$app->request->post())){
             $order->datetime_finish = $order->real_datetime_start;
+            $order->cost = null;
             $order->changeStatus($order::STATUS_CONFIRMED_VEHICLE, $order->id_user, $order->id_vehicle, false);
 //            if($order->save()){
 //

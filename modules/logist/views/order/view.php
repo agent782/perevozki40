@@ -17,11 +17,11 @@ use yii\widgets\DetailView;
     <div class="row">
         <div class="col-lg-4">
             Для водитеоля
-            <?= $model->CalculateAndPrintFinishCost(true, true, false)['text']?>
+            <?= $model->PrintFinishCalculate(true, true)?>
         </div>
         <div class="col-lg-4">
             Для клиента
-            <?= $model->CalculateAndPrintFinishCost(true, false, false)['text']?>
+            <?= $model->PrintFinishCalculate()?>
         </div>
         <div class="col-lg-4">
             <?= $model->getFullFinishInfo(true, null, true, true)?>

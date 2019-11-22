@@ -8,5 +8,5 @@
 ?>
 Заказ № <?= $model->id?>
 <br>
-<?= $model->CalculateAndPrintFinishCost(true, false, true)['text']?>
+<?= $model->PrintFinishCalculate()?>
 
