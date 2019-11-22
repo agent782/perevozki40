@@ -709,8 +709,8 @@ class Profile extends \yii\db\ActiveRecord
 
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'credit' => '',
-                'debit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)),
+                'debit' => '',
+                'credit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)),
                 'description' => 'Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
             ];

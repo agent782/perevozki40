@@ -27,14 +27,6 @@ echo $profile->fioFull;
 <?= Tabs::widget([
     'items' => [
         [
-            'label' => 1,
-            'content' => 1,
-        ],
-        [
-            'label' => 2,
-            'content' => 2,
-        ],
-        [
             'label' => 'Баланс',
             'content' => $this->render('@app/views/user/balance', User::arrayBalanceParamsForRender($model->id))
         ]
