@@ -252,7 +252,9 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                         [
                             'label' => 'Бухгалтерия',
                             'url' => '/finance',
-                            'visible' => Yii::$app->user->can('admin'),
+                            'visible' => (Yii::$app->user->can('admin')
+                                || Yii::$app->user->can('buh')
+                            ),
                         ],
                         [
                             'label' => 'Завершть регистрацию клиента',
