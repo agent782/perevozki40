@@ -42,7 +42,7 @@ use app\models\Invoice;
             'datetime_finish',
             [
                 'label' => 'Сумма к оплате',
-                'attribute' => 'finishCost',
+                'attribute' => 'cost_finish',
                 'format' => 'raw'
             ],
             [

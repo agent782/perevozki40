@@ -6,6 +6,6 @@
  * Time: 8:31
  */
 ?>
-Заказ № <?= $model->id?>
-<br>
 <?= $model->PrintFinishCalculate(true, true)?>
+<br>
+<?= $model->getFullFinishInfo(false, null, true, true)?>
