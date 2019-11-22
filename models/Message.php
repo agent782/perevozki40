@@ -155,7 +155,7 @@ class Message extends \yii\db\ActiveRecord
         } else {
             $this->push_status = self::STATUS_NEED_TO_SEND;
         }
-        if($save) $this->save();
+//        if($save) $this->save();
     }
 
     public function  changeStatus($newStatus){
