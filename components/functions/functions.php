@@ -168,7 +168,7 @@ class functions
         $layout = 'default2';
 
         $adminLayout = '@app/views/layouts/logist';
-        $logistLayout = 'logist';
+        $logistLayout = '@app/views/layouts/logist';
         $buhLayout = '@app/modules/finance/views/layouts/finance';
 
         if(Yii::$app->user->can('admin')) $layout = $adminLayout;
