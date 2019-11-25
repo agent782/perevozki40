@@ -678,7 +678,7 @@ class OrderController extends Controller
         $user = User::findOne($id_user);
         $order = Order::findOne($id_order);
         //Нельзя отменить принятый водителем заказ спустя энное количество дней
-        if((time() - strtotime($order->datetime_start)) > 60*60*24*$days){
+        if((time() - strtotime($order->datetime_start)) > 60*60*24*$days && Profile::notAdminOrDispetcher()){
             functions::setFlashWarning('Прошло более ' . $days . ' дней с момента принятия заказа. Нельзя его отменить!');
             return $this->redirect($redirect);
         }
@@ -705,7 +705,7 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
 //Нельзя отменить принятый водителем заказ спустя энное количество дней
-            if((time() - strtotime($order->datetime_start)) > 60*60*24*$days){
+            if((time() - strtotime($order->datetime_start)) > 60*60*24*$days && Profile::notAdminOrDispetcher()){
                 functions::setFlashWarning('Прошло более ' . $days . ' дней с момента принятия заказа. Нельзя его отменить!');
                 return $this->redirect($redirect);
             }

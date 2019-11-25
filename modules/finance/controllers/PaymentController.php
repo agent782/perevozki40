@@ -10,6 +10,7 @@ use app\models\setting\SettingFinance;
 use Yii;
 use app\models\Payment;
 use app\models\PaymentSearch;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -32,6 +33,15 @@ class PaymentController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin', 'buh']
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -137,12 +147,12 @@ class PaymentController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
 
     /**
      * Finds the Payment model based on its primary key value.
