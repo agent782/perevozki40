@@ -515,6 +515,11 @@ class OrderController extends Controller
             case 'update':
                 if ($modelOrder->load(Yii::$app->request->post()) && $route->load(Yii::$app->request->post())) {
 //            return var_dump($modelOrder->suitable_rates);
+                    if($modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC){
+                        $modelOrder->body_typies[1] = $modelOrder->body_typies[0];
+                        unset($modelOrder->body_typies[0]);
+//                        return var_dump($modelOrder->body_typies);
+                    }
                     $modelOrder->suitable_rates = $modelOrder
                         ->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($modelOrder->id_user));
                     $session->set('modelOrder', $modelOrder);
