@@ -153,7 +153,10 @@ $pass_columns = [
             }
         }
     ],
-    'passengers',
+    [
+        'attribute' => 'passengers',
+        'label' => 'Количество пассажиров, от, чел.'
+    ],
     [
         'attribute' => 'r_km',
         'value' => function(PriceZone $model){

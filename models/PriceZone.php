@@ -315,7 +315,7 @@ class PriceZone extends \yii\db\ActiveRecord
                 break;
 
             case Vehicle::TYPE_PASSENGER:
-                $result .= '<p>Количество пассажиров: ' . $this->passengers . '.</p>';
+                $result .= '<p>Количество пассажиров, от : ' . $this->passengers . '.</p>';
                 break;
 
             case Vehicle::TYPE_SPEC:
