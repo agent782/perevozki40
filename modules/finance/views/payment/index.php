@@ -95,6 +95,6 @@ $this->title = 'Платежи';
             ],
 //
             ['class' => 'yii\grid\ActionColumn'],
-        ],
+        ]
     ]); ?>
 </div>

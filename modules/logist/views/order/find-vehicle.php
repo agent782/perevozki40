@@ -31,8 +31,9 @@ echo \kartik\grid\GridView::widget([
             'attribute' => 'id_user',
 //            'group' => true,
             'format' => 'raw',
-            'value' => function($model){
-                return $model->profile->fioFull . ' (ID ' . $model->profile->id_user . ')';
+            'value' => function(\app\models\Vehicle $model){
+                return '"' . $model->profile->old_id . '" ' .$model->profile->fioFull
+                    . ' ' .  $model->profile->phone .' (ID ' . $model->profile->id_user . ')';
             },
 //            'groupedRow' => true,
 //            'groupOddCssClass' => 'kv-grouped-row',  // configure odd group cell css class

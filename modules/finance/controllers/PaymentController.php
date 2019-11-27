@@ -53,7 +53,6 @@ class PaymentController extends Controller
     {
         $searchModel = new PaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//        $dataProvider->query->andWhere(['id_user' => 73]);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -149,8 +148,14 @@ class PaymentController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->status = $model::STATUS_CANCELED;
 
+        if($model->save()){
+            functions::setFlashSuccess('Платеж отменен.');
+        } else {
+            functions::setFlashWarning('Ошибка. Платеж не отменен');
+        }
         return $this->redirect(['index']);
     }
 

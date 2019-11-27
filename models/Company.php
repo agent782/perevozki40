@@ -210,7 +210,9 @@ class Company extends \yii\db\ActiveRecord
     }
 
     public function getPayments(){
-        return $this->hasMany(Payment::class, ['id_company' => 'id']);
+        return $this->hasMany(Payment::class, ['id_company' => 'id'])
+            ->andWhere(['status' => Payment::STATUS_SUCCESS])
+            ;
     }
     // Компания проверена хотя бы для одного пользователя
     public function checked($id_company){
