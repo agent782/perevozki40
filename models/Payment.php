@@ -96,7 +96,7 @@ class Payment extends \yii\db\ActiveRecord
             'convertDate' => [
                 'class' => DateBehaviors::class,
                 'dateAttributes' => ['date', 'create_at', 'update_at'],
-                'format' => DateBehaviors::FORMAT_DATE,
+                'format' => DateBehaviors::FORMAT_DATETIME,
             ]
         ];
     }

@@ -660,7 +660,9 @@ class Profile extends \yii\db\ActiveRecord
                         'id_paiment' => $payment->id
                     ];
                 }
+
                 array_multisort($return[$company->id]['orders'], SORT_DESC);
+//                usort($return[$company->id]['orders']);
             }
         }
         return $return;
