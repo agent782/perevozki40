@@ -610,7 +610,16 @@ class Profile extends \yii\db\ActiveRecord
             ];
         }
 
-//        array_multisort($return['orders'], SORT_DESC);
+        if(is_array($return['orders'])) {
+
+            usort($return['orders'], function($a, $b)
+            {
+                if ($a["date"] == $b["date"]) {
+                    return 0;
+                }
+                return (strtotime($a["date"]) > strtotime($b["date"])) ? -1 : 1;
+            });
+        }
         return $return;
     }
 
@@ -660,13 +669,23 @@ class Profile extends \yii\db\ActiveRecord
                         'id_paiment' => $payment->id
                     ];
                 }
+                if(is_array($return[$company->id]['orders'])) {
 
+                    usort($return[$company->id]['orders'], function($a, $b)
+                    {
+                        if ($a["date"] == $b["date"]) {
+                            return 0;
+                        }
+                        return (strtotime($a["date"]) > strtotime($b["date"])) ? -1 : 1;
+                    });
+                }
 //                array_multisort($return[$company->id]['orders'], SORT_DESC);
 //                usort($return[$company->id]['orders']);
             }
         }
         return $return;
     }
+
 
     public function getBalanceCarOwner(){
         $return = [
@@ -790,7 +809,16 @@ class Profile extends \yii\db\ActiveRecord
             ];
         }
 
-        array_multisort($return['orders'], SORT_DESC);
+        if(is_array($return['orders'])) {
+
+            usort($return['orders'], function($a, $b)
+            {
+                if ($a["date"] == $b["date"]) {
+                    return 0;
+                }
+                return (strtotime($a["date"]) > strtotime($b["date"])) ? -1 : 1;
+            });
+        }
         return $return;
     }
 

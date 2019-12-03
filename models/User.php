@@ -469,12 +469,6 @@ class User extends ActiveRecord implements IdentityInterface
                     $dataProviders_companies[$id_company] = new ArrayDataProvider([
                         'allModels' => $Balance['balance_companies'][$id_company]['orders'],
                         'pagination' => ['pageSize' => 15],
-                        'sort' => [
-                            'attributes' => ['date'],
-                            'defaultOrder' => [
-                                'date' => SORT_DESC
-                            ]
-                        ]
                     ]);
                     $ids_companies .= $id_company . ' ';
                 }
@@ -491,35 +485,12 @@ class User extends ActiveRecord implements IdentityInterface
             $dataProvider_car_owner = new ArrayDataProvider([
                 'allModels' => $Balance['balance_car_owner']['orders'],
                 'pagination' => ['pageSize' => 15],
-                'sort' => [
-                   'attributes' => [
-                    'date' => [
-                            'asc' => [strtotime('date') => SORT_DESC],
-                            'desc' => ['date' => SORT_ASC],
-                        ]
-                    ],
-                    'defaultOrder' => [
-                        'date' => SORT_ASC
-                    ]
-                ]
             ]);
         }
 
         $dataProvider_user = new ArrayDataProvider([
             'allModels' => $Balance['balance_user']['orders'],
             'pagination' => ['pageSize' => 15],
-            'sort' => [
-//                'attributes' => [
-//                    'date' => [
-//                        'asc' => ['date' => SORT_DESC],
-//                        'desc' => ['date' => SORT_ASC],
-//                        'default' => SORT_ASC
-//                    ]
-//                ],
-//                'defaultOrder' => [
-//                    'date' => SORT_DESC
-//                ]
-            ]
         ]);
 
         return [

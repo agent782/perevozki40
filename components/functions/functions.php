@@ -177,4 +177,5 @@ class functions
 
         return $layout;
     }
+
 }
