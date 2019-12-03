@@ -692,9 +692,10 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
         if($order->re){
-            $order->changeStatus($order::STATUS_CANCELED, $order->id_user, $order->id_car_owner);
+            $order->changeStatus($order::STATUS_CANCELED, $order->id_user, $order->id_vehicle);
             return $this->redirect($redirect);
         }
+
         ($order->changeStatus(Order::STATUS_IN_PROCCESSING, $order->id_user, $order->id_vehicle));
 //        return;
 
