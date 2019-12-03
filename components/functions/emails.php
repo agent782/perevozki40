@@ -91,7 +91,7 @@ class emails
                 break;
         }
         $sendToEmails = [];
-        $SettingFinance = SettingFinance::findOne();
+        $SettingFinance = SettingFinance::find()->one();
         if($SettingFinance->invoices_to_client_email) {
             if ($profile->email) $sendToEmails[] = $profile->email;
             if ($profile->email2) $sendToEmails[] = $profile->email2;

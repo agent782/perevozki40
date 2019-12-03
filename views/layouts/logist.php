@@ -51,7 +51,11 @@ AppAsset::register($this);
             ['label' => 'Прайс', 'url' => '/price-zone'],
             ['label' => 'Заказы', 'url' => '/logist/order'],
             ['label' => 'Машины', 'url' => '/logist/vehicle'],
-
+            [
+                'label' => 'Бухгалтерия',
+                'url' => '/finance',
+                'visible' => Yii::$app->user->can('admin')
+            ],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Войти', 'url' => ['/default/login']]
             ) : (
