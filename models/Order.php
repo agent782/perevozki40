@@ -473,12 +473,15 @@ class Order extends \yii\db\ActiveRecord
         switch ($this->id_vehicle_type) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['>', 'tonnage_max', $this->tonnage])
-                    ->andFilterWhere(['>', 'volume_max', $this->volume])
-                    ->andFilterWhere(['>', 'length_max', $this->length]);
+                    ->andFilterWhere(['>=', 'tonnage_max', $this->tonnage])
+                    ->andFilterWhere(['>=', 'volume_max', $this->volume])
+                    ->andFilterWhere(['>=', 'length_max', $this->length]);
                 if(!$this->longlength) {
                     $priceZones = $priceZones->andFilterWhere(['longlength' => $this->longlength]);
                 }
+//                else {
+//                    $priceZones = $priceZones->andFilterWhere(['>', 'length_max', $this->length - 2]);
+//                }
 //                    ->andFilterWhere(['longlength' => $this->longlength])
                 $priceZones = $priceZones->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
                     ->all()

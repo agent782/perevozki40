@@ -19,6 +19,7 @@ use yii\helpers\Html;
 use yii\web\IdentityInterface;
 use app\models\Profile;
 use yii\data\ArrayDataProvider;
+use yii\db\Expression;
 
 /**
  * User model
@@ -469,7 +470,10 @@ class User extends ActiveRecord implements IdentityInterface
                         'allModels' => $Balance['balance_companies'][$id_company]['orders'],
                         'pagination' => ['pageSize' => 15],
                         'sort' => [
-                            'attributes' => ['date' => SORT_DESC],
+                            'attributes' => ['date'],
+                            'defaultOrder' => [
+                                'date' => SORT_DESC
+                            ]
                         ]
                     ]);
                     $ids_companies .= $id_company . ' ';
@@ -488,7 +492,15 @@ class User extends ActiveRecord implements IdentityInterface
                 'allModels' => $Balance['balance_car_owner']['orders'],
                 'pagination' => ['pageSize' => 15],
                 'sort' => [
-                    'attributes' => ['date' => SORT_DESC],
+                   'attributes' => [
+                    'date' => [
+                            'asc' => [strtotime('date') => SORT_DESC],
+                            'desc' => ['date' => SORT_ASC],
+                        ]
+                    ],
+                    'defaultOrder' => [
+                        'date' => SORT_ASC
+                    ]
                 ]
             ]);
         }
@@ -497,7 +509,16 @@ class User extends ActiveRecord implements IdentityInterface
             'allModels' => $Balance['balance_user']['orders'],
             'pagination' => ['pageSize' => 15],
             'sort' => [
-                'attributes' => ['date' => SORT_DESC],
+//                'attributes' => [
+//                    'date' => [
+//                        'asc' => ['date' => SORT_DESC],
+//                        'desc' => ['date' => SORT_ASC],
+//                        'default' => SORT_ASC
+//                    ]
+//                ],
+//                'defaultOrder' => [
+//                    'date' => SORT_DESC
+//                ]
             ]
         ]);
 

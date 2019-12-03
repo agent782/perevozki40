@@ -610,7 +610,7 @@ class Profile extends \yii\db\ActiveRecord
             ];
         }
 
-        array_multisort($return['orders'], SORT_DESC);
+//        array_multisort($return['orders'], SORT_DESC);
         return $return;
     }
 
@@ -661,7 +661,7 @@ class Profile extends \yii\db\ActiveRecord
                     ];
                 }
 
-                array_multisort($return[$company->id]['orders'], SORT_DESC);
+//                array_multisort($return[$company->id]['orders'], SORT_DESC);
 //                usort($return[$company->id]['orders']);
             }
         }
