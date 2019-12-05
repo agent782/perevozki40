@@ -86,13 +86,16 @@ AppAsset::register($this);
 
     NavBar::end();
     ?>
-    <?=
-    AutoComplete::widget([
-    'clientOptions' => [
-    'source' => \app\models\Profile::getArrayForAutoComplete(false),
-    'autoFill' => true,
-    'minLength' => '0',
-    'select' => new JsExpression('function(event, ui) {
+
+    <div class="container">
+        
+        <?=
+        AutoComplete::widget([
+            'clientOptions' => [
+                'source' => \app\models\Profile::getArrayForAutoComplete(false),
+                'autoFill' => true,
+                'minLength' => '0',
+                'select' => new JsExpression('function(event, ui) {
     location.href = $("#urlTo").val() + "/?id=" + ui.item.id;
     $("#label").html("Клиент");
     $("#id").val(ui.item.id);
@@ -106,10 +109,10 @@ AppAsset::register($this);
     $("#patrinimic").val(ui.item.patrinimic);
     var id = ui.item.id;
     }'),
-    'response' => new JsExpression('function(event, ui) {
+                'response' => new JsExpression('function(event, ui) {
     $("#username").val($(this).val());
     }'),
-    'change' => new JsExpression('function(event, ui) {
+                'change' => new JsExpression('function(event, ui) {
     if(!ui.item) {
     $("#label").html("Новый клиент");
     $("#id").val("");
@@ -124,16 +127,14 @@ AppAsset::register($this);
 
     }
     }'),
-    ],
-    'options' => [
-    'id' => 'search-all',
-    'class' => 'form-control',
-    'placeholder' => Yii::t('app', 'Поиск...'),
-    ]
-    ]);
-    ?>
-    <div class="container">
-        <br><br>
+            ],
+            'options' => [
+                'id' => 'search-all',
+                'class' => 'form-control',
+                'placeholder' => Yii::t('app', 'Поиск...'),
+            ]
+        ]);
+        ?>
         <?php if(Yii::$app->session->hasFlash('success')): ?>
             <div class="alert alert-success alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
