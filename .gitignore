@@ -31,8 +31,8 @@ tests/_support/_generated
 web/index.php
 /runtime/*
 /config
-#/web/documents
-#/web/uploads
+/web/documents/*
+/web/uploads/*
 
 #ЗАГОТОВКИ.txt
 #план.txt
