@@ -1,9 +1,11 @@
 <?php
 
-use yii\grid\GridView;
+//use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use app\models\Payment;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -22,17 +24,35 @@ $this->title = 'Платежи';
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'showPageSummary' => true,
+        'rowOptions' => function(Payment $model){
+            switch ($model->status){
+                case Payment::STATUS_CANCELED:
+                    return ['style' => 'text-decoration: line-through;'];
+                    break;
+                case Payment::STATUS_SUCCESS:
+                    break;
+                case Payment::STATUS_ERROR:
+                    return ['style' => 'text-decoration: line-through;'];
+                    break;
+                case Payment::STATUS_WAIT:
+                    return ['style' => 'font-style: italic;'];
+                    break;
+            }
+        },
         'columns' => [
 //            ['class' => 'yii\grid\SerialColumn'],
 //            'id',
             'date',
             [
+                'attribute' => 'debit',
                 'label' => 'Дебет',
                 'value' => function($model){
                     if($model->direction == \app\models\Payment::DEBIT){
                         return $model->cost;
                     }
-                }
+                },
+                'pageSummary' => true
             ],
             [
                 'label' => 'Кредит',
@@ -40,7 +60,8 @@ $this->title = 'Платежи';
                     if($model->direction == \app\models\Payment::CREDIT){
                         return $model->cost;
                     }
-                }
+                },
+                'pageSummary' => true
             ],
             [
                 'label' => 'Пользователь',

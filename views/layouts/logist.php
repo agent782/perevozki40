@@ -41,47 +41,6 @@ AppAsset::register($this);
             'id' => 'menu',
         ],
     ]);
-    echo Nav::widget([
-        'encodeLabels' => false,
-        'options' => [
-            'class' => 'navbar-nav navbar-left',
-        ],
-        'items' => [
-            ['label' => Html::icon('home'), 'url' => '/logist'],
-            ['label' => 'Прайс', 'url' => '/price-zone'],
-            ['label' => 'Заказы', 'url' => '/logist/order'],
-            ['label' => 'Машины', 'url' => '/logist/vehicle'],
-            [
-                'label' => 'Бухгалтерия',
-                'url' => '/finance',
-                'visible' => Yii::$app->user->can('admin')
-            ],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Войти', 'url' => ['/default/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/default/logout'], 'post')
-                . Html::submitButton(
-                    'Выход (' . Yii::$app->user->identity->profile->name . ' ' . Yii::$app->user->identity->profile->surname . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            ),
-            (Yii::$app->user->can('admin')) ? (
-            ['label' => 'Adminka', 'url' => ['/admin']]
-            ) : (
-                    ''
-            ),
-            (Yii::$app->user->can('admin')) ? (
-            ['label' => 'Roles', 'url' => ['/admin/roles']]
-            ) : (
-            ''
-            ),
-        ],
-    ]);
-    echo Html::input('text', '', \yii\helpers\Url::to('/admin/users/view', true)
-        , ['id' => 'urlTo', 'hidden' => true]);
     echo AutoComplete::widget([
         'clientOptions' => [
             'source' => \app\models\Profile::getArrayForAutoComplete(false),
@@ -126,6 +85,47 @@ AppAsset::register($this);
             'placeholder' => Yii::t('app', 'Поиск...'),
         ]
     ]);
+    echo Nav::widget([
+        'encodeLabels' => false,
+        'options' => [
+            'class' => 'navbar-nav navbar-left',
+        ],
+        'items' => [
+            ['label' => Html::icon('home'), 'url' => '/logist'],
+            ['label' => 'Прайс', 'url' => '/price-zone'],
+            ['label' => 'Заказы', 'url' => '/logist/order'],
+            ['label' => 'Машины', 'url' => '/logist/vehicle'],
+            [
+                'label' => 'Бухгалтерия',
+                'url' => '/finance',
+                'visible' => Yii::$app->user->can('admin')
+            ],
+            Yii::$app->user->isGuest ? (
+                ['label' => 'Войти', 'url' => ['/default/login']]
+            ) : (
+                '<li>'
+                . Html::beginForm(['/default/logout'], 'post')
+                . Html::submitButton(
+                    'Выход (' . Yii::$app->user->identity->profile->name . ' ' . Yii::$app->user->identity->profile->surname . ')',
+                    ['class' => 'btn btn-link logout']
+                )
+                . Html::endForm()
+                . '</li>'
+            ),
+            (Yii::$app->user->can('admin')) ? (
+            ['label' => 'Adminka', 'url' => ['/admin']]
+            ) : (
+                    ''
+            ),
+            (Yii::$app->user->can('admin')) ? (
+            ['label' => 'Roles', 'url' => ['/admin/roles']]
+            ) : (
+            ''
+            ),
+        ],
+    ]);
+    echo Html::input('text', '', \yii\helpers\Url::to('/admin/users/view', true)
+        , ['id' => 'urlTo', 'hidden' => true]);
 
     NavBar::end();
     ?>

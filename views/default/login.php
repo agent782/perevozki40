@@ -38,8 +38,8 @@ $this->title = 'Вход в личный кабинет';
                 ],
                 'options' => [
                     'type' => 'tel',
-                    'autocorrect' => 'off',
-                    'autocomplete' => 'tel'
+//                    'autocorrect' => 'off',
+//                    'autocomplete' => 'tel'
                 ]
 
             ])

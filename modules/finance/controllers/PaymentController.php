@@ -53,6 +53,9 @@ class PaymentController extends Controller
     {
         $searchModel = new PaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination = [
+            'pageSize' => 100
+        ];
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
