@@ -87,7 +87,7 @@ AppAsset::register($this);
     NavBar::end();
     ?>
     <?=
-    echo AutoComplete::widget([
+    AutoComplete::widget([
     'clientOptions' => [
     'source' => \app\models\Profile::getArrayForAutoComplete(false),
     'autoFill' => true,
