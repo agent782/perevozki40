@@ -20,6 +20,7 @@ use yii\helpers\Url;
 <?php
 echo \kartik\grid\GridView::widget([
     'dataProvider' => $dataProvider,
+    'filterModel' => ($searchModel) ? $searchModel : false,
 //    'pjax' => true,
     'striped' => true,
     'hover' => true,

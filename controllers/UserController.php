@@ -210,7 +210,7 @@ class UserController extends Controller
 
                 if ($user->save() && $profile->save()) {
                     functions::setFlashSuccess('Пользовватель сохранен.');
-                    $this->redirect([$redirect, 'id_user' => $user->id, 'redirect' => $redirect2]);
+                    $this->redirect([$redirect, 'id_user' => $user->id, 'id_order' => $id_order, 'redirect' => $redirect2]);
                 } else {
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }

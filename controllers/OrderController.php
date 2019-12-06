@@ -661,7 +661,13 @@ class OrderController extends Controller
 //                return var_dump($OrderModel->id_vehicle);
                 $OrderModel->changeStatus(
                     Order::STATUS_VEHICLE_ASSIGNED, $OrderModel->id_user, $OrderModel->id_vehicle);
-            } else  functions::setFlashWarning('Заказ только что был принят другим водителем.');
+            } else  {
+                if(Profile::notAdminOrDispetcher()){
+                    functions::setFlashWarning('Заказ только что был принят другим водителем.');
+                } else {
+                    return 'OK';
+                }
+            }
 
 
             return $this->redirect($redirect);

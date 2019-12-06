@@ -112,9 +112,15 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                     }
                     if($model->vehicle){
                         return  $model->vehicle->brandAndNumber
-                        . ' (' . $fio_driver . ')';
+                        . ' (' . $fio_driver . ')'
+                            . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Переназначить машину']), Url::to([
+                                '/user/find-user',
+                                'redirect' => '/logist/order/change-vehicle' ,
+                                'id_order' => $model->id,
+                                'redirect2' => '/logist/order'
+                            ]))
+                            ;
                     }
-
                 }
             ],
             [

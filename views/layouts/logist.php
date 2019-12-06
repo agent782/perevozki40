@@ -88,7 +88,7 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
-        
+
         <?=
         AutoComplete::widget([
             'clientOptions' => [

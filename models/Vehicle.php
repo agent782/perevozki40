@@ -179,7 +179,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 self::SCENARIO_UPDATE_SPEC_BODY_manipulator, self::SCENARIO_UPDATE_SPEC_BODY_crane,
                 self::SCENARIO_UPDATE_SPEC_BODY_dump, self::SCENARIO_UPDATE_SPEC_BODY_excavator],
             ],
-            [['id_user', 'passengers', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
+            [['id_user', 'passengers', 'longlength', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume'], 'number'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y h:i')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
@@ -196,7 +196,8 @@ class Vehicle extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_CHECK] = ['error_mes'];
         $scenarios[self::SCENARIO_CREATE] = [];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
-            'Price_zones','body_type', 'loadingTypeIds', 'tonnage', 'length', 'width', 'height', 'volume', 'longlenth'
+            'Price_zones','body_type', 'loadingTypeIds', 'tonnage', 'length'
+            , 'width', 'height', 'volume', 'longlength'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'Price_zones','body_type', 'passengers'

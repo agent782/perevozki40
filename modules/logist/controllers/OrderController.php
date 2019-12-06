@@ -247,29 +247,13 @@ class OrderController extends Controller
             functions::setFlashWarning('Нет такого заказа!');
             return $this->redirect($redirectError);
         }
-//        $SearchModel = new VehicleSearch();
-//        $dataProvider = $SearchModel->search(Yii::$app->request->queryParams);
-
 
         $vehicles =[];
         $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->orderBy('id_user')->all();
-//        return
-//            var_dump(
-//            Vehicle::findOne(['body_type' => Vehicle::BODY_manipulator])->priceZonesSelect);
-//        ;
+
         foreach ($Vehicles as $vehicle) {
             if (!$vehicle->canOrder($modelOrder)) {
                 ArrayHelper::removeValue($Vehicles, $vehicle);
-//                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel));
-//                $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
-//                $vehicles[] =
-//                    [
-//                    'id' => $vehicle->id,
-//                    'label' => $vehicle->brand
-//                    . ' (' . $vehicle->regLicense->reg_number . ') '
-//                    . ' <br> '
-//                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true)
-//                ];
             }
         }
 
@@ -280,6 +264,26 @@ class OrderController extends Controller
         return $this->render('find-vehicle', [
             'vehicles' => $vehicles,
             'dataProvider' => $dataProvider,
+            'searchModel' => null,
+            'modelOrder' => $modelOrder
+        ]);
+    }
+
+    public function actionChangeVehicle($id_order, $id_user, $redirect = '/logist/order'){
+        return 'ok';
+        $modelOrder = Order::findOne($id_order);
+        if(!$modelOrder ){
+            functions::setFlashWarning('Нет такого заказа!');
+            return $this->redirect($redirect);
+        }
+        $searchModel = new VehicleSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $modelOrder->id_vehicle_type,
+            false,[Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+
+        return $this->render('find-vehicle', [
+//            'vehicles' => $vehicles,
+            'dataProvider' => $dataProvider,
+            'searchModel' => null,
             'modelOrder' => $modelOrder
         ]);
     }
