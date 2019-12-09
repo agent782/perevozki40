@@ -194,6 +194,7 @@ class UserController extends Controller
             if (User::find()->where(['username' => $user->username])->one()) {
                 $tmpUser = User::findOne(['username' => $user->username]);
                 $tmpUser->email = $user->email;
+                $tmpUser->old_id = $user->old_id;
                 $tmpProfile = $tmpUser->profile;
                 $tmpProfile->name = $profile->name;
                 $tmpProfile->surname = $profile->surname;
@@ -210,7 +211,7 @@ class UserController extends Controller
 
                 if ($user->save() && $profile->save()) {
                     functions::setFlashSuccess('Пользовватель сохранен.');
-                    $this->redirect([$redirect, 'id_user' => $user->id, 'id_order' => $id_order, 'redirect' => $redirect2]);
+                    $this->redirect([$redirect, 'id_user' => $user->id, 'id_order' => $id_order,    'redirect' => $redirect2]);
                 } else {
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }

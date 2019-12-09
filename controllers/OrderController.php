@@ -665,7 +665,7 @@ class OrderController extends Controller
                 if(Profile::notAdminOrDispetcher()){
                     functions::setFlashWarning('Заказ только что был принят другим водителем.');
                 } else {
-                    return 'OK';
+                    return OK;
                 }
             }
 

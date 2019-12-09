@@ -4,6 +4,7 @@ namespace app\modules\logist\controllers;
 
 use app\components\functions\functions;
 use app\models\Company;
+use app\models\OrdersFinishContacts;
 use app\models\Payment;
 use app\models\Profile;
 use app\models\User;
@@ -270,21 +271,63 @@ class OrderController extends Controller
     }
 
     public function actionChangeVehicle($id_order, $id_user, $redirect = '/logist/order'){
-        return 'ok';
-        $modelOrder = Order::findOne($id_order);
-        if(!$modelOrder ){
-            functions::setFlashWarning('Нет такого заказа!');
+//        return 'ok';
+        $OrderModel = Order::findOne($id_order);
+
+        $UserModel = User::findOne($id_user);
+        if (!$OrderModel || !$UserModel) {
+            functions::setFlashWarning('Ошибка на сервере');
+            $this->redirect($redirect);
+        }
+        $Profile = $UserModel->profile;
+        if (!$UserModel->getDrivers()->count() && !$Profile->is_driver) {
+            functions::setFlashWarning('У Вас не добавлен ни один водитель!');
+//            return $this->redirect($redirect);
+        }
+        $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+        if($UserModel->profile->is_driver){
+//            return var_dump(['0' => $UserModel->profile->fioFull]);
+            $driversArr['0'] = $UserModel->profile->fioFull;
+        }
+        $vehicles = [];
+        $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
+//        return var_dump($Vehicles);
+
+        foreach ($Vehicles as $vehicle) {
+            if ($vehicle->canOrder($OrderModel)) {
+//                return var_dump($vehicle->getMinRate($OrderModel));
+                $rate = PriceZone::findOne($vehicle->getMinRate($OrderModel)->unique_index);
+                $rate = $rate->getWithDiscount(SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent);
+                $vehicles[$vehicle->id] =
+                    $vehicle->brand
+                    . ' (' . $vehicle->regLicense->reg_number . ') '
+                    . ' <br> '
+                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true);
+            }
+        }
+
+        if ($OrderModel->load(Yii::$app->request->post())) {
+            $finishContacts = $OrderModel->finishContacts;
+            if(!$finishContacts) $finishContacts = new OrdersFinishContacts();
+            if($finishContacts = $OrderModel->changeVehicleByFinished($OrderModel->id_vehicle,
+                $OrderModel->id_driver)){
+                if($finishContacts->save()){
+                    if($OrderModel->save()){
+                        functions::setFlashSuccess('ТС назначено');
+                    }
+                }
+            }
             return $this->redirect($redirect);
         }
-        $searchModel = new VehicleSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $modelOrder->id_vehicle_type,
-            false,[Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
 
-        return $this->render('find-vehicle', [
-//            'vehicles' => $vehicles,
-            'dataProvider' => $dataProvider,
-            'searchModel' => null,
-            'modelOrder' => $modelOrder
+        return $this->render('@app/views/order/accept-order', [
+            'OrderModel' => $OrderModel,
+            'Profile' => $Profile,
+            'UserModel' => $UserModel,
+            'drivers' => $driversArr,
+            'vehicles' => $vehicles,
+            'redirect' => $redirect,
+            'id_user' => $id_user
         ]);
     }
 

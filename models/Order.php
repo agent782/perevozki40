@@ -1987,6 +1987,54 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
+    public function changeVehicleByFinished($id_new_vehicle, $id_new_driver, $redirect = '/logist/order'){
+        $finishContacts = $this->finishContacts;
+        if(!$finishContacts) {
+            $finishContacts = new OrdersFinishContacts();
+            $finishContacts->id_order = $this->id;
+        }
+        $vehicle = Vehicle::findOne($id_new_vehicle);
+        if(!$vehicle) {
+            functions::setFlashWarning('Такого ТС не существует.');
+            return false;
+        }
+
+        $client = Profile::findOne($this->id_user);
+        if($client && $this->id_user != $this->id_car_owner) {
+            $finishContacts->client_surname = $client->surname;
+            $finishContacts->client_name = $client->name;
+            $finishContacts->client_phone = $client->phone;
+        }
+
+        $this->id_car_owner = $vehicle->id_user;
+        $car_owner = $this->carOwner;
+        if(!$car_owner){
+            functions::setFlashWarning('Такого автовладельца не существует.');
+            return false;
+        }
+        if($car_owner){
+            $finishContacts->car_owner_surname = $car_owner->surname;
+            $finishContacts->car_owner_name = $car_owner->name;
+            $finishContacts->car_owner_phone = $car_owner->phone;
+        }
+        $driver = Driver::findOne($id_new_driver);
+        if($driver){
+            $finishContacts->driver_surname = $driver->surname;
+            $finishContacts->driver_name = $driver->name;
+            $finishContacts->driver_phone = $driver->phone;
+        }
+        if($vehicle){
+            $reg_lic = $vehicle->regLicense;
+            if($reg_lic) {
+                $finishContacts->vehicle_brand = $reg_lic->brand;
+                $finishContacts->vehicle_number = $reg_lic->reg_number;
+            }
+        }
+//        $finishContacts->save();
+
+        return $finishContacts;
+    }
+
  }
 
 
