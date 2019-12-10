@@ -33,7 +33,7 @@ class UsersController extends Controller
                         'actions' => ['index', 'view', 'update', 'delete', 'check-users-updates', 'confirm-profile-update',
                             'cancelProfileUpdate'],
                         'allow' => true,
-                        'roles' => ['admin', 'finance', 'dispetcher']
+                        'roles' => ['admin', 'buh', 'dispetcher']
                     ],
                 ]]];
     }
