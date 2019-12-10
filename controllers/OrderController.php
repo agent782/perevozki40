@@ -828,8 +828,10 @@ class OrderController extends Controller
 //                    return var_dump($modelOrder->getFinishCost(false));
                     if(!$modelOrder->cost) $modelOrder->cost =
                         $modelOrder->hand_vehicle_cost * 100 / (100 - $modelOrder->getVehicleProcentPrice());
+
                     if ($realRoute->save()){
                         $modelOrder->id_route_real = $realRoute->id;
+
                         if($modelOrder->save()){
                             if($modelOrder->ClientPaidCash) {
                                 $modelOrder->paid_status = $modelOrder::PAID_YES;

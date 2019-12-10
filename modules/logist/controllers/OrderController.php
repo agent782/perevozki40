@@ -314,9 +314,11 @@ class OrderController extends Controller
                 if($finishContacts->save()){
                     if($OrderModel->save()){
                         functions::setFlashSuccess('ТС назначено');
+                        return $this->redirect($redirect);
                     }
                 }
             }
+            functions::setFlashWarning('ОШИБКА!');
             return $this->redirect($redirect);
         }
 
