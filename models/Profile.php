@@ -59,6 +59,9 @@ use yii\bootstrap\Html;
  * @property integer $procentVehicle
  * @property array $balance
  * @property string $old_id
+ * @property array $ordersCarOwner
+ * @property array $vehicles
+ * @property AuthAssignment $authAssignment
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -230,6 +233,10 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Company::className(), ['id' => 'id_company'])
             ->viaTable('XprofileXcompany',['id_profile' => 'id_user']);
+    }
+
+    public function getAuthAssignment(){
+        return $this->hasOne(AuthAssignment::class, ['user_id' => 'id_user']);
     }
 
     public function getSumRequestsPayments(){
@@ -863,6 +870,45 @@ class Profile extends \yii\db\ActiveRecord
         }
         return $count;
     }
+
+    public function getVehicles(){
+        return $this->hasMany(Vehicle::class, ['id_user' => 'id_user']);
+    }
+
+    public function getOrdersCarOwner(){
+        return $this->hasMany(Order::class, ['id_car-owner' => 'id_user']);
+    }
+
+    public function getOrdersCarOwnerComplete(){
+        return $this->hasMany(Order::class, ['id_car-owner' => 'id_user'])
+            ->andFilterWhere(['in', 'status', [
+                    Order::STATUS_CONFIRMED_VEHICLE,
+                    Order::STATUS_CONFIRMED_SET_SUM,
+                    Order::STATUS_CONFIRMED_CLIENT]
+                ]
+            );
+    }
+    public function getCountOrdersCarOwnerComplete(){
+        return $this->getOrdersCarOwnerComplete()->count();
+    }
+
+    public function getOrdersCarOwnerProccess(){
+        return $this->hasMany(Order::class, ['id_car-owner' => 'id_user'])
+            ->andFilterWhere(['status' => Order::STATUS_IN_PROCCESSING]);
+    }
+    public function getCountOrdersCarOwnerProccess(){
+        return $this->getOrdersCarOwnerProccess()->count();
+    }
+
+
+    public function getBalanceCarOwnerSum(){
+        return $this->getBalanceCarOwner()['balance'];
+    }
+
+    public function getBalanceCarOwnerPayNow(){
+        return $this->getBalanceCarOwner()['balance'] - $this->getBalanceCarOwner()['not_paid'];
+    }
+
 
 }
 

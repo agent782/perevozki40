@@ -2,9 +2,11 @@
 
 namespace app\modules\finance\controllers;
 
+use app\components\functions\functions;
 use Yii;
 use app\models\Profile;
 use app\models\ProfileSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -26,6 +28,16 @@ class ProfileController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index', 'car-owners'],
+                        'allow' => true,
+                        'roles' => ['admin', 'buh', 'dispetcher']
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -123,5 +135,16 @@ class ProfileController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionCarOwners(){
+        $this->layout = functions::getLayout();
+        $modelSearch = new ProfileSearch();
+        $dataProvider = $modelSearch->searchCarOwners(Yii::$app->request->queryParams);
+
+        return $this->render('car_owners', [
+            'modelSearch' => $modelSearch,
+            'dataProvider' => $dataProvider
+        ]);
     }
 }

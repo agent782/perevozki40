@@ -52,6 +52,7 @@ AppAsset::register($this);
             ['label' => 'Прайс', 'url' => '/price-zone'],
             ['label' => 'Заказы', 'url' => '/logist/order'],
             ['label' => 'Машины', 'url' => '/logist/vehicle'],
+            ['label' => 'Автовладельцы', 'url' => '/finance/profile/car-owners'],
             [
                 'label' => 'Бухгалтерия',
                 'url' => '/finance',
