@@ -7,6 +7,8 @@
  */
 use kartik\grid\GridView;
 use app\models\Profile;
+use yii\bootstrap\Html;
+use yii\helpers\Url;
 
 ?>
 
@@ -15,7 +17,14 @@ use app\models\Profile;
     'responsiveWrap' => false,
     'filterModel' => $modelSearch,
     'columns' => [
-        'old_id',
+        [
+            'attribute' => 'old_id',
+            'label' => 'Старое обозначение',
+            'format' => 'raw',
+            'value' => function (Profile $model){
+                return Html::a($model->old_id, Url::to(['/admin/users/view', 'id' => $model->id_user]));
+            }
+        ],
         'id_user',
         'fioFull',
         [
