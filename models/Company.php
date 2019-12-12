@@ -46,6 +46,7 @@ use app\components\functions\functions;
  * @property integer $created_at
  * @property integer $updated_at
  * @property array $balance
+ * @property integer $balanceSum
  */
 
 
@@ -55,7 +56,7 @@ class Company extends \yii\db\ActiveRecord
     const STATUS_NEW = 0;
     const STATUS_WAIT = 1;
     const STATUS_CHECKED = 2;
-
+    
     /**
      * @inheritdoc
      */
@@ -117,7 +118,7 @@ class Company extends \yii\db\ActiveRecord
                 ], 'safe'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['raiting', 'default', 'value' => 0],
-            [['created_at', 'updated_at'], 'default', 'value' => date('d.m.Y')]
+            [['created_at', 'updated_at'], 'default', 'value' => date('d.m.Y')],
         ];
     }
 
@@ -333,6 +334,10 @@ class Company extends \yii\db\ActiveRecord
         }
         array_multisort($return['orders'], SORT_DESC);
         return $return;
+    }
+
+    public function getBalanceSum() : int {
+        return $this->balance['balance'];
     }
 
 }

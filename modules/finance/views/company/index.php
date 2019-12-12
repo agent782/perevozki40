@@ -41,11 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'inn',
             [
+                'attribute' => 'balanceSum',
                 'label' => 'Баланс',
                 'format' => 'raw',
-                'value' => function (Company $company){
-                    return $company->balance['balance'];
-                }
+//                'value' => function (Company $company){
+//                    return $company->balance['balance'];
+//                }
             ],
 
 
