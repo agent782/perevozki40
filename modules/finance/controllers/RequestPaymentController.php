@@ -129,6 +129,10 @@ class RequestPaymentController extends Controller
 
     public function actionApply($id, $redirect = '/finance/request-payment'){
         $modelRequestPayment = RequestPayment::findOne($id);
+        if($modelRequestPayment->status == RequestPayment::STATUS_OK){
+            functions::setFlashWarning('Заявка уже выполнена.');
+            return $this->redirect($redirect);
+        }
         if(!$modelRequestPayment){
             functions::setFlashWarning('Нет такой заявки на выплату');
             return $this->redirect($redirect);
@@ -138,6 +142,12 @@ class RequestPaymentController extends Controller
             return $this->redirect($redirect);
         }
         $modelPayment = new Payment();
+        if($modelPayment->id_request_payment) {
+            $modelPayment = $modelRequestPayment->payment;
+        }
+        if(!$modelPayment) {
+            $modelPayment = new Payment();
+        }
         $modelPayment->id_user = $modelRequestPayment->id_user;
         $modelPayment->cost = $modelRequestPayment->cost;
         $modelPayment->calculation_with = Payment::CALCULATION_WITH_CAR_OWNER;
@@ -149,13 +159,14 @@ class RequestPaymentController extends Controller
 
         if($modelPayment->save()){
             $modelRequestPayment->status = RequestPayment::STATUS_OK;
-            $modelRequestPayment->save();
-            functions::setFlashSuccess('Платеж проведен');
+            if($modelRequestPayment->save()){
+                functions::setFlashSuccess('Платеж проведен');
+            }
+            functions::setFlashWarning('Статус заявки не изменен!');
         } else {
             return var_dump($modelPayment->getErrors());
             functions::setFlashWarning('Платеж не проведен');
         }
         return $this->redirect($redirect);
-
     }
 }

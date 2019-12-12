@@ -25,7 +25,7 @@ $this->title = 'Запрос на выплату';
         Payment::TYPE_SBERBANK_CARD => 'На банковскую карту',
         Payment::TYPE_BANK_TRANSFER => 'На р/с ИП или ООО'
     ], ['id' => 'type_payment', 'style' => 'width: auto'])?>
-    <label id="label_requisites">Номер банковской карты и ФИО владельца</label>
+    <label id="label_requisites">Номер телефона привязанный к картe Сбербанк или номер банковской карты и ФИО владельца</label>
     <?= $form->field($model, 'requisites')->textarea(['id' => 'requisites'])->label(false)?>
     <?= $form->field($model, 'file')->fileInput(['id' => 'file', 'disabled' => true])?>
     <?= $form->field($model, 'cost')->input('tel')?>
@@ -39,7 +39,7 @@ $this->title = 'Запрос на выплату';
 <script>
     $(document).ready(function () {
         if($('#type_payment').val() === '2'){
-            $('#label_requisites').text('Номер банковской карты и ФИО владельца');
+            $('#label_requisites').text('Номер телефона привязанный к картe Сбербанк или номер банковской карты и ФИО владельца');
             $('#file').attr('disabled', true);
             $('#file').val('');
         }
@@ -49,7 +49,7 @@ $this->title = 'Запрос на выплату';
         }
         $('#type_payment').on('change', function () {
             if($('#type_payment').val() === '2'){
-                $('#label_requisites').text('Номер банковской карты и ФИО владельца');
+                $('#label_requisites').text('Номер телефона привязанный к картe Сбербанк или номер банковской карты и ФИО владельца');
                 $('#file').attr('disabled', true);
                 $('#file').val('');
             }

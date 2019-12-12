@@ -25,6 +25,7 @@ $this->title = 'Платежи';
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'showPageSummary' => true,
+        'responsiveWrap' => false,
         'rowOptions' => function(Payment $model){
             switch ($model->status){
                 case Payment::STATUS_CANCELED:

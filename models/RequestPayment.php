@@ -17,7 +17,8 @@ use app\components\DateBehaviors;
  * @property string $url_files
  * @property int $status
  * @property int $create_at
- * @property string statusText
+ * @property string $statusText
+ * @property Payment $payment
  */
 class RequestPayment extends \yii\db\ActiveRecord
 {
@@ -76,7 +77,8 @@ class RequestPayment extends \yii\db\ActiveRecord
             'status' => 'Статус',
             'statusText' => 'Статус',
             'create_at' => 'Дата',
-            'file' => 'Скан счета на оплату (при оплате на р/с ИП или ООО)'
+            'file' => 'Скан счета на оплату (при оплате на р/с ИП или ООО)',
+            'typePaymentText' => 'Тип оплаты',
         ];
     }
 
@@ -97,7 +99,7 @@ class RequestPayment extends \yii\db\ActiveRecord
                 return 'В обработке.';
                 break;
             case self::STATUS_OK:
-                return 'Выполнено.';
+                return 'Выполнено.' . $this->payment->date;
                 break;
             case self::STATUS_CANCEL:
                 return 'Отменено.';
@@ -113,4 +115,9 @@ class RequestPayment extends \yii\db\ActiveRecord
         $type_payment = TypePayment::findOne($this->type_payment);
         return ($short)?$type_payment->min_text:$type_payment->type;
     }
+
+    public function getPayment(){
+        return $this->hasOne(Payment::class, ['id_request_payment' => 'id']);
+    }
+
 }
