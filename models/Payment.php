@@ -60,8 +60,8 @@ class Payment extends \yii\db\ActiveRecord
             [['type','id_user', 'id_implementer', 'id_company',
                 'id_our_company', 'status', 'direction', 'calculation_with'], 'integer'],
             [['comments', 'sys_info'], 'string'],
-            [['date', 'create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
-            [['date', 'create_at', 'update_at'], 'date', 'format' => 'php: d.m.Y H:i'],
+            [['date', 'create_at', 'update_at'], 'default', 'value' => date('d.m.Y')],
+            [['date', 'create_at', 'update_at'], 'date', 'format' => 'php: d.m.Y'],
             ['id_request_payment', 'default', 'value' => null]
         ];
     }
