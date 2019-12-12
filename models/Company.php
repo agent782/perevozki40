@@ -301,38 +301,54 @@ class Company extends \yii\db\ActiveRecord
             'balance' => 0,
             'orders' => []
         ];
-        foreach ($this->orders as $order) {
-
+        $orders = $this->getOrders()
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->all();
+        foreach ($orders as $order){
             if($order->type_payment != Payment::TYPE_CASH) {
                 $return['balance'] -= $order->cost_finish;
-//            $return[$this->id]['balance'] -= $order->cost_finish;
                 $return['orders'][] = [
                     'date' => $order->datetime_finish,
-                    'credit' => $order->cost_finish,
+                    'debit' => $order->cost_finish,
                     'description' => 'Заказ № ' . $order->id,
                     'id_order' => $order->id,
                 ];
+            } else {
+                $return['orders'][] = [
+                    'date' => $order->datetime_finish,
+                    'credit' => $order->cost_finish,
+                    'debit' => $order->cost_finish,
+                    'description' => 'Заказ № ' . $order->id . '. Оплачен водителю.',
+                    'id_order' => $order->id,
+                ];
             }
-//            else {
-//                $return['orders'][] = [
-//                    'date' => $payment->date,
-//                    'debit' => $payment->cost,
-//                    'credit' => $payment->cost,
-//                    'description' => $payment->comments . ' Оплачен наличными водителю.',
-//                    'id_paiment' => $payment->id
-//                ];
-//            }
         }
         foreach ($this->payments as $payment) {
+            if($payment->direction == Payment::CREDIT){
+                $return['balance'] -= $payment->cost;
+            } else {
                 $return['balance'] += $payment->cost;
-                $return['orders'][] = [
-                    'date' => $payment->date,
-                    'debit' => $payment->cost,
-                    'description' => $payment->comments,
-                    'id_paiment' => $payment->id
-                ];
+            }
+
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'debit' => ($payment->direction == Payment::CREDIT) ? $payment->cost : '',
+                'credit' => ($payment->direction == Payment::DEBIT) ? $payment->cost : '',
+//                        'debit' => $payment->cost,
+                'description' => $payment->comments,
+                'id_paiment' => $payment->id
+            ];
         }
-        array_multisort($return['orders'], SORT_DESC);
+        if(is_array($return['orders'])) {
+
+            usort($return['orders'], function($a, $b)
+            {
+                if ($a["date"] == $b["date"]) {
+                    return 0;
+                }
+                return (strtotime($a["date"]) > strtotime($b["date"])) ? -1 : 1;
+            });
+        }
         return $return;
     }
 
