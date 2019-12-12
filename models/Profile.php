@@ -665,8 +665,14 @@ class Profile extends \yii\db\ActiveRecord
                     }
                 }
                 foreach ($company->payments as $payment) {
-                    $return['balance'] += $payment->cost;
-                    $return[$company->id]['balance'] += $payment->cost;
+                    if($payment->direction == Payment::CREDIT){
+                        $return['balance'] -= $payment->cost;
+                        $return[$company->id]['balance'] -= $payment->cost;
+                    } else {
+                        $return['balance'] += $payment->cost;
+                        $return[$company->id]['balance'] += $payment->cost;
+                    }
+
                     $return[$company->id]['orders'][] = [
                         'date' => $payment->date,
                         'debit' => ($payment->direction == Payment::CREDIT) ? $payment->cost : '',

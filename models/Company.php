@@ -56,7 +56,7 @@ class Company extends \yii\db\ActiveRecord
     const STATUS_NEW = 0;
     const STATUS_WAIT = 1;
     const STATUS_CHECKED = 2;
-    
+
     /**
      * @inheritdoc
      */

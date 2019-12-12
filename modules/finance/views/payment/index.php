@@ -115,7 +115,7 @@ $this->title = 'Платежи';
                 ,
                 'filterOptions' => ['class' => 'minRoute']
             ],
-//
+            'status',
             ['class' => 'yii\grid\ActionColumn'],
         ]
     ]); ?>
