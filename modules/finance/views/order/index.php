@@ -213,16 +213,27 @@ $this->title = 'Журнал заказов';
                         $return .= $model->comment;
                     }
                     $return .= ' ' . Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    $return .= ShowMessageWidget::widget([
+                        'helpMessage' => $profile->getProfileInfo(true,true,true,true),
+                        'header' => $profile->fioFull,
+                        'ToggleButton' => ['label' => Html::icon('info-sign'), 'style' => 'cursor: help']
+                    ]);
                     return $return;
                 }
             ],
             [
                 'label' => 'Водитель',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
+                    $return = '';
                     $profile = $model->carOwner;
                     if($profile)
-                        return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                        $return  .= Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    $return .= ShowMessageWidget::widget([
+                        'helpMessage' => $model->vehicle->getFullInfo(),
+                        'ToggleButton' => ['label' => Html::icon('info-sign'), 'style' => 'cursor: help']
+                    ]);
+                    return $return;
                 }
             ],
 //            [

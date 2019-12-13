@@ -432,7 +432,7 @@ class Profile extends \yii\db\ActiveRecord
             if ($this->phone2) $return .= ' (доп. ' . functions::getHtmlLinkToPhone($this->phone2, $html) . ')';
             $return .= '. <br>';
         }
-        if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
+        if($showPassport && $this->passport) $return .= 'Паспорт: ' . $this->passport->fullInfo . '. <br>';
         if($showEmail) $return .= 'Email: ' . $this->email . ' (' . $this->email2 . ') <br>';
 
         return $return;
