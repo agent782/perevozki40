@@ -2,6 +2,7 @@
 
 namespace app\modules\finance\controllers;
 
+use app\components\functions\functions;
 use Yii;
 use app\models\Company;
 use app\models\CompanySearch;
@@ -45,6 +46,7 @@ class CompanyController extends Controller
      */
     public function actionIndex()
     {
+        $this->layout = functions::getLayout();
         $searchModel = new CompanySearch();
         $dataProvider = $searchModel->searchAllArray(Yii::$app->request->queryParams);
 

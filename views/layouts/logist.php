@@ -53,6 +53,7 @@ AppAsset::register($this);
             ['label' => 'Заказы', 'url' => '/logist/order'],
             ['label' => 'Машины', 'url' => '/logist/vehicle'],
             ['label' => 'Автовладельцы', 'url' => '/finance/profile/car-owners'],
+            ['label' => 'Организации и ИП', 'url' => '/finance/company'],
             [
                 'label' => 'Бухгалтерия',
                 'url' => '/finance',
@@ -89,7 +90,7 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
-
+<br>
         <?=
         AutoComplete::widget([
             'clientOptions' => [

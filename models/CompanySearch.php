@@ -141,6 +141,35 @@ class CompanySearch extends Company
     public function searchAllArray(){
         $query = Company::find();
 
+        $query->andFilterWhere(['like', 'inn', $this->inn])
+            ->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'address', $this->address])
+            ->andFilterWhere(['like', 'address_real', $this->address_real])
+            ->andFilterWhere(['like', 'address_post', $this->address_post])
+            ->andFilterWhere(['like', 'value', $this->value])
+            ->andFilterWhere(['like', 'address_value', $this->address_value])
+            ->andFilterWhere(['like', 'branch_type', $this->branch_type])
+            ->andFilterWhere(['like', 'capital', $this->capital])
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'email2', $this->email2])
+            ->andFilterWhere(['like', 'email3', $this->email3])
+            ->andFilterWhere(['like', 'management_name', $this->management_name])
+            ->andFilterWhere(['like', 'management_post', $this->management_post])
+            ->andFilterWhere(['like', 'name_full', $this->name_full])
+            ->andFilterWhere(['like', 'name_short', $this->name_short])
+            ->andFilterWhere(['like', 'ogrn', $this->ogrn])
+            ->andFilterWhere(['like', 'okpo', $this->okpo])
+            ->andFilterWhere(['like', 'okved', $this->okved])
+            ->andFilterWhere(['like', 'opf_short', $this->opf_short])
+            ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'phone2', $this->phone2])
+            ->andFilterWhere(['like', 'phone3', $this->phone3])
+            ->andFilterWhere(['like', 'citizenship', $this->citizenship])
+            ->andFilterWhere(['like', 'state_status', $this->state_status])
+            ->andFilterWhere(['like', 'FIO_contract', $this->FIO_contract])
+            ->andFilterWhere(['like', 'basis_contract', $this->basis_contract])
+            ->andFilterWhere(['like', 'job_contract', $this->job_contract]);
+
         return new ArrayDataProvider([
            'allModels' => $query->all(),
             'pagination' => [

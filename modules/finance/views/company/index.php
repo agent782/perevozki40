@@ -8,7 +8,7 @@ use app\models\Company;
 /* @var $searchModel app\models\CompanySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Companies';
+$this->title = 'Организации и ИП';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="company-index">
@@ -27,7 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'responsiveWrap' => false,
         'columns' => [
 //            ['class' => 'yii\grid\SerialColumn'],
-            'id',
+            [
+                'attribute' => 'id',
+                'filter' => false
+            ],
             [
                 'attribute' => 'name',
                 'filter' => \yii\jui\AutoComplete::widget([
@@ -39,18 +42,22 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]
                 ])
             ],
-            'inn',
+            [
+              'attribute' => 'inn',
+                'filter' => false
+            ],
             [
                 'attribute' => 'balanceSum',
                 'label' => 'Баланс',
                 'format' => 'raw',
+                'filter' => false
 //                'value' => function (Company $company){
 //                    return $company->balance['balance'];
 //                }
             ],
 
 
-            ['class' => 'yii\grid\ActionColumn'],
+//            ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 </div>
