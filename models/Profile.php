@@ -857,7 +857,11 @@ class Profile extends \yii\db\ActiveRecord
     public function getCompaniesString(){
         $return = '';
         foreach ($this->companies as $company){
-            $return .= $company->name_short . ' ';
+            if ($company->name_short) {
+                $return .= $company->name_short . ' ';
+            } else {
+                $return .= $company->name . ' ';
+            }
         }
         return $return;
     }
