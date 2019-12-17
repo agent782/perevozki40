@@ -102,10 +102,10 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                 'value' => function ($model){
                     $return = $model->clientInfo;
                     $company = \app\models\Company::findOne($model->id_company);
-                    if(!$company){
-                        $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+//                    if(!$company){
+                        $return .= '<br>' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
-                    }
+//                    }
                     return $return;
                 }
             ],
