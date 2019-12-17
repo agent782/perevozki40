@@ -1005,7 +1005,7 @@ class Order extends \yii\db\ActiveRecord
     public function getShortInfoForClient($Html = false, $finish = false){
         $return = 'Тип ТС: ' . $this->vehicleType->type .'.<br> Тип(ы) кузова: ';
         $bTypies =  '';
-        if($finish){
+        if($finish && $this->vehicle){
             $bTypies .= $this->vehicle->bodyTypeText . ', ';
         } else {
             if(!$Html) {

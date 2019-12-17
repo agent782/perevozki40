@@ -38,8 +38,13 @@ $this->title = 'Журнал заказов';
                 'attribute' => 'id',
                 'label' => '№ заказа',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
                     return Html::a($model->id, Url::to(['/finance/order/view', 'id' => $model->id]));
+                    return ShowMessageWidget::widget([
+                        'ToggleButton' => [
+                            'label' => $model->id
+                        ],
+                        'helpMessage' => $model->getFullFinishInfo()                    ]);
                 }
             ],
             'datetime_finish',
