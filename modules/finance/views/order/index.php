@@ -39,7 +39,11 @@ $this->title = 'Журнал заказов';
                 'label' => '№ заказа',
                 'format' => 'raw',
                 'value' => function(Order $model){
-                    return Html::a($model->id, Url::to(['/finance/order/view', 'id' => $model->id]));
+                    return Html::a($model->id, '', [
+                        'onclick' => "window.open ('"
+                            . Url::toRoute(['/finance/order/view', 'id' => $model->id])
+                            . "'); return false"
+                    ]);
                     return ShowMessageWidget::widget([
                         'ToggleButton' => [
                             'label' => $model->id
