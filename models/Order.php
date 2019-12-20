@@ -112,6 +112,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property float $avans_client
  * @property bool $re
  * @property OrdersFinishContacts $finishContacts
+ * @property string $comment_vehicle
 
 
  */
@@ -2035,6 +2036,43 @@ class Order extends \yii\db\ActiveRecord
 //        $finishContacts->save();
 
         return $finishContacts;
+    }
+
+    public function getInfoFinance(){
+        $return = '';
+        switch ($this->status){
+            case self::STATUS_CONFIRMED_VEHICLE:case self::STATUS_CONFIRMED_CLIENT: case self::STATUS_CONFIRMED_SET_SUM:
+                $realRoute = $this->realRoute;
+                $driver = $this->driver;
+                $carOwner = $this->carOwner;
+                $vehicle = $this->vehicle;
+                if($realRoute){
+                    $return .= $realRoute->getFullRoute(false);
+                } else {
+                    $route = $this->route;
+                    if($route) $return .= $route->getFullRoute(false);
+                }
+                if($carOwner){
+                    $return .= '<br><br>#' . $carOwner->id_user . ' ("' . $carOwner->old_id . '")';
+                }
+                if($driver){
+                    $return .= '<br>' . $driver->fio;
+                } else {
+                    if($carOwner){
+                        $return .= '<br>' . $carOwner->fioFull;
+                    }
+                }
+                if($vehicle){
+                    $regLicence = $vehicle->regLicense;
+                    if($regLicence) {
+                        $return .= '<br>'. $regLicence->brand . ' '. $regLicence->reg_number;
+                    }
+                }
+                $return .= '<br><br>' . $this->comment_vehicle;
+                break;
+        }
+
+        return $return;
     }
 
  }
