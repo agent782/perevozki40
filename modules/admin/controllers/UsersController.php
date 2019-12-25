@@ -9,6 +9,8 @@ use app\models\User;
 use app\models\UserSearch;
 use yii\web\Controller;
 use yii\filters\AccessControl;use Yii;
+use app\models\VehicleSearch;
+use app\models\Vehicle;
 use yii\data\SqlDataProvider;
 use app\models\auth_item;
 
@@ -54,10 +56,28 @@ class UsersController extends Controller
         $this->layout = functions::getLayout();
         $model = $this->findModel($id);
         $profile = $model->profile;
+
+        $searchModel = new VehicleSearch();
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, Vehicle::SORT_TRUCK, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderTruck->query->andFilterWhere(['id_user' => $id]);
+        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, Vehicle::SORT_PASS, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderPass->query->andFilterWhere(['id_user' => $id]);
+        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, Vehicle::SORT_SPEC, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderSpec->query->andFilterWhere(['id_user' => $id]);
+        $dataProviderDeleted = $searchModel->search(Yii::$app->request->queryParams, [1,2,3], Vehicle::SORT_DATE_CREATE, [Vehicle::STATUS_DELETED]);
+        $dataProviderDeleted->query->andFilterWhere(['id_user' => $id]);
+
+
         return $this->render('view',
             array_merge([
             'model' => $model,
             'profile' => $profile,
+            'searchModelVehicle' => $searchModel,
+            'dataProviderTruck' => $dataProviderTruck,
+            'dataProviderPass' => $dataProviderPass,
+            'dataProviderSpec' => $dataProviderSpec,
+            'dataProviderDeleted' => $dataProviderDeleted,
         ], User::arrayBalanceParamsForRender($id)));
     }
 

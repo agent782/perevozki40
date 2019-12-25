@@ -8,6 +8,30 @@ use app\components\widgets\ShowMessageWidget;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\VehicleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+$actionColumns = [
+    'class' => 'yii\grid\ActionColumn',
+    'buttons' => [
+        'delete' =>function ($url, $model) {
+            $url = Url::toRoute(Url::to(['/vehicle/full-delete', 'id' => $model->id]));
+            return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                $url, [
+                    'title' => \Yii::t('yii', 'Удалить безвозвратно.'),
+                    'data-confirm' => Yii::t('yii', 'ТС будет удалено безвозвратно, без возможности восстановления!'),
+                    'data-method' => 'post',
+                ]);
+        },
+        'update' => function ($url, $model) {
+            $url = Url::toRoute(Url::to(['/vehicle/update', 'id' => $model->id]));
+            return Html::a('<span class="glyphicon glyphicon-edit"></span>',
+                $url, [
+                    'title' => \Yii::t('yii', 'Восстановить/редактировать.'),
+//                                'data-pjax' => '0',
+                ]);
+
+        }
+    ],
+    'template' => '{update} {delete}'
+];
 
 $this->title = 'Мой транспорт.';
 $this->params['breadcrumbs'][] = $this->title;
@@ -101,10 +125,7 @@ $this->registerJs(
             // 'rp',
             // 'lp',
             'statusText',
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {delete}'
-            ],
+            $actionColumns
         ],
     ]);
     ?>
@@ -150,10 +171,7 @@ $this->registerJs(
                 }
             ],
             'statusText',
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {delete}'
-            ],
+            $actionColumns
         ],
     ]);
     ?>
@@ -239,30 +257,7 @@ $this->registerJs(
                     return \app\models\BodyType::find()->where(['id' => $model->body_type])->one()->body;
                 }
             ],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'buttons' => [
-                    'delete' =>function ($url, $model) {
-                        $url = Url::toRoute(Url::to(['/vehicle/full-delete', 'id' => $model->id]));
-                        return Html::a('<span class="glyphicon glyphicon-trash"></span>',
-                            $url, [
-                                'title' => \Yii::t('yii', 'Удалить безвозвратно.'),
-                                'data-confirm' => Yii::t('yii', 'ТС будет удалено безвозвратно, без возможности восстановления!'),
-                                'data-method' => 'post',
-                            ]);
-                    },
-                    'update' => function ($url, $model) {
-                        $url = Url::toRoute(Url::to(['/vehicle/update', 'id' => $model->id]));
-                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',
-                            $url, [
-                                'title' => \Yii::t('yii', 'Восстановить/редактировать.'),
-//                                'data-pjax' => '0',
-                            ]);
-
-                    }
-                ],
-                'template' => '{update} {delete}'
-            ],
+           $actionColumns
         ],
     ]);
         ?>
