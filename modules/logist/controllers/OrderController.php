@@ -250,7 +250,8 @@ class OrderController extends Controller
         }
 
         $vehicles =[];
-        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->orderBy('id_user')->all();
+        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->orderBy('id_user')->all();
 
         foreach ($Vehicles as $vehicle) {
             if (!$vehicle->canOrder($modelOrder)) {
