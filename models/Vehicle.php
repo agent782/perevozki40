@@ -189,8 +189,6 @@ class Vehicle extends \yii\db\ActiveRecord
             [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4],
             [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200],
             [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5],
-
-
         ];
     }
 
