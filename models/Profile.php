@@ -785,8 +785,8 @@ class Profile extends \yii\db\ActiveRecord
         foreach ($orders_avans as $order){
             $return['not_paid'] += round(($order->cost_finish_vehicle - $order->avans_client)
                 - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100));
-            $return['balance'] += round($order->avans_client -
-                ($order->avans_client * $this->procentVehicle/100));
+            $return['balance'] += round($order->cost_finish_vehicle -
+                ($order->cost_finish_vehicle * $this->procentVehicle/100));
 
             $return['orders_avans'][] = [
                 'date' => $order->datetime_finish,
@@ -794,11 +794,11 @@ class Profile extends \yii\db\ActiveRecord
             ];
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'debit' => round($order->avans_client -
-                        ($order->avans_client * $this->procentVehicle/100))
+                'credit' => round($order->cost_finish_vehicle -
+                        ($order->cost_finish_vehicle * $this->procentVehicle/100))
                     . ' (' . round(($order->cost_finish_vehicle - $order->avans_client)
                         - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')****',
-                'credit' => '',
+                'debit' => '',
                 'description' => '(ОПЛАЧЕН КЛИЕНТОМ ЧАСТИЧНО) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
             ];
