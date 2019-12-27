@@ -179,7 +179,7 @@ class OrderController extends Controller
         $modelOrder->scenario = $modelOrder::SCENARIO_ADD_ID_COMPANY;
         $companies = ArrayHelper::map(
 //            Profile::findOne($modelOrder->id_user)->companies,
-            Company::find()->all(),
+            Company::find()->orderBy('name_short')->all(),
             'id', 'name'
         );
         if($modelOrder->load(Yii::$app->request->post())){

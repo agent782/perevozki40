@@ -126,11 +126,20 @@ use app\components\widgets\FinishOrderOnlySumWidget;
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'value' => function ($model){
-                    $return = $model->clientInfo;
+                'value' => function ($model) {
+                    $return = '';
+                    if ($model->id_user == $model->id_car_owner && $model->re) {
+                        $return = $model->comment;
+                    } else {
+                        $return = $model->getClientInfo();
+                    }
+                    $re = ($model->re) ? Html::icon('star') . '"авто"' : '';
+                    $return = $re . '<br>' . $return;
+                    $company = \app\models\Company::findOne($model->id_company);
+                    //                    if(!$company){
                     $return .= '<br>' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
                             ['/logist/order/add-company', 'id_order' => $model->id]);
-
+                    //                    }
                     return $return;
                 }
             ],
