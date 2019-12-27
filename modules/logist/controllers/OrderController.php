@@ -178,7 +178,9 @@ class OrderController extends Controller
         $modelOrder = Order::findOne($id_order);
         $modelOrder->scenario = $modelOrder::SCENARIO_ADD_ID_COMPANY;
         $companies = ArrayHelper::map(
-            Profile::findOne($modelOrder->id_user)->companies, 'id', 'name'
+//            Profile::findOne($modelOrder->id_user)->companies,
+            Company::find()->all(),
+            'id', 'name'
         );
         if($modelOrder->load(Yii::$app->request->post())){
             if($modelOrder->save()){

@@ -106,7 +106,7 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                     } else {
                         $return  = $model->getClientInfo();
                     }
-                    $re = ($model->re)?'"Повторный заказ"':'';
+                    $re = ($model->re)? Html::icon('star') . '"авто"':'';
                     $return  = $re . '<br>' . $return;
                     $company = \app\models\Company::findOne($model->id_company);
 //                    if(!$company){
