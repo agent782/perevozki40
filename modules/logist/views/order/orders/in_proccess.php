@@ -100,7 +100,14 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                 'format' => 'raw',
 //            'attribute' => 'clientInfo',
                 'value' => function ($model){
-                    $return = $model->clientInfo;
+                    $return = '';
+                    if($model->id_user == $model->id_car_owner && $model->re){
+                        $return = $model->comment;
+                    } else {
+                        $return  = $model->getClientInfo();
+                    }
+                    $re = ($model->re)?'"Повторный заказ"':'';
+                    $return  = $re . '<br>' . $return;
                     $company = \app\models\Company::findOne($model->id_company);
 //                    if(!$company){
                         $return .= '<br>' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
