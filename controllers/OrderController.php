@@ -783,6 +783,8 @@ class OrderController extends Controller
 
                     $sesssion->set('modelOrder', $modelOrder);
                     $sesssion->set('realRoute', $realRoute);
+//                    return $modelOrder->additional_cost;
+//                    return $modelOrder->cost;
                     return $this->render('/order/finish-by-vehicle2', [
                         'modelOrder' => $modelOrder,
                         'realRoute' => $realRoute,

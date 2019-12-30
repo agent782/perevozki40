@@ -1362,7 +1362,7 @@ class Order extends \yii\db\ActiveRecord
                 $event_review = Review::EVENT_ORDER_COMPLETED;
 
                 if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
-                else $this->paid_status = self::PAID_NO;
+//                else $this->paid_status = self::PAID_NO;
                 if($changeFinishCosts) {
                     $this->cost_finish = $this->getFinishCost(false);
                     $this->cost_finish_vehicle = $this->finishCostForVehicle;
@@ -1882,10 +1882,10 @@ class Order extends \yii\db\ActiveRecord
 //                    $text .= '<br>Итого за лишнее время на погрузку/разгрузку/ожидание: ';
 //                    $text .=  (($this->real_h_loading - $real_pz->h_loading)>0) ? $real_pz->h_loading * ($this->real_h_loading - $real_pz->h_loading) : '0';
 //                    $text .= 'р. ';
-                    if($this->additional_cost){
-                        $cost += $this->additional_cost;
-                        $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
-                    }
+//                    if($this->additional_cost){
+//                        $cost += $this->additional_cost;
+//                        $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+//                    }
                 }
             } else {
                 $real_cost = $this->real_h * $real_pz->r_h;
@@ -1893,24 +1893,42 @@ class Order extends \yii\db\ActiveRecord
                 $text .= '<br>Время работы (с учетом дороги от/до г.Обнинск): ' . $this->real_h . 'ч. ';
                 $text .= '<br>Стоимость 1 часа: ' . $real_pz->r_h . 'р. ';
 
-                if($this->additional_cost){
-                    $cost += $this->additional_cost;
-                    $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
-                }
+//                if($this->additional_cost){
+//                    $cost += $this->additional_cost;
+//                    $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+//                }
             }
 
             if($withDiscount){
                 $cost = $this->getFinishCost(false);
             }
-            $text .= '<br>Комментарии водителя: ' . $this->comment_vehicle;
+            $text .= '<br>Комментарии водиеля: ' . $this->comment_vehicle;
+            if($this->discount) {
+                if($this->additional_cost){
+                    $cost += $this->additional_cost;
+                    $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                }
+                if(!$forVehicle) {
+                    $text .= '<br>Скидка: ' . $this->discount
+                    . ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
+                }
+            } else {
+                if($this->additional_cost){
+                    $cost += $this->additional_cost + ($this->additional_cost * 10 / 100);
+                    if($forVehicle){
+                        $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                    } else {
+                        $text .= '<br>Дополнительные расходы: ' . ($this->additional_cost + ($this->additional_cost * 10 / 100))
+                            . 'Р. ';
+                    }
+                }
+            }
             $return['cost'] =  $cost;
 //            if($withDiscount){
 //                $cost = $this->getFinishCost($html);
 //            }
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
-            if($this->discount && !$forVehicle) {
-                $text .= '<br>Скидка: ' . $this->discount . ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
-            }
+
             $cost = round($cost);
             if($cost) {
                 $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';

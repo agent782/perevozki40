@@ -741,12 +741,14 @@ class Profile extends \yii\db\ActiveRecord
             ->all();
 
         foreach ($orders as $order){
-            $return['balance'] += round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $return['balance'] += round($order->cost_finish_vehicle
+                - (($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100));
 
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
                 'debit' => '',
-                'credit' => round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100)),
+                'credit' => round($order->cost_finish_vehicle
+                    - (($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100)),
                 'description' => 'Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
             ];
