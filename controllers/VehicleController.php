@@ -431,9 +431,36 @@ class VehicleController extends Controller
                     ->andFilterWhere(['<=', 'volume_min', $volume])
                     ->andFilterWhere(['<=', 'length_min', $length])
                 ;
-                (!$longlength)
-                ? $priceZones = $priceZones->andFilterWhere(['longlength' => $longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
-                : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+//                (!$longlength)
+//                ? $priceZones = $priceZones
+//                    ->andFilterWhere(['longlength' => $longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
+//                : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+
+                if(!$longlength){
+                    $priceZones = $priceZones
+                        ->andFilterWhere(['longlength' => $longlength])
+                        ->andFilterWhere(['<=', 'length_min', $length])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all()
+                    ;
+                } else {
+                    $priceZones = $priceZones
+                        ->andFilterWhere([
+                            'or',
+                            ['and' ,
+                                ['longlength' => false],
+                                ['<=', 'length_min', $length]
+                            ],
+                            ['and' ,
+                                ['longlength' => true],
+                                ['<=', 'length_min', ($length + 2)],
+                            ]
+                        ])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all()
+                    ;
+                }
+
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $passengers = $post['passengers'];

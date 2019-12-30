@@ -1902,7 +1902,7 @@ class Order extends \yii\db\ActiveRecord
             if($withDiscount){
                 $cost = $this->getFinishCost(false);
             }
-            $text .= '<br>Комментарии водиеля: ' . $this->comment_vehicle;
+            $text .= '<br>Комментарии водителя: ' . $this->comment_vehicle;
             if($this->discount) {
                 if($this->additional_cost){
                     $cost += $this->additional_cost;
@@ -1923,15 +1923,17 @@ class Order extends \yii\db\ActiveRecord
                     }
                 }
             }
-            $return['cost'] =  $cost;
-//            if($withDiscount){
-//                $cost = $this->getFinishCost($html);
-//            }
+
+            if($withDiscount){
+                $cost = $this->getFinishCost($html);
+            }
+
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
 
             $cost = round($cost);
-            if($cost) {
-                $text .= '<br><br><strong>Итого к оплате ' . $cost . ' руб.</strong>';
+            $return['cost'] = ($forVehicle) ? $this->getFinishCostForVehicle() : $this->getFinishCost();
+            if($return['cost']) {
+                $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
             }
             $return['text'] =  $text;
             $return['cost'] = round($return['cost']);

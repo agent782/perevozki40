@@ -361,26 +361,50 @@ class Vehicle extends \yii\db\ActiveRecord
     public static function getPriceZones($modelVehicle, $idVehicleType)
     {
         $result = [];
-        $priceZones = PriceZone::find()->where(['veh_type' => $idVehicleType])->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
+        $priceZones = PriceZone::find()->where(['veh_type' => $idVehicleType])
+            ->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($idVehicleType) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['<=', 'tonnage_max', $modelVehicle->tonnage])
-                    ->orFilterWhere(
-                        ['<=', 'tonnage_min', $modelVehicle->tonnage]
-                    )
+                    ->andFilterWhere(['<=', 'tonnage_min', $modelVehicle->tonnage])
+//                    ->orFilterWhere(
+//                        ['<=', 'tonnage_min', $modelVehicle->tonnage]
+//                    )
                     ->andFilterWhere(['<=', 'volume_min', $modelVehicle->volume])
-                    ->orFilterWhere(
-                        ['<=', 'volume_max', $modelVehicle->volume]
-                    )
+//                    ->orFilterWhere(
+//                        ['<=', 'volume_min', $modelVehicle->volume]
+//                    )
                     ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
-                    ->orFilterWhere(
-                        ['<=', 'length_max', $modelVehicle->length]
-                    )
+//                    ->orFilterWhere(
+//                        ['<=', 'length_max', $modelVehicle->length]
+//                    )
                 ;
-                (!$modelVehicle->longlength)
-                    ? $priceZones = $priceZones->andFilterWhere(['longlength' => $modelVehicle->longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
-                    : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+//                (!$modelVehicle->longlength)
+//                    ? $priceZones = $priceZones->andFilterWhere(['longlength' => $modelVehicle->longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
+//                    : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+                if(!$modelVehicle->longlength){
+                    $priceZones = $priceZones
+                        ->andFilterWhere(['longlength' => $modelVehicle->longlength])
+                        ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all()
+                    ;
+                } else {
+                    $priceZones = $priceZones
+                        ->andFilterWhere([
+                            'or',
+                            ['and',
+                                ['longlength' => false],
+                                ['<=', 'length_min', $modelVehicle->length]
+                            ],
+                            ['and',
+                                ['longlength' => true],
+                                ['<=', 'length_min', ($modelVehicle->length + 2)],
+                            ]
+                        ])
+                        ->orderBy(['r_km' => SORT_DESC, 'r_h' => SORT_DESC])
+                        ->all();
+                }
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $priceZones = $priceZones

@@ -213,6 +213,7 @@ class VehicleForm extends Model
                                 ['<=', 'length_min', ($this->length + 2)],
                             ]
                         ])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
                     ;
                 }
                 break;
