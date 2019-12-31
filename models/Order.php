@@ -1931,7 +1931,7 @@ class Order extends \yii\db\ActiveRecord
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
 
             $cost = round($cost);
-            $return['cost'] = ($forVehicle) ? $this->getFinishCostForVehicle() : $this->getFinishCost();
+            $return['cost'] = $cost;
             if($return['cost']) {
                 $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
             }
