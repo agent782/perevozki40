@@ -1362,7 +1362,11 @@ class Order extends \yii\db\ActiveRecord
                 $event_review = Review::EVENT_ORDER_COMPLETED;
 
                 if($this->type_payment == Payment::TYPE_CASH)$this->paid_status = self::PAID_YES;
-//                else $this->paid_status = self::PAID_NO;
+                else {
+                    if($this->paid_status == null) {
+                        $this->paid_status = self::PAID_NO;
+                    }
+                }
                 if($changeFinishCosts) {
                     $this->cost_finish = $this->getFinishCost(false);
                     $this->cost_finish_vehicle = $this->finishCostForVehicle;

@@ -717,7 +717,8 @@ class Profile extends \yii\db\ActiveRecord
             ->andWhere(['paid_status' => Order::PAID_YES])
             ->all();
 
-        $orders_not_paid = Order::find()->where(['id_car_owner' => $this->id_user,])
+        $orders_not_paid = Order::find()
+            ->where(['id_car_owner' => $this->id_user,])
             ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
             ->andWhere(['<>', 'type_payment', Payment::TYPE_CASH])
             ->andWhere(['paid_status' => Order::PAID_NO])
