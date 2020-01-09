@@ -98,7 +98,10 @@ use yii\bootstrap\Tabs;
         [
             'label' => 'Заказчик',
             'format' => 'raw',
-            'attribute' => 'clientInfo'
+            'attribute' => 'clientInfo',
+            'value' => function (Order $model){
+                return $model->getClientInfo(true, false);
+            }
         ],
         [
             'attribute' => 'paymentText',

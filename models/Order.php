@@ -1126,13 +1126,15 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getClientInfo($html = true){
+    public function getClientInfo($html = true, $phone = true){
         $return = '';
         if($this->profile && $this->user) {
-            $return .= $this->profile->fioFull
-                . '<br>'
-                . 'Телефон: ' . functions::getHtmlLinkToPhone($this->user->username, $html);
-            if ($this->profile->phone2) $return .= ' (доп. тел.: ' . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
+            $return .= $this->profile->fioFull;
+            if($phone) {
+                $return .= '<br>'
+                    . 'Телефон: ' . functions::getHtmlLinkToPhone($this->user->username, $html);
+                if ($this->profile->phone2) $return .= ' (доп. тел.: ' . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
+            }
         }
         if($this->id_company) $return .= '<br>' .$this->company->name . '<br>';
 
