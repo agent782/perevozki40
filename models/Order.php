@@ -189,12 +189,21 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_vehicle_type','body_typies'], 'required', 'message' => 'Выберите один из вариантов.'],
+            [['id_vehicle_type','body_typies'], 'required', 'message' => 'Выберите хотя бы один из вариантов.'],
             [['loading_typies'], 'validateLoadingTypies', 'skipOnEmpty' => false],
             ['tonnage', 'validateTonnage','skipOnEmpty' => false],
-            [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов', 'skipOnEmpty' => false, 'skipOnError' => false],
-            [['datetime_start', 'valid_datetime', 'type_payment','datetime_finish', 'real_datetime_start', 'real_km'], 'required'],
+            [['selected_rates', 'type_payment'], 'required', 'message' => 'Выберите хотя бы один из вариантов',
+                'skipOnEmpty' => false, 'skipOnError' => false],
+            [['datetime_start', 'valid_datetime', 'type_payment','datetime_finish', 'real_datetime_start', 'real_km'],
+                'required'],
             ['passengers', 'validatePassengers', 'skipOnEmpty' => false],
+
+            [['tonnage', 'tonnage_spec'], 'number', 'min' => 0.1, 'max' => 50],
+            [['length'], 'number', 'min' => 0.5,'max' => 20],
+            [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4],
+            [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200],
+            [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5],
+
             [['id_company'],
 //                'validateConfirmCompany', 'skipOnEmpty' => false
                     'safe'
@@ -211,8 +220,7 @@ class Order extends \yii\db\ActiveRecord
             [['real_remove_awning', 'id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
                 'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle',
                 'id_car_owner'], 'integer'],
-            [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec',
-                'volume_spec', 'hand_vehicle_cost'], 'number'],
+            [['hand_vehicle_cost'], 'number', 'min' => 400, 'max' => '200000'],
             [['cargo', 'comment_vehicle'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW],
@@ -223,7 +231,7 @@ class Order extends \yii\db\ActiveRecord
             ['real_remove_awning', 'default' , 'value' => 0],
             ['type_payment', 'validateForUser'],
             [['avans_client'], 'number'],
-            [['re'], 'default', 'value' => false]
+            [['re'], 'default', 'value' => false],
         ];
     }
 

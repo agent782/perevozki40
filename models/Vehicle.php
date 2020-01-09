@@ -737,10 +737,14 @@ class Vehicle extends \yii\db\ActiveRecord
                 $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
                 $return .= 'Размеры (Д*Ш*В): ' . $this->length . ' * ' . $this->width . ' * ' . $this->height  .'м. ';
                 $return .= 'Объем: ' . $this->volume . 'м3. ';
-                $return .= 'Евро-поддоны(1.2*0.8м): ' . $this->ep . 'шт, ';
-                $return .= 'поддоны(1.2*1м): ' . $this->rp . 'шт, ';
-                $return .= 'поддоны(1.2*1.2м): ' . $this->lp . 'шт. ';
-                $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
+                if($this->ep)
+                    $return .= 'Евро-поддоны(1.2*0.8м): ' . $this->ep . 'шт, ';
+                if($this->rp)
+                    $return .= 'поддоны(1.2*1м): ' . $this->rp . 'шт, ';
+                if($this->lp)
+                    $return .= 'поддоны(1.2*1.2м): ' . $this->lp . 'шт. ';
+                if($this->passengers)
+                    $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
                 $return .= 'Груз-длинномер: ' . $this->longlengthIcon . '. <br>';
                 break;
             case self::TYPE_PASSENGER:

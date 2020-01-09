@@ -485,7 +485,6 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
 
-
         $route = Route::findOne($modelOrder->id_route);
         if (!$route){
             functions::setFlashWarning('Ошибка на сервере');
@@ -495,7 +494,6 @@ class OrderController extends Controller
             $modelOrder->datetime_start = null;
             $modelOrder->valid_datetime = null;
         }
-
 
         $BTypies = BodyType::getBodyTypies($modelOrder->id_vehicle_type, true);
         $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
@@ -565,7 +563,6 @@ class OrderController extends Controller
                     'redirect' => $redirect
                 ]);
         }
-
         return $this->render('update', [
             'modelOrder' => $modelOrder,
             'BTypies' => $BTypies,
