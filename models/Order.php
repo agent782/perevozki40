@@ -1623,7 +1623,10 @@ class Order extends \yii\db\ActiveRecord
         $return = 'Заказ №' . $this->id;
         $return .= '<br>Время выезда: ' .  $this->real_datetime_start .'<br>';
         $return .= 'Время возвращения: ' .  $this->datetime_finish .'<br>';
-        $return .= 'Маршрут: ' . $real_route->fullRoute . '<br>';
+        $return .= 'Маршрут: ' . $real_route->fullRoute ;
+        if($this->real_km){
+            $return .= 'Фактический пробег: ' . $this->real_km . ' км <br>';
+        }
         $return .= $this->getShortInfoForClient(true, true) . ' <br>';
         $return .= 'Тарифная зона №' . $this->getNumberPriceZoneReal($html) . '. <br>';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';

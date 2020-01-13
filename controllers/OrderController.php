@@ -841,7 +841,6 @@ class OrderController extends Controller
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user
                                 , $modelOrder->id_vehicle);
                         } else {
-                            return var_dump($modelOrder->getErrors());
                             functions::setFlashWarning('Ошибка на сервере');
                         }
                     } else  {
