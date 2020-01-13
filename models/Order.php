@@ -565,9 +565,11 @@ class Order extends \yii\db\ActiveRecord
         $return = [];
         foreach ($suitable_rates as $id => $suitable_rate){
             $PriceZone = PriceZone::findOne(['unique_index' => $id]);
-            $return[$PriceZone->unique_index] = ' &asymp; ' . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
+            $return[$PriceZone->unique_index] = ' &asymp; '
+                . $PriceZone->CostCalculationWithDiscountHtml($distance,$discount)
                 . ' руб.* '
                 . ShowMessageWidget::widget([
+                    'ToggleButton' => ['label' => 'Тариф №' . $PriceZone->id],
                     'helpMessage' => $PriceZone->getWithDiscount($discount)->printHtml(),
                     'header' => 'Тарифная зона №' . $PriceZone->id,
 //                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
