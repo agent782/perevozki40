@@ -61,8 +61,8 @@ class FinishOrderOnlySumWidget extends Widget
         ]);
 
         echo $form->field($order, 'type_payment')->radioList(TypePayment::getTypiesPaymentsArray(), ['encode' => false]);
-        echo $form->field($order, 'cost_finish_vehicle')->input('tel', ['id' => 'cost']);
-        echo $form->field($order, 'cost_finish')->input('tel', ['id' => 'cost_vehicle']);
+        echo $form->field($order, 'cost_finish_vehicle')->input('tel', ['id' => 'cost', 'autocomplete' => false]);
+        echo $form->field($order, 'cost_finish')->input('tel', ['id' => 'cost_vehicle', 'autocomplete' => false]);
 
         echo $form->field($order, 'id_price_zone_real')->hiddenInput()->label(false);
         echo $form->field($order, 'real_km')->hiddenInput()->label(false);

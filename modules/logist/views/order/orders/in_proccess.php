@@ -12,6 +12,7 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use app\components\widgets\FinishOrderOnlySumWidget;
+use app\models\Company;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -101,16 +102,23 @@ use app\components\widgets\FinishOrderOnlySumWidget;
 //            'attribute' => 'clientInfo',
                 'value' => function ($model){
                     $return = '';
+                    $company = Company::findOne($model->id_company);
                     if($model->id_user == $model->id_car_owner && $model->re){
                         $return = $model->comment;
+                        if($company) {
+                            $return .= '<br>'
+                            . ($company->name_short) ? $company->name_short : $company->name;
+                        }
                     } else {
                         $return  = $model->getClientInfo();
                     }
                     $re = ($model->re)? Html::icon('star') . '"авто"':'';
                     $return  = $re . '<br>' . $return;
-                    $company = \app\models\Company::findOne($model->id_company);
 //                    if(!$company){
-                        $return .= '<br>' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+                        $return .= '<br>'
+                            . Html::a(Html::icon('edit',
+                                ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']
+                            ),
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
 //                    }
                     return $return;

@@ -13,6 +13,7 @@ use kartik\datetime\DateTimePicker;
 use yii\helpers\Url;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Profile;
 //echo date('d.m.Y H:i');
 //var_dump($companies);
 ?>
@@ -119,9 +120,13 @@ use app\components\widgets\ShowMessageWidget;
             ]), ['target' => '_blank'])
         ;
         ?>
-    <?= $form->field($modelOrder, 'id_company',[
-        'enableAjaxValidation' => true,
-        ])->radioList($companies)->label('Юр. лица: '. $link_add_company)?>
+
+    <?php if(Profile::notAdminOrDispetcher()) {
+            echo $form->field($modelOrder, 'id_company', [
+                'enableAjaxValidation' => true,
+            ])->radioList($companies)->label('Юр. лица: ' . $link_add_company);
+    }
+    ?>
     </div>
     </div>
     <div class="col-lg-5">

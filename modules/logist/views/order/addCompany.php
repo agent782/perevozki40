@@ -13,12 +13,13 @@ $this->title = 'Выбор юр. лица';
 <?php echo Html::a('Перейти к списку заказов', $redirect, ['class' => 'btn btn-info']);?>
 <div>
     <h3><?=$this->title?> </h3>
-
-
-        <?= Html::a(Html::icon('plus'),
-            ['/company/create', 'user_id' => $modelOrder->id_user,
-                'redirect' => \yii\helpers\Url::to(['/logist/order/add-company', 'id_order' => $modelOrder->id, 'redirect' => $redirect])],
-            ['class' => 'btn btn-primary']);?>
+        <?php if($modelOrder->id_user != $modelOrder->id_car_owner){
+            Html::a(Html::icon('plus'),
+                ['/company/create', 'user_id' => $modelOrder->id_user,
+                    'redirect' => \yii\helpers\Url::to(['/logist/order/add-company', 'id_order' => $modelOrder->id, 'redirect' => $redirect])],
+                ['class' => 'btn btn-primary']);
+            }
+        ?>
 
         <label>Юр. лица клиента</label>
 
@@ -33,6 +34,7 @@ $this->title = 'Выбор юр. лица';
             ]);
             echo $form->field($modelOrder, 'id_company')->radioList($companies, [
                 'id' => 'id_company',
+                'unselect' => null,
                 'onchange' => new \yii\web\JsExpression('
 //                    alert($(this).find(":checked").val());
                     $.pjax.reload({
