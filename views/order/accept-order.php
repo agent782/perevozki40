@@ -47,6 +47,6 @@
     ?>
 </div>
 <div class="col-lg-8">
-    <?= $OrderModel->getFullNewInfo(false,false, false)?>
+    <?= $OrderModel->getFullNewInfo(false, false, false)?>
 </div>
 </div>

@@ -220,7 +220,7 @@ class Order extends \yii\db\ActiveRecord
             [['real_remove_awning', 'id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
                 'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle',
                 'id_car_owner'], 'integer'],
-            [['hand_vehicle_cost'], 'number', 'min' => 400, 'max' => '200000'],
+            [['hand_vehicle_cost'], 'number', 'max' => '200000'],
             [['cargo', 'comment_vehicle'], 'string'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y H:i')],
             ['status', 'default', 'value' => self::STATUS_NEW],

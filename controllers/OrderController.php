@@ -731,7 +731,7 @@ class OrderController extends Controller
             || $modelOrder->id_car_owner != Yii::$app->user->id)
             && Profile::notAdminOrDispetcher()
         ){
-            return false;
+//            return false;
             functions::setFlashWarning('Ошибка на сервере., попробуте позже.');
             return $this->redirect($redirect);
         }
@@ -841,6 +841,7 @@ class OrderController extends Controller
                             $modelOrder->changeStatus(Order::STATUS_CONFIRMED_VEHICLE, $modelOrder->id_user
                                 , $modelOrder->id_vehicle);
                         } else {
+                            return var_dump($modelOrder->getErrors());
                             functions::setFlashWarning('Ошибка на сервере');
                         }
                     } else  {

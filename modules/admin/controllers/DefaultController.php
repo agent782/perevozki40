@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 use app\components\functions\functions;
+use app\models\Message;
 use app\models\Order;
 use app\models\User;
 use app\models\UserSearch;
@@ -36,6 +37,18 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
+        $mes = new Message([
+            'title' => 'Test',
+            'id_to_user' => 1,
+            'text' => 'text'
+        ]);
+
+        for($i=1;$i<5;$i++){
+            $mes->title = 'test' . $i;
+            $mes->sendPush(false);
+            sleep(5);
+        }
+        return 1;
         return $this->render('index');
     }
 
