@@ -2114,6 +2114,73 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
+    public function getSuitableVehicles(){
+//        $vehicles =[];
+        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->orderBy('id_user')->all();
+
+        foreach ($Vehicles as $vehicle) {
+            if (!$vehicle->canOrder($this)) {
+                ArrayHelper::removeValue($Vehicles, $vehicle);
+            }
+        }
+        return $Vehicles;
+    }
+
+    public function getSortArrayCarOwnerIdsForFind(){
+        $vehicles = $this->getSuitableVehicles();
+        if(!$vehicles) return false;
+        $vehicle_car_owner = [];
+        $vehicle_user_active = [];
+        $res = [];
+        foreach ($vehicles as $vehicle){
+            if($vehicle->user->canRole('car_owner')){
+                $vehicle_car_owner [] = $vehicle;
+            }
+        }
+
+        foreach ($vehicles as $vehicle){
+            $user = $vehicle->user;
+            if($user->canRole('user') && $user->status == User::STATUS_ACTIVE){
+                $vehicle_user_active [] = $vehicle;
+            }
+        }
+
+        usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b){
+            if($this->type_payment == Payment::TYPE_BANK_TRANSFER) {
+                return $a->user->profile->balanceCarOwnerPayNow < $b->user->profile->balanceCarOwnerPayNow
+                    ? -1 : 1;
+            } else {
+                return $a->user->profile->balanceCarOwnerPayNow < $b->user->profile->balanceCarOwnerPayNow
+                    ? 1 : -1;
+            }
+        });
+
+        usort($vehicle_user_active, function (Vehicle $a, Vehicle $b){
+            if($this->type_payment == Payment::TYPE_BANK_TRANSFER) {
+                return $a->user->profile->balanceCarOwnerPayNow < $b->user->profile->balanceCarOwnerPayNow
+                    ? -1 : 1;
+            } else {
+                return $a->user->profile->balanceCarOwnerPayNow < $b->user->profile->balanceCarOwnerPayNow
+                    ? 1 : -1;
+            }
+        });
+
+        foreach ($vehicle_car_owner as $item){
+            $user = $item->user;
+            if(!in_array($user->id, $res)){
+                $res[] = $user->id;
+            }
+        }
+
+        foreach ($vehicle_user_active as $item){
+            $user = $item->user;
+            if(!in_array($user->id, $res)){
+                $res[] = $user->id;
+            }
+        }
+        return var_dump($res);
+    }
  }
 
 

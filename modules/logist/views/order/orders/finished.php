@@ -132,7 +132,7 @@ use app\models\Company;
                     $company = Company::findOne($model->id_company);
 
                     if ($model->id_user == $model->id_car_owner && $model->re) {
-                        $return = $model->comment;
+                        $return = $model->comment . '<br>';
                         if($company) {
                             $return .= '<br>'
                             . ($company->name_short) ? $company->name_short : $company->name;

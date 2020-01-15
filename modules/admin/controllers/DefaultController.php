@@ -37,18 +37,11 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
-        $mes = new Message([
-            'title' => 'Test',
-            'id_to_user' => 1,
-            'text' => 'text'
-        ]);
+        $order = Order::findOne(288);
+//        return var_dump($order);
+//        return var_dump($order->getSuitableVehicles());
 
-        for($i=1;$i<5;$i++){
-            $mes->title = 'test' . $i;
-            $mes->sendPush(false);
-            sleep(5);
-        }
-        return 1;
+        return var_dump($order->getSortArrayCarOwnerIdsForFind());
         return $this->render('index');
     }
 

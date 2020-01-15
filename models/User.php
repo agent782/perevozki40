@@ -170,7 +170,6 @@ class User extends ActiveRecord implements IdentityInterface
 //    {
 //       return $this->username = mb_ereg_replace("[^0-9]",'',$this->username);
 //    }
-
     public function attributeLabels()
     {
         return [
@@ -180,7 +179,6 @@ class User extends ActiveRecord implements IdentityInterface
             'old_id' => 'Предыдущее условное обозначение'
         ];
     }
-
     /**
      * @inheritdoc
      */
@@ -316,7 +314,6 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getProfile()
     {
-//        return Profile::findOne($this->getId());
         return $this->hasOne(Profile::className(), ['id_user' => 'id']);
     }
 
@@ -329,8 +326,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return date('d.m.Y h:m', $this->updated_at);
     }
-
-
 //Восстановление пароля
     public static function findByPasswordResetToken($token)
     {
@@ -375,6 +370,7 @@ class User extends ActiveRecord implements IdentityInterface
             ->one()['item_name'];
 
     }
+
     public function getRoles(){
         return Yii::$app->authManager->getRolesByUser($this->getId());
     }
