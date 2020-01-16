@@ -49,7 +49,7 @@ class OrderController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin', 'dispetcher']
+                        'roles' => ['admin', 'dispetcher', 'buh']
                     ],
                 ],
             ]
@@ -252,7 +252,6 @@ class OrderController extends Controller
             return $this->redirect($redirectError);
         }
 
-        $vehicles =[];
         $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
             ->orderBy('id_user')->all();
 
@@ -262,12 +261,12 @@ class OrderController extends Controller
             }
         }
 
+
         $dataProvider = new ArrayDataProvider([
             'allModels' => $Vehicles
         ]);
 
         return $this->render('find-vehicle', [
-            'vehicles' => $vehicles,
             'dataProvider' => $dataProvider,
             'searchModel' => null,
             'modelOrder' => $modelOrder
