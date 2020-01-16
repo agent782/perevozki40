@@ -6,7 +6,7 @@
  * Time: 13:56
  */
 use yii\bootstrap\Html;
-echo Html::radioList('a', $vehicles);
+//echo Html::radioList('a', $vehicles);
 use app\models\PriceZone;
 use app\models\setting\SettingVehicle;
 use yii\helpers\Url;
