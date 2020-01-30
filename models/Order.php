@@ -1952,7 +1952,13 @@ class Order extends \yii\db\ActiveRecord
             $cost = round($cost);
             $return['cost'] = $cost;
             if($return['cost']) {
-                $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
+                if($forVehicle && $this->additional_cost){
+                    $text .= '<br><br><strong>Итого к оплате '
+                        . ($return['cost'] -  $this->additional_cost * 10 / 100)
+                        . ' руб.</strong>';
+                } else {
+                    $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
+                }
             }
             $return['text'] =  $text;
             $return['cost'] = round($return['cost']);
