@@ -1954,7 +1954,7 @@ class Order extends \yii\db\ActiveRecord
             if($return['cost']) {
                 if($forVehicle){
                     $text .= '<br><br><strong>Итого к оплате '
-                        . ($return['cost'] - $this->additional_cost*10/100)
+                        . ($return['cost'] - $this->additional_cost * 10 / 100)
                         . ' руб.</strong>';
                 }else {
                     $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
