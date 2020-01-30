@@ -759,17 +759,18 @@ class Profile extends \yii\db\ActiveRecord
         foreach ($orders_cash as $order){
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'debit' => round($order->cost_finish_vehicle * $this->procentVehicle/100),
+                'debit' => round(($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100),
                 'credit' => '',
                 'description' => 'Заказ № ' . $order->id . '. Проценты.',
                 'id_order' => $order->id,
             ];
 
-            $return['balance'] -= round($order->cost_finish_vehicle * $this->procentVehicle/100);
+            $return['balance'] -= round(($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100);
         }
 
         foreach ($orders_not_paid as $order){
-            $cost = round($order->cost_finish_vehicle - ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $cost = round($order->cost_finish_vehicle
+                - (($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100));
             $return['balance'] += $cost;
             $return['not_paid'] += $cost;
             $return['orders_not_paid'][] = [
