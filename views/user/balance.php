@@ -39,12 +39,7 @@ use app\components\widgets\ShowMessageWidget;
     }
     $items = [];
     $comments = '';
-    $car_owner_pay_now = '';
     if($dataProvider_car_owner){
-        $car_owner_pay_now = ($balance['car_owner'] - $balance['not_paid'])
-            ? 'Сумма к выплате на сегодняшний день: '
-                . ($balance['car_owner'] - $balance['not_paid']) . ' р.'
-            : 'Сумма к выплате на сегодняшний день: 0р.';
         $items[] = [
             'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р. (' . $balance['not_paid'] . '*****)' ,
             'content' => GridView::widget([
@@ -90,6 +85,10 @@ use app\components\widgets\ShowMessageWidget;
                 ]
             ]),
         ];
+        $comments .= ($balance['car_owner'] - $balance['not_paid'])
+            ? 'Сумма к выплате на сегодняшний день: '
+            . ($balance['car_owner'] - $balance['not_paid']) . ' р.'
+            : 'Сумма к выплате на сегодняшний день: 0р.';
         $comments .= '<p><comment>* Баланс по принятым Вами заказам на Ваши ТС.</comment></p>';
         $comments .= '<p><comment>**** Сумма к выплате за заказ
             (Оставшаяся неоплаченная Клиентом сумма по заказу)</comment></p>';
