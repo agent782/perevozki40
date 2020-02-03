@@ -174,6 +174,7 @@ class SignupCarOwnerForm extends Model
             $auth->revokeAll($modelProfile->id_user);
             $auth->assign($role, $modelProfile->id_user);
 
+
             if($modelPassport = $this->savePassport($modelProfile->id_passport)) {
                 $modelProfile->id_passport = $modelPassport->id;
             }
@@ -183,6 +184,9 @@ class SignupCarOwnerForm extends Model
                 }
             }
             if($modelProfile->save()) {
+                $user = $modelProfile->user;
+                $user->status = User::STATUS_ACTIVE;
+                $user->save(false);
                 return $modelProfile;
             }
             $role = $auth->getRole('user');

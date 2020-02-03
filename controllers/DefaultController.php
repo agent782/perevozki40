@@ -197,6 +197,9 @@ class DefaultController extends Controller
                         if (Yii::$app->getUser()->login($modelUser)) {
                             $modelProfile->id_user = $modelUser->id;
                             if ($modelProfile->save()) {
+                                $user = $modelProfile->user;
+                                $user->status = User::STATUS_ACTIVE;
+                                $user->save(false);
                                 emails::sendAfterUserRegistration($modelProfile->id_user);
 //                                emails::sendAfterUserRegistration(73);
 //                                $session->removeAll();

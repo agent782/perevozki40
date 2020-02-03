@@ -41,7 +41,7 @@ class DefaultController extends Controller
 //        return var_dump($order);
 //        return var_dump($order->getSuitableVehicles());
 
-        return var_dump($order->getSortArrayCarOwnerIdsForFind());
+//        return var_dump($order->getSortArrayCarOwnerIdsForFind());
         return $this->render('index');
     }
 

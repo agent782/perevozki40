@@ -2133,6 +2133,49 @@ class Order extends \yii\db\ActiveRecord
         return $Vehicles;
     }
 
+    public function getSortSuitableVehicles(){
+        $order = $this;
+        $vehicles = $order->getSuitableVehicles();
+        if(!$vehicles) return false;
+        $vehicle_car_owner = [];
+        $vehicle_user_active = [];
+        $res = [];
+        foreach ($vehicles as $vehicle){
+            $user = $vehicle->user;
+            if($user->canRole('car_owner') && $user->status == User::STATUS_ACTIVE){
+                $vehicle_car_owner [] = $vehicle;
+            } else {
+                $vehicle_user_active [] = $vehicle;
+            }
+        }
+        if($vehicle_car_owner) {
+            usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
+                if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
+                    return $a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum
+                        ? -1 : 1;
+                } else {
+                    return $a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum
+                        ? 1 : -1;
+                }
+            });
+        }
+        if($vehicle_user_active) {
+            usort($vehicle_user_active, function (Vehicle $a, Vehicle $b) use ($order) {
+                if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
+                    return $a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum
+                        ? -1 : 1;
+                } else {
+                    return $a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum
+                        ? 1 : -1;
+                }
+            });
+        }
+
+       $res = array_merge($vehicle_car_owner, $vehicle_user_active);
+        return $res;
+
+    }
+
     public function getSortArrayCarOwnerIdsForFind(){
         $vehicles = $this->getSuitableVehicles();
         if(!$vehicles) return false;

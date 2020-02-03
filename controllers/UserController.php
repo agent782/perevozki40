@@ -95,6 +95,9 @@ class UserController extends Controller
 //                return $this->render('signupClient2', compact(['modelProfile']));
                 functions::setFlashSuccess('Спасибо, ' . $modelProfile->name . ' ' . $modelProfile->patrinimic
                     . '! Надеемся на долгосрочное сотрудничество!');
+                $user = $modelProfile->user;
+                $user->status = User::STATUS_ACTIVE;
+                $user->save(false);
                 emails::sendAfterClientRegistration($modelProfile->id_user);
                 return $this->redirect('/order/client');
             } else {

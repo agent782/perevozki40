@@ -87,5 +87,4 @@ class VehicleSearch extends Vehicle
         return $dataProvider;
     }
 
-
 }
