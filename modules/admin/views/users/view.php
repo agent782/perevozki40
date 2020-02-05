@@ -44,6 +44,11 @@ $this->title = Html::encode('Информация о профиле');
                 'dataProviderDeleted' => $dataProviderDeleted
             ])
         ],
+        [
+            'label' => 'Администрирование',
+            'visible' => ['admin'],
+
+        ]
 
     ]
 ])?>

@@ -396,6 +396,10 @@ class User extends ActiveRecord implements IdentityInterface
 ////        }
 //        return false;
 //    }
+    public function addRole(string $newRole){
+        if($this->canRole($newRole)) return false;
+
+    }
 
     public function getDrivers(){
         return $this->hasMany(Driver::class, ['id_car_owner' => 'id']);

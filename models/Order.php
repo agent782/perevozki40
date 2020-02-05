@@ -2171,7 +2171,7 @@ class Order extends \yii\db\ActiveRecord
             });
         }
 
-       $res = array_merge($vehicle_car_owner, $vehicle_user_active);
+        $res = array_merge($vehicle_car_owner, $vehicle_user_active);
         return $res;
 
     }
