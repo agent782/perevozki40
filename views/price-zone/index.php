@@ -127,12 +127,12 @@ $truck_columns = [
     'min_r_30',
     'min_r_40',
     'min_r_50',
-    [
-        'attribute' => 'remove_awning',
-        'value' => function(PriceZone $model){
-            return $model->getCosts_for()['remove_awning'];
-        }
-    ],
+//    [
+//        'attribute' => 'remove_awning',
+//        'value' => function(PriceZone $model){
+//            return $model->getCosts_for()['remove_awning'];
+//        }
+//    ],
     $actionColumn
 ];
 $pass_columns = [
