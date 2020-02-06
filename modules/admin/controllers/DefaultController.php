@@ -60,9 +60,6 @@ class DefaultController extends Controller
 
         }
 
-        echo $route->routeStart . '<br>';
-        echo str_replace('Россия, ', '', $route->routeStart);
-//        return;
         return $this->render('index');
     }
 
