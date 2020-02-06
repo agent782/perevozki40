@@ -45,7 +45,7 @@ class DefaultController extends Controller
 //        return var_dump($order->getSuitableVehicles());
 
 //        return var_dump($order->getSortArrayCarOwnerIdsForFind());
-
+        set_time_limit(180);
         foreach (Route::find()->all() as $route){
             $route->routeStart = str_replace('Россия, ', '', $route->routeStart);
             $route->route1 = str_replace('Россия, ', '', $route->route1);
