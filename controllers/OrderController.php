@@ -820,7 +820,7 @@ class OrderController extends Controller
                 if($sesssion->get('modelOrder')) $modelOrder = $sesssion->get('modelOrder');
                 if($sesssion->get('realRoute')) $realRoute = $sesssion->get('realRoute');
                 if(!$modelOrder || !$realRoute){
-                    functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
+                    functions::setFlashWarning('Ошибка на сервере, попробуйте позже.');
                     return $this->redirect($redirect);
                 }
                 if($modelOrder->load(Yii::$app->request->post())){

@@ -4,8 +4,10 @@ namespace app\modules\admin\controllers;
 use app\components\functions\functions;
 use app\models\Message;
 use app\models\Order;
+use app\models\Route;
 use app\models\User;
 use app\models\UserSearch;
+use function GuzzleHttp\Promise\all;
 use yii\web\Controller;
 use yii\filters\AccessControl;use Yii;
 use yii\data\SqlDataProvider;
@@ -37,11 +39,30 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
-        $order = Order::findOne(288);
+//        $order = Order::findOne(288);
 //        return var_dump($order);
 //        return var_dump($order->getSuitableVehicles());
 
 //        return var_dump($order->getSortArrayCarOwnerIdsForFind());
+
+        foreach (Route::find()-all() as $route){
+            $route->routeStart = str_replace('Россия, ', '', $route->routeStart);
+            $route->route1 = str_replace('Россия, ', '', $route->route1);
+            $route->route2 = str_replace('Россия, ', '', $route->route2);
+            $route->route3 = str_replace('Россия, ', '', $route->route3);
+            $route->route4 = str_replace('Россия, ', '', $route->route4);
+            $route->route5 = str_replace('Россия, ', '', $route->route5);
+            $route->route6 = str_replace('Россия, ', '', $route->route6);
+            $route->route7 = str_replace('Россия, ', '', $route->route7);
+            $route->route8 = str_replace('Россия, ', '', $route->route8);
+            $route->routeFinish = str_replace('Россия, ', '', $route->routeFinish);
+            $route->save(false);
+
+        }
+
+        echo $route->routeStart . '<br>';
+        echo str_replace('Россия, ', '', $route->routeStart);
+//        return;
         return $this->render('index');
     }
 
