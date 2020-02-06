@@ -9,7 +9,8 @@ use app\models\User;
 use app\models\UserSearch;
 use function GuzzleHttp\Promise\all;
 use yii\web\Controller;
-use yii\filters\AccessControl;use Yii;
+use yii\filters\AccessControl;
+use Yii;
 use yii\data\SqlDataProvider;
 use app\models\auth_item;
 use yii\web\HttpException;
@@ -45,7 +46,7 @@ class DefaultController extends Controller
 
 //        return var_dump($order->getSortArrayCarOwnerIdsForFind());
 
-        foreach (Route::find()-all() as $route){
+        foreach (Route::find()->all() as $route){
             $route->routeStart = str_replace('Россия, ', '', $route->routeStart);
             $route->route1 = str_replace('Россия, ', '', $route->route1);
             $route->route2 = str_replace('Россия, ', '', $route->route2);
@@ -57,7 +58,6 @@ class DefaultController extends Controller
             $route->route8 = str_replace('Россия, ', '', $route->route8);
             $route->routeFinish = str_replace('Россия, ', '', $route->routeFinish);
             $route->save(false);
-
         }
 
         return $this->render('index');
