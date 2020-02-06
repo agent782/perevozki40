@@ -37,8 +37,7 @@ $(document).ready(function () {
         var SuggestView = [sugS, sugV1, sugV2, sugV3, sugV4, sugV5, sugV6, sugV7, sugV8, sugF];
         for (var i in SuggestView) {
             var r = Routes[i].attr('id');
-            SuggestView[i] = new ymaps.SuggestView(r
-            //     , {
+            SuggestView[i] = new ymaps.SuggestView(r, {
             //     provider: {
             //         suggest: function (request, options) {
             //
@@ -54,8 +53,9 @@ $(document).ready(function () {
             //                 });
             //         }
             //     }
-            // }
+                }
             );
+            // SuggestView[i].options.width(300);
             SuggestView[i].state.set('open', true);
             SuggestView[i].events.add('select', function (e) {
                 createRoute();
@@ -118,7 +118,6 @@ $(document).ready(function () {
 
 
         function createRoute() {
-
             myMap.geoObjects.removeAll();
             lenRoute = 0;
             $('#len').text(lenRoute);
@@ -171,7 +170,6 @@ $(document).ready(function () {
                         console.log("Ошибка: " + event.get("error").message);
                         // alert('Ошибка на стороне яндекс карт. Попробуйте позже или продолжите без определения расстояния.')
                     });
-
             }
 
         }
@@ -186,6 +184,7 @@ $(document).ready(function () {
             }
         });
         $('.points').on('change', function (event) {
+
             lenRoute = 0;
             // $('#but, #rStart, #rFinish').trigger('click');
             // $('#len').text(lenRoute).trigger('change');

@@ -50,7 +50,6 @@ $this->registerJsFile('/js/order.js');
     </div>
 <br><br>
     <div class="col-lg-4">
-
         <?= $form->field($modelOrder, 'real_datetime_start',[
             'enableClientValidation' => true
         ])->widget(DateTimePicker::className(),[

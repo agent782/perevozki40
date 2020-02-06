@@ -6,6 +6,7 @@ use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\datetime\DateTimePicker;
+use execut\autosizeTextarea\TextareaWidget;
 /* @var $this yii\web\View */
 /* @var $model app\models\Order */
 $this->registerJsFile('@web/js/route.js');
@@ -17,9 +18,24 @@ $this->registerJsFile('@web/js/route.js');
     <br>
     <?= $form->field($route, 'routeStart', ['inputOptions' => [
         'id'=>'rStart',
-        'class' => 'points col-xs-12'
-    ]])?>
-    <br>
+        'class' => 'points col-xs-12',
+        'style' => 'min-width: 450px'
+
+    ]])
+//        ->widget(TextareaWidget::class, [
+//        'options' => [
+//            'id'=>'rStart',
+//            'class' => 'points col-xs-12',
+//            'style' => 'width: 100%'
+//        ],
+//        'clientOptions' => [
+////            'vertical' => false,
+//            'horizontal' => false,
+//            'flickering' => false,
+//        ]
+//    ])
+    ?>
+<br>
     <div id="hiddenRoutes">
         <ul>
             <?= Html::button(Html::icon('plus'), ['class' => 'addPoint btn-xs btn-info', 'title' => 'Добавить точку'])?>
@@ -31,14 +47,18 @@ $this->registerJsFile('@web/js/route.js');
                         'id'=>'r'.$i,
                         'class' => 'points col-xs-12',
                         'hidden' => (!$route->$attributePoint)? true : false,
-                        'style' => 'margin: 5px'
+                        'style' => 'margin: 5px; min-width: 400px;'
                     ]])->label(false);
                 }
             ?>
         </ul>
     </div>
 
-    <?= $form->field($route, 'routeFinish', ['inputOptions' => ['id'=>'rFinish','class' => 'points col-xs-12']]);?>
+    <?= $form->field($route, 'routeFinish', ['inputOptions' => [
+        'id'=>'rFinish',
+        'class' => 'points col-xs-12',
+        'style' => 'min-width: 450px'
+    ]]);?>
     <br><br>
     <?= Html::button('Пересчитать', ['id' => 'but', 'class' => 'btn-sm btn-success'])?>
 
