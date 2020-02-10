@@ -1918,18 +1918,16 @@ class Order extends \yii\db\ActiveRecord
 //                }
             }
 
-            if($withDiscount){
-                $cost = $this->getFinishCost(false);
-            }
             $text .= '<br>Комментарии водителя: ' . $this->comment_vehicle;
-            if($this->discount) {
+            if($withDiscount) {
+                $cost = $this->getFinishCost(false);
                 if($this->additional_cost){
                     $cost += $this->additional_cost;
                     $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
                 }
-                if(!$forVehicle) {
-                    $text .= '<br>Скидка: ' . $this->discount
-                    . ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
+                if(!$forVehicle && $this->discount) {
+                    $text .= '<br>Скидка: ' . $this->discount;
+                    $text .= ($html) ? Html::img('/img/icons/discount-16.png', ['title' => 'Действует скидка!']) : '%';
                 }
             } else {
                 if($this->additional_cost){
@@ -1943,21 +1941,21 @@ class Order extends \yii\db\ActiveRecord
                 }
             }
 
-            if($withDiscount){
-                $cost = $this->getFinishCost($html);
-            }
-
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
 
             $cost = round($cost);
             $return['cost'] = $cost;
             if($return['cost']) {
-                if($forVehicle && $this->additional_cost){
-                    $text .= '<br><br><strong>Итого к оплате '
-                        . ($return['cost'] - ($this->additional_cost * 10 / 100))
-                        . ' руб.</strong>';
-                }else {
-                    $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
+                if($forVehicle) {
+                    if ($this->additional_cost) {
+                        $text .= '<br><br><strong>Итого к оплате '
+                            . ($return['cost'] - ($this->additional_cost * 10 / 100))
+                            . ' руб.</strong>';
+                    } else {
+                        $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
+                    }
+                } else {
+                    $text .= '<br><br><strong>Итого к оплате ' . $this->getFinishCost() . ' руб.</strong>';
                 }
             }
             $return['text'] =  $text;

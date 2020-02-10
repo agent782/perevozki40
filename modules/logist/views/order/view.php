@@ -21,7 +21,7 @@ use yii\widgets\DetailView;
         </div>
         <div class="col-lg-4">
             Для клиента
-            <?= $model->PrintFinishCalculate()?>
+            <?= $model->PrintFinishCalculate(true, false, true)?>
         </div>
         <div class="col-lg-4">
             <?= $model->getFullFinishInfo(true, null, true, true)?>
