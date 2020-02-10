@@ -204,6 +204,7 @@ class Order extends \yii\db\ActiveRecord
             [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200],
             [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5],
             [['real_h_loading'], 'number', 'min' => 0, 'max' => 24],
+            ['real_remove_awning', 'integer', 'min' => 0, 'max' => 10]
 
             [['id_company'],
 //                'validateConfirmCompany', 'skipOnEmpty' => false
@@ -218,7 +219,7 @@ class Order extends \yii\db\ActiveRecord
             [['real_tonnage', 'real_length', 'real_volume', 'real_passengers', 'real_tonnage_spec',
                 'real_length_spec', 'real_volume_spec', 'cost', 'id_review_vehicle', 'id_review_client'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
-            [['real_remove_awning', 'id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
+            [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
                 'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle',
                 'id_car_owner'], 'integer'],
             [['hand_vehicle_cost'], 'number', 'max' => '200000'],
