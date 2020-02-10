@@ -17,25 +17,27 @@ use yii\helpers\Url;
     'responsiveWrap' => false,
     'filterModel' => $modelSearch,
     'columns' => [
-        [
-            'attribute' => 'id',
-            'format' => 'raw',
-            'value' => function (Profile $model){
-                return Html::a($model->old_id, Url::to(['/admin/users/view', 'id' => $model->id_user]));
-            }
-        ],
         'old_id',
+        'id_user',
         'fioFull',
         [
             'label' => 'Баланс к выплате',
             'attribute' => 'balanceCarOwnerPayNow',
-            'filter' => false
+            'filter' => false,
+            'format' => 'raw',
+            'value' => function (Profile $model){
+                return Html::a($model->balanceCarOwnerPayNow, Url::to(['/admin/users/view', 'id' => $model->id_user]));
+            }
 
         ],
         [
             'label' => 'Баланс к выплате после проплат клиентами',
             'attribute' => 'balanceCarOwnerSum',
-            'filter' => false
+            'filter' => false,
+            'format' => 'raw',
+            'value' => function (Profile $model){
+                return Html::a($model->balanceCarOwnerSum, Url::to(['/admin/users/view', 'id' => $model->id_user]));
+            }
 
         ],
 
