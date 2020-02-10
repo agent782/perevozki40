@@ -204,7 +204,7 @@ class Order extends \yii\db\ActiveRecord
             [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200],
             [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5],
             [['real_h_loading'], 'number', 'min' => 0, 'max' => 24],
-            ['real_remove_awning', 'integer', 'min' => 0, 'max' => 10]
+            ['real_remove_awning', 'integer', 'min' => 0, 'max' => 10],
 
             [['id_company'],
 //                'validateConfirmCompany', 'skipOnEmpty' => false
