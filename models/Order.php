@@ -393,7 +393,8 @@ class Order extends \yii\db\ActiveRecord
             'avans_client' => 'Аванс',
             'cost_finish' => 'Сумма для клиента',
             'cost_finish_vehicle' => 'Сумма для водителя',
-            'comment' => 'Комментарии:'
+            'comment' => 'Комментарии:',
+            'old_id' => 'Усл. обозначение'
 
         ];
     }

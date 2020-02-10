@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use app\models\Company;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\CompanySearch */
@@ -50,6 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'balanceSum',
                 'label' => 'Баланс',
                 'format' => 'raw',
+                'value' => function (Company $model){
+                    $id_user = $model->getProfiles()->one()->id_user;
+                    return Html::a($model->balanceSum, Url::to(['/admin/users/view', 'id' => $id_user]));
+                },
                 'filter' => false
 //                'value' => function (Company $company){
 //                    return $company->balance['balance'];

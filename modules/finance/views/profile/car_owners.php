@@ -18,14 +18,13 @@ use yii\helpers\Url;
     'filterModel' => $modelSearch,
     'columns' => [
         [
-            'attribute' => 'old_id',
-            'label' => 'Старое обозначение',
+            'attribute' => 'id',
             'format' => 'raw',
             'value' => function (Profile $model){
                 return Html::a($model->old_id, Url::to(['/admin/users/view', 'id' => $model->id_user]));
             }
         ],
-        'id_user',
+        'old_id',
         'fioFull',
         [
             'label' => 'Баланс к выплате',
