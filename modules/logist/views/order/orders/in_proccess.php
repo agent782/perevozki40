@@ -13,6 +13,7 @@ use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use app\components\widgets\FinishOrderOnlySumWidget;
 use app\models\Company;
+use app\components\widgets\ShowMessageWidget;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -59,7 +60,19 @@ use app\models\Company;
             [
                 'label' => 'ТС',
                 'format' => 'raw',
-                'attribute' => 'fullInfoAboutVehicle'
+                'attribute' => 'fullInfoAboutVehicle',
+                'value' => function(Order $model){
+                    $car_owner = $model->carOwner;
+                    return ShowMessageWidget::widget([
+                        'ToggleButton' => [
+                            'label' => ($car_owner->old_id)? $car_owner->old_id : '#' . $car_owner->id_user
+                        ],
+                        'helpMessage' =>  $model->fullInfoAboutVehicle
+                    ]);
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 16px'
+                ]
             ],
             [
             'label' => 'Маршрут',

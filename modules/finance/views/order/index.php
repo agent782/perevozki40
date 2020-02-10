@@ -221,7 +221,7 @@ $this->title = 'Журнал заказов';
                     if($model->re && $model->id_user == $model->id_car_owner){
                         $return .= $model->comment;
                     }
-                    $return .= ' ' . Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    $return .= ' ' . Html::a($model->clientInfo, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
                     $return .= ShowMessageWidget::widget([
                         'helpMessage' => $profile->getProfileInfo(true,true,true,true),
                         'header' => $profile->fioFull,

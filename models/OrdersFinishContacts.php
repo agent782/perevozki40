@@ -79,6 +79,28 @@ class OrdersFinishContacts extends \yii\db\ActiveRecord
         $this->driver_phone = $driver_phone;
         $this->vehicle_brand = $vehicle_brand;
         $this->vehicle_number = $vehacle_number;
+    }
 
+    public function getVehicleInfo(){
+        return $this->vehicle_brand . ' (' . $this->vehicle_number . ')';
+    }
+
+    public function getCarOwnerInfo(){
+        return $this->car_owner_surname . ' '
+            . $this->car_owner_name . ' ('
+            . $this->car_owner_phone . ')';
+    }
+
+    public function getDriverInfo(){
+        if(!$this->driver_phone) return '';
+        return $this->driver_surname . ' '
+            . $this->driver_name . ' ('
+            . $this->driver_phone . ')';
+    }
+
+    public function getClientInfo(){
+        return $this->client_surname . ' '
+            . $this->client_name . ' ('
+            . $this->client_phone . ')';
     }
 }

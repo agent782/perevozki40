@@ -14,6 +14,7 @@ use yii\bootstrap\Tabs;
 use yii\helpers\ArrayHelper;
 use app\components\widgets\FinishOrderOnlySumWidget;
 use app\models\Company;
+use app\components\widgets\ShowMessageWidget;
 ?>
 
 <div>
@@ -50,6 +51,23 @@ use app\models\Company;
             ],
             'id',
             'real_datetime_start',
+            [
+                'label' => 'ТС',
+                'format' => 'raw',
+                'attribute' => 'fullInfoAboutVehicle',
+                'value' => function(Order $model){
+                    $car_owner = $model->carOwner;
+                    return ShowMessageWidget::widget([
+                        'ToggleButton' => [
+                            'label' => ($car_owner->old_id)? $car_owner->old_id : '#' . $car_owner->id_user
+                        ],
+                        'helpMessage' =>  $model->fullInfoAboutVehicle
+                    ]);
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 16px'
+                ]
+            ],
             [
                 'label' => 'Сумма',
                 'format' => 'raw',
@@ -100,30 +118,30 @@ use app\models\Company;
                     return $model->getShortRoute(true);
                 }
             ],
-            [
-                'label' => 'ТС и водитель',
-                'format' => 'raw',
-                'value' => function($model){
-                    $fio_driver = '';
-                    $driver = $model->driver;
-                    if($driver) $fio_driver = $driver->fio;
-                    else{
-                        $car_owner = $model->carOwner;
-                        if($car_owner) $fio_driver = $car_owner->fioFull;
-                    }
-                    if($model->vehicle){
-                        return  $model->vehicle->brandAndNumber
-                        . ' (' . $fio_driver . ')'
-                            . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Переназначить машину']), Url::to([
-                                '/user/find-user',
-                                'redirect' => '/logist/order/change-vehicle' ,
-                                'id_order' => $model->id,
-                                'redirect2' => '/logist/order'
-                            ]))
-                            ;
-                    }
-                }
-            ],
+//            [
+//                'label' => 'ТС и водитель',
+//                'format' => 'raw',
+//                'value' => function(Order $model){
+//                    $fio_driver = '';
+//                    $driver = $model->driver;
+//                    if($driver) $fio_driver = $driver->fio;
+//                    else{
+//                        $car_owner = $model->carOwner;
+//                        if($car_owner) $fio_driver = $car_owner->fioFull;
+//                    }
+//                    if($model->vehicle){
+//                        return  $model->vehicle->brandAndNumber
+//                        . ' (' . $fio_driver . ')'
+//                            . Html::a(Html::icon('edit', ['class' => 'btn-lg','title' => 'Переназначить машину']), Url::to([
+//                                '/user/find-user',
+//                                'redirect' => '/logist/order/change-vehicle' ,
+//                                'id_order' => $model->id,
+//                                'redirect2' => '/logist/order'
+//                            ]))
+//                            ;
+//                    }
+//                }
+//            ],
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',

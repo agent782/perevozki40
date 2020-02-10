@@ -1130,6 +1130,13 @@ class Order extends \yii\db\ActiveRecord
 
     public function getClientInfo($html = true, $phone = true){
         $return = '';
+        if($FC = $this->finishContacts){
+            if($company = $this->company) {
+                $return .= $this->company->name . '<br>';
+            }
+            $return .= $FC->getClientInfo();
+            return $return;
+        }
         if($this->profile && $this->user) {
             $return .= $this->profile->fioFull;
             if($phone) {
@@ -1709,6 +1716,12 @@ class Order extends \yii\db\ActiveRecord
 
     public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true, $showDriveLicence = true, $html = false){
         $return = '';
+        if($FC = $this->finishContacts){
+            $return .= $FC->getVehicleInfo() . '<br>'
+                . $FC->getCarOwnerInfo() . '<br>'
+                . $FC->getDriverInfo() . '<br>';
+            return $return;
+        }
         if(!$this->id_vehicle) return false;
         $vehicle = $this->vehicle;
         if(!$vehicle) return false;
