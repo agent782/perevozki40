@@ -742,15 +742,16 @@ class OrderController extends Controller
         }
         $modelOrder->copyValueToRealValue();
         $route = $modelOrder->route;
-        $realRoute = new Route();
-
-        $realRoute->routeStart = $route->routeStart;
-        $realRoute->routeFinish = $route->routeFinish;
-        for($i=1;$i<9;$i++) {
-            $attr = 'route' . $i;
-            $realRoute->$attr = $route->$attr;
+        $realRoute = $modelOrder->realRoute;
+        if(!$realRoute) {
+            $realRoute = new Route();
+            $realRoute->routeStart = $route->routeStart;
+            $realRoute->routeFinish = $route->routeFinish;
+            for ($i = 1; $i < 9; $i++) {
+                $attr = 'route' . $i;
+                $realRoute->$attr = $route->$attr;
+            }
         }
-
         $modelOrder->real_datetime_start = $modelOrder->datetime_start;
         $modelOrder->real_longlength = $modelOrder->longlength;
 //        $modelOrder->datetime_finish = date('d.m.Y H:i', time())
@@ -782,12 +783,19 @@ class OrderController extends Controller
                     $sesssion->set('realRoute', $realRoute);
 //                    return $modelOrder->additional_cost;
 //                    return $modelOrder->cost;
-                    return $this->render('/order/finish-by-vehicle2', [
-                        'modelOrder' => $modelOrder,
-                        'realRoute' => $realRoute,
-                        'finishCostText' => $costAndDescription ['text'],
-                        'paymrnt_typies' => $paymrnt_typies
-                    ]);
+                    if ($realRoute->save()) {
+                        $modelOrder->id_route_real = $realRoute->id;
+
+                        return $this->render('/order/finish-by-vehicle2', [
+                            'modelOrder' => $modelOrder,
+                            'realRoute' => $realRoute,
+                            'finishCostText' => $costAndDescription ['text'],
+                            'paymrnt_typies' => $paymrnt_typies
+                        ]);
+                    } else {
+                        functions::setFlashWarning('Ошибка на сервере, попробуйте позже.');
+                        return $this->redirect($redirect);
+                    }
                 }
                 break;
             case 'back':
