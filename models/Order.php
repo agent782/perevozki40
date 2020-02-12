@@ -165,6 +165,7 @@ class Order extends \yii\db\ActiveRecord
     const SCENARIO_CHANGE_AVANS_CLIENT = 'change_avans_client';
     const SCENARIO_CHANGE_TYPE_PAYMENT = 'change_type_payment';
     const SCENARIO_CHANGE_PRICEZONE_FOR_VEHICLE = 'change_price_zone_for_vehicle';
+    const SCENARIO_CHANGE_DATETIME = 'change_datetime';
 
 
 
@@ -330,6 +331,7 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_CHANGE_AVANS_CLIENT] = ['avans_client'];
         $scenarios[self::SCENARIO_CHANGE_TYPE_PAYMENT] = ['type_payment'];
         $scenarios[self::SCENARIO_CHANGE_PRICEZONE_FOR_VEHICLE] = ['id_pricezone_for_vehicle'];
+        $scenarios[self::SCENARIO_CHANGE_DATETIME] = ['datetime_start'];
 
         return $scenarios;
     }

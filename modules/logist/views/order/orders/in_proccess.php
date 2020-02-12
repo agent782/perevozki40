@@ -14,6 +14,7 @@ use yii\bootstrap\Tabs;
 use app\components\widgets\FinishOrderOnlySumWidget;
 use app\models\Company;
 use app\components\widgets\ShowMessageWidget;
+use kartik\grid\EditableColumn;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -56,7 +57,23 @@ use app\components\widgets\ShowMessageWidget;
 //                ],
 //            ],
             'id',
-            'datetime_start',
+            [
+                'attribute' => 'datetime_start',
+                'class' => EditableColumn::class,
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DATETIME,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/logist/order/change-datetime'])
+                    ],
+                    'options'=>[
+                        'pluginOptions'=>[
+                            'format' => 'dd.mm.yyyy H:ii',
+                            'autoclose' => true,
+                            'todayBtn' => true,
+                        ]
+                    ]
+                ],
+            ],
             [
                 'label' => 'ТС',
                 'format' => 'raw',
@@ -98,7 +115,7 @@ use app\components\widgets\ShowMessageWidget;
                 }
             ],
             [
-                'class' => \kartik\grid\EditableColumn::class,
+                'class' => EditableColumn::class,
                 'label' => 'Тариф для водителя',
                 'format' => 'raw',
                 'attribute' => 'id_pricezone_for_vehicle',

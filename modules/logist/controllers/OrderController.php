@@ -75,6 +75,17 @@ class OrderController extends Controller
                     return '';
                 } ,
                 'scenario' => Order::SCENARIO_CHANGE_PRICEZONE_FOR_VEHICLE
+            ],
+            'change-datetime' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+//                    return $model->paidCarOwnerText;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
+                'scenario' => Order::SCENARIO_CHANGE_DATETIME
             ]
         ]);
     }
