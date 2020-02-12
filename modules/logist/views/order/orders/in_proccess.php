@@ -61,6 +61,8 @@ use kartik\grid\EditableColumn;
                 'attribute' => 'datetime_start',
                 'class' => EditableColumn::class,
                 'editableOptions' => [
+                    'format' => \kartik\editable\Editable::FORMAT_BUTTON,
+                    'size' => 'xs',
                     'inputType' => \kartik\editable\Editable::INPUT_DATETIME,
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/logist/order/change-datetime'])
