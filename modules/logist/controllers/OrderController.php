@@ -11,6 +11,7 @@ use app\models\User;
 use app\models\Vehicle;
 use app\models\VehicleSearch;
 use app\models\XprofileXcompany;
+use kartik\grid\EditableColumnAction;
 use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
@@ -51,9 +52,31 @@ class OrderController extends Controller
                         'allow' => true,
                         'roles' => ['admin', 'dispetcher', 'buh']
                     ],
+                    [
+                        'allow' => true,
+                        'actions' => ['change-pricezone-in-proccess'],
+                        'roles' => ['admin'],
+                    ],
                 ],
             ]
         ];
+    }
+
+    public function actions()
+    {
+        return ArrayHelper::merge (parent::actions(), [
+            'change-pricezone-in-proccess' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+//                    return $model->paidCarOwnerText;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
+                'scenario' => Order::SCENARIO_CHANGE_PRICEZONE_FOR_VEHICLE
+            ]
+        ]);
     }
 
     /**
@@ -355,4 +378,5 @@ class OrderController extends Controller
             return $this->redirect($redirect);
         }
     }
+
 }

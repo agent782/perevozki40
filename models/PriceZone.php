@@ -596,4 +596,12 @@ class PriceZone extends \yii\db\ActiveRecord
             ])
             : $this->id;
     }
+
+    static public function getArrayAllPriceZones($text = true){
+        $return = [];
+        foreach (PriceZone::find()->all() as $priceZone){
+            $return [$priceZone->id] = $priceZone->id;
+        }
+        return $return;
+    }
 }

@@ -19,7 +19,7 @@ use app\components\widgets\ShowMessageWidget;
     <h4>В процессе выполнения...</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_in_process,
-//    'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
 //        'bordered' => true,
 //        'striped' => false,
 //        'responsive'=>true,
@@ -98,16 +98,26 @@ use app\components\widgets\ShowMessageWidget;
                 }
             ],
             [
+                'class' => \kartik\grid\EditableColumn::class,
                 'label' => 'Тариф для водителя',
                 'format' => 'raw',
                 'attribute' => 'id_pricezone_for_vehicle',
-                'value' => function($modelOrder){
+                'value' => function(Order $modelOrder){
                     return \app\models\PriceZone::findOne(['unique_index' => $modelOrder
                         ->id_pricezone_for_vehicle])
                         ->getWithDiscount(\app\models\setting\SettingVehicle::find()->limit(1)->one()
                             ->price_for_vehicle_procent)
-                        ->getTextWithShowMessageButton($modelOrder->route->distance, true);
-                }
+                        ->getTextWithShowMessageButton($modelOrder->route->distance, true)
+                        ;
+                },
+                'editableOptions' => [
+                    'format' => \kartik\editable\Editable::FORMAT_BUTTON,
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/logist/order/change-pricezone-in-proccess' ])
+                    ],
+                    'data' => \app\models\PriceZone::getArrayAllPriceZones(false)                ],
+
             ],
             [
                 'label' => 'Заказчик',
