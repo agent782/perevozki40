@@ -39,7 +39,7 @@ use app\models\setting\Setting;
  * @property integer $body_type BodyTypeText
  * @property string $bodyTypeText
  * @property float $description
- * @property float $photo
+ * @property string $photo
  * @property LoadingType[] $loadingtypes
  * @property array $loadingtypesText
  * @property BodyType[] $bodyType
@@ -189,6 +189,7 @@ class Vehicle extends \yii\db\ActiveRecord
             [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4],
             [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200],
             [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5],
+            [['photo'], 'string']
         ];
     }
 
@@ -289,6 +290,7 @@ class Vehicle extends \yii\db\ActiveRecord
 //    {
 //        return $this->hasMany(ClassifierVehicle::className(), ['id' => 'id_classifier_vehicle'])->viaTable('{{%XvehicleXclassifier_vehicle}}', ['id_vehicle' => 'id']);
 //    }
+
 
     public function getPrice_zones()
     {
