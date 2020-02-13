@@ -2178,8 +2178,8 @@ class Order extends \yii\db\ActiveRecord
             });
 
             usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
-                return $a->getMinRate($order) < $b->getMinRate($order)
-                    ? -1 : 1;
+                return $a->getMinRate($order) >= $b->getMinRate($order)
+                    ? 1 : -1;
             });
         }
         if($vehicle_user_active) {
