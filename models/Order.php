@@ -2167,7 +2167,7 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         if($vehicles) {
-            usort($vehicles, function (Vehicle $a, Vehicle $b) use ($order) {
+            return usort($vehicles, function (Vehicle $a, Vehicle $b) use ($order) {
                 if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
                     return 1;
                 }
@@ -2202,6 +2202,7 @@ class Order extends \yii\db\ActiveRecord
                 }
             });
         }
+
 //        if($vehicle_car_owner) {
 //            usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
 //                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
