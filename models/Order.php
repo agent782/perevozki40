@@ -2200,7 +2200,13 @@ class Order extends \yii\db\ActiveRecord
 //                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
 //                        }
                     }
+                if(
+//                        ($a->user->canRole('vip_car_owner' && !$b->user->canRole('vip_car_owner')))
+//                        ||
+                ($a->user->canRole('user' && $b->user->canRole('car_owner')))
+                ){
                     return -1;
+                }
 //                }
 
             });
