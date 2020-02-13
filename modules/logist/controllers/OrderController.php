@@ -286,18 +286,21 @@ class OrderController extends Controller
             return $this->redirect($redirectError);
         }
 
-        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
-            ->orderBy('id_user')->all();
+        $Vehicles = $modelOrder->getSortSuitableVehicles();
 
-        foreach ($Vehicles as $vehicle) {
-            if (!$vehicle->canOrder($modelOrder)) {
-                ArrayHelper::removeValue($Vehicles, $vehicle);
-            }
-        }
+//        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+//            ->orderBy('id_user')->all();
+//
+//        foreach ($Vehicles as $vehicle) {
+//            if (!$vehicle->canOrder($modelOrder)) {
+//                ArrayHelper::removeValue($Vehicles, $vehicle);
+//            }
+//        }
 
 
         $dataProvider = new ArrayDataProvider([
-            'allModels' => $Vehicles
+            'allModels' => $Vehicles,
+            'pagination' => ['pageSize' => 50]
         ]);
 
         return $this->render('find-vehicle', [
