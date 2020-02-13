@@ -26,5 +26,9 @@ $this->title = 'Тест поиска ТС по заказу.';
         'profile.balanceCarOwnerSum',
 
     ],
-    'profile.fioShort'
+    [
+        'value' => function (\app\models\Vehicle $model){
+            return $model->profile->fioShort;
+        }
+    ]
 ])?>
