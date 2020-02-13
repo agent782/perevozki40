@@ -19,7 +19,7 @@ $this->title = 'Тест поиска ТС по заказу.';
         'user.status',
         [
             'value' => function(\app\models\Vehicle $model) use ($order){
-                return $model->getMinRate($order);
+                return $model->getMinRate($order)->r_km;
             }
         ],
         'profile.balanceCarOwnerPayNow',
