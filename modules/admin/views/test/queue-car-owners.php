@@ -17,6 +17,11 @@ $this->title = 'Тест поиска ТС по заказу.';
         'id',
         'user.rolesString',
         'user.status',
+        [
+            'value' => function(\app\models\Vehicle $model) use ($order){
+                return $model->getMinRate($order);
+            }
+        ],
         'profile.balanceCarOwnerPayNow',
         'profile.balanceCarOwnerSum',
 

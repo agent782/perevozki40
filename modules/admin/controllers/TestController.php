@@ -37,6 +37,7 @@ class TestController extends \yii\web\Controller
     }
 
     public function actionQueueCarOwners($id_order = null){
+        $order = null;
         $model = new DynamicModel(['id_order']);
         $model->addRule(
             'id_order', 'number'
@@ -59,7 +60,8 @@ class TestController extends \yii\web\Controller
         }
         return $this->render('queue-car-owners', [
             'dataProvider' => $dataProvider,
-            'model' => $model
+            'model' => $model,
+            'order' => $order
         ]);
     }
 
