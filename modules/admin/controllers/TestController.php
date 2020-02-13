@@ -42,7 +42,9 @@ class TestController extends \yii\web\Controller
             'id_order', 'number'
         );
         $model->id_order = $id_order;
-        $dataProvider = new ArrayDataProvider();
+        $dataProvider = new ArrayDataProvider([
+            'pagination' => ['pageSize' => 100]
+        ]);
 
 //        $dataProvider = new ArrayDataProvider();
         if($model->load(\Yii::$app->request->post())){
@@ -50,7 +52,6 @@ class TestController extends \yii\web\Controller
             if($order){
                 set_time_limit(200);
                 $dataProvider->allModels = $order->getSortSuitableVehicles();
-                $dataProvider->pagination->pageSize(100);
 //                return var_dump($dataProvider->allModels);
             } else {
                 functions::setFlashWarning('Заказ не найден!');
