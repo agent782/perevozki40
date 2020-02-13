@@ -2180,7 +2180,7 @@ class Order extends \yii\db\ActiveRecord
                         ||
                         ($a->user->canRole('car_owner') && $b->user->canRole('user'))
                     ){
-                        return 1;
+                        return -1;
                     }
 
                     if(
@@ -2191,16 +2191,16 @@ class Order extends \yii\db\ActiveRecord
                         ($a->user->canRole('user') && $b->user->canRole('user'))
                     ){
                         if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
-                            if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return -1;}
-                            if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return 1;}
-                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
-                        } else {
                             if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return 1;}
                             if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return -1;}
                             if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
+                        } else {
+                            if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return -1;}
+                            if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return 1;}
+                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
                         }
                     }
-                    return -1;
+                    return 1;
                 }
             });
         }
