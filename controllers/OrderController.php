@@ -500,7 +500,7 @@ class OrderController extends Controller
         // Для функции  Vehicle::getArrayAttributes() .... для получения атрибутов для спецтехники она выбтрае 1й, а не 0й элемент массива с типами кузовов
         $tmpBodyTypies[1] = $modelOrder->body_typies[0];
         $VehicleAttributes = Vehicle::getArrayAttributes($modelOrder->id_vehicle_type, $tmpBodyTypies);
-        $TypiesPayment = TypePayment::find()->where(['<>','type', Payment::TYPE_SBERBANK_CARD])->all();
+        $TypiesPayment = TypePayment::find()->where(['!=','id', Payment::TYPE_SBERBANK_CARD])->all();
         foreach ($TypiesPayment as $typePayment){
             $typePayment->type = $typePayment->getTextWithIconDiscount();
         }
