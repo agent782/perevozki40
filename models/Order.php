@@ -2169,28 +2169,7 @@ class Order extends \yii\db\ActiveRecord
         if($vehicles) {
             usort($vehicles, function (Vehicle $a, Vehicle $b) use ($order) {
                 if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
-                    if(
-                        ($a->user->canRole('vip_car_owner' && !$b->user->canRole('vip_car_owner')))
-                        || ($a->user->canRole('car_owner' && !$b->user->canRole('user')))
-                    ){
-                        return 1;
-                    }
-
-                    if(
-                        ($a->user->canRole('vip_car_owner' && $b->user->canRole('vip_car_owner')))
-                        || ($a->user->canRole('car_owner' && !$b->user->canRole('car_owner')))
-                        || ($a->user->canRole('user' && !$b->user->canRole('user')))
-                    ){
-                        if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
-                            if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return -1;}
-                            if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return 1;}
-                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
-                        } else {
-                            if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return 1;}
-                            if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return -1;}
-                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
-                        }
-                    }
+                    return 1;
                 }
                 if($a->getMinRate($order)->r_km < $b->getMinRate($order)->r_km) {
                     return -1;
@@ -2198,7 +2177,7 @@ class Order extends \yii\db\ActiveRecord
                 if($a->getMinRate($order)->r_km == $b->getMinRate($order)->r_km) {
                     if(
                         ($a->user->canRole('vip_car_owner' && !$b->user->canRole('vip_car_owner')))
-                        || ($a->user->canRole('car_owner' && !$b->user->canRole('user')))
+                        || ($a->user->canRole('car_owner' && $b->user->canRole('user')))
                     ){
                         return 1;
                     }
@@ -2223,7 +2202,7 @@ class Order extends \yii\db\ActiveRecord
                 }
             });
         }
-        return $vehicles;
+        return $vehicles:
 //        if($vehicle_car_owner) {
 //            usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
 //                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
