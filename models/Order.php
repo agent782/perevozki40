@@ -2176,6 +2176,11 @@ class Order extends \yii\db\ActiveRecord
                         ? 1 : -1;
                 }
             });
+
+            usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
+                return $a->getMinRate($order) < $b->getMinRate($order)
+                    ? -1 : 1;
+            });
         }
         if($vehicle_user_active) {
             usort($vehicle_user_active, function (Vehicle $a, Vehicle $b) use ($order) {
