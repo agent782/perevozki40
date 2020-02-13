@@ -153,7 +153,7 @@ class DefaultController extends Controller
                         return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                     }
                     $modelVerifyPhone->generateCode();
-                    $sms = new Sms($modelUser->username, $modelVerifyPhone->getVerifyCode());
+                    $sms = new Sms($modelUser->username, 'Код: ' . $modelVerifyPhone->getVerifyCode() . '.');
 //                     Отправка кода
                     if (!$sms->sendAndSave()) {
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');

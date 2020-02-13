@@ -799,4 +799,10 @@ class Vehicle extends \yii\db\ActiveRecord
         if($user->can('admin') || $user->can('dispetcher')) return false;
         return true;
     }
+
+//    public function hasOrderOnDate($date){
+//        $this->getOrders()->where([
+//
+//        ])
+//    }
 }
