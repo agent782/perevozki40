@@ -2168,13 +2168,13 @@ class Order extends \yii\db\ActiveRecord
         }
         if($vehicles) {
             usort($vehicles, function (Vehicle $a, Vehicle $b) use ($order) {
-                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
-                    return 1;
-                }
-                if($a->getMinRate($order)->r_km < $b->getMinRate($order)->r_km) {
-                    return -1;
-                }
-                if($a->getMinRate($order)->r_km == $b->getMinRate($order)->r_km) {
+//                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
+//                    return 1;
+//                }
+//                if($a->getMinRate($order)->r_km < $b->getMinRate($order)->r_km) {
+//                    return -1;
+//                }
+//                if($a->getMinRate($order)->r_km == $b->getMinRate($order)->r_km) {
                     if(
                         ($a->user->canRole('vip_car_owner' && !$b->user->canRole('vip_car_owner')))
                         || ($a->user->canRole('car_owner' && $b->user->canRole('user')))
@@ -2199,7 +2199,7 @@ class Order extends \yii\db\ActiveRecord
 //                        }
                     }
                     return -1;
-                }
+//                }
 
             });
         }
