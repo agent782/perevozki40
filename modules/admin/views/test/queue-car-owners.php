@@ -22,13 +22,10 @@ $this->title = 'Тест поиска ТС по заказу.';
                 return $model->getMinRate($order)->r_km;
             }
         ],
+        'profile.fioShort',
         'profile.balanceCarOwnerPayNow',
         'profile.balanceCarOwnerSum',
 
     ],
-    [
-        'value' => function (\app\models\Vehicle $model){
-            return $model->profile->fioShort;
-        }
-    ]
+
 ])?>
