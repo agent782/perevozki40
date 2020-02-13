@@ -2176,16 +2176,18 @@ class Order extends \yii\db\ActiveRecord
 //                }
 //                if($a->getMinRate($order)->r_km == $b->getMinRate($order)->r_km) {
                     if(
-                        ($a->user->canRole('vip_car_owner' && !$b->user->canRole('vip_car_owner')))
-                        || ($a->user->canRole('car_owner' && $b->user->canRole('user')))
+//                        ($a->user->canRole('vip_car_owner' && !$b->user->canRole('vip_car_owner')))
+//                        ||
+                        ($a->user->canRole('car_owner' && $b->user->canRole('user')))
                     ){
                         return 1;
                     }
 
                     if(
-                        ($a->user->canRole('vip_car_owner' && $b->user->canRole('vip_car_owner')))
-                        || ($a->user->canRole('car_owner' && $b->user->canRole('car_owner')))
-                        || ($a->user->canRole('user' && $b->user->canRole('user')))
+//                        ($a->user->canRole('vip_car_owner' && $b->user->canRole('vip_car_owner')))
+//                        ||
+                        ($a->user->canRole('car_owner' && $b->user->canRole('car_owner')))
+//                        || ($a->user->canRole('user' && $b->user->canRole('user')))
                     ){
                             return 0;
 //                        if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
