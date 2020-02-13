@@ -2167,28 +2167,42 @@ class Order extends \yii\db\ActiveRecord
             }
         }
         if($vehicle_car_owner) {
-            usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
-                if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
-                    if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){
-                        return -1;
-                    }
-                    if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){
-                        return 1;
-                    }
-                    if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){
-                        return 0;
-                    }
-                } else {
-                    if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return 1;}
-                    if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return -1;}
-                    if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
-                }
-            });
+//            usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
+//                if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
+//                    if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){
+//                        return -1;
+//                    }
+//                    if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){
+//                        return 1;
+//                    }
+//                    if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){
+//                        return 0;
+//                    }
+//                } else {
+//                    if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return 1;}
+//                    if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return -1;}
+//                    if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
+//                }
+//            });
 
             usort($vehicle_car_owner, function (Vehicle $a, Vehicle $b) use ($order) {
-                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) return 1;
-                if($a->getMinRate($order)->r_km < $b->getMinRate($order)->r_km) return -1;
-                if($a->getMinRate($order)->r_km = $b->getMinRate($order)->r_km) return 0;
+                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
+                    return 1;
+                }
+                if($a->getMinRate($order)->r_km < $b->getMinRate($order)->r_km) {
+                    return -1;
+                }
+                if($a->getMinRate($order)->r_km == $b->getMinRate($order)->r_km) {
+                    if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
+                        if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return -1;}
+                        if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return 1;}
+                        if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
+                    } else {
+                        if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return 1;}
+                        if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return -1;}
+                        if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
+                    }
+                }
             });
         }
         if($vehicle_user_active) {
