@@ -26,6 +26,9 @@ echo \kartik\grid\GridView::widget([
     'hover' => true,
 //    'panel' => ['type' => 'primary', 'heading' => 'Grid Grouping Example'],
     'toggleDataContainer' => ['class' => 'btn-group mr-2'],
+    'rowOptions' => function ($model){
+        return ['class' => 'h4'];
+    },
     'columns' => [
         ['class' => 'kartik\grid\SerialColumn'],
         [
