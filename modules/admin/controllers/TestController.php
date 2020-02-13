@@ -48,8 +48,9 @@ class TestController extends \yii\web\Controller
         if($model->load(\Yii::$app->request->post())){
             $order = Order::findOne($model->id_order);
             if($order){
-                set_time_limit(100);
+                set_time_limit(200);
                 $dataProvider->allModels = $order->getSortSuitableVehicles();
+                $dataProvider->pagination->pageSize = 100;
 //                return var_dump($dataProvider->allModels);
             } else {
                 functions::setFlashWarning('Заказ не найден!');
