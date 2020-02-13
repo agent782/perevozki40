@@ -2197,9 +2197,8 @@ class Order extends \yii\db\ActiveRecord
                             if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
                         }
                     }
-
-                    return -1;
                 }
+                return -1;
             });
         }
         return $vehicles;
