@@ -25,5 +25,6 @@ $this->title = 'Тест поиска ТС по заказу.';
         'profile.balanceCarOwnerPayNow',
         'profile.balanceCarOwnerSum',
 
-    ]
+    ],
+    'user.profile.fioShort'
 ])?>
