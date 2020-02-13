@@ -50,7 +50,7 @@ class TestController extends \yii\web\Controller
             if($order){
                 set_time_limit(200);
                 $dataProvider->allModels = $order->getSortSuitableVehicles();
-                $dataProvider->pagination->pageSize = 100;
+                $dataProvider->pagination->pageSize(100);
 //                return var_dump($dataProvider->allModels);
             } else {
                 functions::setFlashWarning('Заказ не найден!');
