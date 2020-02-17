@@ -279,24 +279,24 @@ class OrderController extends Controller
         return $this->redirect('/logist/order');
     }
 
-    public function actionFindVehicle($id_order, $redirect, $redirectError){
+    public function actionFindVehicle($id_order, $redirect, $redirectError, $sort = false){
         $modelOrder = Order::findOne($id_order);
         if(!$modelOrder ){
             functions::setFlashWarning('Нет такого заказа!');
             return $this->redirect($redirectError);
         }
+        if($sort) {
+            $Vehicles = $modelOrder->getSortSuitableVehicles();
+        } else {
+            $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+                ->orderBy('id_user')->all();
 
-        $Vehicles = $modelOrder->getSortSuitableVehicles();
-
-//        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
-//            ->orderBy('id_user')->all();
-//
-//        foreach ($Vehicles as $vehicle) {
-//            if (!$vehicle->canOrder($modelOrder)) {
-//                ArrayHelper::removeValue($Vehicles, $vehicle);
-//            }
-//        }
-
+            foreach ($Vehicles as $vehicle) {
+                if (!$vehicle->canOrder($modelOrder)) {
+                    ArrayHelper::removeValue($Vehicles, $vehicle);
+                }
+            }
+        }
 
         $dataProvider = new ArrayDataProvider([
             'allModels' => $Vehicles,

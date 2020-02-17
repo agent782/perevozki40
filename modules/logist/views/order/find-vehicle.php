@@ -14,7 +14,15 @@ use yii\helpers\Url;
 /* @var $modelOrder \app\models\Order*/
 
 ?>
-<?= Html::a('Назад', '/logist/order', ['class' => 'btn btn-success'])?>
+<?= Html::a('Назад', '/logist/order', ['class' => 'btn btn-xs btn-info'])?>
+ 
+<?= Html::a('Отсортировать',Url::to([
+    '/logist/order/find-vehicle',
+    'redirect' => '/order/accept-order',
+    'id_order' => $modelOrder->id,
+    'redirectError' => '/logist/order',
+    'sort' => true
+]), ['class' => 'btn btn-xs btn-success'])?>
 <h2>Заказ №<?=$modelOrder->id?></h2>
 <?= $modelOrder->getFullNewInfo(true)?>
 <?php
