@@ -34,19 +34,9 @@ class TestController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        echo $date = '13.02.2020 12:00';
-        $day = (24*3600);
-        $reminder = strtotime($date) % $day;
-        echo '<br>';
-        echo $reminder;
-        echo '<br>';
-        if($reminder > 43140 && $reminder <= 75540){
-            echo date('d.m.Y H:i', round (strtotime($date)/($day)) * ($day) - $day);
-        } else {
-            echo date('d.m.Y H:i', round (strtotime($day)/($day)) * ($day) );
-        }
+//        $vehicle = Vehicle::findOne(153);
+//        return $vehicle->hasOrderOnDate('17.02.2020 01:00');
 
-        return;
         return $this->render('index');
     }
 

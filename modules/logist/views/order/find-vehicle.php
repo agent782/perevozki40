@@ -10,12 +10,13 @@ use yii\bootstrap\Html;
 use app\models\PriceZone;
 use app\models\setting\SettingVehicle;
 use yii\helpers\Url;
+use app\models\Vehicle;
 
 /* @var $modelOrder \app\models\Order*/
 
 ?>
 <?= Html::a('Назад', '/logist/order', ['class' => 'btn btn-xs btn-info'])?>
- 
+
 <?= Html::a('Отсортировать',Url::to([
     '/logist/order/find-vehicle',
     'redirect' => '/order/accept-order',
@@ -34,11 +35,21 @@ echo \kartik\grid\GridView::widget([
     'hover' => true,
 //    'panel' => ['type' => 'primary', 'heading' => 'Grid Grouping Example'],
     'toggleDataContainer' => ['class' => 'btn-group mr-2'],
-    'rowOptions' => function ($model){
-        return [];
-    },
     'columns' => [
-        ['class' => 'kartik\grid\SerialColumn'],
+        [
+            'format' => 'raw',
+            'value' => function(Vehicle $model, $key, $index) use ($modelOrder){
+                $return = '';
+                if($distance = $model->hasOrderOnDate($modelOrder->datetime_start)){
+                    if($distance > 120){
+                        $return = '<br>' . Html::icon('glyphicon glyphicon-ban-circle');
+                    } else {
+                        $return = '<br>' . Html::icon('glyphicon glyphicon-adjust');
+                    }
+                }
+                return ($index + 1) . $return;
+            }
+        ],
         [
             'attribute' => 'id_user',
 //            'group' => true,

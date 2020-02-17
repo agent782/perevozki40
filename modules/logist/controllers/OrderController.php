@@ -281,7 +281,7 @@ class OrderController extends Controller
 
     public function actionFindVehicle($id_order, $redirect, $redirectError, $sort = false){
         $modelOrder = Order::findOne($id_order);
-        if(!$modelOrder ){
+        if(!$modelOrder){
             functions::setFlashWarning('Нет такого заказа!');
             return $this->redirect($redirectError);
         }

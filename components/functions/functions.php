@@ -178,4 +178,14 @@ class functions
         return $layout;
     }
 
+    static function DayToStartUnixTime(string $date){
+        $day = (24*3600);
+        $reminder = strtotime($date) % $day;
+        if($reminder > 43140 && $reminder <= 75540){
+            return round (strtotime($date)/($day)) * $day - $day;
+        } else {
+            return round (strtotime($date)/($day)) * $day;
+        }
+    }
+
 }

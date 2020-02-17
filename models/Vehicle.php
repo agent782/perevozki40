@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use app\components\SerializeBehaviors;
 use FontLib\Table\Type\post;
 use Yii;
@@ -800,9 +801,21 @@ class Vehicle extends \yii\db\ActiveRecord
         return true;
     }
 
-//    public function hasOrderOnDate($date){
-//        $this->getOrders()->where([
-//
-//        ])
-//    }
+    public function hasOrderOnDate($date){
+        $unix_date = functions::DayToStartUnixTime($date);
+        $orders = $this->getOrders()
+            ->where(['between', 'datetime_start', time()-3600*24*2, time()+3600*24*10])
+//            ->andWhere(['status' => Order::STATUS_IN_PROCCESSING])
+            ->all();
+        foreach ($orders as $order){
+            $date_start_unix = functions::DayToStartUnixTime($order->datetime_start);
+            if($date_start_unix == $unix_date) {
+                if($route = $order->route){
+                    return $route->distance;
+                }
+                return true;
+            };
+        }
+        return false;
+    }
 }
