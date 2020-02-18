@@ -286,7 +286,7 @@ class Vehicle extends \yii\db\ActiveRecord
 
     public function afterFind()
     {
-        for ($i=1; $i<9; $i++){
+        for ($i=0; $i<9; $i++){
             $status = CalendarVehicle::STATUS_FREE;
             $date = date('d.m.Y', time()  + (3600*24*$i));
             $date = strtotime($date);
