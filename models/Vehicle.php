@@ -288,6 +288,7 @@ class Vehicle extends \yii\db\ActiveRecord
     {
         for ($i=0; $i<9; $i++){
 //            $status = CalendarVehicle::STATUS_FREE;
+            $status = null;
             $date = date('d.m.Y', time()  + (3600*24*$i));
             $date = strtotime($date);
             if($calendarVehicle = $this->getCalendarVehicle()->andWhere(['date' => $date])->one()){
