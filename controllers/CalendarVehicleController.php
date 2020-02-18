@@ -158,14 +158,8 @@ class CalendarVehicleController extends Controller
                 if($calendarVehicle->save()) return true;
             }
         } else {
-            if($status == CalendarVehicle::STATUS_FREE){
-                if($calendarVehicle->delete()){
-                    return true;
-                }
-            } else {
-                $calendarVehicle->status = $status;
-                if($calendarVehicle->save()) return true;
-            }
+            $calendarVehicle->status = $status;
+            if($calendarVehicle->save()) return true;
         }
 
 

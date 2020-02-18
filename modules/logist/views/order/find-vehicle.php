@@ -62,7 +62,7 @@ echo \kartik\grid\GridView::widget([
                     $calendarVehicle->date = $date_day;
                     $calendarVehicle->id_vehicle = $vehicle->id;
                 }
-                return $calendarVehicle->status .  ' ' . $date_day;
+//                return $calendarVehicle->status .  ' ' . $date_day;
                 return Html::activeRadioList($calendarVehicle,
                     'status',
                     CalendarVehicle::getArrayListStatuses(),
