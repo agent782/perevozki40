@@ -64,7 +64,6 @@ $this->title = 'Календарь занятости';
                                 CalendarVehicle::getArrayListStatuses(),
                                 [
                                     'onchange' =>
-
                                         '
                                         $.ajax({
                                                 url: "/calendar-vehicle/ajax-change-status",
