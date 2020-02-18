@@ -20,6 +20,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\LoadingType;
 use yii\filters\AccessControl;
+use yii\data\ArrayDataProvider;
 
 use yii\web\UploadedFile;
 
@@ -51,7 +52,7 @@ class VehicleController extends Controller
                         'allow' => true,
                         'actions' => ['index', 'create', 'select-pricezones', 'update-pricezones',
                             'validate-vehicle-form', 'validate-vehicle'],
-                        'roles' => ['car_owner']
+                        'roles' => ['car_owner', 'vip_car_owner']
                     ],
                     [
                         'actions' => ['update', 'view', 'delete', 'full-delete'],
@@ -65,7 +66,12 @@ class VehicleController extends Controller
                             }
                             return false;
                         },
-                    ]
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['calendar'],
+                        'roles' => ['vip_car_owner']
+                    ],
                 ],
             ]
         ];
@@ -593,6 +599,33 @@ class VehicleController extends Controller
                 return \yii\widgets\ActiveForm::validate($model2);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionCalendar($id_user = null){
+        if($id_user){
+            $user = User::findOne($id_user);
+        } else {
+            $user = Yii::$app->user->identity;
+        }
+
+        $vehicles = $user->vehicles;
+        $Vehicles = [];
+        $ids_vehicles = '';
+        if($vehicles) {
+            foreach ($vehicles as $vehicle) {
+                $ids_vehicles .= $vehicle->id . ' ';
+                $calendar = $vehicle->calendar;
+                $Vehicles [$vehicle->id] = new ArrayDataProvider([
+                    'allModels' => $calendar
+                ]);
+            }
+            $ids_vehicles = substr($ids_vehicles, 0, -1);
+        }
+
+        return $this->render('calendar', [
+            'Vehicles' => $Vehicles,
+            'ids_vehicles' => $ids_vehicles
+        ]);
     }
 
 

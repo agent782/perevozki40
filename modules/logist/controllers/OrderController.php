@@ -3,6 +3,7 @@
 namespace app\modules\logist\controllers;
 
 use app\components\functions\functions;
+use app\models\CalendarVehicle;
 use app\models\Company;
 use app\models\OrdersFinishContacts;
 use app\models\Payment;
@@ -285,6 +286,10 @@ class OrderController extends Controller
             functions::setFlashWarning('Нет такого заказа!');
             return $this->redirect($redirectError);
         }
+        $date_day = strtotime($modelOrder->datetime_start);
+        $date_day = date('d.m.Y', $date_day);
+        $date_day = strtotime($date_day);
+
         if($sort) {
             $Vehicles = $modelOrder->getSortSuitableVehicles();
         } else {
@@ -306,7 +311,8 @@ class OrderController extends Controller
         return $this->render('find-vehicle', [
             'dataProvider' => $dataProvider,
             'searchModel' => null,
-            'modelOrder' => $modelOrder
+            'modelOrder' => $modelOrder,
+            'date_day' => $date_day
         ]);
     }
 

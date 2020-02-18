@@ -142,7 +142,7 @@ use app\components\widgets\ShowMessageWidget;
         $content = '';
         foreach ($dataProviders_companies as $id_company => $dataProvider_company){
             if($company = \app\models\Company::findOne($id_company)) {
-                $content .= '<div class="h4" id="pointer_company_' . $id_company . '" style = "cursor: pointer;">';
+                $content .= '<div id="pointer_company_' . $id_company . '" style = "cursor: pointer;">';
                 $content .= $company->name . ' ('
                 . $Balance['balance_companies'][$id_company]['balance'] . ' р.)';
                 $content .= '<div id="slide_company_' . $id_company . '">';

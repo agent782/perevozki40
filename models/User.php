@@ -457,25 +457,33 @@ class User extends ActiveRecord implements IdentityInterface
                 'companies' => 0
             ];
         }
-        if($User->canRole('client') || $User->canRole('car_owner')|| !Profile::notAdminOrDispetcher()) {
+        if($User->canRole('client')
+            || $User->canRole('vip_client')
+            || $User->canRole('car_owner')
+            || $User->canRole('vip_car_owner')
+            || !Profile::notAdminOrDispetcher()) {
             $balance = [
                 'car_owner' => 0,
                 'not_paid' => 0,
                 'user' => $Balance['balance_user']['balance'],
                 'companies' => $Balance['balance_companies']['balance']
             ];
-            foreach ($Balance['balance_companies'] as $id_company => $orders){
-                if($company = Company::findOne($id_company)){
-                    $dataProviders_companies[$id_company] = new ArrayDataProvider([
-                        'allModels' => $Balance['balance_companies'][$id_company]['orders'],
-                        'pagination' => ['pageSize' => 15],
-                    ]);
-                    $ids_companies .= $id_company . ' ';
+            if($Balance && $Balance['balance_companies']) {
+                foreach ($Balance['balance_companies'] as $id_company => $orders) {
+                    if ($company = Company::findOne($id_company)) {
+                        $dataProviders_companies[$id_company] = new ArrayDataProvider([
+                            'allModels' => $Balance['balance_companies'][$id_company]['orders'],
+                            'pagination' => ['pageSize' => 15],
+                        ]);
+                        $ids_companies .= $id_company . ' ';
+                    }
                 }
+                $ids_companies = substr($ids_companies, 0, -1);
             }
-            $ids_companies = substr($ids_companies, 0, -1);
         }
-        if($User->canRole('car_owner')|| !Profile::notAdminOrDispetcher()){
+        if($User->canRole('car_owner')
+            || $User->canRole('vip_car_owner')
+            || !Profile::notAdminOrDispetcher()){
             $balance = [
                 'car_owner' => $Balance['balance_car_owner']['balance'],
                 'not_paid' => $Balance['balance_car_owner']['not_paid'],

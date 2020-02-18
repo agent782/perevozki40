@@ -11,6 +11,7 @@ use app\models\PriceZone;
 use app\models\setting\SettingVehicle;
 use yii\helpers\Url;
 use app\models\Vehicle;
+use app\models\CalendarVehicle;
 
 /* @var $modelOrder \app\models\Order*/
 
@@ -49,6 +50,24 @@ echo \kartik\grid\GridView::widget([
                 }
                 return ($index + 1) . $return;
             }
+        ],
+        [
+            'label' => 'Статус ТС',
+            'format' => 'raw',
+            'value' => function(Vehicle $vehicle) use ($date_day){
+                $calendarVehicle = $vehicle->getCalendarVehicle()
+                    ->andWhere(['date' => $date_day])->one();
+                if(!$calendarVehicle){
+                    $calendarVehicle = new CalendarVehicle();
+                    $calendarVehicle->date = $date_day;
+                    $calendarVehicle->id_vehicle = $vehicle->id;
+                }
+                return $calendarVehicle->status .  ' ' . $date_day;
+                return Html::activeRadioList($calendarVehicle,
+                    'status',
+                    CalendarVehicle::getArrayListStatuses(),
+                    ['style' => 'font-size: 8px']);
+            },
         ],
         [
             'attribute' => 'id_user',
