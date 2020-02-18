@@ -1141,7 +1141,7 @@ class Order extends \yii\db\ActiveRecord
             if($company = $this->company) {
                 $return .= $this->company->name . '<br>';
             }
-            $return .= $FC->getClientInfo();
+            $return .= $FC->getClientInfo($phone);
             return $return;
         }
         if($this->profile && $this->user) {

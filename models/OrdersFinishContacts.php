@@ -98,9 +98,12 @@ class OrdersFinishContacts extends \yii\db\ActiveRecord
             . $this->driver_phone . ')';
     }
 
-    public function getClientInfo(){
-        return $this->client_surname . ' '
-            . $this->client_name . ' ('
-            . $this->client_phone . ')';
+    public function getClientInfo($phone = true){
+        $return = $this->client_surname . ' ';
+        $return .= $this->client_name;
+        if($phone) {
+            $return .= ' (' . $this->client_phone . ')';
+        }
+        return $return;
     }
 }
