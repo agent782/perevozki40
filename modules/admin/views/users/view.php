@@ -32,7 +32,16 @@ $this->title = Html::encode('Информация о профиле');
         ],
         [
             'label' => 'Баланс',
-            'content' => $this->render('@app/views/user/balance', User::arrayBalanceParamsForRender($model->id))
+            'content' => $this->render('@app/views/user/balance',
+                [
+                    'dataProvider_car_owner' => $dataProvider_car_owner,
+                    'dataProvider_user' => $dataProvider_user,
+                    'dataProviders_companies' => $dataProviders_companies,
+                    'balance' => $balance,
+                    'Balance' => $Balance,
+                    'ids_companies' => $ids_companies
+                ])
+//                User::arrayBalanceParamsForRender($model->id))
         ],
         [
             'label' => 'Транспорт',
@@ -45,10 +54,20 @@ $this->title = Html::encode('Информация о профиле');
             ])
         ],
         [
-            'label' => 'Администрирование',
-            'visible' => ['admin'],
+            'label' => 'Календарь',
+            'content' => $this->render('@app/views/vehicle/calendar',[
+                'Vehicles' => $Vehicles,
+                'ids_vehicles' => $ids_vehicles
+            ]),
+            'visible' => Yii::$app->user->can('admin')
+                || Yii::$app->user->can('dispetcher'),
 
-        ]
+        ],
+        [
+            'label' => 'Администрирование',
+            'visible' => Yii::$app->user->can('admin'),
+
+        ],
 
     ]
 ])?>

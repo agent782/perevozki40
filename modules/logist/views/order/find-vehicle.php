@@ -59,8 +59,6 @@ echo \kartik\grid\GridView::widget([
                     ->andWhere(['date' => $date_day])->one();
                 if(!$calendarVehicle){
                     $calendarVehicle = new CalendarVehicle();
-                    $calendarVehicle->date = $date_day;
-                    $calendarVehicle->id_vehicle = $vehicle->id;
                 }
 //                return $calendarVehicle->status .  ' ' . $date_day;
                 return Html::radioList(
@@ -69,7 +67,26 @@ echo \kartik\grid\GridView::widget([
                     CalendarVehicle::getArrayListStatuses(),
                     [
                        'style' => 'font-size: 8px',
-                        'id' => 'calendar' . $vehicle->id
+                        'id' => 'calendar' . $vehicle->id,
+                        'onchange' => '
+                                            $.ajax({
+                                                url: "/calendar-vehicle/ajax-change-status",
+                                                type: "POST",
+                                                dataType: "json",
+                                                data: {
+                                                    date: ' . $date_day . ',
+                                                    id_vehicle: ' . $vehicle->id . ',
+                                                    status: $(this).find("input:checked").val()
+                                                },
+                                                
+                                                success: function(data){
+//                                                    alert(data);
+                                                },
+                                                error: function(){
+                                                    alert("Ошибка на сервере!")
+                                                }
+                                         });
+                        '
                     ]);
             },
         ],

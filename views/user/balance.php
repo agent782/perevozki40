@@ -44,6 +44,12 @@ use app\components\widgets\ShowMessageWidget;
             'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р. (' . $balance['not_paid'] . '*****)' ,
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_car_owner,
+                'pjax'=>true,
+                'pjaxSettings' => [
+                    'options' => [
+                        'id' => 'pjax_balance_car_owner'
+                    ]
+                ],
                 'responsiveWrap' => false,
                 'columns' => [
                     [
@@ -99,6 +105,12 @@ use app\components\widgets\ShowMessageWidget;
             'label' => 'Ваш баланс клиента**: ' . $balance['user'] . 'р.',
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_user,
+                'pjax'=>true,
+                'pjaxSettings' => [
+                    'options' => [
+                        'id' => 'pjax_balance_client'
+                    ]
+                ],
                 'responsiveWrap' => false,
                 'columns' => [
                     [
@@ -148,7 +160,12 @@ use app\components\widgets\ShowMessageWidget;
                 $content .= '<div id="slide_company_' . $id_company . '">';
                 $content .= GridView::widget([
                     'dataProvider' => $dataProvider_company,
-                    'pjax' => true,
+                    'pjax'=>true,
+                    'pjaxSettings' => [
+                        'options' => [
+                            'id' => 'pjax_balance_company_' . $company->id
+                        ]
+                    ],
                     'responsiveWrap' => false,
                     'columns' => [
                         [

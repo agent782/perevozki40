@@ -78,7 +78,7 @@ class UsersController extends Controller
             'dataProviderPass' => $dataProviderPass,
             'dataProviderSpec' => $dataProviderSpec,
             'dataProviderDeleted' => $dataProviderDeleted,
-        ], User::arrayBalanceParamsForRender($id)));
+        ], User::arrayBalanceParamsForRender($id), Vehicle::ArrayCalendarParamsForRender($id)));
     }
 
     /**

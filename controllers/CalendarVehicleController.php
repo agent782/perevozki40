@@ -151,12 +151,12 @@ class CalendarVehicleController extends Controller
         ]);
         if(!$calendarVehicle) {
             $calendarVehicle = new CalendarVehicle();
-            if($status != CalendarVehicle::STATUS_FREE){
-                $calendarVehicle->date = $date;
-                $calendarVehicle->id_vehicle = $id_vehicle;
-                $calendarVehicle->status = $status;
-                if($calendarVehicle->save()) return true;
-            }
+//            if($status != CalendarVehicle::STATUS_FREE){
+            $calendarVehicle->date = $date;
+            $calendarVehicle->id_vehicle = $id_vehicle;
+            $calendarVehicle->status = $status;
+            if($calendarVehicle->save()) return true;
+//            }
         } else {
             $calendarVehicle->status = $status;
             if($calendarVehicle->save()) return true;

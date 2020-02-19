@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Url;
 use app\components\widgets\ShowMessageWidget;
 
@@ -46,7 +46,7 @@ $this->registerJs(
 
 
 ?>
-<div class="vehicle-index">
+<div class="container vehicle-index">
 
     <h2><?= Html::encode($this->title) ?></h2>
 
@@ -62,8 +62,9 @@ $this->registerJs(
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
         'filterModel' => $searchModel,
+            'responsiveWrap' => false,
         'options' => [
-            'style' => 'width: 70%;',
+//            'style' => 'width: 100%;',
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -141,6 +142,7 @@ $this->registerJs(
 
     <?= GridView::widget([
         'dataProvider' => $dataProviderPass,
+        'responsiveWrap' => false,
         'filterModel' => $searchModel,
         'summaryOptions' => ['style' => 'text-align: left;'],
         'options' => [
@@ -186,6 +188,7 @@ $this->registerJs(
 
     <?= GridView::widget([
         'dataProvider' => $dataProviderSpec,
+        'responsiveWrap' => false,
         'filterModel' => $searchModel,
         'showOnEmpty' => true,
         'summaryOptions' => ['style' => 'text-align: left;'],
@@ -236,13 +239,13 @@ $this->registerJs(
     <?php
     if($dataProviderDeleted->getCount()):
     ?>
-<div>
+
     <a  href="#aDeleted" id="aDeleted"><h2> Удаленные</h2>(Показать/скрыть)</a>
         <div id="deleted" hidden>
 
         <?= GridView::widget([
         'dataProvider' => $dataProviderDeleted,
-        'filterModel' => $searchModel,
+        'responsiveWrap' => false,
         'summaryOptions' => ['style' => 'text-align: left;'],
         'options' => [
             'style' => 'width: 70%; text-align:center;',
@@ -266,6 +269,5 @@ $this->registerJs(
         <?php
     endif;
     ?>
-</div>
 </div>
 

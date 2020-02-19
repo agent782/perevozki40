@@ -11,6 +11,7 @@ use yii\bootstrap\Html;
 use app\components\widgets\ShowMessageWidget;
 use yii\helpers\Url;
 use app\models\setting\Setting;
+use yii\data\ArrayDataProvider;
 
 /**
  * This is the model class for table "vehicles".
@@ -548,12 +549,15 @@ class Vehicle extends \yii\db\ActiveRecord
         foreach ($this->price_zones as $price_zone) {
             $price_zone = $price_zone->getPriceZoneForCarOwner($this->id_user);
             $return .= ShowMessageWidget::widget([
-                'ToggleButton' => ['label' =>$price_zone->id],
+                'ToggleButton' => [
+                    'label' =>$price_zone->id,
+                    'class' => 'btn btn-sm'
+                ],
                 'helpMessage' => $price_zone->printHtml()
             ]);
-            $return .= ', ';
+            $return .= ' ';
         }
-        $return = substr($return, 0, -2);
+//        $return = substr($return, 0, -2);
         return $return;
     }
 
@@ -842,5 +846,31 @@ class Vehicle extends \yii\db\ActiveRecord
             };
         }
         return false;
+    }
+
+    static public function ArrayCalendarParamsForRender($id_user){
+        if($id_user){
+            $user = User::findOne($id_user);
+        } else {
+            $user = Yii::$app->user->identity;
+        }
+
+        $vehicles = $user->vehicles;
+        $Vehicles = [];
+        $ids_vehicles = '';
+        if($vehicles) {
+            foreach ($vehicles as $vehicle) {
+                $ids_vehicles .= $vehicle->id . ' ';
+                $calendar = $vehicle->calendar;
+                $Vehicles [$vehicle->id] = new ArrayDataProvider([
+                    'allModels' => $calendar
+                ]);
+            }
+            $ids_vehicles = substr($ids_vehicles, 0, -1);
+        }
+        return [
+            'Vehicles' => $Vehicles,
+            'ids_vehicles' => $ids_vehicles
+        ];
     }
 }
