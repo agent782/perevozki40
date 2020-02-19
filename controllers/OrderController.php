@@ -117,7 +117,8 @@ class OrderController extends Controller
         $dataProvider_expired_and_canceled->query
             ->where(['in', Order::tableName().'.status', [Order::STATUS_EXPIRED, Order::STATUS_CANCELED, Order::STATUS_NOT_ACCEPTED]])
             ->andWhere(['id_user' => Yii::$app->user->id])
-            ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id]);
+//            ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id])
+        ;
 
         return $this->render('client', [
             'searchModel' => $searchModel,
