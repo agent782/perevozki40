@@ -218,8 +218,8 @@ $this->title = 'perevozki40.ru Сервис Региональных Грузо�
                             'label' => 'Календарь занятости ТС',
                             'url' => '/vehicle/calendar',
                             'visible' => (
-//                                Yii::$app->user->can('car_owner')
-//                                ||
+                                Yii::$app->user->can('car_owner')
+                                ||
                                 Yii::$app->user->can('vip_car_owner')
                             ),
                         ],

@@ -51,7 +51,7 @@ class VehicleController extends Controller
                     [
                         'allow' => true,
                         'actions' => ['index', 'create', 'select-pricezones', 'update-pricezones',
-                            'validate-vehicle-form', 'validate-vehicle'],
+                            'validate-vehicle-form', 'validate-vehicle', 'calendar'],
                         'roles' => ['car_owner', 'vip_car_owner']
                     ],
                     [
@@ -66,11 +66,6 @@ class VehicleController extends Controller
                             }
                             return false;
                         },
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['calendar'],
-                        'roles' => ['vip_car_owner']
                     ],
                 ],
             ]
