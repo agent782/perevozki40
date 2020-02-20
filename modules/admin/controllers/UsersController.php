@@ -59,11 +59,14 @@ class UsersController extends Controller
 
         $searchModel = new VehicleSearch();
 //        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, Vehicle::SORT_TRUCK, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK,
+            Vehicle::SORT_TRUCK);
         $dataProviderTruck->query->andFilterWhere(['id_user' => $id]);
-        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, Vehicle::SORT_PASS, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER,
+            Vehicle::SORT_PASS);
         $dataProviderPass->query->andFilterWhere(['id_user' => $id]);
-        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, Vehicle::SORT_SPEC, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC,
+            Vehicle::SORT_SPEC);
         $dataProviderSpec->query->andFilterWhere(['id_user' => $id]);
         $dataProviderDeleted = $searchModel->search(Yii::$app->request->queryParams, [1,2,3], Vehicle::SORT_DATE_CREATE, [Vehicle::STATUS_DELETED]);
         $dataProviderDeleted->query->andFilterWhere(['id_user' => $id]);
