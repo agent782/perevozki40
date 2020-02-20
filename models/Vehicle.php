@@ -188,11 +188,16 @@ class Vehicle extends \yii\db\ActiveRecord
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['rating', 'default', 'value' => 0],
             [['bodyTypies', 'error_mes'], 'safe'],
-            [['tonnage', 'tonnage_spec'], 'number', 'min' => 0.1, 'max' => 50],
-            [['length'], 'number', 'min' => 0.5,'max' => 20],
-            [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4],
-            [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200],
-            [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5],
+            [['tonnage', 'tonnage_spec'], 'number', 'min' => 0.1, 'max' => 50,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['length'], 'number', 'min' => 0.5,'max' => 20,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
             [['photo'], 'string']
         ];
     }
