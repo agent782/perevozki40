@@ -608,7 +608,9 @@ class VehicleController extends Controller
             $user = Yii::$app->user->identity;
         }
 
-        $vehicles = $user->vehicles;
+        $vehicles = $user->getVehicles()
+            ->andWhere(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->all();
         $Vehicles = [];
         $ids_vehicles = '';
         if($vehicles) {
