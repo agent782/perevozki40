@@ -145,9 +145,6 @@ $this->registerJs(
         'responsiveWrap' => false,
         'filterModel' => $searchModel,
         'summaryOptions' => ['style' => 'text-align: left;'],
-        'options' => [
-            'style' => 'width: 70%; text-align: center;',
-        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -192,9 +189,6 @@ $this->registerJs(
         'filterModel' => $searchModel,
         'showOnEmpty' => true,
         'summaryOptions' => ['style' => 'text-align: left;'],
-        'options' => [
-            'style' => 'width: 70%; text-align:center;',
-        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
