@@ -43,7 +43,12 @@ class VehicleSearch extends Vehicle
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $VehType, $sort, array $Statuses, bool $admin = false)
+    public function search($params,
+                           $VehType,
+                           $sort,
+                           array $Statuses = [Vehicle::STATUS_ONCHECKING,
+                               Vehicle::STATUS_ACTIVE, Vehicle::STATUS_NOT_ACTIVE],
+                           bool $admin = false)
     {
         $id_user = Yii::$app->user->id;
         if(Yii::$app->user->can('admin')
