@@ -37,6 +37,11 @@ class UsersController extends Controller
                         'allow' => true,
                         'roles' => ['admin', 'buh', 'dispetcher']
                     ],
+                    [
+                        'actions' => ['select-roles'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ]
                 ]]];
     }
 
@@ -276,5 +281,23 @@ class UsersController extends Controller
         }
 
         return $this->redirect($redirect);
+    }
+
+    public function actionSelectRoles(){
+        $post = Yii::$app->request->post();
+        $id_user = $post['id_user'];
+        $selected_roles = $post['selected_roles'];
+        if($selected_roles){
+            if($user = User::findOne($id_user)){
+                $auth = Yii::$app->authManager;
+                $auth->revokeAll($id_user);
+                foreach ($selected_roles as $selected_role){
+                    $auth->assign($auth->getRole($selected_role), $id_user);
+                }
+                return true;
+            }
+        }
+
+        echo false;
     }
 }

@@ -65,6 +65,9 @@ $this->title = Html::encode('Информация о профиле');
         ],
         [
             'label' => 'Администрирование',
+            'content' => $this->render('user-administration',[
+                'profile' => $profile
+            ]),
             'visible' => Yii::$app->user->can('admin'),
 
         ],

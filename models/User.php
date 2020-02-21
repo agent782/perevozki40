@@ -371,8 +371,16 @@ class User extends ActiveRecord implements IdentityInterface
 
     }
 
-    public function getRoles(){
-        return Yii::$app->authManager->getRolesByUser($this->getId());
+    public function getRoles($array = false){
+        if(!$array) {
+            return Yii::$app->authManager->getRolesByUser($this->getId());
+        } else {
+            $return = [];
+            foreach (Yii::$app->authManager->getRolesByUser($this->getId()) as $role){
+                $return[$role->name] = $role->name;
+            }
+            return $return;
+        }
     }
 
     public function canRole(string $roleName){

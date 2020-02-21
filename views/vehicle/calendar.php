@@ -46,6 +46,12 @@ $this->title = 'Календарь занятости';
             '<div id="slide_vehicle_' . $key . '">' .
             GridView::widget([
                 'dataProvider' => $vehicle,
+                'pjax'=>true,
+                'pjaxSettings' => [
+                    'options' => [
+                        'id' => 'pjax_calendar_' . $key
+                    ]
+                ],
                 'responsiveWrap' => false,
                 'summary' => false,
                 'columns' => [

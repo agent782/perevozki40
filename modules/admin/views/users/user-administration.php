@@ -5,18 +5,25 @@
  * Date: 03.02.2020
  * Time: 14:44
  */
+/* @var $profile \app\models\Profile;
+ * @var $this \yii\web\View;
+ *
+ */
  use yii\bootstrap\Html;
+ use yii\bootstrap\Tabs;
 ?>
 
-<?php
-    $check = false;
-    if($profile->canRole('client')){
-            $name = 'vip-client';
-            if($profile->canRole('vip-client')){
-                $check = true;
-            }
-        }
+<?=
+   Tabs::widget([
+       'items' => [
+           [
+               'label' => 'Роли',
+               'content' => $this->render('user-administration/roles',[
+                   'profile' => $profile
+               ])
+           ]
+       ]
+   ]);
 ?>
-<?= ($profile->canRole('client'))?Html::checkbox('vip-client'):''?>
-<?= ($profile->canRole('car_owner'))?Html::checkbox('vip-car-owner'):''?>
+
 

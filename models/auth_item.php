@@ -10,6 +10,7 @@ namespace app\models;
 use yii\base\Model;
 use yii\db\ActiveRecord;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 class auth_item extends Model
 {
@@ -36,5 +37,16 @@ class auth_item extends Model
         $_role = $auth->createRole($role);
         return $auth->add($_role);
     }
+
+    static public function ArrayListRoles(){
+        $return = [];
+        foreach (Yii::$app->authManager->getRoles() as $role){
+            if($role->type == 1){
+                $return[$role->name] = $role->name;
+            }
+        }
+        return $return;
+    }
+
 
 }
