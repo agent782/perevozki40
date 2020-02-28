@@ -33,7 +33,7 @@ class FinishOrderOnlySumWidget extends Widget
     public $action = '/logist/order/finish-only-sum';
 
     public function run(){
-        if(Yii::$app->user->can('admi')){
+        if(Yii::$app->user->can('admin')){
             $this->ToggleButton = [
                 'label' => 'Сумма',
                 'class' => 'btn btn-xs btn-info'
