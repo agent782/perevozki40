@@ -1,4 +1,25 @@
 ================================
+УВЕДОМЛЕНИЕ ВОДИТЕЛЕЙ
+
+AlertVehicle
+id_user
+id_order
+date
+type
+
+Message
+
+User
+    countAlertNewOrder
+
+Order
+
+email с ссылкой на инструкцию push
+Инструкция push
+
+Order
+
+================================
 +Календарь занятости
 
 дата

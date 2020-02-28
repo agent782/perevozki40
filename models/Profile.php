@@ -62,6 +62,7 @@ use yii\bootstrap\Html;
  * @property array $ordersCarOwner
  * @property array $vehicles
  * @property AuthAssignment $authAssignment
+ * @property integer $alert_new_order
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -142,7 +143,8 @@ class Profile extends \yii\db\ActiveRecord
             [['history_updates', 'update_to_check'], 'safe'],
             ['check_update_status', 'default', 'value' => self::CHECK_UPDATE_STATUS_WAIT],
             ['sex', 'default', 'value' => null],
-            ['old_id', 'string', 'max' => 32]
+            ['old_id', 'string', 'max' => 32],
+            ['alert_new_order', 'default', 'value' => 0]
 
         ];
     }
@@ -787,21 +789,31 @@ class Profile extends \yii\db\ActiveRecord
         }
 
         foreach ($orders_avans as $order){
-            $return['not_paid'] += round(($order->cost_finish_vehicle - $order->avans_client)
-                - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100));
-            $return['balance'] += round($order->cost_finish_vehicle -
-                ($order->cost_finish_vehicle * $this->procentVehicle/100));
-
+            $avans_vehicle = ($order->avans_client
+                - (($order->avans_client) * 9 / 100))
+                - (($order->avans_client - (($order->avans_client) * 9 / 100)) * $this->procentVehicle/100);
+            $not_paid_vehicle = (($order->cost_finish_vehicle -
+                ($order->cost_finish_vehicle * $this->procentVehicle/100))
+                - $avans_vehicle);
+//            $return['not_paid'] += round(($order->cost_finish_vehicle - $order->avans_client)
+//                - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100));
+            $return['not_paid'] += round($not_paid_vehicle);
+//            $return['balance'] += round($order->cost_finish_vehicle -
+//                ($order->cost_finish_vehicle * $this->procentVehicle/100));
+            $return['balance'] += round($order->cost_finish_vehicle
+                - ($order->cost_finish_vehicle * $this->procentVehicle/100)) ;
             $return['orders_avans'][] = [
                 'date' => $order->datetime_finish,
                 'id_order' => $order->id,
             ];
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
-                'credit' => round($order->cost_finish_vehicle -
-                        ($order->cost_finish_vehicle * $this->procentVehicle/100))
-                    . ' (' . round(($order->cost_finish_vehicle - $order->avans_client)
-                        - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')****',
+//                'credit' => round($order->cost_finish_vehicle -
+//                        ($order->cost_finish_vehicle * $this->procentVehicle/100))
+//                    . ' (' . round(($order->cost_finish_vehicle - $order->avans_client)
+//                        - (($order->cost_finish_vehicle - $order->avans_client) * $this->procentVehicle/100)) . ')****',
+                'credit' => round($avans_vehicle)
+                    . ' (' . round($not_paid_vehicle) . ')****',
                 'debit' => '',
                 'description' => '(ОПЛАЧЕН КЛИЕНТОМ ЧАСТИЧНО) Сумма к выплате за заказ № ' . $order->id,
                 'id_order' => $order->id,
@@ -923,6 +935,15 @@ class Profile extends \yii\db\ActiveRecord
         return $this->getBalanceCarOwner()['balance'] - $this->getBalanceCarOwner()['not_paid'];
     }
 
+    public function getAlertNewOrder($id_order){
+        if(Message::find()
+            ->where(['id_order' => $id_order])
+            ->andWhere(['id_to_user' => $this->id_user])
+            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+            ->one()
+        ) return true;
 
+        return false;
+    }
 }
 

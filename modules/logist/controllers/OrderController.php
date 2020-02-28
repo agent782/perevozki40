@@ -5,6 +5,7 @@ namespace app\modules\logist\controllers;
 use app\components\functions\functions;
 use app\models\CalendarVehicle;
 use app\models\Company;
+use app\models\Message;
 use app\models\OrdersFinishContacts;
 use app\models\Payment;
 use app\models\Profile;
@@ -397,6 +398,19 @@ class OrderController extends Controller
 //            }
             return $this->redirect($redirect);
         }
+    }
+
+    public function actionAjaxAlertNewOrder(){
+        $post = Yii::$app->request->post();
+        $id_user = $post['id_user'];
+        $id_order = $post['id_order'];
+        if($id_user && $id_order) {
+            $mes = new Message();
+            if($mes->AlertNewOrder($id_user, $id_order)){
+                return true;
+            }
+        }
+        echo false;
     }
 
 }

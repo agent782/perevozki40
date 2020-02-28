@@ -84,7 +84,6 @@ use \app\models\XprofileXcompany;
                         $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
                 }
-
                 return $return;
             }
         ],
@@ -112,7 +111,7 @@ use \app\models\XprofileXcompany;
             'format' => 'raw',
             'value' => function($model){
                 if($model->status == Order::STATUS_NEW || $model->status == Order::STATUS_IN_PROCCESSING){
-                    return
+                    $return =
                         Html::a(Html::icon('ok-sign', ['class' => 'btn-lg','title' => 'Назначить машину']), Url::to([
                             '/logist/order/find-vehicle',
                             'redirect' => '/order/accept-order',
@@ -133,9 +132,20 @@ use \app\models\XprofileXcompany;
                         ]),
                             ['data-confirm' => Yii::t('yii',
                                 'Пока заказ не принят водителем, Вы можете отменить его без потери рейтинга. Отменить заказ?'),
-                                'data-method' => 'post'])
-                        ;
-
+                                'data-method' => 'post']);
+                    if(Yii::$app->user->can('admin')) {
+                        $return .= Html::a(Html::icon('search', ['class' => 'btn-lg', 'title' => 'Автоматический поиск']), Url::to([
+                            '/order/auto-find1',
+                            'id_order' => $model->id,
+                            'redirect' => '/logist/order'
+                        ]),
+                            [
+                                'data-confirm' => Yii::t('yii',
+                                    'Начать автоматический поиск ТС по заказу?'),
+                                'data-method' => 'post'
+                            ]);
+                    }
+                    return $return;
                 }
             }
         ]

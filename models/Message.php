@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
@@ -35,6 +36,8 @@ class Message extends \yii\db\ActiveRecord
     const STATUS_SEND = 2;
     const STATUS_READ = 3;
     const STATUS_DELETE = 10;
+
+    const TYPE_ALERT_CAR_OWNER_NEW_ORDER = 1;
 
 
     private $idPushall = "4781";
@@ -171,6 +174,42 @@ class Message extends \yii\db\ActiveRecord
             ->andWhere(['status' => self::STATUS_SEND])
             ->count();
         return ($newMessages)?$newMessages:null;
+    }
+
+    public function AlertNewOrder($id_user, $id_order){
+        $id_user = null;
+        $id_user = null;
+        if($profile = Profile::findOne(['id_user' => $id_user])
+            && $order = Order::findOne($id_order))
+        {
+            if($order->status == $order::STATUS_NEW
+                || $order->status == $order::STATUS_IN_PROCCESSING) {
+                $this->id_order = $id_order;
+                $this->id_to_user = $id_user;
+                $this->type = self::TYPE_ALERT_CAR_OWNER_NEW_ORDER;
+                $this->title = 'НОВЫЙ ЗАКАЗ №' . $order->id;
+                $this->url = Url::to('/order/vehicle');
+                $this->text = '';
+                $this->text_push = '';
+
+                if ($profile->user->push_ids) {
+                    $this->sendPush();
+                }
+
+                $email = [];
+                if($profile->email) $email[] = $profile->email;
+                if($profile->email2) $email[] = $profile->email2;
+                functions::sendEmail([
+                    $email, null,$this->title,
+                    [
+                        'html' => '@app/mail/views/order/new_order',
+                        'text' => '@app/mail/views/empty_text',
+                    ]
+                ]);
+
+            }
+        }
+        return false;
     }
 
 

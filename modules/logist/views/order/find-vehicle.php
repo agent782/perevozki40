@@ -12,6 +12,7 @@ use app\models\setting\SettingVehicle;
 use yii\helpers\Url;
 use app\models\Vehicle;
 use app\models\CalendarVehicle;
+use yii\web\JsExpression;
 
 /* @var $modelOrder \app\models\Order*/
 
@@ -47,6 +48,32 @@ echo \kartik\grid\GridView::widget([
                     } else {
                         $return = '<br>' . Html::icon('glyphicon glyphicon-adjust');
                     }
+                }
+                if(Yii::$app->user->can('admin')) {
+                    $profile = $model->profile;
+                    $return .= $profile->getAlertNewOrder($modelOrder->id)
+                        ? Html::icon('glyphicon glyphicon-volume-up')
+                        : Html::icon('glyphicon glyphicon-volume-off', [
+                            'class' => 'btn',
+                            'onclick' => new JsExpression('
+                            $.ajax({
+                                url: "/logist/order/ajax-alert-new-order",
+                                type: "POST",
+                                dataType: "json",
+                                data: {
+                                    id_user : ' . $profile->id_user . ',
+                                    id_order : ' . $modelOrder->id . ',
+                                },
+                                
+                                success: function(data){
+                                    alert(data);
+                                },
+                                error: function(){
+                                    alert("Ошибка на сервере!")
+                                }
+                         });
+                        ')
+                        ]);
                 }
                 return ($index + 1) . $return;
             }

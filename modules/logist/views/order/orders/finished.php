@@ -171,14 +171,15 @@ use app\components\widgets\ShowMessageWidget;
                 'label' => 'Действия',
                 'format' => 'raw',
                 'value' => function($model){
-                        return
+                        $return =
                             Html::a('Изменить результат', Url::to([
                                 '/order/finish-by-vehicle',
                                 'id_order' => $model->id,
                                 'redirect' => '/logist/order'
                             ]),['class' => 'btn btn-sm btn-success'])
                             . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]). '<br><br>'
-                            ;
+                        ;
+                        return $return;
                 }
             ]
         ]

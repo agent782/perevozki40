@@ -27,12 +27,18 @@ class FinishOrderOnlySumWidget extends Widget
     public $id_order;
     public $ToggleButton = [
         'label' => 'Сумма',
-        'class' => 'btn btn-xs btn-info'
+        'class' => 'btn btn-xs btn-info disabled'
     ];
     public $header = 'Завершение заказа';
     public $action = '/logist/order/finish-only-sum';
 
     public function run(){
+        if(Yii::$app->user->can('admi')){
+            $this->ToggleButton = [
+                'label' => 'Сумма',
+                'class' => 'btn btn-xs btn-info'
+            ];
+        }
         if($this->id_order)
             self::finishOrder();
     }
