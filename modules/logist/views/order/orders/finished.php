@@ -15,6 +15,7 @@ use yii\helpers\ArrayHelper;
 use app\components\widgets\FinishOrderOnlySumWidget;
 use app\models\Company;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Payment;
 ?>
 
 <div>
@@ -170,15 +171,36 @@ use app\components\widgets\ShowMessageWidget;
             [
                 'label' => 'Действия',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
+                    $return = '';
+//                        $disabled = '';
+//                        if(Yii::$app->user->can('admin')){
+//                            $disabled = 'disabled';
+//                        }
+                    if(Yii::$app->user->can('admin')) {
                         $return =
                             Html::a('Изменить результат', Url::to([
                                 '/order/finish-by-vehicle',
                                 'id_order' => $model->id,
                                 'redirect' => '/logist/order'
-                            ]),['class' => 'btn btn-sm btn-success'])
-                            . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]). '<br><br>'
-                        ;
+                            ]), ['class' => 'btn btn-sm btn-success']);
+
+                        $return .= '<br>' . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]) . '<br><br>';
+                    }
+                    if(Yii::$app->user->can('dispetcher')) {
+                        if(!$model->invoice){
+                            $return =
+                                Html::a('Изменить результат', Url::to([
+                                    '/order/finish-by-vehicle',
+                                    'id_order' => $model->id,
+                                    'redirect' => '/logist/order'
+                                ]), ['class' => 'btn btn-sm btn-success']);
+                        }
+                        if($model->type_payment != Payment::TYPE_BANK_TRANSFER
+                            && (time() < (strtotime($model->datetime_finish) + 3600*24*7))){
+                            $return .= '<br>' . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]) . '<br><br>';
+                        }
+                    }
                         return $return;
                 }
             ]

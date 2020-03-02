@@ -15,6 +15,7 @@ use app\components\widgets\FinishOrderOnlySumWidget;
 use app\models\Company;
 use app\components\widgets\ShowMessageWidget;
 use kartik\grid\EditableColumn;
+use app\models\Payment;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -173,15 +174,20 @@ use kartik\grid\EditableColumn;
             [
                 'label' => 'Действия',
                 'format' => 'raw',
-                'value' => function($model){
-                    return
+                'value' => function(Order $model){
+                    $return = '';
+                    $return .=
                         Html::a('Заказ выполнен', Url::to([
                                 '/order/finish-by-vehicle',
                                 'id_order' => $model->id,
                                 'redirect' => '/logist/order'
-                            ]),['class' => 'btn btn-sm btn-success']) . '<br><br>'
-                        . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]). '<br><br>'
-                        . Html::a('Удалить ТС', Url::to([
+                            ]),['class' => 'btn btn-sm btn-success']) . '<br><br>';
+                    if(Yii::$app->user->can('admin')
+                        || $model->type_payment != Payment::TYPE_BANK_TRANSFER
+                    ) {
+                        $return .= FinishOrderOnlySumWidget::widget(['id_order' => $model->id]) . '<br><br>';
+                    }
+                    $return .= Html::a('Удалить ТС', Url::to([
                             '/order/canceled-by-vehicle',
                             'id_order' => $model->id,
                             'id_user' => $model->id_user,
@@ -208,8 +214,8 @@ use kartik\grid\EditableColumn;
                                     'data-method' => 'post']
                             ])
                         ;
+                    return $return;
                 }
-
             ],
         ]
     ]); ?>

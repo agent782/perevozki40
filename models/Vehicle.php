@@ -401,17 +401,14 @@ class Vehicle extends \yii\db\ActiveRecord
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
                     ->andFilterWhere(['<=', 'tonnage_min', $modelVehicle->tonnage])
-//                    ->orFilterWhere(
-//                        ['<=', 'tonnage_min', $modelVehicle->tonnage]
-//                    )
-                    ->andFilterWhere(['<=', 'volume_min', $modelVehicle->volume])
-//                    ->orFilterWhere(
-//                        ['<=', 'volume_min', $modelVehicle->volume]
-//                    )
-                    ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
-//                    ->orFilterWhere(
-//                        ['<=', 'length_max', $modelVehicle->length]
-//                    )
+//                    ->andFilterWhere(['<=', 'volume_min', $modelVehicle->volume])
+//                    ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
+                    ->andFilterWhere(
+                        ['or' ,
+                            ['<=', 'volume_min', $modelVehicle->volume],
+                            ['<=', 'length_min', $modelVehicle->length]
+                        ]
+                    )
                 ;
 //                (!$modelVehicle->longlength)
 //                    ? $priceZones = $priceZones->andFilterWhere(['longlength' => $modelVehicle->longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
@@ -419,7 +416,13 @@ class Vehicle extends \yii\db\ActiveRecord
                 if(!$modelVehicle->longlength){
                     $priceZones = $priceZones
                         ->andFilterWhere(['longlength' => $modelVehicle->longlength])
-                        ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
+//                        ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
+                        ->andFilterWhere(
+                            ['or' ,
+                                ['<=', 'volume_min', $modelVehicle->volume],
+                                ['<=', 'length_min', $modelVehicle->length]
+                            ]
+                        )
                         ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
                         ->all()
                     ;

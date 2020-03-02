@@ -434,8 +434,14 @@ class VehicleController extends Controller
                 $longlength = $post['longlength'];
                 $priceZones = $priceZones
                     ->andFilterWhere(['<=', 'tonnage_min', $tonnage])
-                    ->andFilterWhere(['<=', 'volume_min', $volume])
-                    ->andFilterWhere(['<=', 'length_min', $length])
+                    ->andFilterWhere(
+                        ['or' ,
+                            ['<=', 'volume_min', $volume],
+                            ['<=', 'length_min', $length]
+                        ]
+                    )
+//                    ->andFilterWhere(['<=', 'volume_min', $volume])
+//                    ->andFilterWhere(['<=', 'length_min', $length])
                 ;
 //                (!$longlength)
 //                ? $priceZones = $priceZones
@@ -445,7 +451,13 @@ class VehicleController extends Controller
                 if(!$longlength){
                     $priceZones = $priceZones
                         ->andFilterWhere(['longlength' => $longlength])
-                        ->andFilterWhere(['<=', 'length_min', $length])
+//                        ->andFilterWhere(['<=', 'length_min', $length])
+                        ->andFilterWhere(
+                            ['or' ,
+                                ['<=', 'volume_min', $volume],
+                                ['<=', 'length_min', $length]
+                            ]
+                        )
                         ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
                         ->all()
                     ;
