@@ -13,6 +13,11 @@ use yii\web\JsExpression;
 
 AppAsset::register($this);
 \yii\helpers\Url::remember(); //Сохраняет адрес текущей страницы. Для кнопеи назад Url::previous().
+$this->registerJs("
+    $(function () {
+        $.pjax.reload({container:'#pjax_orders', timeout: 30*1000});
+    });
+");
 
 ?>
 <?php $this->beginPage() ?>

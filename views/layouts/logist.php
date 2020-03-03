@@ -200,8 +200,8 @@ AppAsset::register($this);
     $(function () {
         setInterval(() => $.pjax.reload({container:'#pjax_new_orders'}), 2*60*1000);
         setInterval(() => $.pjax.reload({container:'#pjax_in_proccess_orders'}), 5*60*1000);
-        setInterval(() => $.pjax.reload({container:'#pjax_finished_orders'}), 6*60*1000);
-        setInterval(() => $.pjax.reload({container:'#pjax_canceled_orders'}), 5*60*1000);
+        setInterval(() => $.pjax.reload({container:'#pjax_finished_orders'}), 10*60*1000);
+        setInterval(() => $.pjax.reload({container:'#pjax_canceled_orders'}), 15*60*1000);
     });
 </script>
 </html>

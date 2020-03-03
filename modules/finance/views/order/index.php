@@ -24,6 +24,7 @@ $this->title = 'Журнал заказов';
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pjax' => true,
+        'pjaxSettings' => ['id' => 'pjax_orders'],
         'responsiveWrap' => false,
 //        'responsive' => true,
 //        'floatHeader' => true,
