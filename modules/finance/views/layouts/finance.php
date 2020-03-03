@@ -15,7 +15,7 @@ AppAsset::register($this);
 \yii\helpers\Url::remember(); //Сохраняет адрес текущей страницы. Для кнопеи назад Url::previous().
 $this->registerJs("
     $(function () {
-        setInterval(() => $.pjax.reload({container:'#pjax_orders'}), 30*1000);
+        setInterval(() => $.pjax.reload({container:'#pjax_orders'}), 5*60*1000);
     });
 ");
 

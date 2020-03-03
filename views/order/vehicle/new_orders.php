@@ -1,5 +1,7 @@
 <?php
-/**
+
+/* @var $this \yii\web\View
+*
  * Created by PhpStorm.
  * User: Admin
  * Date: 05.01.2019
@@ -11,6 +13,10 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+
+$this->registerJs("
+    setInterval(() => $.pjax.reload({container:'#pjax_new_orders'}), 2*60*1000); 
+");
 ?>
 <div>
 <?= GridView::widget([
@@ -29,6 +35,11 @@ use yii\bootstrap\Tabs;
 //        'persistResize'=>true,
     'responsiveWrap' => false,
     'pjax'=>true,
+    'pjaxSettings' => [
+        'options' => [
+            'id' => 'pjax_new_orders'
+        ]
+    ],
     'columns' => [
 //        [
 //            'class' => 'kartik\grid\ExpandRowColumn',
