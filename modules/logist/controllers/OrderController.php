@@ -70,8 +70,8 @@ class OrderController extends Controller
             'change-pricezone-in-proccess' => [
                 'class' => EditableColumnAction::class ,
                 'modelClass' => Order::class ,
-                'outputValue' => function ($model , $attribute , $key , $index) {
-//                    return $model->paidCarOwnerText;
+                'outputValue' => function (Order $model , $attribute , $key , $index) {
+                    return PriceZone::findOne($model->id_pricezone_for_vehicle)->id;
                 } ,
                 'outputMessage' => function($model , $attribute , $key , $index) {
                     return '';

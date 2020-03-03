@@ -136,7 +136,9 @@ use app\models\Payment;
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/logist/order/change-pricezone-in-proccess' ])
                     ],
-                    'data' => \app\models\PriceZone::getArrayAllPriceZones(false)                ],
+                    'data' => \app\models\PriceZone::getArrayAllPriceZones(false)
+                ],
+                'visible' => Yii::$app->user->can('admin'),
 
             ],
             [

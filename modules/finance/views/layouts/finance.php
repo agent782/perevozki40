@@ -55,6 +55,10 @@ AppAsset::register($this);
             ['label' => 'Заявки на выплаты', 'url' => '/finance/request-payment'],
             ['label' => 'Организации и ИП', 'url' => '/finance/company'],
             ['label' => 'Договора', 'url' => '/document'],
+            ['label' => 'Отчеты',
+                'url' => '/finance/reports',
+                'visible' => Yii::$app->user->can('admin')
+            ],
 //            ['label' => 'Машины', 'url' => '/logist/vehicle'],
 
             Yii::$app->user->isGuest ? (
