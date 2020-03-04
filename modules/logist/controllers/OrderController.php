@@ -404,11 +404,19 @@ class OrderController extends Controller
         $post = Yii::$app->request->post();
         $id_user = $post['id_user'];
         $id_order = $post['id_order'];
+
         if($id_user && $id_order) {
-            $mes = new Message();
-            if($mes->AlertNewOrder($id_user, $id_order)){
-                return true;
+            $mes = Message::find()
+                ->where(['id_order' => $id_order])
+                ->andWhere(['id_to_user' => $id_user])
+                ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+                ->one();
+            if(!$mes) {
+                $mes = new Message();
             }
+            $mes->create_at = date('d.m.Y H:i', time());
+
+            return $mes->AlertNewOrder($id_user, $id_order);
         }
         echo false;
     }

@@ -7,6 +7,8 @@ use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
+use app\models\Profile;
+use app\models\Order;
 
 /**
  * This is the model class for table "message".
@@ -59,13 +61,15 @@ class Message extends \yii\db\ActiveRecord
     {
         return [
             [['type', 'status', 'id_to_user', 'id_from_user', 'email_status',
-                'sms_status', 'push_status', 'id_order'], 'integer'],
+                'sms_status', 'push_status', 'id_order',
+                'email_status', 'push_status'], 'integer'],
             [['id_to_user'], 'required'],
             [['title', 'url'], 'string', 'max' => 255],
             [['text', 'text_push'], 'string'],
             ['create_at', 'default', 'value' => date('d.m.Y H:i:s')],
             ['status','default', 'value' => self::STATUS_SEND],
-            [[ 'can_review_client', 'can_review_vehicle', 'id_to_review', 'id_from_review'], 'safe']
+            [['id_to_review', 'id_from_review'], 'default', 'value' => null],
+            [[ 'can_review_client', 'can_review_vehicle'], 'default', 'value' => 0]
         ];
     }
 
@@ -177,37 +181,47 @@ class Message extends \yii\db\ActiveRecord
     }
 
     public function AlertNewOrder($id_user, $id_order){
-        $id_user = null;
-        $id_user = null;
-        if($profile = Profile::findOne(['id_user' => $id_user])
-            && $order = Order::findOne($id_order))
-        {
+        $profile = Profile::find()->where(['id_user' => $id_user])->one();
+        $order = Order::findOne($id_order);
+
+        if($profile && $order) {
             if($order->status == $order::STATUS_NEW
                 || $order->status == $order::STATUS_IN_PROCCESSING) {
                 $this->id_order = $id_order;
                 $this->id_to_user = $id_user;
                 $this->type = self::TYPE_ALERT_CAR_OWNER_NEW_ORDER;
                 $this->title = 'НОВЫЙ ЗАКАЗ №' . $order->id;
-                $this->url = Url::to('/order/vehicle');
-                $this->text = '';
+                $this->url = Url::to('/order/vehicle', true);
+                $this->text = 'Новый заказ в поиске';
                 $this->text_push = '';
 
                 if ($profile->user->push_ids) {
-                    $this->sendPush();
+                    $this->sendPush(false);
                 }
 
                 $email = [];
                 if($profile->email) $email[] = $profile->email;
                 if($profile->email2) $email[] = $profile->email2;
-                functions::sendEmail([
-                    $email, null,$this->title,
+                if(functions::sendEmail(
+                    $profile->email,
+                    null,
+                    $this->title,
                     [
-                        'html' => '@app/mail/views/order/new_order',
-                        'text' => '@app/mail/views/empty_text',
+                        'name' => $profile->name,
+                        'id_order' => $id_order
+                    ],
+                    [
+                        'html' => 'views/Order/newOrder_html',
+                       'text' => 'views/Order/newOrder_text',
                     ]
-                ]);
-
+                )){
+                    $this->email_status = self::STATUS_SEND;
+                    $this->save();
+                } else {
+                    $this->email_status = $this::STATUS_NEED_TO_SEND;
+                }
             }
+            return true;
         }
         return false;
     }

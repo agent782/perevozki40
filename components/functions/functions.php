@@ -72,7 +72,8 @@ class functions
         return Yii::$app->session->setFlash('info', $mes);
     }
 
-    static public function sendEmail($to, $from, string $sub, array $params, $views = null, $layouts = null, array $files = []){
+    static public function sendEmail($to, $from, string $sub, array $params, $views = null,
+                                     $layouts = null, array $files = []){
         if(!$from) $from = Yii::$app->params['robotEmail'];
         if(!$views) $views = [
             'html' => 'views/empty_html',

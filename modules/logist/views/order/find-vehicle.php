@@ -32,7 +32,12 @@ use yii\web\JsExpression;
 echo \kartik\grid\GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => ($searchModel) ? $searchModel : false,
-//    'pjax' => true,
+    'pjax' => true,
+    'pjaxSettings' => [
+        'options' => [
+            'id' => 'pjax_find_vehicle'
+        ]
+    ],
     'striped' => true,
     'hover' => true,
 //    'panel' => ['type' => 'primary', 'heading' => 'Grid Grouping Example'],
@@ -42,6 +47,7 @@ echo \kartik\grid\GridView::widget([
             'format' => 'raw',
             'value' => function(Vehicle $model, $key, $index) use ($modelOrder){
                 $return = '';
+                $icon_alert = '';
                 if($distance = $model->hasOrderOnDate($modelOrder->datetime_start)){
                     if($distance > 120){
                         $return = '<br>' . Html::icon('glyphicon glyphicon-ban-circle');
@@ -51,11 +57,25 @@ echo \kartik\grid\GridView::widget([
                 }
                 if(Yii::$app->user->can('admin')) {
                     $profile = $model->profile;
-                    $return .= $profile->getAlertNewOrder($modelOrder->id)
-                        ? Html::icon('glyphicon glyphicon-volume-up')
-                        : Html::icon('glyphicon glyphicon-volume-off', [
-                            'class' => 'btn',
-                            'onclick' => new JsExpression('
+                    if ($profile->email || $profile->user->push_ids) {
+                        if ($profile->email) {
+                            $return .= '<p style="font-size: 8px;">(@';
+                            if ($profile->user->push_ids) {
+                                $return .= ', push';
+                            }
+                            $return .= ')</p>';
+                        }
+
+
+                        if($profile->getAlertNewOrder($modelOrder->id)){
+                            $icon_alert = 'glyphicon glyphicon-volume-up';
+                        } else {
+                            $icon_alert = 'glyphicon glyphicon-volume-off';
+                        }
+
+                        $return .= Html::a(Html::icon($icon_alert, [
+                                'class' => 'btn',
+                                'onclick' => new JsExpression('
                             $.ajax({
                                 url: "/logist/order/ajax-alert-new-order",
                                 type: "POST",
@@ -66,14 +86,15 @@ echo \kartik\grid\GridView::widget([
                                 },
                                 
                                 success: function(data){
-                                    alert(data);
+                                    $.pjax.reload({container:"#pjax_find_vehicle"});
                                 },
                                 error: function(){
                                     alert("Ошибка на сервере!")
                                 }
                          });
                         ')
-                        ]);
+                            ]));
+                    }
                 }
                 return ($index + 1) . $return;
             }
