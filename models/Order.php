@@ -801,7 +801,7 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
-            emails::sendToAdminChangeOrder($this->id);
+//            emails::sendToAdminChangeOrder($this->id);
             parent::afterSave($insert, $changedAttributes);
         }
     }
@@ -2147,7 +2147,7 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getSuitableVehicles(){
+    public function getSuitableVehicles($forAlert = false){
 //        $vehicles =[];
         $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
             ->orderBy('id_user')->all();
@@ -2155,14 +2155,33 @@ class Order extends \yii\db\ActiveRecord
         foreach ($Vehicles as $vehicle) {
             if (!$vehicle->canOrder($this)) {
                 ArrayHelper::removeValue($Vehicles, $vehicle);
+                continue;
+            }
+            if($forAlert){
+                $calendar = CalendarVehicle::find(['id_vehicle' => $vehicle->id])
+                    ->andWhere(['date' => functions::DayToStartUnixTime($this->datetime_start)])
+                    ->one();
+                $calendar_status = CalendarVehicle::STATUS_FREE;
+                if($calendar) $calendar_status = $calendar->status;
+                    if($route = $this->route){
+                        if($route->distance >= 120){
+                            if($calendar_status != CalendarVehicle::STATUS_FREE){
+                                ArrayHelper::removeValue($Vehicles, $vehicle);
+                            }
+                        }else{
+                            if($calendar_status == CalendarVehicle::STATUS_BUSY){
+                                ArrayHelper::removeValue($Vehicles, $vehicle);
+                            }
+                        }
+                    }
             }
         }
         return $Vehicles;
     }
 
-    public function getSortSuitableVehicles(){
+    public function getSortSuitableVehicles($forAlert = false){
         $order = $this;
-        $vehicles = $order->getSuitableVehicles();
+        $vehicles = $order->getSuitableVehicles($forAlert);
         if(!$vehicles) return false;
 
         if($vehicles) {
@@ -2206,8 +2225,8 @@ class Order extends \yii\db\ActiveRecord
         return $vehicles;
     }
 
-    public function getSortArrayCarOwnerIdsForFind(){
-        $vehicles = $this->getSuitableVehicles();
+    public function getSortArrayCarOwnerIdsForFind($forAlert = true){
+        $vehicles = $this->getSuitableVehicles($forAlert);
         if(!$vehicles) return false;
         $res = [];
         foreach ($vehicles as $item){

@@ -13,6 +13,7 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use \app\models\XprofileXcompany;
+use yii\web\JsExpression;
 
 ?>
 <div>
@@ -134,15 +135,71 @@ use \app\models\XprofileXcompany;
                                 'Пока заказ не принят водителем, Вы можете отменить его без потери рейтинга. Отменить заказ?'),
                                 'data-method' => 'post']);
                     if(Yii::$app->user->can('admin')) {
-                        $return .= Html::a(Html::icon('search', ['class' => 'btn-lg', 'title' => 'Автоматический поиск']), Url::to([
-                            '/logist/order/auto-find',
-                            'id_order' => $model->id,
-                            'redirect' => '/logist/order'
+                        $hidden = ($model->auto_find)?true:false;
+                        $return .= Html::a(Html::icon('search', ['class' => 'btn-lg',
+                            'title' => 'Автоматический поиск']), Url::to([
+                            '#',
+//                            'id_order' => $model->id,
+//                            'redirect' => '/logist/order'
                         ]),
                             [
-                                'data-confirm' => Yii::t('yii',
-                                    'Начать автоматический поиск ТС по заказу?'),
-                                'data-method' => 'post'
+//                                'data-confirm' => Yii::t('yii',
+//                                    'Начать автоматический поиск ТС по заказу?'),
+//                                'data-method' => 'post',
+                                'id' => 'start_auto_find',
+                                'hidden' => $hidden,
+                                'onclick' => new JsExpression('
+                                    $("#start_auto_find").prop("hidden", true);
+                                    $("#stop_auto_find").prop("hidden", false);
+                                    $.ajax({
+                                        url: "/logist/order/ajax-auto-find",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: {
+                                            id_order: ' . $model->id . ',
+                                        },
+                                        
+                                        success: function(data){
+                                            if(data){
+                                                $("#start_auto_find").prop("hidden", false);
+                                                $("#stop_auto_find").prop("hidden", true);
+                                            }
+                                        },
+                                        error: function(){
+                                            alert("Ошибка на сервере!")
+                                        }
+                                     });
+                                ')
+                            ]);
+                        $return .= Html::a(Html::icon('pause', ['class' => 'btn-lg',
+                            'title' => 'Автоматический поиск']), Url::to([
+                            '#',
+                        ]),
+                            [
+                                'hidden' => !$hidden,
+                                'id' => 'stop_auto_find',
+                                'onclick' => new JsExpression('
+                                    $("#start_auto_find").prop("hidden", false);
+                                    $("#stop_auto_find").prop("hidden", true);
+                                    $.ajax({
+                                        url: "/logist/order/ajax-stop-auto-find",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: {
+                                            id_order: ' . $model->id . ',
+                                        },
+                                        
+                                        success: function(data){
+                                            if(data){
+                                                $("#start_auto_find").prop("hidden", false);
+                                                $("#stop_auto_find").prop("hidden", true);
+                                            }
+                                        },
+                                        error: function(){
+                                            alert("Ошибка на сервере!")
+                                        }
+                                     });
+                                ')
                             ]);
                     }
                     return $return;

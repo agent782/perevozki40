@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 use app\components\functions\functions;
+use app\models\CalendarVehicle;
 use app\models\Message;
 use app\models\Order;
 use app\models\Route;
@@ -40,10 +41,21 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
-//        foreach (User::find()->where(['!=', 'push_ids', ''])->all() as $user){
-//            echo $user->id . ' ' . $user->profile->fioFull . '  ' . $user->old_id . ' <br>';
-//        }
-//        return 1;
+        $order = Order::findOne(274);
+        return date('d.m.Y', functions::DayToStartUnixTime($order->datetime_start));
+        var_dump( CalendarVehicle::findOne([
+//            'id_vehicle' => 129
+//            ,
+            'date' => functions::DayToStartUnixTime($order->datetime_start)
+        ]));
+        return;
+        var_dump($order->getSortSuitableVehicles(true));
+//        return var_dump($order);
+//        return var_dump($order->getSuitableVehicles());
+
+//        return var_dump($order->getSortArrayCarOwnerIdsForFind());
+
+
         return $this->render('index');
     }
 
