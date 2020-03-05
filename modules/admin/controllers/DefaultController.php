@@ -40,13 +40,10 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
-//        $order = Order::findOne(288);
-//        return var_dump($order);
-//        return var_dump($order->getSuitableVehicles());
-
-//        return var_dump($order->getSortArrayCarOwnerIdsForFind());
-
-
+//        foreach (User::find()->where(['!=', 'push_ids', ''])->all() as $user){
+//            echo $user->id . ' ' . $user->profile->fioFull . '  ' . $user->old_id . ' <br>';
+//        }
+//        return 1;
         return $this->render('index');
     }
 
