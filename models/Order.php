@@ -113,7 +113,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property bool $re
  * @property OrdersFinishContacts $finishContacts
  * @property string $comment_vehicle
- * @property bool $auto-find
+ * @property bool $auto_find
 
 
  */
@@ -244,7 +244,7 @@ class Order extends \yii\db\ActiveRecord
             ['type_payment', 'validateForUser'],
             [['avans_client'], 'number'],
             [['re'], 'default', 'value' => false],
-            ['auto-find', 'default', 'value' => false]
+            [['auto_find'], 'default', 'value' => false]
         ];
     }
 

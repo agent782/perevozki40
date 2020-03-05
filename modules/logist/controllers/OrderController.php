@@ -421,4 +421,34 @@ class OrderController extends Controller
         echo false;
     }
 
+    public function actionAutoFind($id_order){
+        $order = Order::findOne($id_order);
+        if(
+            $id_order && $order
+            && ($order->status == $order::STATUS_NEW || $order->status == $order::STATUS_IN_PROCCESSING)
+            && !$order->auto_find
+        ) {
+            $Car_owners = $order->getSortArrayCarOwnerIdsForFind();
+            $Car_owners = [186, 186, 186, 186, 186, 186, 186, 186, 186, 186];
+
+            foreach ($Car_owners as $id_user) {
+                if ($id_user && $id_order) {
+                    $mes = Message::find()
+                        ->where(['id_order' => $id_order])
+                        ->andWhere(['id_to_user' => $id_user])
+                        ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+                        ->one();
+                    if (!$mes) {
+                        $mes = new Message();
+                    }
+                    $mes->create_at = date('d.m.Y H:i', time());
+
+                    $mes->AlertNewOrder($id_user, $id_order);
+                    sleep(2);
+                }
+            }
+        }
+
+    }
+
 }

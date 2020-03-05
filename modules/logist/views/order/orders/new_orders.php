@@ -135,7 +135,7 @@ use \app\models\XprofileXcompany;
                                 'data-method' => 'post']);
                     if(Yii::$app->user->can('admin')) {
                         $return .= Html::a(Html::icon('search', ['class' => 'btn-lg', 'title' => 'Автоматический поиск']), Url::to([
-                            '/order/auto-find1',
+                            '/logist/order/auto-find',
                             'id_order' => $model->id,
                             'redirect' => '/logist/order'
                         ]),
