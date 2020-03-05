@@ -42,14 +42,13 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $order = Order::findOne(274);
-        return date('d.m.Y', functions::DayToStartUnixTime($order->datetime_start));
-        var_dump( CalendarVehicle::findOne([
+//        var_dump( CalendarVehicle::findOne([
 //            'id_vehicle' => 129
 //            ,
-            'date' => functions::DayToStartUnixTime($order->datetime_start)
-        ]));
-        return;
-        var_dump($order->getSortSuitableVehicles(true));
+//            'date' => functions::DayToStartUnixTime($order->datetime_start)
+//        ]));
+//        return;
+        return var_dump($order->getSortSuitableVehicles(true));
 //        return var_dump($order);
 //        return var_dump($order->getSuitableVehicles());
 

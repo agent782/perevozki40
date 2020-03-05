@@ -2165,11 +2165,15 @@ class Order extends \yii\db\ActiveRecord
                 if($calendar) $calendar_status = $calendar->status;
                     if($route = $this->route){
                         if($route->distance >= 120){
-                            if($calendar_status != CalendarVehicle::STATUS_FREE){
+                            if($calendar_status != CalendarVehicle::STATUS_FREE
+                                || $vehicle->hasOrderOnDate($this->datetime_start)
+                            ){
                                 ArrayHelper::removeValue($Vehicles, $vehicle);
                             }
                         }else{
-                            if($calendar_status == CalendarVehicle::STATUS_BUSY){
+                            if($calendar_status == CalendarVehicle::STATUS_BUSY
+                                && $vehicle->hasOrderOnDate($this->datetime_start) < 120
+                            ){
                                 ArrayHelper::removeValue($Vehicles, $vehicle);
                             }
                         }
