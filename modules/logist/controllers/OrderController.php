@@ -457,7 +457,7 @@ class OrderController extends Controller
                     }
                     $mes->create_at = date('d.m.Y H:i', time());
                     $mes->AlertNewOrder($id_user, $id_order);
-                    sleep(5);
+                    sleep(120);
                 } else {
                     $order->auto_find = false;
                     $order->save(true);
