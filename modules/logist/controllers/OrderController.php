@@ -440,28 +440,29 @@ class OrderController extends Controller
         ) {
             $Car_owners = $order->getSortArrayCarOwnerIdsForFind(true);
 //            $Car_owners = [186, 186];
-            if(!$Car_owners) return 4;
-            foreach ($Car_owners as $id_user) {
-                $busy =
-                $order = Order::findOne($id_order);
-                if ($order->auto_find
-                    && ($order->status == $order::STATUS_NEW || $order->status == $order::STATUS_IN_PROCCESSING)
-                ) {
-                    $mes = Message::find()
-                        ->where(['id_order' => $id_order])
-                        ->andWhere(['id_to_user' => $id_user])
-                        ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-                        ->one();
-                    if (!$mes) {
-                        $mes = new Message();
+            if($Car_owners) {
+                foreach ($Car_owners as $id_user) {
+                    $busy =
+                    $order = Order::findOne($id_order);
+                    if ($order->auto_find
+                        && ($order->status == $order::STATUS_NEW || $order->status == $order::STATUS_IN_PROCCESSING)
+                    ) {
+                        $mes = Message::find()
+                            ->where(['id_order' => $id_order])
+                            ->andWhere(['id_to_user' => $id_user])
+                            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+                            ->one();
+                        if (!$mes) {
+                            $mes = new Message();
+                        }
+                        $mes->create_at = date('d.m.Y H:i', time());
+                        $mes->AlertNewOrder($id_user, $id_order);
+                        sleep(120);
+                    } else {
+                        $order->auto_find = false;
+                        $order->save(true);
+                        return 1;
                     }
-                    $mes->create_at = date('d.m.Y H:i', time());
-                    $mes->AlertNewOrder($id_user, $id_order);
-                    sleep(120);
-                } else {
-                    $order->auto_find = false;
-                    $order->save(true);
-                    return 1;
                 }
             }
             $order->auto_find = false;
