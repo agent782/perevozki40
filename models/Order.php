@@ -2157,7 +2157,7 @@ class Order extends \yii\db\ActiveRecord
                 ArrayHelper::removeValue($Vehicles, $vehicle);
                 continue;
             }
-            if($forAlert){
+            if($forAlert && $vehicle->profile->email){
                 $calendar = CalendarVehicle::find(['id_vehicle' => $vehicle->id])
                     ->andWhere(['date' => functions::DayToStartUnixTime($this->datetime_start)])
                     ->one();
