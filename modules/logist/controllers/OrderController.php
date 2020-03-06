@@ -440,7 +440,7 @@ class OrderController extends Controller
         ) {
             $Car_owners = $order->getSortArrayCarOwnerIdsForFind(true);
 //            $Car_owners = [186, 186];
-
+            if(!$Car_owners) return 4;
             foreach ($Car_owners as $id_user) {
                 $busy =
                 $order = Order::findOne($id_order);

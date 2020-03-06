@@ -2151,7 +2151,7 @@ class Order extends \yii\db\ActiveRecord
 //        $vehicles =[];
         $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
             ->orderBy('id_user')->all();
-        if(!$Vehicles) return false;
+        if(!is_array($Vehicles)) return [];
 
         foreach ($Vehicles as $vehicle) {
             if (!$vehicle->canOrder($this)) {
