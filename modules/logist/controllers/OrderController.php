@@ -460,7 +460,7 @@ class OrderController extends Controller
                         sleep(120);
                     } else {
                         $order->auto_find = false;
-                        $order->save(true);
+                        $order->save(false);
                         return 1;
                     }
                 }
