@@ -1614,6 +1614,7 @@ class Order extends \yii\db\ActiveRecord
         $this->update_at = date('d.m.Y H:i', time());
 
         if($this->save()){
+            emails::sendToAdminChangeOrder($this->id);
             functions::setFlashSuccess('Статус заказа №' . $this->id . ' изменен на "' . $this->statusText . '".');
             return true;
         } else {
