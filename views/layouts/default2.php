@@ -13,6 +13,10 @@ use yii\bootstrap\Html;
 use yii\helpers\Url;
 AppAsset::register($this);
 
+$this->registerMetaTag([
+    'name' => 'yandex-verification',
+    'content' => '67099b3cce43957c'
+]);
 
 //$this->registerJsFile('/js/hideMenu.js');
 //$this->registerCss('
@@ -22,7 +26,9 @@ AppAsset::register($this);
 //}
 //');
 //$this->params['breadcrumbs'][] = $this->title;
-$this->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
+$this->title = ($this->title)
+    ? $this->title
+    : 'perevozki40.ru Сервис Региональных Грузоперевозок';
 \yii\helpers\Url::remember(); //Сохраняет адрес текущей страницы. Для кнопеи назад Url::previous().
 ?>
 <?php $this->beginPage() ?>

@@ -67,6 +67,8 @@ class DefaultController extends Controller
     }
 
     public function actionIndex(){
+        $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
+
 //        $auth = new auth_item();
         return $this->render('index');
     }

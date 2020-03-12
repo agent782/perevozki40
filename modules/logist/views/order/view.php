@@ -10,7 +10,7 @@ use yii\widgets\DetailView;
 //$this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 //$this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
-    $this->title = 'Заказ №' . $model->id;
+    $this->title = ($this->title) ? $this->title : 'Заказ №' . $model->id;
 ?>
 <div class="container order-view">
     <h4><?= Html::encode($this->title) ?></h4>

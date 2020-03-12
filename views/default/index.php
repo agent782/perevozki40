@@ -3,7 +3,7 @@
     use yii\helpers\Url;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 ?>
-<script src="https://e-timer.ru/js/etimer.js"></script>
+<!--<script src="https://e-timer.ru/js/etimer.js"></script>-->
 
 <div class="row">
     <div class="alert-warning" style="text-align: center">
