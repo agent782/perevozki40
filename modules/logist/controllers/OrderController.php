@@ -287,7 +287,7 @@ class OrderController extends Controller
             functions::setFlashWarning('Нет такого заказа!');
             return $this->redirect($redirectError);
         }
-        if ($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+        if ($modelOrder->status != Order::STATUS_NEW && $modelOrder->status != Order::STATUS_IN_PROCCESSING) {
             functions::setFlashWarning('Заказ был принят другим водителем.');
             return $this->redirect($redirect);
         }
