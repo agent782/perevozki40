@@ -753,7 +753,13 @@ class OrderController extends Controller
                 $realRoute->$attr = $route->$attr;
             }
         }
-        $modelOrder->real_datetime_start = $modelOrder->datetime_start;
+        if(!$modelOrder->real_datetime_start) {
+            $modelOrder->real_datetime_start = $modelOrder->datetime_start;
+        }
+        if(!$modelOrder->datetime_finish) {
+            $modelOrder->datetime_finish = $modelOrder->datetime_start;
+        }
+
         $modelOrder->real_longlength = $modelOrder->longlength;
 //        $modelOrder->datetime_finish = date('d.m.Y H:i', time())
         $longlength = $modelOrder->vehicle->longlength;
@@ -773,7 +779,10 @@ class OrderController extends Controller
                     functions::setFlashWarning('Ошибка на сервере, попробуте позже.');
                     return $this->redirect($redirect);
                 }
-                if($modelOrder->load(Yii::$app->request->post()) && $realRoute->load(Yii::$app->request->post())) {
+                if($modelOrder->load(Yii::$app->request->post())
+                    && $realRoute->load(Yii::$app->request->post()
+                    && $modelOrder->validate())
+                ) {
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
                     $modelOrder->hand_vehicle_cost = $modelOrder->getFinishCostForVehicle();
