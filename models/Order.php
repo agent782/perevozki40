@@ -1288,7 +1288,7 @@ class Order extends \yii\db\ActiveRecord
                     $title_client = 'Заказ №'.$this->id.' в процессе поиска ТС.';
                     $title_vehicle = 'Заказ №'.$this->id.'. Вы отказались от заказа';
                     $message_vehicle = 'Вы отказались от ранее принятого заказа. <br>'
-                        .'ТС: ' .$vehicle->brandAndNumber . '<br>'
+//                        .'ТС: ' .$vehicle->brandAndNumber . '<br>'
                         . $this->getFullNewInfo(false, true, false, false) . '<br>'
                         .'. <br> Клиент при желании может оценить Ваше действие, что повлияет на Ваш рейтинг водителя.'
                     ;

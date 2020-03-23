@@ -287,6 +287,10 @@ class OrderController extends Controller
             functions::setFlashWarning('Нет такого заказа!');
             return $this->redirect($redirectError);
         }
+        if ($OrderModel->status != Order::STATUS_NEW && $OrderModel->status != Order::STATUS_IN_PROCCESSING) {
+            functions::setFlashWarning('Заказ был принят другим водителем.');
+            return $this->redirect($redirect);
+        }
         $date_day = functions::DayToStartUnixTime($modelOrder->datetime_start);
 //        $date_day = date('d.m.Y', $date_day);
 //        $date_day = strtotime($date_day);
