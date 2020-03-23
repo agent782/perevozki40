@@ -780,7 +780,7 @@ class OrderController extends Controller
                     return $this->redirect($redirect);
                 }
                 if($modelOrder->load(Yii::$app->request->post())
-                    && $realRoute->load(Yii::$app->request->post()
+                    && $realRoute->load(Yii::$app->request->post())
                 ) {
                     $modelOrder->id_price_zone_real = $modelOrder->getFinishPriceZone();
                     $costAndDescription = $modelOrder->CalculateAndPrintFinishCost(true, true);
