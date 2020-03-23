@@ -655,7 +655,7 @@ class Order extends \yii\db\ActiveRecord
     public function getFinishPriceZone(){
         $result = [];
         $priceZones = PriceZone::find()->where(['veh_type' => $this->id_vehicle_type])
-            ->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
+            ->andFilterWhere(['status' => PriceZone::STATUS_ACTIVE]);
         if(!$priceZones->count()) return false;
 
         switch ($this->id_vehicle_type) {
@@ -664,8 +664,18 @@ class Order extends \yii\db\ActiveRecord
                     ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
                     ->andFilterWhere(['>=', 'volume_max', $this->real_volume])
                     ->andFilterWhere(['>=', 'length_max', $this->real_length])
-                    ->andFilterWhere(['longlength' => $this->real_longlength])->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])->all()
+                    ->andFilterWhere(['longlength' => $this->real_longlength])
+//                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+//                    ->all()
                 ;
+                    if(!$this->real_longlength) {
+                        $priceZones = $priceZones->andFilterWhere(['longlength' => $this->real_longlength]);
+                    }
+                $priceZones = $priceZones
+                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
+                    ->all()
+                ;
+
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $priceZones = $priceZones
@@ -733,7 +743,8 @@ class Order extends \yii\db\ActiveRecord
         }
 //        return $real_pricezone->id;
         if($real_pricezone && $pricezone_for_vehicle) {
-            if ($real_pricezone->r_km < $pricezone_for_vehicle->r_km || $real_pricezone->r_h < $pricezone_for_vehicle->r_h) {
+            if ($real_pricezone->r_km < $pricezone_for_vehicle->r_km
+                || $real_pricezone->r_h < $pricezone_for_vehicle->r_h) {
                 $real_pricezone = $pricezone_for_vehicle;
             }
         }
