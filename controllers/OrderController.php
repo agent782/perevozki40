@@ -506,8 +506,10 @@ class OrderController extends Controller
             $typePayment->type = $typePayment->getTextWithIconDiscount();
         }
         $TypiesPayment = ArrayHelper::map($TypiesPayment, 'id', 'type');
-
-        $companies = ArrayHelper::map(Profile::findOne(['id_user' => $modelOrder->id_user])->companies, 'id', 'name');
+        if($modelOrder->id_user) {
+            $companies = ArrayHelper::map(Profile::findOne(['id_user' => $modelOrder->id_user])
+                ->companies, 'id', 'name');
+        }
         $modelOrder->setScenarioForUpdate();
 
         switch (Yii::$app->request->post('button')) {
