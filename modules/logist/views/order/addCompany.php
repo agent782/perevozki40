@@ -18,6 +18,14 @@ $this->title = 'Выбор юр. лица';
                 ['/company/create', 'user_id' => $modelOrder->id_user,
                     'redirect' => \yii\helpers\Url::to(['/logist/order/add-company', 'id_order' => $modelOrder->id, 'redirect' => $redirect])],
                 ['class' => 'btn btn-primary']);
+            } else {
+            echo Html::a(Html::icon('plus'),
+                ['/company/create', 'user_id' => $modelOrder->id_car_owner,
+                    'redirect' => \yii\helpers\Url::to([
+                            '/logist/order/add-company',
+                        'id_order' => $modelOrder->id,
+                        'redirect' => $redirect])],
+                ['class' => 'btn btn-primary']);
             }
         ?>
 
