@@ -160,6 +160,26 @@ $this->title = 'Журнал заказов';
             ],
             [
                 'class' => \kartik\grid\EditableColumn::class,
+                'attribute' => 'date_paid',
+                'label' => 'Дата оплаты',
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DATE,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changeDatePaid' ])
+                    ],
+                    'options'=>[
+                        'type' => \kartik\date\DatePicker::TYPE_INLINE,
+                        'pluginOptions'=>[
+                            'format' => 'dd.mm.yyyy',
+                            'autoclose' => true,
+                            'todayBtn' => true,
+                            'todayHighlight' => true,
+                        ]
+                    ]
+                ],
+            ],
+            [
+                'class' => \kartik\grid\EditableColumn::class,
                 'attribute' => 'paid_status',
                 'label' => 'Оплата',
                 'value' => 'paidText',

@@ -35,6 +35,17 @@ class OrderController extends Controller
                 } ,
                 'scenario' => Order::SCENARIO_CHANGE_PAID_STATUS
             ],
+            'changeDatePaid' => [
+                'class' => EditableColumnAction::class ,
+                'modelClass' => Order::class ,
+                'outputValue' => function ($model , $attribute , $key , $index) {
+                    return $model->date_paid;
+                } ,
+                'outputMessage' => function($model , $attribute , $key , $index) {
+                    return '';
+                } ,
+                'scenario' => Order::SCENARIO_CHANGE_PAID_STATUS
+            ],
             'changePaidCarOwnerStatus' => [
                 'class' => EditableColumnAction::class ,
                 'modelClass' => Order::class ,

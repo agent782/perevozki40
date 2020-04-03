@@ -114,6 +114,7 @@ use app\components\widgets\ShowMessageWidget;
  * @property OrdersFinishContacts $finishContacts
  * @property string $comment_vehicle
  * @property bool $auto_find
+ * @property integer date_paid
 
 
  */
@@ -222,7 +223,7 @@ class Order extends \yii\db\ActiveRecord
             ],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
                 'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle',
-                'ClientPhone', 'id_user'],
+                'ClientPhone', 'id_user', 'date_paid'],
                 'safe'
             ],
             [['additional_cost','ClientPaidCash'], 'default', 'value' => '0'],
@@ -336,8 +337,8 @@ class Order extends \yii\db\ActiveRecord
             'type_payment', 'datetime_start',
             'passengers','id_company', 'status', 'create_at', 'update_at', 'comment'
         ];
-        $scenarios[self::SCENARIO_CHANGE_PAID_STATUS] = ['paid_status'];
-        $scenarios[self::SCENARIO_CHANGE_AVANS_CLIENT] = ['avans_client'];
+        $scenarios[self::SCENARIO_CHANGE_PAID_STATUS] = ['paid_status', 'date_paid'];
+        $scenarios[self::SCENARIO_CHANGE_AVANS_CLIENT] = ['avans_client', 'date_paid'];
         $scenarios[self::SCENARIO_CHANGE_TYPE_PAYMENT] = ['type_payment'];
         $scenarios[self::SCENARIO_CHANGE_PRICEZONE_FOR_VEHICLE] = ['id_pricezone_for_vehicle'];
         $scenarios[self::SCENARIO_CHANGE_DATETIME] = ['datetime_start'];
@@ -421,6 +422,11 @@ class Order extends \yii\db\ActiveRecord
                 'dateAttributes' => ['real_datetime_start', 'datetime_start', 'datetime_finish','datetime_access' ,
                     'valid_datetime', 'create_at', 'update_at'],
                 'format' => DateBehaviors::FORMAT_DATETIME,
+            ],
+            'convertDate' => [
+                'class' => 'app\components\DateBehaviors',
+                'dateAttributes' => ['date_paid'],
+                'format' => DateBehaviors::FORMAT_DATE,
             ],
         ];
     }
