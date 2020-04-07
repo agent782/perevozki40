@@ -60,10 +60,10 @@ $this->registerJs("
         'id',
         [
             'attribute' => 'datetime_start',
-            'options' => [
-//                    'style' =>'width: 100px',
-            ],
-            'contentOptions'=>['style'=>'white-space: normal;']
+            'contentOptions'=>[
+                'style'=>'white-space: normal;',
+                'class' => 'h5'
+            ]
         ],
         [
             'label' => 'Маршрут',

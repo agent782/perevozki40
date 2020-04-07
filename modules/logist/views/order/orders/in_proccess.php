@@ -76,6 +76,9 @@ use app\models\Payment;
                         ]
                     ]
                 ],
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
             ],
             [
                 'label' => 'ТС',
@@ -151,8 +154,8 @@ use app\models\Payment;
                     if($model->id_user == $model->id_car_owner && $model->re){
                         $return = $model->comment;
                         if($company) {
-                            $return .= '<br>'
-                            . ($company->name_short) ? $company->name_short : $company->name;
+                            $return .= '<br><br>';
+                            $return .=  ($company->name_short) ? $company->name_short : $company->name;
                         }
                     } else {
                         $return  = $model->getClientInfo();

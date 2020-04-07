@@ -58,7 +58,10 @@ use yii\web\JsExpression;
                     . $model->valid_datetime
                     . ')</i>'
                     ;
-            }
+            },
+            'contentOptions' => [
+                'class' => 'h5'
+            ]
         ],
         [
             'label' => 'Маршрут',

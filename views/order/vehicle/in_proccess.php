@@ -32,7 +32,13 @@ use yii\bootstrap\Tabs;
         'pjax'=>true,
         'columns' => [
             'id',
-            'datetime_start',
+            [
+                'attribute' =>'datetime_start',
+                'format' => 'raw',
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
+            ],
             [
                 'label' => 'ТС',
                 'format' => 'raw',
