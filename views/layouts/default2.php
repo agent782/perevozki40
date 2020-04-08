@@ -305,7 +305,7 @@ $this->title = ($this->title)
                             ),
                         ],
                         [
-                            'label' => 'Завершть регистрацию клиента',
+                            'label' => 'Завершить регистрацию клиента',
                             'linkOptions' => ['class' => 'btn-primary'],
                             'url' => '/user/signup-client',
                             'visible' => Yii::$app->user->can('user')

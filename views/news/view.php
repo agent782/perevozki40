@@ -1,6 +1,7 @@
 <?php
 
 use yii\bootstrap\Html;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\News */
@@ -18,7 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
         Html::a(
             Html::icon('plus') . ' ' .$model->rating_up,
             '#',
-            ['class' => 'btn btn-xs btn-success']
+            [
+                'class' => 'btn btn-xs btn-success',
+                'onclick' => new JsExpression('
+                    alert();    
+                ')
+            ]
         )
 
     ?>
@@ -26,7 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
     Html::a(
         Html::icon('minus') . ' ' .$model->rating_down,
         '#',
-        ['class' => 'btn btn-xs btn-danger']
+        [
+            'class' => 'btn btn-xs btn-danger',
+            'onclick' => new JsExpression('
+                alert();    
+            ')
+        ]
     )
     ?>
 
