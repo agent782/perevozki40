@@ -94,6 +94,11 @@ $this->title = ($this->title)
                             'url' => Yii::$app->homeUrl,
                         ],
                         [
+                            'label' => 'Новости',
+                            'url' => Url::to('/news'),
+                            'visible' => Yii::$app->user->can('admin')
+                        ],
+                        [
                             'label' => 'Тарифные зоны',
                             'url' => '/price-zone'
                         ],

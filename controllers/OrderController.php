@@ -1032,6 +1032,6 @@ class OrderController extends Controller
             if($model->load(Yii::$app->request->post()))
                 return \yii\widgets\ActiveForm::validate($model);
         }
-        throw new \yii\web\BadRequestHttpException('Bad request!');
+        throw new \yii\web\BadRequestHttpException('Попробуйте позже.');
     }
 }
