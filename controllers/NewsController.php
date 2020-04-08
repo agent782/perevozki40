@@ -37,6 +37,20 @@ class NewsController extends Controller
     {
         $searchModel = new NewsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $user = Yii::$app->user;
+        if(!$user->can('admin')){
+            if($user->isGuest){
+                $dataProvider->query
+                    ->andWhere(['id_category' => News::CATEGORY_FOR_ALL]);
+            } else {
+                if(!$user->can('car_owner')){
+                    $dataProvider->query
+                        ->andWhere(['in', 'id_category', [News::CATEGORY_FOR_ALL, News::CATEGORY_FOR_USER]]);
+                }
+            }
+
+        }
+
 
         return $this->render('index', [
             'searchModel' => $searchModel,

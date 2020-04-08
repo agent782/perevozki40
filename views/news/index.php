@@ -34,10 +34,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'h3'
                 ],
                 'value' => function (News $model){
-                    return Html::a($model->title, Url::to(['/news/view', 'id' => $model->id]), [
+                        return Html::a($model->title, Url::to(['/news/view', 'id' => $model->id]), [
 //                        'onclick' => 'alert()'
-                    ]);
-                }
+                        ]);
+                },
             ],
 //            [
 //                'attribute' => 'text',

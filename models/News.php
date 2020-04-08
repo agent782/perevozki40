@@ -92,4 +92,20 @@ class News extends \yii\db\ActiveRecord
             '2' => 'Для владельцев ТС'
         ];
     }
+
+    public function PublicNews(){
+        if(Yii::$app->user->can('admin')) return true;
+        switch ($this->id_category){
+            case self::CATEGORY_FOR_ALL:
+                if(!Yii::$app->user->isGuest) return true;
+//                return true;
+                break;
+            case self::CATEGORY_FOR_USER:
+                if(Yii::$app->user->can('@')) return true;
+                break;
+            case self::CATEGORY_FOR_CAR_OWNER:
+                break;
+        }
+        return false;
+    }
 }
