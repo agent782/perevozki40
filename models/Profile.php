@@ -648,12 +648,22 @@ class Profile extends \yii\db\ActiveRecord
                     ->all();
                 foreach ($orders as $order){
                     if($order->type_payment != Payment::TYPE_CASH) {
+                        $date_paid = ($order->date_paid)? ' '.$order->date_paid:'';
+                        $description = '';
+                        if($order->paid_status == $order::PAID_YES){
+                            $description = 'Заказ № ' . $order->id
+                                . ' (Оплачен' . $date_paid . ')';
+                        } else if($order->paid_status == $order::PAID_YES_AVANS){
+                            $description = '(Частично плачен' . $date_paid . ') Заказ № ' . $order->id;
+                        } else {
+                            $description = 'НЕ ОПЛАЧЕН! Заказ № ' . $order->id;
+                        }
                         $return['balance'] -= $order->cost_finish;
                         $return[$company->id]['balance'] -= $order->cost_finish;
                         $return[$company->id]['orders'][] = [
                             'date' => $order->datetime_finish,
                             'debit' => $order->cost_finish,
-                            'description' => 'Заказ № ' . $order->id,
+                            'description' => $description,
                             'id_order' => $order->id,
                         ];
                     } else {
@@ -746,13 +756,15 @@ class Profile extends \yii\db\ActiveRecord
         foreach ($orders as $order){
             $return['balance'] += round($order->cost_finish_vehicle
                 - (($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100));
-
+            $date_paid = ($order->date_paid)? ' '.$order->date_paid : '';
             $return['orders'][] = [
                 'date' => $order->datetime_finish,
                 'debit' => '',
                 'credit' => round($order->cost_finish_vehicle
                     - (($order->cost_finish_vehicle - $order->additional_cost) * $this->procentVehicle/100)),
-                'description' => 'Сумма к выплате за заказ № ' . $order->id,
+                'description' => 'Сумма к выплате за заказ № '
+                    . $order->id
+                    . ' (Оплачен клиентом'. $date_paid .')' ,
                 'id_order' => $order->id,
             ];
 
