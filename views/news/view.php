@@ -17,28 +17,57 @@ $this->params['breadcrumbs'][] = $this->title;
     <br>
     <?=
         Html::a(
-            Html::icon('plus') . ' ' .$model->rating_up,
+            Html::icon('plus'),
             '#',
             [
                 'class' => 'btn btn-xs btn-success',
                 'onclick' => new JsExpression('
-                    alert();    
+                   $.ajax({
+                        url: "/news/up",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            id_news : '. $model->id .'
+                        },
+                        
+                        success: function(data){
+                            $("#up").text(data[0]);
+                            $("#down").text(data[1]);
+                        },
+                        error: function(){
+                            alert("Ошибка на сервере %(");
+                        }
+                    });
                 ')
             ]
-        )
-
+        )  . ' <i id = "up">' . $model->ratingUp . '</i>'
     ?>
     <?=
     Html::a(
-        Html::icon('minus') . ' ' .$model->rating_down,
+        Html::icon('minus'),
         '#',
         [
             'class' => 'btn btn-xs btn-danger',
             'onclick' => new JsExpression('
-                alert();    
+                $.ajax({
+                        url: "/news/down",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            id_news : '. $model->id .'
+                        },
+                        
+                        success: function(data){
+                            $("#up").text(data[0]);
+                            $("#down").text(data[1]);
+                        },
+                        error: function(){
+                            alert("Ошибка на сервере %(");
+                        }
+                    });    
             ')
         ]
-    )
+    ) . ' <i id = "down">' . $model->ratingDown . '</i>'
     ?>
 
     <br>

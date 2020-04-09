@@ -67,6 +67,9 @@ class NewsController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
+        $this->view->registerMetaTag([
+            'name' => 'description',
+            'content' => $model->description]);
         return $this->render('view', [
             'model' => $model,
         ]);
@@ -81,6 +84,8 @@ class NewsController extends Controller
     {
         $model = new News();
         $model->create_at = date('d.m.Y');
+        $model->rating_up = [];
+        $model->rating_down = [];
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -139,5 +144,108 @@ class NewsController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionUp(){
+        $post = Yii::$app->request->post();
+        $id_news = $post['id_news'];
+        $news = News::findOne($id_news);
+        if (!$news) return 0;
+        $rating_up = (is_array($news->rating_up))?$news->rating_up:[];
+        $rating_down = (is_array($news->rating_down))?$news->rating_down:[];
+
+        $id_user = Yii::$app->user->id;
+
+        if($id_user){
+            if(is_array($rating_up)) {
+                if (in_array($id_user, $rating_up)) {
+                    return json_encode([$news->ratingUp, $news->ratingDown]);
+                } else {
+                    if (is_array($rating_down)) {
+                        if (($delete_key = array_search($id_user, $rating_down)) !== false) {
+                            unset($rating_down[$delete_key]);
+                        }
+                    }
+                }
+            }
+            $rating_up[] = $id_user;
+            $news->rating_up = (is_array($rating_up))?$rating_up:[];
+            $news->rating_down = (is_array($rating_down))?$rating_down:[];
+            $news->save();
+            return json_encode([$news->ratingUp, $news->ratingDown]);
+
+        } else {
+            $ip = Yii::$app->request->userIP;
+            if(is_array($rating_up)) {
+                if (in_array($ip, $rating_up)) {
+                    return json_encode([$news->ratingUp, $news->ratingDown]);
+                } else {
+                    if (is_array($rating_down)) {
+                        if (($delete_key = array_search($ip, $rating_down)) !== false) {
+                            unset($rating_down[$delete_key]);
+                        }
+                    }
+                }
+            }
+            $rating_up[] = $ip;
+            $news->rating_up = ($rating_up)?$rating_up:[];
+            $news->rating_down = ($rating_down)?$rating_down:[];
+            $news->save();
+            return json_encode([$news->ratingUp, $news->ratingDown]);
+
+        }
+
+        return json_encode([$news->ratingUp, $news->ratingDown]);
+    }
+    public function actionDown(){
+        $post = Yii::$app->request->post();
+        $id_news = $post['id_news'];
+        $news = News::findOne($id_news);
+        if (!$news) return 0;
+        $rating_up = (is_array($news->rating_up))?$news->rating_up:[];
+        $rating_down = (is_array($news->rating_down))?$news->rating_down:[];
+
+        $id_user = Yii::$app->user->id;
+        if($id_user){
+
+            if(is_array($rating_down)) {
+                if (in_array($id_user, $rating_down)) {
+                    return json_encode([$news->ratingUp, $news->ratingDown]);
+                } else {
+                    if (is_array($rating_up)) {
+                        if (($delete_key = array_search($id_user, $rating_up)) !== false) {
+                            unset($rating_up[$delete_key]);
+                        }
+                    }
+                }
+            }
+            $rating_down[] = $id_user;
+            $news->rating_up = ($rating_up)?$rating_up:[];
+            $news->rating_down = ($rating_down)?$rating_down:[];
+
+            $news->save();
+            return json_encode([$news->ratingUp, $news->ratingDown]);
+
+        } else {
+            $ip = Yii::$app->request->userIP;
+            if(is_array($rating_down)) {
+                if (in_array($ip, $rating_down)) {
+                    return json_encode([$news->ratingUp, $news->ratingDown]);
+                } else {
+                    if (is_array($rating_up)) {
+                        if (($delete_key = array_search($ip, $rating_up)) !== false) {
+                            unset($rating_up[$delete_key]);
+                        }
+                    }
+                }
+            }
+            $rating_down[] = $ip;
+            $news->rating_up = ($rating_up)?$rating_up:[];
+            $news->rating_down = ($rating_down)?$rating_down:[];
+            $news->save();
+            return json_encode([$news->ratingUp, $news->ratingDown]);
+        }
+
+        return json_encode([$news->ratingUp, $news->ratingDown]);
     }
 }

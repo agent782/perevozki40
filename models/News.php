@@ -6,6 +6,7 @@ use Yii;
 use app\components\DateBehaviors;
 use app\components\SerializeBehaviors;
 
+
 /**
  * This is the model class for table "news".
  *
@@ -14,8 +15,8 @@ use app\components\SerializeBehaviors;
  * @property string $title
  * @property string $description
  * @property string $text
- * @property int $rating_up
- * @property int $rating_down
+ * @property int $ratingUp
+ * @property int $ratingDown
  * @property int $views
  * @property int $create_at
  * @property int $update_at
@@ -44,7 +45,9 @@ class News extends \yii\db\ActiveRecord
             [['text', 'description'], 'string'],
             [['title'], 'string', 'max' => 255],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y')],
-            [['views', 'rating_up', 'rating_down'] , 'default', 'value' => 0]
+            [['views', 'rating_up', 'rating_down'] , 'default', 'value' => 0],
+            [['rating_up', 'rating_down'] , 'safe']
+
         ];
     }
 
@@ -71,7 +74,7 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             'convertDate' => [
-                'class' => DateBehaviors::className(),
+                'class' => DateBehaviors::class,
                 'dateAttributes' => [
                     'create_at',
                     'update_at',
@@ -80,7 +83,7 @@ class News extends \yii\db\ActiveRecord
             ],
             'SerializeUnserialize' => [
                 'class' => SerializeBehaviors::class,
-                'arrAttributes' => []
+                'arrAttributes' => ['rating_up', 'rating_down'],
             ]
         ];
     }
@@ -107,5 +110,19 @@ class News extends \yii\db\ActiveRecord
                 break;
         }
         return false;
+    }
+
+    public function getRatingUp(){
+        if($this->rating_up && is_array($this->rating_up)){
+            return count($this->rating_up);
+        }
+        return 0;
+    }
+
+    public function getRatingDown(){
+        if($this->rating_down && is_array($this->rating_down)){
+            return count($this->rating_down);
+        }
+        return 0;
     }
 }
