@@ -82,7 +82,8 @@ use app\components\widgets\ShowMessageWidget;
                                 $order = Order::findOne($model['id_order']);
                                 if ($order) {
                                     return ShowMessageWidget::widget([
-                                        'helpMessage' => $order->getFullFinishInfo(false, null, true, true)
+                                        'helpMessage' => $order->getFullFinishInfo(false, null,
+                                            true, true)
                                     ]);
                                 }
                             }

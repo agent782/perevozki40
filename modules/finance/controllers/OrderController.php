@@ -2,6 +2,7 @@
 
 namespace app\modules\finance\controllers;
 
+use app\components\functions\functions;
 use app\models\Company;
 use kartik\grid\EditableColumnAction;
 use Yii;
@@ -85,8 +86,6 @@ class OrderController extends Controller
 
         ]);
     }
-
-
 
     public function behaviors()
     {

@@ -428,6 +428,16 @@ $this->title = ($this->title)
 </div>
 <footer class="footer">
     <div class="container">
+        <p>
+        <!-- uSocial -->
+        <script async src="https://usocial.pro/usocial/usocial.js?v=6.1.4"
+                data-script="usocial" charset="utf-8"></script>
+        <div class="uSocial-Share"
+             data-pid="cbb495426c32ee6767a525e93d12f42a" data-type="share"
+             data-options="round-rect,style1,default,left,slide-down,size24,eachCounter0,counter0"
+             data-social="vk,fb,ok,email" data-mobile="vi,wa,sms"></div>
+        <!-- /uSocial -->
+        </p>
         <p class="pull-left"><?=Html::a('Соглашение об использовании сервиса perevozki40.ru ',
                 '/default/user-agreement', ['style' => 'color: white']
             )?> | <?=Html::a(' Соглашение о конфиденциальности ',

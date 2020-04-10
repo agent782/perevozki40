@@ -12,7 +12,7 @@ $this->registerJsFile('/js/addCompany.js');
 
     <?=
             $form->field($modelCompany, 'name')
-                ->input('text', ['id' => 'Label', 'placeholder' => 'Ввведите ИНН или название:', 'autofocus' => true,
+                ->input('text', ['id' => 'Label', 'placeholder' => 'Введите ИНН или название:', 'autofocus' => true,
             'autocomplete' => 'on']);
 
     ?>
