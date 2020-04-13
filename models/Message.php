@@ -40,6 +40,7 @@ class Message extends \yii\db\ActiveRecord
     const STATUS_DELETE = 10;
 
     const TYPE_ALERT_CAR_OWNER_NEW_ORDER = 1;
+    const TYPE_CHANGE_PAID_STATUS = 2;
 
 
     private $idPushall = "4781";
@@ -225,6 +226,5 @@ class Message extends \yii\db\ActiveRecord
         }
         return false;
     }
-
 
 }

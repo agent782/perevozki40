@@ -28,7 +28,8 @@ class OrderController extends Controller
             'pru' => [
                 'class' => EditableColumnAction::class ,
                 'modelClass' => Order::class ,
-                'outputValue' => function ($model , $attribute , $key , $index) {
+                'outputValue' => function (Order $model , $attribute , $key , $index) {
+                    $model->sendMesAfterChangePaidStatus();
                     return $model->paidText;
                 } ,
                 'outputMessage' => function($model , $attribute , $key , $index) {

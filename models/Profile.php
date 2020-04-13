@@ -7,6 +7,7 @@ use app\components\DateBehaviors;
 use app\components\SerializeBehaviors;
 use app\components\SerializeAndCryptBehaviors;
 use app\models\setting\SettingVehicle;
+use app\models\settings\SettingProfile;
 use nickcv\encrypter\components\Encrypter;
 use yii\behaviors\TimestampBehavior;
 use app\components\functions\functions;
@@ -55,14 +56,15 @@ use yii\bootstrap\Html;
  * @property string $history_updates
  * @property integer $check_update_status
  * @property string $update_to_check;
- * @property Passport $passport
- * @property integer $procentVehicle
- * @property array $balance
- * @property string $old_id
- * @property array $ordersCarOwner
- * @property array $vehicles
- * @property AuthAssignment $authAssignment
- * @property integer $alert_new_order
+ * @property Passport $passport;
+ * @property integer $procentVehicle;
+ * @property array $balance;
+ * @property string $old_id;
+ * @property array $ordersCarOwner;
+ * @property array $vehicles;
+ * @property AuthAssignment $authAssignment;
+ * @property integer $alert_new_order;
+ * @property SettingProfile settings;
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -302,8 +304,8 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getEmail(){
-        if($this->user) {
-            return $this->user->email;
+        if($user = $this->user) {
+            return $user->email;
         }
         return false;
     }
@@ -314,6 +316,10 @@ class Profile extends \yii\db\ActiveRecord
             $roles[] = $role->roleName;
         }
         return $roles;
+    }
+
+    public function getSettings(){
+        return $this->hasOne(SettingProfile::class, ['id_user' => 'id_user']);
     }
 
     public function getRolesToString(){

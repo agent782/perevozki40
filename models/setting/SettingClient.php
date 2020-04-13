@@ -31,7 +31,8 @@ class SettingClient extends \app\models\setting\Setting
     public function rules()
     {
         return [
-            [['user_discount_cash', 'client_discount_cash', 'vip_client_discount_cash', 'user_discount_card', 'client_discount_card', 'vip_client_discount_card'], 'number'],
+            [['user_discount_cash', 'client_discount_cash', 'vip_client_discount_cash',
+                'user_discount_card', 'client_discount_card', 'vip_client_discount_card'], 'number'],
         ];
     }
 

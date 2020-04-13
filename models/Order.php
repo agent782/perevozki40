@@ -2260,6 +2260,123 @@ class Order extends \yii\db\ActiveRecord
         }
         return $res;
     }
+
+    public function sendMesAfterChangePaidStatus(){
+        $client = $this->profile;
+        $client = Profile::findOne(['id_user' => 186]);
+        $car_owner = $this->carOwner;
+        $car_owner = Profile::findOne(['id_user' => 186]);
+
+        if($client && !$this->re){
+            $message_client = new Message();
+            $message_client->id_order = $this->id;
+            $message_client->id_to_user = $client->id_user;
+            $message_client->type = Message::TYPE_CHANGE_PAID_STATUS;
+            $message_client->title = 'Заказ №' . $this->id . '. ' . $this->paidText . '.';
+            $message_client->title = $client->email;
+            $message_client->url = Url::to('/order/client', true);
+            $message_client->text = 'Статус оплаты изменен на "' . $this->paidText . ' клиентом."';
+            $message_client->text_push = 'Статус оплаты изменен на "' . $this->paidText . ' клиентом."';
+            if($client->settings){
+                if($client->settings->send_push && $client->user->push_ids){
+                    $message_client->sendPush(false);
+                }
+            } else {
+                if($client->user->push_ids){
+                    $message_client->sendPush(false);
+                }
+            }
+            $send_client_email = false;
+            if($client->settings){
+                if($client->settings->send_email && $client->email){
+                    $send_client_email = true;
+                }
+            } else {
+                if($client->email){
+                    $send_client_email = true;
+                }
+            }
+            if($send_client_email){
+                $email = [];
+                if($client->email) $email[] = $client->email;
+                if($client->email2) $email[] = $client->email2;
+                if(functions::sendEmail(
+                    $email,
+                    null,
+                    $message_client->title,
+                    [
+                        'name' => $client->name,
+                        'id_order' => $this->id,
+                        'paid_status' => $this->paidText
+                    ],
+                    [
+                        'html' => 'views/Order/change_paid_status_html',
+                        'text' => 'views/Order/change_paid_status_text',
+                    ]
+                )){
+                    $message_client->email_status = Message::STATUS_SEND;
+                    $message_client->save();
+                } else {
+                    $message_client->email_status = Message::STATUS_NEED_TO_SEND;
+                }
+            }
+        }
+
+        if($car_owner){
+            $message_car_owner = new Message();
+            $message_car_owner->id_order = $this->id;
+            $message_car_owner->id_to_user = $car_owner->id_user;
+            $message_car_owner->type = Message::TYPE_CHANGE_PAID_STATUS;
+            $message_car_owner->title = 'Заказ №' . $this->id . '. ' . $this->paidText . '.';
+            $message_car_owner->url = Url::to('/order/client', true);
+            $message_car_owner->text = 'Статус оплаты изменен на "' . $this->paidText . ' клиентом."';
+            $message_car_owner->text_push = 'Статус оплаты изменен на "' . $this->paidText . ' клиентом."';
+            if($car_owner->settings){
+                if($car_owner->settings->send_push && $car_owner->user->push_ids){
+                    $message_car_owner->sendPush(false);
+                }
+            } else {
+                if($car_owner->user->push_ids){
+                    $message_car_owner->sendPush(false);
+                }
+            }
+            $send_car_owner_email = false;
+            if($car_owner->settings){
+                if($car_owner->settings->send_email && $car_owner->email){
+                    $send_car_owner_email = true;
+                }
+            } else {
+                if($car_owner->email){
+                    $send_car_owner_email = true;
+                }
+            }
+            if($send_car_owner_email){
+                $email = [];
+                if($car_owner->email) $email[] = $car_owner->email;
+                if($car_owner->email2) $email[] = $car_owner->email2;
+                if(functions::sendEmail(
+                    $email,
+                    null,
+                    $message_car_owner->title,
+                    [
+                        'name' => $car_owner->name,
+                        'id_order' => $this->id,
+                        'paid_status' => $this->paidText
+                    ],
+                    [
+                        'html' => 'views/Order/change_paid_status_html',
+                        'text' => 'views/Order/change_paid_status_text',
+                    ]
+                )){
+                    $message_car_owner->email_status = Message::STATUS_SEND;
+                    $message_car_owner->save();
+                } else {
+                    $message_car_owner->email_status = Message::STATUS_NEED_TO_SEND;
+                }
+            }
+        }
+
+    }
  }
 
 
