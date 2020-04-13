@@ -2263,9 +2263,9 @@ class Order extends \yii\db\ActiveRecord
 
     public function sendMesAfterChangePaidStatus(){
         $client = $this->profile;
-        $client = Profile::findOne(['id_user' => 186]);
+//        $client = Profile::findOne(['id_user' => 186]);
         $car_owner = $this->carOwner;
-        $car_owner = Profile::findOne(['id_user' => 186]);
+//        $car_owner = Profile::findOne(['id_user' => 186]);
 
         if($client && !$this->re){
             $message_client = new Message();
