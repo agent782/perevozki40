@@ -54,7 +54,29 @@ use kartik\editable\Editable;
             'attribute' => 'hide',
             'format' => 'raw',
             'value' => function (Order $model, $index){
-                return Html::checkbox('hide', $model->hide);
+                return Html::checkbox('hide', $model->hide, [
+                    'onchange' => new JsExpression('
+                        $.ajax({
+                        url: "/logist/order/hide",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            id_order : '. $index .'
+                        },
+                        
+                        success: function(data){
+                            if(data){
+                                $(this).attr("checked", true);
+                            } else {
+                                $(this).attr("checked", false);
+                            }
+                        },
+                        error: function(){
+                            alert("Ошибка на сервере %(");
+                        }
+                    });    
+                    ')
+                ]);
             }
         ],
         [

@@ -492,4 +492,19 @@ class OrderController extends Controller
         return 1;
     }
 
+    public function actionHide(){
+        $post = Yii::$app->request->post();
+        $id_order = $post['id_order'];
+        $order = Order::findOne($id_order);
+        if($order->hide) {
+            $order->hide = false;
+        } else {
+            $order->hide = true;
+        }
+        if($order->save(false)){
+            return ($order->hide) ? 1 : 0;
+        }
+        return false;
+    }
+
 }
