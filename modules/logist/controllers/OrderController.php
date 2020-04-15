@@ -445,6 +445,7 @@ class OrderController extends Controller
             $Car_owners = $order->getSortArrayCarOwnerIdsForFind(true);
 //            $Car_owners = [186, 186];
             if($Car_owners) {
+                $sleep = 600/count($Car_owners);
                 foreach ($Car_owners as $id_user) {
                     $busy =
                     $order = Order::findOne($id_order);
@@ -461,7 +462,7 @@ class OrderController extends Controller
                         }
                         $mes->create_at = date('d.m.Y H:i', time());
                         $mes->AlertNewOrder($id_user, $id_order);
-                        sleep(120);
+                        sleep($sleep);
                     } else {
                         $order->auto_find = false;
                         $order->save(false);
