@@ -64,7 +64,7 @@ use app\models\Payment;
                 'editableOptions' => [
                     'format' => \kartik\editable\Editable::FORMAT_BUTTON,
                     'size' => 'xs',
-                    'inputType' => \kartik\editable\Editable::INPUT_DATE,
+                    'inputType' => \kartik\editable\Editable::INPUT_DATETIME,
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/logist/order/change-datetime'])
                     ],
@@ -73,7 +73,7 @@ use app\models\Payment;
                             'format' => 'dd.mm.yyyy H:ii',
                             'autoclose' => true,
                             'todayBtn' => true,
-                        ]
+                        ],
                     ]
                 ],
                 'contentOptions' => [

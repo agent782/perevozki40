@@ -33,6 +33,7 @@ echo \kartik\grid\GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => ($searchModel) ? $searchModel : false,
     'pjax' => true,
+    'responsiveWrap' => false,
     'pjaxSettings' => [
         'options' => [
             'id' => 'pjax_find_vehicle'
