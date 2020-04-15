@@ -14,6 +14,8 @@ use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use \app\models\XprofileXcompany;
 use yii\web\JsExpression;
+use kartik\grid\EditableColumn;
+use kartik\editable\Editable;
 
 ?>
 <div>
@@ -48,6 +50,13 @@ use yii\web\JsExpression;
 //            ],
 //        ],
         'id',
+        [
+            'attribute' => 'hide',
+            'format' => 'raw',
+            'value' => function (Order $model, $index){
+                return Html::checkbox('hide', $model->hide);
+            }
+        ],
         [
             'label' => 'Дата/время',
             'format' => 'raw',

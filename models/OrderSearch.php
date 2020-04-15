@@ -154,6 +154,7 @@ class OrderSearch extends Order
         $orders = [];
         $Orders = Order::find()
             ->where(['in', 'status' , [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING]])
+            ->andWhere(['hide' => false])
 //            ->asArray();
             ->all();
         foreach ($Orders as $Order){
