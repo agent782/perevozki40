@@ -59,6 +59,7 @@ $this->registerJs("
 //        ],
         'id',
         [
+            'label' => 'Дата/время',
             'attribute' => 'datetime_start',
             'contentOptions'=>[
                 'style'=>'white-space: normal;',
@@ -115,6 +116,7 @@ $this->registerJs("
             }
         ],
         [
+            'label' => 'Тип оплаты',
             'attribute' => 'paymentText',
             'format' => 'raw'
         ],

@@ -410,7 +410,8 @@ class Order extends \yii\db\ActiveRecord
             'cost_finish' => 'Сумма для клиента',
             'cost_finish_vehicle' => 'Сумма для водителя',
             'comment' => 'Комментарии:',
-            'old_id' => 'Усл. обозначение'
+            'old_id' => 'Усл. обозначение',
+            'hide' => 'Скрыт'
 
         ];
     }
