@@ -1280,6 +1280,9 @@ class Order extends \yii\db\ActiveRecord
         $email_to_client = true;
         $push_to_vehicle = false;
         $email_to_vehicle = false;
+        $sms_to_client = false;
+        $sms_to_vehicle = false;
+
         $message_can_review_client = false;
         $message_can_review_vehicle = false;
         //айдишники в сообщении клиенту, отзыв от и отзыв кому
@@ -1296,6 +1299,8 @@ class Order extends \yii\db\ActiveRecord
         $message_vehicle = '';
         $message_push_client = '';
         $message_push_vehicle = '';
+        $message_sms_client = '';
+        $message_sms_vehicle = '';
 
         switch ($newStatus){
             case self::STATUS_IN_PROCCESSING:
@@ -1350,11 +1355,13 @@ class Order extends \yii\db\ActiveRecord
                         $this->discount = $this->getDiscount($this->id_user);
                         $this->setEventChangeStatusToExpired();
 
-                    break;
+                        $sms_to_client = true;
+                        break;
                 }
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
                     . $this->getFullNewInfo(true, false, true, false);
                 $message_push_client = 'Спасибо за Ваш заказ.';
+                $message_sms_client = 'Заказ №' . $this->id . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
                 $this->discount = $this->getDiscount($this->id_user);
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
@@ -1626,6 +1633,11 @@ class Order extends \yii\db\ActiveRecord
                 'id_user_to' => $id_client,
             ]);
             $review_vehicle->save(false);
+        }
+
+        if($message_sms_client && $sms_to_client){
+            $Sms = new Sms($this->user->username, $message_sms_client);
+            $Sms->sendAndSave();
         }
 
         $this->scenario = self::SCENARIO_UPDATE_STATUS;

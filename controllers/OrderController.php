@@ -5,6 +5,7 @@ use app\components\functions\emails;
 use app\models\Payment;
 use app\models\Profile;
 use app\models\setting\SettingVehicle;
+use app\models\Sms;
 use app\models\VehicleType;
 use app\models\XprofileXcompany;
 use function Couchbase\fastlzCompress;
