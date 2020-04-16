@@ -1342,11 +1342,19 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_NEW:
+                $message_client = 'Спасибо за Ваш заказ.  <br>'
+                    . $this->getFullNewInfo(true, false, true, false);
+                $message_push_client = 'Спасибо за Ваш заказ.';
+                $message_sms_client = 'Заказ №' . $this->id . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
+                $this->discount = $this->getDiscount($this->id_user);
+                $sms_to_client = true;
+
                 switch ($this->status) {
                     case self::STATUS_NEW: case self::STATUS_IN_PROCCESSING:
                         $title_client = 'Заказ №' . $this->id . ' изменен.';
                         $this->deleteEventChangeStatusToExpired();
                         $this->setEventChangeStatusToExpired();
+                        $sms_to_client = false;
 
                     break;
                     case self::STATUS_CANCELED: case self::STATUS_EXPIRED:
@@ -1355,14 +1363,9 @@ class Order extends \yii\db\ActiveRecord
                         $this->discount = $this->getDiscount($this->id_user);
                         $this->setEventChangeStatusToExpired();
 
-                        $sms_to_client = true;
                         break;
                 }
-                $message_client = 'Спасибо за Ваш заказ.  <br>'
-                    . $this->getFullNewInfo(true, false, true, false);
-                $message_push_client = 'Спасибо за Ваш заказ.';
-                $message_sms_client = 'Заказ №' . $this->id . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
-                $this->discount = $this->getDiscount($this->id_user);
+
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
                 $vehicle = $this->vehicle;
