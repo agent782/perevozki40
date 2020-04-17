@@ -789,7 +789,12 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
+            $message_sms_client = 'Заказ №' . $this->id . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
+            $Sms = new Sms($this->user->username, $message_sms_client);
+            $Sms->sendAndSave();
+
             parent::afterSave($insert, $changedAttributes);
+
             if(!$this->re) {
                 $this->changeStatus(self::STATUS_NEW, $this->id_user);
             }
@@ -1345,9 +1350,11 @@ class Order extends \yii\db\ActiveRecord
                 $message_client = 'Спасибо за Ваш заказ.  <br>'
                     . $this->getFullNewInfo(true, false, true, false);
                 $message_push_client = 'Спасибо за Ваш заказ.';
+
                 $message_sms_client = 'Заказ №' . $this->id . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
-                $this->discount = $this->getDiscount($this->id_user);
                 $sms_to_client = true;
+
+                $this->discount = $this->getDiscount($this->id_user);
 
                 switch ($this->status) {
                     case self::STATUS_NEW: case self::STATUS_IN_PROCCESSING:
@@ -1638,7 +1645,7 @@ class Order extends \yii\db\ActiveRecord
             $review_vehicle->save(false);
         }
 
-        if($message_sms_client && $sms_to_client){
+        if($message_sms_client && $sms_to_client && !$this->re){
             $Sms = new Sms($this->user->username, $message_sms_client);
             $Sms->sendAndSave();
         }
