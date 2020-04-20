@@ -126,20 +126,21 @@ $classiferVehicleIds = [];
             ],
         ])?>
     <?= $form->field($modelRegLicense, 'number')
-        ->widget(MaskedInput::className(),[
-            'mask' => '99 99 № 999999',
-            'options' =>
-                [
-                    'id' => 'licenseMask',
-                    'placeholder' => '99 99 № 999999',
-                    'type' => 'tel',
-                    'autocorrect' => 'off',
-                    'autocomplete' => 'on'
-                ],
-            'clientOptions'=>[
-                'removeMaskOnSubmit' => true,
-            ],
-        ])?>
+//        ->widget(MaskedInput::className(),[
+//            'mask' => '99 99 № 999999',
+//            'options' =>
+//                [
+//                    'id' => 'licenseMask',
+//                    'placeholder' => '99 99 № 999999',
+//                    'type' => 'tel',
+//                    'autocorrect' => 'off',
+//                    'autocomplete' => 'on'
+//                ],
+//            'clientOptions'=>[
+//                'removeMaskOnSubmit' => true,
+//            ],
+//        ])
+    ?>
     <?= $form->field($modelRegLicense, 'date')
         ->widget(MaskedInput::className(),[
             'clientOptions' => [
