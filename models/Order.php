@@ -2361,7 +2361,7 @@ class Order extends \yii\db\ActiveRecord
                 }
             } else {
                 if($car_owner->user->push_ids){
-                    $message_car_owner->sendPush(false);
+//                    $message_car_owner->sendPush(false);
                 }
             }
             $send_car_owner_email = false;
