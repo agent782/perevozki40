@@ -173,9 +173,13 @@ class OrderController extends Controller
     {
 //        return var_dump(Yii::$app->request->post());
         $session = Yii::$app->session;
-//        $modelOrder = $session->get('modelOrder');
-//        if (!$modelOrder)
+        $modelOrder = $session->get('modelOrder');
+        if (!$modelOrder)
             $modelOrder = new Order();
+        $route = $session->get('route');
+        if(!$route)
+            $route = new Route();
+
         if(Yii::$app->user->can('admin') || Yii::$app->user->can('dispetcher')){
             $this->layout = 'logist';
         };
@@ -228,9 +232,9 @@ class OrderController extends Controller
                     return $this->redirect('create');
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
-                    $route = new Route();
-//                    if($session->get('route')) $route = $session->get('route');
-//                    $session->set('modelOrder', $modelOrder);
+                    $route = $session->get('route');
+                    if(!$route)
+                        $route = new Route();
                     $session->set('route', $route);
                     $session->set('modelOrder', $modelOrder);
                     return $this->render('create4', [
