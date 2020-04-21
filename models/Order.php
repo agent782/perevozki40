@@ -789,7 +789,9 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
-            $message_sms_client = 'Заказ №' . $this->id . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
+            $message_sms_client = 'Заказ №'
+                . $this->id
+                . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
             $Sms = new Sms($this->user->username, $message_sms_client);
             $Sms->sendAndSave();
 
@@ -2160,8 +2162,17 @@ class Order extends \yii\db\ActiveRecord
                 $driver = $this->driver;
                 $carOwner = $this->carOwner;
                 $vehicle = $this->vehicle;
+                if($this->real_datetime_start){
+                    $return .= $this->real_datetime_start;
+                }
+                if($this->cost_finish){
+                    $return .= '<br><br>' . $this->cost_finish;
+                }
+            if($this->cost_finish_vehicle){
+                $return .= ' / ' . $this->cost_finish_vehicle;
+            }
                 if($realRoute){
-                    $return .= $realRoute->getFullRoute(false);
+                    $return .= '<br><br>' . $realRoute->getFullRoute(false);
                 } else {
                     $route = $this->route;
                     if($route) $return .= $route->getFullRoute(false);
