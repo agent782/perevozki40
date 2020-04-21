@@ -2165,6 +2165,9 @@ class Order extends \yii\db\ActiveRecord
                 if($this->real_datetime_start){
                     $return .= $this->real_datetime_start;
                 }
+                if($this->invoice){
+                    $return .= ' (Счет ' . $this->invoice->number . ')';
+                }
                 if($this->cost_finish){
                     $return .= '<br><br>' . $this->cost_finish;
                 }
