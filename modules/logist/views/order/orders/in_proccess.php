@@ -98,9 +98,17 @@ use app\models\Payment;
                 ]
             ],
             [
-            'label' => 'Маршрут',
-            'format' => 'raw',
-            'attribute' => 'route.fullRoute'
+                'label' => 'Маршрут',
+                'format' => 'raw',
+                'attribute' => 'route.fullRoute',
+                'value' => function (Order $model){
+                    return $model->route->fullRoute . ' '
+                        . Html::a(Html::icon('edit'), [
+                            '/order/change-route',
+                            'id_order' => $model->id,
+                            'redirect' => Url::to('/logist/order')
+                        ]);
+                }
             ],
             [
                 'label' => 'Информация о заказе',

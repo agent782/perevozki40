@@ -1034,6 +1034,25 @@ class OrderController extends Controller
 
     }
 
+    public function actionChangeRoute(int $id_order, string $redirect){
+        $order = $this->findModel($id_order);
+        if(!($route = $order->route)) $route = new Route();
+
+        if($route->load(Yii::$app->request->post())){
+            if($route->save()){
+                functions::setFlashSuccess('Маршрут изменен');
+            } else {
+                functions::setFlashWarning('Ошибка. Маршрут не изменен');
+            }
+            return $this->redirect($redirect);
+        }
+
+
+        return $this->render('/order/create4',[
+            'route' => $route
+        ]);
+    }
+
     public function actionValidateOrder(){
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
