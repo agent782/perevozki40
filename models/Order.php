@@ -264,7 +264,7 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'length', 'width', 'height', 'volume', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength',
-            'cargo', 'ep', 'rp', 'lp'
+            'cargo', 'ep', 'rp', 'lp', 'passengers'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'body_typies', 'passengers', 'cargo', 'selected_rates', 'type_payment',
@@ -1081,7 +1081,7 @@ class Order extends \yii\db\ActiveRecord
         $height= ($finish)? null: $this->height;
         $width= ($finish)? null: $this->width;
         $volume= ($finish)? $this->real_volume: $this->volume;
-        $passengers= ($finish)? $this->real_passengers: $this->passengers;
+        $passengers = ($finish)? $this->real_passengers: $this->passengers;
         $tonnage_spec = ($finish)? $this->real_tonnage_spec: $this->tonnage_spec;
         $length_spec = ($finish)? $this->real_length_spec: $this->length_spec;
         $volume_spec = ($finish)? $this->real_volume_spec: $this->volume_spec;
@@ -1097,16 +1097,22 @@ class Order extends \yii\db\ActiveRecord
                 $return .= ' (Д*В*Ш)';
                 $return .= 'Объем: ';
                 $return .= ($volume) ? $volume . ' м3 ' : '-- ';
+                if($this->ep || $this->rp || $this->lp) {
+                    $return .= '<br>Кол-во поддонов: ';
+                    $return .= ($this->ep) ? '"Евро" 0.8*1.2м - ' . $this->ep . ' шт.; ' : '';
+                    $return .= ($this->rp) ? ' "Рус" 1*1.2м - ' . $this->rp  . ' шт.; ' : '';
+                    $return .= ($this->lp) ? ' "Нестанд." 1.2*1.2м - ' . $this->lp . ' шт.' : '';
+                }
                 $return .= ($longlength) ? ' Груз-длинномер.<br>' : '<br>';
                 $lTypies = 'Погрузка/разгрузка: ';
                 if ($this->loading_typies) {
-
                     foreach ($this->loading_typies as $loadingType) {
                         $lTypies .= LoadingType::findOne($loadingType)->type . ', ';
                     }
                     $lTypies = substr($lTypies, 0, -2) . '.';
                     $return .= ($finish) ? '' : $lTypies . '. <br>';
                 }
+                $return .= ($passengers)? '<br>' . $passengers . ' пассажира(ов)' : '';
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $return .= $passengers . ' пассажира(ов)';
@@ -1666,9 +1672,19 @@ class Order extends \yii\db\ActiveRecord
         }
     }
 
-    public function getFullNewInfo($showClientPhone = false, $showPriceForVehicle = false, $showPriceZones = true, $html = true){
+    public function getFullNewInfo(
+        $showClientPhone = false,
+        $showPriceForVehicle = false,
+        $showPriceZones = true,
+        $html = true,
+        $route = false)
+    {
         $return = 'Заказ №' . $this->id . ' на ' .  $this->datetime_start .'<br>';
-        $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
+        if(!$route) {
+            $return .= 'Маршрут: ' . $this->route->fullRoute . '<br>';
+        } else {
+            $return .= 'Маршрут: ' . $route->fullRoute . '<br>';
+        }
         $return .= $this->getShortInfoForClient(true) . ' <br>';
         $return .= ($showPriceForVehicle) ? 'Тарифная зона №' . $this->getNumberPriceZoneForVehicle($html) . '. <br>' : '';
         $return .= ($showPriceZones) ? 'Тарифные зоны: ' . $this->idsPriceZones . '. <br>' :'';

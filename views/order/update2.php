@@ -26,7 +26,8 @@
     </div>
     <div class="col-lg-7">
         Информация о заказе.<br>
-        <?= $modelOrder->getFullNewInfo(true,false, false)?>
+        <?= $modelOrder->getFullNewInfo(true,false,
+            false, true, $route)?>
     </div>
     <div class="col-lg-10">
         <?=
