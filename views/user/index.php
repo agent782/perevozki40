@@ -181,12 +181,6 @@
                     <?= Html::a('Проверить PUSH ' . Html::icon('bell'),
                         Url::to('/message/check-push'), ['class' => 'btn btn-danger'])?>
                 <br>
-                <?php if(Yii::$app->session->hasFlash('info')): ?>
-                    <div class="container alert alert-info alert-dismissible" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <?= Yii::$app->session->getFlash('info')?>
-                    </div>
-                <?php endif; ?>
                 <br>
                 <?=Tip::getTipButtonModal($modelUser, 'push_ids',
                     ['label' => 'Что такое push уведомления? ' . Html::icon('info-sign')]
