@@ -174,9 +174,13 @@
             </div>
             <div class="col-lg-4">
                 <br><br>
-                <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781" width="320" height="120" scrolling="no" style="overflow: hidden;">
+                <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781"
+                        width="320" height="120" scrolling="no" style="overflow: hidden;">
                 </iframe>
                 <br>
+                    <?= Html::a('Проверить ' . Html::icon('bell'),
+                        Url::to('/message/check-push'), ['class' => 'btn btn-danger'])?>
+                <br><br>
                 <?=Tip::getTipButtonModal($modelUser, 'push_ids',
                     ['label' => 'Что такое push уведомления? ' . Html::icon('info-sign')]
                 )?>

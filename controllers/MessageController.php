@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\functions\functions;
 use app\models\Order;
+use yii\helpers\Url;
 use Yii;
 use app\models\Message;
 use app\models\MessageSearch;
@@ -186,4 +187,17 @@ class MessageController extends Controller
         functions::setFlashSuccess('Все сообщения помечены как прочитанные');
         $this->redirect('/message');
     }
+
+    public function actionCheckPush($redirect = '/user'){
+        $message = new Message([
+            'id_to_user' => Yii::$app->user->id,
+            'title' => 'Вы подписаны на push-уведомления',
+            'text' => 'На это устройство приходят push-уведомления от сервиса perevozki40.ru',
+            'url' => Url::to('/', true)
+        ]);
+        $message->sendPush(false);
+
+        return $this->redirect($redirect);
+    }
+
 }
