@@ -197,6 +197,8 @@ class MessageController extends Controller
         ]);
         $message->sendPush(false);
 
+        functions::setFlashInfo('Тестовое push-уведомление отправлено!');
+
         return $this->redirect($redirect);
     }
 
