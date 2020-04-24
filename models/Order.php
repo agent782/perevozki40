@@ -1422,7 +1422,7 @@ class Order extends \yii\db\ActiveRecord
                 $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
                 $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
                     в разделе "Заказы" на вкладке "Отмененные".';
-                $message_client = functions::translit(
+                $title_client = functions::translit(
                     'Заказ №' . $this->id
                     . ' на '. $this->datetime_start
                     .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
