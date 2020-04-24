@@ -1415,6 +1415,7 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_EXPIRED:
+
                 $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
                 $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
                     в разделе "Заказы" на вкладке "Отмененные".';
@@ -1425,6 +1426,8 @@ class Order extends \yii\db\ActiveRecord
                     . ' на '. $this->datetime_start
                     .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
                 );
+                $Sms = new Sms($this->user->username, $message_sms_client);
+                $Sms->sendAndSave();
 
                 $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
