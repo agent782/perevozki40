@@ -20,7 +20,6 @@ $this->registerJsFile('/js/order.js');
     ]);
     echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
 ?>
-<?= var_dump($modelOrder->body_typies)?>
 <?=
 ($modelOrder->id_vehicle_type != \app\models\Vehicle::TYPE_SPEC)
     ?
