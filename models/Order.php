@@ -793,7 +793,7 @@ class Order extends \yii\db\ActiveRecord
                 . $this->id
                 . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
             $Sms = new Sms($this->user->username, $message_sms_client);
-            $Sms->sendAndSave();
+//            $Sms->sendAndSave();
 
             parent::afterSave($insert, $changedAttributes);
 
@@ -1422,12 +1422,12 @@ class Order extends \yii\db\ActiveRecord
                 $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
                 $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
                     в разделе "Заказы" на вкладке "Отмененные".';
-                $message_client_client = functions::translit(
+                $message_client = functions::translit(
                     'Заказ №' . $this->id
                     . ' на '. $this->datetime_start
                     .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
                 );
-                $message_client = '111111111111111111111';
+
                 $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
             case self::STATUS_CONFIRMED_VEHICLE:
