@@ -793,7 +793,7 @@ class Order extends \yii\db\ActiveRecord
                 . $this->id
                 . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
             $Sms = new Sms($this->user->username, $message_sms_client);
-            $Sms->sendAndSave();
+//            $Sms->sendAndSave();
 
             parent::afterSave($insert, $changedAttributes);
 
