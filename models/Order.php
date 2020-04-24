@@ -1419,6 +1419,13 @@ class Order extends \yii\db\ActiveRecord
                 $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
                     в разделе "Заказы" на вкладке "Отмененные".';
 
+                $sms_to_client = true;
+                $message_sms_client = functions::translit(
+                    'Заказ №' . $this->id
+                    . ' на '. $this->datetime_start
+                    .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
+                );
+
                 $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
             case self::STATUS_CONFIRMED_VEHICLE:
