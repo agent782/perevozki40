@@ -1378,6 +1378,9 @@ class Order extends \yii\db\ActiveRecord
                         $this->discount = $this->getDiscount($this->id_user);
                         $this->setEventChangeStatusToExpired();
 
+                        $message_sms_client = 'Заказ №' . $this->id
+                            . ' изменен.Все Ваши заказы в ЛК perevozki40.ru/order/client';
+
                         break;
                 }
 
