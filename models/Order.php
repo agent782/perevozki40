@@ -1420,11 +1420,8 @@ class Order extends \yii\db\ActiveRecord
                     в разделе "Заказы" на вкладке "Отмененные".';
 
                 $sms_to_client = true;
-                $message_sms_client = functions::translit(
-                    'Заказ №' . $this->id
-                    . ' на '. $this->datetime_start
-                    .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
-                );
+                $message_sms_client = 'Заказ №' . $this->id
+                    .' Машина не найдена.Повторить> perevozki40.ru/order/client';
 
                 $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
