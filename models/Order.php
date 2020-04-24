@@ -1415,19 +1415,17 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_EXPIRED:
-
-                $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
-                $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
-                    в разделе "Заказы" на вкладке "Отмененные".';
-
                 $sms_to_client = true;
                 $message_sms_client = functions::translit(
                     'Заказ №' . $this->id
                     . ' на '. $this->datetime_start
                     .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
                 );
-                $Sms = new Sms($this->user->username, $message_sms_client);
+                $Sms = new Sms($this->user->username, 'test');
                 $Sms->sendAndSave();
+                $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
+                $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
+                    в разделе "Заказы" на вкладке "Отмененные".';
 
                 $this->FLAG_SEND_EMAIL_STATUS_EXPIRED = 1;
                 break;
