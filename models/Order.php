@@ -1420,8 +1420,8 @@ class Order extends \yii\db\ActiveRecord
 //                $Sms = new Sms($this->user->username, 'test');
 //                $Sms->sendAndSave();
                 $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
-                $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск 
-                    в разделе "Заказы" на вкладке "Отмененные".';
+//                $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск
+//                    в разделе "Заказы" на вкладке "Отмененные".';
                 $message_client = functions::translit(
                     'Заказ №' . $this->id
                     . ' на '. $this->datetime_start
