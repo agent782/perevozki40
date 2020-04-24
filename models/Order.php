@@ -1415,14 +1415,12 @@ class Order extends \yii\db\ActiveRecord
 
                 break;
             case self::STATUS_EXPIRED:
-                $sms_to_client = true;
-
-//                $Sms = new Sms($this->user->username, 'test');
-//                $Sms->sendAndSave();
                 $title_client = 'Заказ №' . $this->id . '. Машина не найдена.';
-//                $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск
-//                    в разделе "Заказы" на вкладке "Отмененные".';
-                $message_client = functions::translit(
+                $message_client = 'Машина не найдена. Заказ №' . $this->id . '. Вы можете повторить поиск
+                    в разделе "Заказы" на вкладке "Отмененные".';
+
+                $sms_to_client = true;
+                $message_sms_client = functions::translit(
                     'Заказ №' . $this->id
                     . ' на '. $this->datetime_start
                     .' МАШИНА НЕ НАЙДЕНА. Вы можете изменить и повторить заказ в ЛК perevozki40/order/client'
@@ -1662,10 +1660,10 @@ class Order extends \yii\db\ActiveRecord
             $review_vehicle->save(false);
         }
 
-//        if($message_sms_client && $sms_to_client && !$this->re){
-//            $Sms = new Sms($this->user->username, $message_sms_client);
-//            $Sms->sendAndSave();
-//        }
+        if($message_sms_client && $sms_to_client && !$this->re){
+            $Sms = new Sms($this->user->username, $message_sms_client);
+            $Sms->sendAndSave();
+        }
 
         $this->scenario = self::SCENARIO_UPDATE_STATUS;
         $this->status = $newStatus;
