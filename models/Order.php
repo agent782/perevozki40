@@ -789,11 +789,13 @@ class Order extends \yii\db\ActiveRecord
                     $this->link('priceZones', $PriceZone);
                 }
             }
-            $message_sms_client = 'Заказ №'
-                . $this->id
-                . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
-            $Sms = new Sms($this->user->username, $message_sms_client);
-            $Sms->sendAndSave();
+            if(!$this->re) {
+                $message_sms_client = 'Заказ №'
+                    . $this->id
+                    . ' принят. Все ваши заказы в ЛК. perevozki40.ru/order/client';
+                $Sms = new Sms($this->user->username, $message_sms_client);
+                $Sms->sendAndSave();
+            }
 
             parent::afterSave($insert, $changedAttributes);
 
