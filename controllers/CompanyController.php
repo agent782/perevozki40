@@ -53,7 +53,8 @@ class CompanyController extends Controller
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
             //юр лицо в списке текущего пользователя
-                            return Company::CompanyBelongsUser(Yii::$app->user->getId(), Yii::$app->request->get('id'));
+                            return Company::CompanyBelongsUser(Yii::$app->user->getId(),
+                                Yii::$app->request->get('id'));
                         },
                     ],
                     //скачивание договора только  своих юр лиц
