@@ -156,7 +156,7 @@ use app\components\widgets\ShowMessageWidget;
         foreach ($dataProviders_companies as $id_company => $dataProvider_company){
             if($company = \app\models\Company::findOne($id_company)) {
                 $content .= '<div id="pointer_company_' . $id_company . '" style = "cursor: pointer;">';
-                $content .= $company->name . ' ('
+                $content .= $company->name . '('
                 . $Balance['balance_companies'][$id_company]['balance'] . ' р.)';
                 $content .= '<div id="slide_company_' . $id_company . '">';
                 $content .= GridView::widget([
@@ -230,8 +230,6 @@ use app\components\widgets\ShowMessageWidget;
 ?>
 
 <div class="container">
-
-
     <?=
         \yii\bootstrap\Tabs::widget([
             'id' => 'balances',
@@ -243,6 +241,7 @@ use app\components\widgets\ShowMessageWidget;
            'items' => $items,
         ]);
     ?>
+    <br><br>
     <?= $comments?>
 
 </div>
