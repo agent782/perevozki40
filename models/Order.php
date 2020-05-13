@@ -680,7 +680,7 @@ class Order extends \yii\db\ActiveRecord
                         $priceZones = $priceZones->andFilterWhere(['longlength' => $this->real_longlength]);
                     } else {
                         if(!$this->vehicle->longlength || $this->real_length < $this->vehicle->length){
-                            $priceZones = $priceZones->andFilterWhere(['longlength' => false]);
+                            $priceZones = $priceZones->andFilterWhere(['longlength' => 0]);
                         }
                     }
                 $priceZones = $priceZones
