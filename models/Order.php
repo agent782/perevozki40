@@ -672,12 +672,16 @@ class Order extends \yii\db\ActiveRecord
                     ->andFilterWhere(['>=', 'tonnage_max', $this->real_tonnage])
                     ->andFilterWhere(['>=', 'volume_max', $this->real_volume])
                     ->andFilterWhere(['>=', 'length_max', $this->real_length])
-                    ->andFilterWhere(['longlength' => $this->real_longlength])
+//                    ->andFilterWhere(['longlength' => $this->real_longlength])
 //                    ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
 //                    ->all()
                 ;
                     if(!$this->real_longlength) {
                         $priceZones = $priceZones->andFilterWhere(['longlength' => $this->real_longlength]);
+                    } else {
+                        if(!$this->vehicle->longlength || $this->real_length < $this->vehicle->length){
+                            $priceZones = $priceZones->andFilterWhere(['longlength' => false]);
+                        }
                     }
                 $priceZones = $priceZones
                     ->orderBy(['r_km'=>SORT_ASC, 'r_h'=>SORT_ASC])
