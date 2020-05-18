@@ -65,11 +65,6 @@ $this->title = ($this->title)
             src="https://api-maps.yandex.ru/2.1/?apikey=16eacdd2-acfd-4122-b0c7-639d10363985&lang=ru_RU" type="text/javascript">
    </script>
     <?php $this->head() ?>
-    <?php $this->registerLinkTag([
-        'rel' => 'icon',
-        'type' => 'image/x-icon',
-        'href' => 'favicon.ico',
-    ]);?>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
