@@ -12,7 +12,7 @@ $vehTypeId = $model->id_vehicle_type;
 
         echo $form->field($model, 'tonnage', ['inputOptions' => [
             'id' => 'tonnage',
-            'type' => 'tel',
+//            'type' => 'tel',
             'autofocus' => true,
             'onchange' => '
                 UpdatePriceZones();
@@ -24,26 +24,26 @@ $vehTypeId = $model->id_vehicle_type;
         ]]);
         echo $form->field($model, 'length', ['inputOptions' => [
             'id' => 'length',
-            'type' => 'tel'
+//            'type' => 'tel'
         ]])->input('number', [
             'onchange' => 'setVolume(); UpdatePriceZones();',
-            'type' => 'tel'
+//            'type' => 'tel'
         ]);
         echo $form->field($model, 'width', ['inputOptions' => [
             'id' => 'width',
-            'type' => 'tel'
+//            'type' => 'tel'
         ]])->input('number', [
             'onchange' => 'setVolume();UpdatePriceZones();'
         ]);
         echo $form->field($model, 'height', ['inputOptions' => [
             'id' => 'height',
-            'type' => 'tel'
+//            'type' => 'tel'
         ]])->input('number', [
             'onchange' => 'setVolume();UpdatePriceZones();',
         ]);
         echo $form->field($model, 'volume', ['inputOptions' => [
             'id' => 'volume',
-            'type' => 'tel',
+//            'type' => 'tel',
             'onchange' => '
                 UpdatePriceZones();
             '

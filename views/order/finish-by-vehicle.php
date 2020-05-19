@@ -111,7 +111,7 @@ $this->registerJsFile('/js/order.js');
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
-                    'type' => 'tel',
+//                    'type' => 'tel',
                     'style' => 'width: 150px',
                 ]
             ]);
@@ -123,7 +123,7 @@ $this->registerJsFile('/js/order.js');
             ->label('Реальный пробег')
         ;?>
         <div id="real_h_loading">
-            <?= $form->field($modelOrder, 'real_h_loading')->input('tel')?>
+            <?= $form->field($modelOrder, 'real_h_loading')->input('text')?>
         </div>
         <?php
             if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND)

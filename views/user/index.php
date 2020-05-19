@@ -80,7 +80,7 @@
                         'options' => [
                             'type' => 'tel',
                             'autocorrect' => 'off',
-                            'autocomplete' => 'tel'
+//                            'autocomplete' => 'tel'
                         ]
                     ])?>
 
@@ -145,9 +145,9 @@
                             [
                                 'id' => 'passportMask',
                                 'placeholder' => 'Серия и номер',
-                                'type' => 'tel',
-                                'autocorrect' => 'off',
-                                'autocomplete' => 'off'
+//                                'type' => 'tel',
+//                                'autocorrect' => 'off',
+//                                'autocomplete' => 'off'
                             ],
                         'clientOptions'=>[
                             'removeMaskOnSubmit' => true,

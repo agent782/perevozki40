@@ -22,12 +22,12 @@ $form = ActiveForm::begin([
 ?>
 <?= $form->field($modelVerifyPhone, 'userCode', ['inputOptions' => [
     'id' => 'UserCode',
-    'type' => 'tel',
+//    'type' => 'tel',
     'style' => 'width: 100px',
     'autocorrect' => 'off',
     'autocomplete' => 'off',
 //    'onchange' => 'alert();'
-]])->input('tel')
+]])->input('text')
 ?>
 
     <?= Yii::$app->session->getFlash('errorCode')?>

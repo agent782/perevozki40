@@ -48,7 +48,6 @@ $this->registerJsFile('/js/signup.js');
                 'options' => [
                     'type' => 'tel',
                     'autocorrect' => 'off',
-                    'autocomplete' => 'tel'
                 ]
             ])?>
 
@@ -118,7 +117,7 @@ $this->registerJsFile('/js/signup.js');
                     [
                         'id' => 'passportMask',
                         'placeholder' => 'Серия и номер',
-                        'type' => 'tel',
+//                        'type' => 'tel',
                         'autocorrect' => 'off',
                         'autocomplete' => 'off'
                     ],
@@ -136,7 +135,7 @@ $this->registerJsFile('/js/signup.js');
                 'options' => [
                     'type' => 'tel',
                     'autocorrect' => 'off',
-                    'autocomplete' => 'date',
+//                    'autocomplete' => 'date',
                     'placeholder' => '01.01.2000'
                 ]
             ])?>

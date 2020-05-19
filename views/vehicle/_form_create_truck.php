@@ -41,7 +41,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             echo $form->field($VehicleForm, 'vehicleTypeId')->hiddenInput()->label(false);
                     echo $form->field($VehicleForm, 'tonnage', ['inputOptions' => [
                         'id' => 'tonnage',
-                        'type' => 'tel',
+//                        'type' => 'tel',
                         'autofocus' => true
                     ]]);
                     echo $form->field($VehicleForm, 'passengers', ['inputOptions' => [
@@ -50,27 +50,27 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
                     ]]);
                     echo $form->field($VehicleForm, 'length', ['inputOptions' => [
                         'id' => 'length',
-                        'type' => 'tel'
-                    ]])->input('number', [
+//                        'type' => 'tel'
+                    ]])->input('text', [
                         'onchange' => 'setVolume();',
-                        'type' => 'tel'
+//                        'type' => 'tel'
                     ]);
                     echo $form->field($VehicleForm, 'width', ['inputOptions' => [
                         'id' => 'width',
-                        'type' => 'tel'
-                    ]])->input('number', [
+//                        'type' => 'tel'
+                    ]])->input('text', [
                         'onchange' => 'setVolume();'
                     ]);
                     echo $form->field($VehicleForm, 'height', ['inputOptions' => [
                         'id' => 'height',
-                        'type' => 'tel'
-                    ]])->input('number', [
+//                        'type' => 'tel'
+                    ]])->input('text', [
                         'onchange' => 'setVolume();',
                     ]);
                     echo '<comment class = "alert-warning">Для бортовых открытых ТС указывайте максимальную высоту груза, которую ТС может перевозить. </comment>';
                     echo $form->field($VehicleForm, 'volume', ['inputOptions' => [
                         'id' => 'volume',
-                        'type' => 'tel'
+//                        'type' => 'tel'
                     ]]);
                     echo $form->field($VehicleForm, 'ep', ['inputOptions' => [
                         'type' => 'tel'

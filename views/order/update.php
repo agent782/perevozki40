@@ -154,7 +154,7 @@ $this->title = 'Изменение заказа №' . $modelOrder->id;
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
-                    'type' => 'tel',
+//                    'type' => 'tel',
                     'style' => 'width: 150px',
                 ]
             ]);

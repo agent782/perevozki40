@@ -48,7 +48,7 @@ use yii\widgets\MaskedInput;
             'options' => [
                 'type' => 'tel',
                 'autocorrect' => 'off',
-                'autocomplete' => 'tel'
+//                'autocomplete' => 'tel'
             ]
         ])
     ?>
@@ -61,7 +61,7 @@ use yii\widgets\MaskedInput;
             'options' => [
                 'type' => 'tel',
                 'autocorrect' => 'off',
-                'autocomplete' => 'tel'
+//                'autocomplete' => 'tel'
             ]
         ])
     ?>
@@ -86,9 +86,9 @@ use yii\widgets\MaskedInput;
                     [
                         'id' => 'passportMask',
                         'placeholder' => 'Серия и номер',
-                        'type' => 'tel',
-                        'autocorrect' => 'off',
-                        'autocomplete' => 'off'
+//                        'type' => 'tel',
+//                        'autocorrect' => 'off',
+//                        'autocomplete' => 'off'
                     ],
                 'clientOptions'=>[
                     'removeMaskOnSubmit' => true,
@@ -103,8 +103,8 @@ use yii\widgets\MaskedInput;
                 'mask' => '99.99.9999',
                 'options' => [
                     'type' => 'tel',
-                    'autocorrect' => 'off',
-                    'autocomplete' => 'date',
+//                    'autocorrect' => 'off',
+//                    'autocomplete' => 'date',
                     'placeholder' => '01.01.2000'
                 ]
             ])?>
@@ -121,8 +121,8 @@ use yii\widgets\MaskedInput;
                 'mask' => '99.99.9999',
                 'options' => [
                     'type' => 'tel',
-                    'autocorrect' => 'off',
-                    'autocomplete' => 'date',
+//                    'autocorrect' => 'off',
+//                    'autocomplete' => 'date',
                     'placeholder' => '01.01.2000'
                 ]
             ])?>

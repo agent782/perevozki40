@@ -41,7 +41,7 @@ use app\models\Vehicle;
             <?php
             echo $form->field($model, 'tonnage', ['inputOptions' => [
                 'id' => 'tonnage',
-                'type' => 'tel',
+//                'type' => 'tel',
                 'onchange' => 'UpdatePriceZones();'
             ]])->label('Максимальная грузоподъемность кузова:');
             ?>
@@ -54,12 +54,12 @@ use app\models\Vehicle;
             <?php
             echo $form->field($model, 'length', ['inputOptions' => [
                     'id' => 'length',
-                'type' => 'tel',
+//                'type' => 'tel',
                 'onchange' => 'UpdatePriceZones();'
             ]]);
             echo $form->field($model, 'width', ['inputOptions' => [
                     'id' => 'width',
-                'type' => 'tel'
+//                'type' => 'tel'
             ]]);
             //                echo $form->field($VehicleForm, 'height', ['inputOptions' => [
             ////                    'id' => 'height',
@@ -75,7 +75,7 @@ use app\models\Vehicle;
             <?php
             echo $form->field($model, 'volume', ['inputOptions' => [
                 'id' => 'volume',
-                'type' => 'tel',
+//                'type' => 'tel',
                 'onchange' => 'UpdatePriceZones();'
             ]]);
             ?>
@@ -89,12 +89,12 @@ use app\models\Vehicle;
             <?php
             echo $form->field($model, 'tonnage_spec', ['inputOptions' => [
                     'id' => 'tonnage_spec',
-                'type' => 'tel',
+//                'type' => 'tel',
                 'onchange' => 'UpdatePriceZones();'
             ]]);
             echo $form->field($model, 'length_spec', ['inputOptions' => [
                     'id' => 'length_spec',
-                'type' => 'tel',
+//                'type' => 'tel',
                 'onchange' => 'UpdatePriceZones();'
             ]]);
             ?>
@@ -108,7 +108,7 @@ use app\models\Vehicle;
             <?php
             echo $form->field($model, 'volume_spec', ['inputOptions' => [
                     'id' => 'volume_spec',
-                'type' => 'tel',
+//                'type' => 'tel',
                 'onchange' => 'UpdatePriceZones();'
             ]]);
             ?>
