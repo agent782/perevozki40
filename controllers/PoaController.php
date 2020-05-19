@@ -16,6 +16,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\Company;
 use yii\web\UploadedFile;
+use yii\filters\AccessControl;
 
 /**
  * PoaController implements the CRUD actions for XprofileXcompany model.
@@ -34,6 +35,15 @@ class PoaController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
         ];
     }
 

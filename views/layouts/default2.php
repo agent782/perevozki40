@@ -73,9 +73,12 @@ $this->title = ($this->title)
 <!-- End Google Tag Manager (noscript) -->
 <?php $this->beginBody() ?>
 
-<div class="container navbar-default navbar-fixed-top
-<!--visible-sm visible-xs-->
-" id="menu-mobile" align="center">
+<div class="container
+    navbar-default
+    navbar-fixed-top
+"
+     id="menu-mobile" align="center"
+>
 <!--    <div class="row">-->
         <div class="col-xs-3">
             <?php
