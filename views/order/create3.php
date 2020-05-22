@@ -55,7 +55,7 @@ use app\models\Vehicle;
     foreach ($VehicleAttributes as $attribute){
         echo $form->field($modelOrder, $attribute, [
             'inputOptions' => [
-//                'type' => 'tel',
+                'type' => 'text',
                 'style' => 'width: 150px'
             ]
         ]);

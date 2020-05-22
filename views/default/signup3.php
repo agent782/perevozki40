@@ -24,8 +24,8 @@ $form = ActiveForm::begin([
     'id' => 'UserCode',
 //    'type' => 'tel',
     'style' => 'width: 100px',
-    'autocorrect' => 'off',
-    'autocomplete' => 'off',
+//    'autocorrect' => 'off',
+//    'autocomplete' => 'off',
 //    'onchange' => 'alert();'
 ]])->input('text')
 ?>

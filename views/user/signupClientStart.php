@@ -89,7 +89,7 @@
                 [
                     'id' => 'passportMask',
                     'placeholder' => 'Серия и номер',
-//                    'type' => 'tel',
+                    'type' => 'text',
 //                    'autocorrect' => 'off',
 //                    'autocomplete' => 'off'
                 ],

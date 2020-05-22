@@ -82,7 +82,7 @@ $this->registerJsFile('/js/order.js');
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
-//                    'type' => 'tel',
+                    'type' => 'text',
                     'style' => 'width: 150px',
                 ]
             ]);

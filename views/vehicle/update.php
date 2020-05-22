@@ -275,7 +275,7 @@ $this->registerJsFile('/js/update_price_zones.js');
                     ],
                     'mask' => '99.99.9999',
                     'options' => [
-//                        'type' => 'tel',
+                        'type' => 'text',
                         'autocorrect' => 'off',
                         'autocomplete' => 'date',
                         'placeholder' => '01.01.2000'

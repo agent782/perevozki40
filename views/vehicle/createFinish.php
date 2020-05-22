@@ -148,8 +148,8 @@ $classiferVehicleIds = [];
             'mask' => '99.99.9999',
             'options' => [
                 'type' => 'tel',
-                'autocorrect' => 'off',
-                'autocomplete' => 'date',
+//                'autocorrect' => 'off',
+//                'autocomplete' => 'date',
                 'placeholder' => '01.01.2000'
             ]
         ])?>

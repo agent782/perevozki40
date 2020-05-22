@@ -41,7 +41,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             echo $form->field($VehicleForm, 'vehicleTypeId')->hiddenInput()->label(false);
                     echo $form->field($VehicleForm, 'tonnage', ['inputOptions' => [
                         'id' => 'tonnage',
-//                        'type' => 'tel',
+                        'type' => 'text',
                         'autofocus' => true
                     ]]);
                     echo $form->field($VehicleForm, 'passengers', ['inputOptions' => [
@@ -50,10 +50,10 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
                     ]]);
                     echo $form->field($VehicleForm, 'length', ['inputOptions' => [
                         'id' => 'length',
-//                        'type' => 'tel'
+                        'type' => 'text'
                     ]])->input('text', [
                         'onchange' => 'setVolume();',
-//                        'type' => 'tel'
+                        'type' => 'text'
                     ]);
                     echo $form->field($VehicleForm, 'width', ['inputOptions' => [
                         'id' => 'width',
@@ -70,7 +70,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
                     echo '<comment class = "alert-warning">Для бортовых открытых ТС указывайте максимальную высоту груза, которую ТС может перевозить. </comment>';
                     echo $form->field($VehicleForm, 'volume', ['inputOptions' => [
                         'id' => 'volume',
-//                        'type' => 'tel'
+                        'type' => 'text'
                     ]]);
                     echo $form->field($VehicleForm, 'ep', ['inputOptions' => [
                         'type' => 'tel'
@@ -141,7 +141,8 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
         var w = $("#width").val();
         var h = $("#height").val();
         if(l && w && h){
-            $("#volume").val(Math.floor(l*w*h));
+            var v = l*w*h;
+            $("#volume").val(v.toFixed(2));
         } else $("#volume").val("");
     };
 </script>
