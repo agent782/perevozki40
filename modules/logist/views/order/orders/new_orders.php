@@ -142,6 +142,13 @@ use kartik\editable\Editable;
             'format' => 'raw'
         ],
         [
+            'label' => 'Поиск...',
+            'format' => 'raw',
+            'value' => function(Order $model){
+                return count($model->getMessagesNewOrder());
+            }
+        ],
+        [
             'label' => 'Действия',
             'format' => 'raw',
             'value' => function($model){

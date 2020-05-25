@@ -2444,6 +2444,13 @@ class Order extends \yii\db\ActiveRecord
         }
 
     }
+
+    public function getMessagesNewOrder(){
+        return $messages = Message::find()
+            ->where(['id_order' => $this->id])
+            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+            -> all();
+    }
  }
 
 
