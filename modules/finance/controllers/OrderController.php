@@ -123,7 +123,7 @@ class OrderController extends Controller
             'datetime_finish' => SORT_DESC,
         ];
         $dataProvider->pagination = [
-            'pageSize' => 100
+            'pageSize' => 40
         ];
         $companies = ArrayHelper::map(
             Company::find()->all(),
