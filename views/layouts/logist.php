@@ -32,7 +32,6 @@ AppAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
-    <div id="menu-mobile">
     <?php
     NavBar::begin([
         'brandLabel' => 'perevozki40.ru',
@@ -89,7 +88,7 @@ AppAsset::register($this);
 
     NavBar::end();
     ?>
-    </div>
+
     <div class="container">
 <br>
         <?=
