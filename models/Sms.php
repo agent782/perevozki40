@@ -88,8 +88,11 @@ class Sms extends \yii\db\ActiveRecord
 
         foreach (Yii::$app->smsru->send($this->to, $this->message)->sms as $smsStatus) {
             $this->status = $smsStatus->status_code;
-            $this->id = $smsStatus->sms_id;
-            if(!$smsStatus->sms_id) $this->id = 'error_'.time().'_'.rand(10000,99999);
+            if($smsStatus->sms_id) {
+                $this->id = $smsStatus->sms_id;
+            }else {
+                $this->id = 'error_' . time() . '_' . rand(10000, 99999);
+            }
             $this->status_text = $smsStatus->status;
             if ($this->save()) return $this;
 //            return $this->getErrors();
