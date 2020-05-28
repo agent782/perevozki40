@@ -163,7 +163,10 @@ use app\models\Profile;
         ? Html::submitButton('Оформить заказ', [
         'class' => 'btn btn-success',
         'name' => 'button',
-        'value' => 'next5'
+        'value' => 'next5' ,
+        'onchange' => new \yii\web\JsExpression('
+            alert ("Заказ оформлен");
+        ')
     ])
         : 'Для заказа услуг он-лайн необходимо '
             . Html::a('ВОЙТИ ИЛИ ЗАРЕГИСТРИРОВАТЬСЯ.', '/default/login', ['class' => 'btn btn-info'])
