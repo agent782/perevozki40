@@ -2,7 +2,7 @@
 Добавить разрешения ролям
 
 =================
-Настроить AccessControl для PoaController и ReportController
++++Настроить AccessControl для PoaController и ReportController
 
 
 ++++++++++++++++++++++++++++++

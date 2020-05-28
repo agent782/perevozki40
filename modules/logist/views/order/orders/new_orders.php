@@ -111,8 +111,8 @@ use kartik\editable\Editable;
             'label' => 'Заказчик',
             'format' => 'raw',
 //            'attribute' => 'clientInfo',
-            'value' => function ($model){
-                $return = $model->clientInfo;
+            'value' => function (Order $model){
+                $return = $model->getClientInfo();
                 $company = \app\models\Company::findOne($model->id_company);
                 if(!$company){
 

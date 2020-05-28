@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use Yii;
 
 /**
@@ -98,12 +99,13 @@ class OrdersFinishContacts extends \yii\db\ActiveRecord
             . $this->driver_phone . ')';
     }
 
-    public function getClientInfo($phone = true){
+    public function getClientInfo($phone = true, $html = true){
         $return = $this->client_surname . ' ';
         $return .= $this->client_name;
         if($phone) {
-            $return .= ' (' . $this->client_phone . ')';
+            $return .= ' (' . functions::getHtmlLinkToPhone($this->client_phone) . ')';
         }
+
         return $return;
     }
 }

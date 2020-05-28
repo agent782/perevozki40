@@ -1196,7 +1196,10 @@ class Order extends \yii\db\ActiveRecord
             if($phone) {
                 $return .= '<br>'
                     . 'Телефон: ' . functions::getHtmlLinkToPhone($this->user->username, $html);
-                if ($this->profile->phone2) $return .= ' (доп. тел.: ' . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
+                if ($this->profile->phone2) {
+                    $return .= ' (доп. тел.: '
+                        . functions::getHtmlLinkToPhone($this->profile->phone2, $html);
+                }
             }
         }
         if($this->id_company) $return .= '<br>' .$this->company->name . '<br>';

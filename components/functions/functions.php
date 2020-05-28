@@ -127,6 +127,7 @@ class functions
         }
         return $res;
     }
+
     static public function getAttributesAndPublicAttributes($model){
         $attributes = get_class_vars(get_class($model));
         $attributes = array_merge($attributes, $model->getAttributes());
@@ -139,7 +140,7 @@ class functions
         return $attributes;
     }
 
-    static public function getHtmlLinkToPhone(string $phone, $html =true){
+    static public function getHtmlLinkToPhone($phone, $html =true){
         if(!$html) return $phone;
         return '<a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
     }
