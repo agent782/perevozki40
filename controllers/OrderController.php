@@ -63,7 +63,7 @@ class OrderController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['?'],
-                        'actions' => ['create', 'validate-order'],
+                        'actions' => ['create', 'validate-order', 'remove-order-session'],
 //                        'denyCallback' => function(){
 //                            return 1;
 //                        }
@@ -1066,5 +1066,10 @@ class OrderController extends Controller
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Попробуйте позже.');
+    }
+
+    public function actionRemoveOrderSession(){
+        Yii::$app->session->remove('modelOrder');
+        return 1;
     }
 }

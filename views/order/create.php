@@ -6,6 +6,7 @@ use yii\bootstrap\Html;
 use app\components\myActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\rating\StarRating;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $modelOrder app\models\Order */
@@ -18,7 +19,28 @@ $this->title = 'Заказ автотранспорта.';
 ?>
 <div class="order-create">
 
-    <h4><?= Html::encode($this->title) ?></h4>
+    <h4>
+        <?=
+            Html::encode($this->title) . ' ';
+
+            echo Html::button('Очистить', [
+                'class' => 'btn-info btn-xs',
+                'onclick' => new JsExpression('
+                    $.ajax({
+                        url: "/order/remove-order-session",
+                        type: "POST",
+                        dataType: "json",
+                        success: function(data){
+               
+                        },
+                        error: function(){
+                            alert("Ошибка на сервере!")
+                        }
+                     });
+                ')
+            ])
+        ?>
+    </h4>
 
     <?php
         $form = myActiveForm::begin();
@@ -28,7 +50,7 @@ $this->title = 'Заказ автотранспорта.';
     )->label($modelOrder->getAttributeLabel('id_vehicle_type'), ['withTip' => true])?>
 
     <?=
-    Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
+        Html::a('Отмена', '/order/client', ['class' => 'btn btn-warning'])
     ?>
 
     <?= Html::submitButton('Далее', [
