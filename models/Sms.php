@@ -86,16 +86,18 @@ class Sms extends \yii\db\ActiveRecord
     public function sendAndSave(){
         if(!$this->to || !$this->message) return false;
 
-        foreach (Yii::$app->smsru->send($this->to, $this->message)->sms as $smsStatus) {
-            $this->status = $smsStatus->status_code;
-            if($smsStatus->sms_id) {
-                $this->id = $smsStatus->sms_id;
-            }else {
-                $this->id = 'error_' . time() . '_' . rand(10000, 99999);
-            }
-            $this->status_text = $smsStatus->status;
-            if ($this->save()) return $this;
+        if($sms = Yii::$app->smsru->send($this->to, $this->message)->sms) {
+            foreach ($sms as $smsStatus) {
+                $this->status = $smsStatus->status_code;
+                if ($smsStatus->sms_id) {
+                    $this->id = $smsStatus->sms_id;
+                } else {
+                    $this->id = 'error_' . time() . '_' . rand(10000, 99999);
+                }
+                $this->status_text = $smsStatus->status;
+                if ($this->save()) return $this;
 //            return $this->getErrors();
+            }
         }
         return false;
     }
