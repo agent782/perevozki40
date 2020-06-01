@@ -15,7 +15,7 @@ use app\components\widgets\ShowMessageWidget;
 
     $this->registerJs(new \yii\web\JsExpression('
         $(function(){
-        var arr_ids = $(\'#ids_companies\').text().split(\' \');
+        var arr_ids = $("#ids_companies").text().split(" ");
         for(var i in arr_ids) {
             $("#slide_company_" + arr_ids[i]).hide();
             $("#pointer_company_" + arr_ids[i]).click(function () {

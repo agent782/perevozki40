@@ -932,6 +932,7 @@ class Profile extends \yii\db\ActiveRecord
                 ]
             );
     }
+
     public function getCountOrdersCarOwnerComplete(){
         return $this->getOrdersCarOwnerComplete()->count();
     }
@@ -940,10 +941,10 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasMany(Order::class, ['id_car-owner' => 'id_user'])
             ->andFilterWhere(['status' => Order::STATUS_IN_PROCCESSING]);
     }
+
     public function getCountOrdersCarOwnerProccess(){
         return $this->getOrdersCarOwnerProccess()->count();
     }
-
 
     public function getBalanceCarOwnerSum(){
         return $this->getBalanceCarOwner()['balance'];
