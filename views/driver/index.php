@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
              'phone',
             // 'phone2',
 //             'raiting',
-            'id',
+//            'id',
             [
                 'attribute' => 'status',
                 'filter' => [
