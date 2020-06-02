@@ -16,14 +16,23 @@ $this->registerJs(new \yii\web\JsExpression('
         var arr_ids = $("#ids_vehicles").text().split(" ");
         for(var i in arr_ids) {
             $("#slide_vehicle_" + arr_ids[i]).hide();
+            
             $("#pointer_vehicle_" + arr_ids[i]).click(function () {
                 $(this).siblings()
                     .children()
                     .slideUp("slow");
-                $(this)
-                    .children()
-                    .slideDown("slow");
+               if($(this).children().is(":hidden")){
+                    $(this)
+                        .children()
+                        .slideDown("slow");
+                } else {
+                    $(this)
+                        .children()
+                        .slideUp("slow");
+                }
             });
+
+               
 
         }
     });

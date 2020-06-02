@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\User;
+use app\models\Vehicle;
 use Yii;
 use app\models\CalendarVehicle;
 use app\models\CalendarVehicleSearch;
@@ -43,7 +44,7 @@ class CalendarVehicleController extends Controller
             $user = Yii::$app->user->identity;
         }
 
-        $vehicles = $user->vehicles;
+        $vehicles = $user->getVehicles()->andWhere(['<>' , 'status' , Vehicle::STATUS_DELETED])->all();
         $Vehicles = [];
         if($vehicles) {
             foreach ($vehicles as $vehicle) {
