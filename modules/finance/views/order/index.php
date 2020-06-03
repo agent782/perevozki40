@@ -54,7 +54,10 @@ $this->title = 'Журнал заказов';
                             'label' => $model->id
                         ],
                         'helpMessage' => $model->getFullFinishInfo()                    ]);
-                }
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 12px'
+                ]
             ],
             'datetime_finish',
             [
