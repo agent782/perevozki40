@@ -158,8 +158,14 @@ $this->title = 'Журнал заказов';
                 'label' => 'Сумма',
                 'format' => 'raw',
                 'value' => function($model){
-                    return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
+                    return
+                        $model->cost_finish
+                        . ' / '
+                        . $model->cost_finish_vehicle;
                 },
+                'contentOptions' => [
+                    'style' => 'font-size: 14px'
+                ]
             ],
             [
                 'class' => \kartik\grid\EditableColumn::class,
