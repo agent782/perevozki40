@@ -27,7 +27,7 @@
         </p>
         <?=
             Youtube::widget([
-                'video' => 'https://www.youtube.com/watch?v=QNSNgNL308E',
+                'video' => 'QNSNgNL308E',
                 'divOptions'=>[ /*for container div*/
                     'class'=>'youtube-video-div'
                 ],
