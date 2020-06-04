@@ -333,6 +333,14 @@ class Vehicle extends \yii\db\ActiveRecord
             ;
     }
 
+    public function hasPriceZone($id_pricezone){
+        if (!$id_pricezone) return false;
+        foreach ($this->getPrice_zones()->all() as $price_zone){
+            if($price_zone->id == $id_pricezone) return true;
+        }
+        return false;
+    }
+
     public function getIdRates()
     {
         return $this->hasMany(Vehicles::className(), ['id' => 'id_rate'])->viaTable('{{%XvehicleXrate}}', ['id_vehicle' => 'id']);
@@ -623,15 +631,20 @@ class Vehicle extends \yii\db\ActiveRecord
         return $res;
     }
 
-    public function canOrder(Order $Order){
+    public function canOrder(Order $Order, $withPriceZone = true){
         if ($this->id_vehicle_type != $Order->id_vehicle_type) return false;
+
         $hasPriceZone = 0;
         foreach ($Order->priceZones as $priceZone){
             foreach ($this->priceZonesSelect as $pZone){
                 if ($priceZone->id == $pZone->id) $hasPriceZone = 1;
             }
         }
-        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) && !$Order->re) return false;
+        if(!$withPriceZone){
+            $hasPriceZone = 1;
+        }
+        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType))
+            && !$Order->re) return false;
 
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:

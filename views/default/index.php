@@ -1,6 +1,7 @@
 <?php
     use yii\bootstrap\Html;
     use yii\helpers\Url;
+    use lesha724\youtubewidget\Youtube;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 ?>
 <!--<script src="https://e-timer.ru/js/etimer.js"></script>-->
@@ -24,6 +25,17 @@
         <p><?= Html::a('Рассчитать стоимость', '/order/create',
             ['class' => 'btn btn-lg btn-danger'])?>
         </p>
+        <?=
+            Youtube::widget([
+                'video' => 'https://www.youtube.com/watch?v=QNSNgNL308E',
+                'divOptions'=>[ /*for container div*/
+                    'class'=>'youtube-video-div'
+                ],
+                'playerVars'=> [
+                    'autoplay' => 1,
+                ]
+            ])
+        ?>
     </div>
 
 <?php

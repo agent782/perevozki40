@@ -15,7 +15,7 @@ use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 use app\models\Profile;
 //echo date('d.m.Y H:i');
-//var_dump($companies);
+
 ?>
 
 <h4>Шаг 5 из 5.</h4>

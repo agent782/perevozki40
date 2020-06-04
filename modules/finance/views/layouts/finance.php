@@ -92,7 +92,7 @@ $this->registerJs("
     ]);
     NavBar::end();
     ?>
-<br>
+<br><br><br>
     <div class="container">
 
         <?=

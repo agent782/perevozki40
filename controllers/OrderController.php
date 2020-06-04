@@ -261,7 +261,7 @@ class OrderController extends Controller
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
                     $user_id = ($user)?$user->id:null;
                     $modelOrder->suitable_rates = $modelOrder
-                        ->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id));
+                        ->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id), true);
 //                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
 //                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);

@@ -584,7 +584,7 @@ class Order extends \yii\db\ActiveRecord
         return $result;
     }
 
-    public function getSuitableRatesCheckboxList($distance = null, $discount = null, $limit= 10){
+    public function getSuitableRatesCheckboxList($distance = null, $discount = null, $withCountVehicles = false, $limit= 10){
         $suitable_rates = $this->getSuitableRates($distance, $limit);
         $return = [];
         foreach ($suitable_rates as $id => $suitable_rate){
@@ -599,6 +599,21 @@ class Order extends \yii\db\ActiveRecord
 //                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                 ])
             ;
+//            if($withCountVehicles){
+//                $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+//                    ->all();
+//                if(!is_array($Vehicles)) return [];
+//
+//                foreach ($Vehicles as $vehicle) {
+//                    if (!$vehicle->canOrder($this, false)
+//                         !$vehicle->hasPriceZone($PriceZone->id)
+//                    ) {
+//                        ArrayHelper::removeValue($Vehicles, $vehicle);
+//                        continue;
+//                    }
+//                }
+//                $return[$PriceZone->unique_index] .= count($Vehicles);
+//            }
         }
         return $return;
     }
@@ -1055,8 +1070,14 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function hasBodyType($bodyType){
-        foreach ($this->bodyTypies as $bType) {
-            if($bodyType->id == $bType->id) return true;
+        if(!$this->isNewRecord) {
+            foreach ($this->bodyTypies as $bType) {
+                if ($bodyType->id == $bType->id) return true;
+            }
+        } else {
+            foreach ($this->body_typies as $bType) {
+                if ($bodyType->id == $bType) return true;
+            }
         }
         return false;
     }

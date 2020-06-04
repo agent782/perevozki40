@@ -50,7 +50,8 @@
         "kartik-v/yii2-export": "dev-master",
         "deka6pb/yii2-geocoder": "@dev",
         "softark/yii2-mb-captcha": "dev-master",
-        "marqu3s/yii2-summernote": "dev-master"
+        "marqu3s/yii2-summernote": "dev-master",
+        "lesha724/yii2-youtube-widget": "*"
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",
