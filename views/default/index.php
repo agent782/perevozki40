@@ -28,12 +28,16 @@
         <?=
             Youtube::widget([
                 'video' => 'QNSNgNL308E',
-                'divOptions'=>[ /*for container div*/
-                    'class'=>'youtube-video-div'
+                'iframeOptions'=>[ /*for container iframe*/
+                    'class'=>'youtube-video'
                 ],
+//                'divOptions'=>[ /*for container div*/
+//                    'class'=>'youtube-video-div'
+//                ],
                 'playerVars'=> [
                     'autoplay' => 1,
-                ]
+                ],
+                'width' => 320
             ])
         ?>
     </div>
