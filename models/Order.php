@@ -1727,7 +1727,7 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true, $finish = false){
+    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true, $finish = false, $forVehicle = false){
         if($this->realRoute) $real_route = $this->realRoute;
         else {
             if(!$realRoute) return false;
@@ -1740,15 +1740,16 @@ class Order extends \yii\db\ActiveRecord
         if($this->real_km){
             $return .= 'Фактический пробег: ' . $this->real_km . ' км <br>';
         }
-        $return .= $this->getShortInfoForClient(true, true) . ' <br>';
-        $return .= 'Тарифная зона №' . $this->getNumberPriceZoneReal($html) . '. <br>';
+        $return .= $this->getShortInfoForClient(true, $finish) . ' <br>';
+//        $return .= 'Тарифная зона №' . $this->getNumberPriceZoneReal($html) . '. <br>';
+        $return .= $this->PrintFinishCalculate(true, $forVehicle, true) . '. <br>';
         $return .= 'Тип оплаты: ' . $this->paymentText . '. <br>';
         if($this->id_user != $this->id_car_owner) {
             $return .= ($showClientPhone)
                 ?'Заказчик:' . $this->clientInfo . ' <br>'
                 :'Заказчик:' . $this->clientInfoWithoutPhone . ' <br>';
         } else {
-            $return .= '"Повторный заказ" <br>' . $this->comment;
+            $return .= '"Повторный заказ" <br>' . $this->comment . '<br>';
         }
         return $return;
     }
@@ -1818,12 +1819,13 @@ class Order extends \yii\db\ActiveRecord
 
     }
 
-    public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true, $showDriveLicence = true, $html = false){
+    public function getFullInfoAboutVehicle($showPhones = true, $showPassport = true,
+                                            $showDriveLicence = true, $html = false){
         $return = '';
         if($FC = $this->finishContacts){
             $return .= $FC->getVehicleInfo() . '<br>'
-                . $FC->getCarOwnerInfo() . '<br>'
-                . $FC->getDriverInfo() . '<br>';
+                . $FC->getCarOwnerInfo($showPhones) . '<br>'
+                . $FC->getDriverInfo($showPhones) . '<br>';
             return $return;
         }
         if(!$this->id_vehicle) return false;

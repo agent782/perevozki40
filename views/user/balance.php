@@ -3,6 +3,7 @@
 use kartik\grid\GridView;
 use app\models\Order;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Profile;
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -22,15 +23,9 @@ use app\components\widgets\ShowMessageWidget;
                 $(this).siblings()
                     .children()
                     .slideUp("slow");
-                if($(this).children().is(":hidden")){
-                    $(this)
-                        .children()
-                        .slideDown("slow");
-                } else {
-                    $(this)
-                        .children()
-                        .slideUp("slow");
-                }
+                $(this)
+                    .children()
+                    .slideDown("slow");
             });
 
         }
@@ -89,7 +84,7 @@ use app\components\widgets\ShowMessageWidget;
                                 if ($order) {
                                     return ShowMessageWidget::widget([
                                         'helpMessage' => $order->getFullFinishInfo(false, null,
-                                            true, true)
+                                            true, true, true)
                                     ]);
                                 }
                             }
@@ -207,6 +202,29 @@ use app\components\widgets\ShowMessageWidget;
                             }
                         ],
                         [
+                            'label' => 'ТС',
+                            'format' => 'raw',
+                            'attribute' => 'fullInfoAboutVehicle',
+                            'value' => function($model){
+                                if(array_key_exists('id_order',$model)) {
+                                    $order = Order::findOne($model['id_order']);
+                                    if ($order) {
+                                        $car_owner = $order->carOwner;
+                                        return ShowMessageWidget::widget([
+                                            'ToggleButton' => [
+                                                'label' => ($car_owner->old_id) ? $car_owner->old_id : '#' . $car_owner->id_user
+                                            ],
+                                            'helpMessage' => $order->getFullInfoAboutVehicle(false, false, false, false)
+                                        ]);
+                                    }
+                                }
+                            },
+                            'contentOptions' => [
+                                'style' => 'font-size: 16px'
+                            ],
+                            'visible' => !Profile::notAdminOrDispetcher()
+                        ],
+                        [
                             'label' => '',
                             'format' => 'raw',
                             'value' => function($model){
@@ -214,7 +232,10 @@ use app\components\widgets\ShowMessageWidget;
                                     $order = Order::findOne($model['id_order']);
                                     if ($order) {
                                         return ShowMessageWidget::widget([
-                                            'helpMessage' => $order->getFullFinishInfo(false, null, true, true)
+                                            'helpMessage' => $order->getFullFinishInfo(false,
+                                                null, true, true)
+                                                . $order->getFullInfoAboutVehicle(false, false,
+                                                    false)
                                         ]);
                                     }
                                 }
