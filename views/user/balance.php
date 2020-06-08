@@ -22,9 +22,15 @@ use app\components\widgets\ShowMessageWidget;
                 $(this).siblings()
                     .children()
                     .slideUp("slow");
-                $(this)
-                    .children()
-                    .slideDown("slow");
+                if($(this).children().is(":hidden")){
+                    $(this)
+                        .children()
+                        .slideDown("slow");
+                } else {
+                    $(this)
+                        .children()
+                        .slideUp("slow");
+                }
             });
 
         }

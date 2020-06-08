@@ -9,12 +9,14 @@ use app\models\setting\SettingVehicle;
 use app\models\setting\SettingClient;
 use function Couchbase\fastlzCompress;
 use FontLib\Table\Type\post;
+use kartik\icons\Icon;
 use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\components\widgets\ShowMessageWidget;
+use kartik\rating\StarRating;
 
 
 /**
@@ -600,19 +602,8 @@ class Order extends \yii\db\ActiveRecord
                 ])
             ;
 //            if($withCountVehicles){
-//                $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
-//                    ->all();
-//                if(!is_array($Vehicles)) return [];
-//
-//                foreach ($Vehicles as $vehicle) {
-//                    if (!$vehicle->canOrder($this, false)
-//                         !$vehicle->hasPriceZone($PriceZone->id)
-//                    ) {
-//                        ArrayHelper::removeValue($Vehicles, $vehicle);
-//                        continue;
-//                    }
-//                }
-//                $return[$PriceZone->unique_index] .= count($Vehicles);
+//                $return[$PriceZone->unique_index]
+//                    .= $this->getRatingCountVehicles($PriceZone->id, $this->datetime_start);
 //            }
         }
         return $return;
@@ -2474,6 +2465,87 @@ class Order extends \yii\db\ActiveRecord
             ->where(['id_order' => $this->id])
             ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
             -> all();
+    }
+
+    public function getRatingCountVehicles($id_price_zone, $date = null)
+    {
+        $pluginOptions = [
+            'readonly' => true,
+            'showClear' => false,
+//          'showCaption' => false,
+            'stars' => 4,
+            'min' => 0,
+            'max' => 4,
+            'step' => 1,
+            'filledStar' => Icon::show('fa fa-truck'),
+            'emptyStar' => Icon::show('fa fa-truck'),
+            'size' => StarRating::SIZE_X_SMALL,
+            'starCaptions' => [
+                0 => 'Нет свободных ТС.',
+                1 => 'Очень мало свободных ТС',
+                2 => 'Мало свободных ТС',
+                3 => 'Есть свободные ТС',
+                4 => 'Много свободных ТС',
+            ],
+            'starCaptionClasses' => [
+                0 => 'text-danger',
+                1 => 'text-danger',
+                2 => 'text-warning',
+                3 => 'text-info',
+                4 => 'text-primary',
+            ],
+        ];
+
+        $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->andWhere(['id_vehicle_type' => $this->id_vehicle_type])
+            ->all();
+
+        if (!is_array($Vehicles)) {
+            return StarRating::widget([
+                'value' => 0,
+                'pluginOptions' => $pluginOptions
+            ]);
+        };
+
+        foreach ($Vehicles as $vehicle) {
+            if (!$vehicle->canOrder($this, false)
+                || !$vehicle->hasPriceZone($id_price_zone)
+            ) {
+                ArrayHelper::removeValue($Vehicles, $vehicle);
+            } else {
+                if($date){
+                    if($vehicle->hasOrderOnDate($date)){
+                        ArrayHelper::removeValue($Vehicles, $vehicle);
+                    }
+                }
+            }
+        }
+        $count = count($Vehicles);
+        $value = 0;
+
+        if($count > 0 && $count < 6){
+            $value = 1;
+        }
+        if($count > 5 && $count < 10){
+            $value = 2;
+        }
+        if($count > 9 && $count < 15){
+            $value = 3;
+        }
+        if($count > 14){
+            $value = 4;
+        }
+
+        $return = StarRating::widget([
+            'name' => 'rating_count_pz_' . $id_price_zone,
+            'value' => $value,
+            'pluginOptions' => $pluginOptions
+        ]);
+
+        if(!Profile::notAdminOrDispetcher()){
+            $return .= $count;
+        }
+        return $return;
     }
  }
 
