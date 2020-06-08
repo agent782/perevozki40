@@ -1727,7 +1727,8 @@ class Order extends \yii\db\ActiveRecord
         return $return;
     }
 
-    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true, $finish = false, $forVehicle = false){
+    public function getFullFinishInfo($showClientPhone = false, $realRoute = null, $html = true,
+                                      $finish = false, $forVehicle = false){
         if($this->realRoute) $real_route = $this->realRoute;
         else {
             if(!$realRoute) return false;
@@ -2071,7 +2072,7 @@ class Order extends \yii\db\ActiveRecord
                             . ($return['cost'] - ($this->additional_cost * 10 / 100))
                             . ' руб.</strong>';
                     } else {
-                        $text .= '<br><br><strong>Итого к оплате ' . $return['cost'] . ' руб.</strong>';
+                        $text .= '<br><br><strong>Итого к оплате ' . $this->getFinishCostForVehicle() . ' руб.</strong>';
                     }
                 } else {
                     $text .= '<br><br><strong>Итого к оплате ' . $this->getFinishCost() . ' руб.</strong>';
