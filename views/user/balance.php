@@ -81,12 +81,12 @@ use app\models\Profile;
                         'value' => function($model){
                             if(array_key_exists('id_order',$model)) {
                                 $order = Order::findOne($model['id_order']);
-                                if ($order) {
-                                    return ShowMessageWidget::widget([
-                                        'helpMessage' => $order->getFullFinishInfo(false, null,
-                                            true, true, true)
-                                    ]);
-                                }
+//                                if ($order) {
+//                                    return ShowMessageWidget::widget([
+//                                        'helpMessage' => $order->getFullFinishInfo(false, null,
+//                                            true, true, true)
+//                                    ]);
+//                                }
                             }
                         }
                     ]
