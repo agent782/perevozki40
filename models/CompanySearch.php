@@ -75,7 +75,7 @@ class CompanySearch extends Company
             'pagination' => false,
             'sort' => [
                 'attributes' => [
-                    ''
+                    'updated_at'
                 ],
                 'defaultOrder' => [
                     'updated_at' => SORT_DESC,

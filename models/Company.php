@@ -47,6 +47,7 @@ use app\components\functions\functions;
  * @property integer $updated_at
  * @property array $balance
  * @property integer $balanceSum
+ * @property Document $contract
  */
 
 
@@ -354,6 +355,11 @@ class Company extends \yii\db\ActiveRecord
 
     public function getBalanceSum() : int {
         return $this->balance['balance'];
+    }
+
+    public function getContract(){
+        return $this->hasOne(Document::class, ['id_company' => 'id'])
+            ->andWhere(['type' => Document::TYPE_CONTRACT_CLIENT]);
     }
 
 }
