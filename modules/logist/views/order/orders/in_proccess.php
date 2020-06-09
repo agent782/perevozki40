@@ -16,6 +16,7 @@ use app\models\Company;
 use app\components\widgets\ShowMessageWidget;
 use kartik\grid\EditableColumn;
 use app\models\Payment;
+use yii\helpers\ArrayHelper;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
@@ -181,8 +182,26 @@ use app\models\Payment;
                 }
             ],
             [
-                'attribute' => 'paymentText',
-                'format' => 'raw'
+                'class' => \kartik\grid\EditableColumn::class,
+                'attribute' =>'type_payment',
+                'format' => 'raw',
+                'value' => function($model){
+                    return $model->paymentMinText;
+                },
+                'filter' =>
+                    Html::activeCheckboxList($searchModel, 'type_payments',
+                        ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    )
+                ,
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    ,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaymentType' ])
+                    ]
+                ],
+                'filterOptions' => ['class' => 'minRoute'],
             ],
             [
                 'label' => 'Поиск...',
