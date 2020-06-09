@@ -18,7 +18,8 @@ http://perevozki40.ru/order/vehicle
 http://perevozki40.ru/vehicle/calendar
 <br><br>
 Если Вам еще не приходят PUSH-уведомления на Ваш смартфон или планшет, Вы можете подписаться на них
-на Вашей странице профиля http://perevozki40.ru/user. Подробная инструкция, как это сделать, скоро появится на сайте.
+на Вашей странице профиля http://perevozki40.ru/user.
+Подробная видеоинструкция на нашем канале https://youtu.be/JlzyTWkNM8g.
 
 
 
