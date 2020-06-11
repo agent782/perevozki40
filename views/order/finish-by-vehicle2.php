@@ -34,35 +34,11 @@ $this->title = 'Фактические данные по заказу №' . $mo
     $form = ActiveForm::begin()
     ?>
     <?= $form->field($modelOrder, 'id_user')->hiddenInput()->label(false)?>
-    <div class="col-lg-4">
-        <strong>Тарифная зона после изменения данных по заказу: </strong>
-        <?= $finishCostText?>
-        <strong>
-            <p>Способ оплаты: <?= $modelOrder->paymentText?></p>
-            <?php
-                if(!$modelOrder->cost) {
-                    echo $form->field($modelOrder, 'hand_vehicle_cost')->input('tel')
-                        ->label('Сумма к оплате Клиентом водителю:');
-                }
-            ?>
 
-        </strong>
-       <br><br>
-        <i>Тарифная зона при принятии заказа: </i>
-        <i>
-            <?=
-            PriceZone::findOne($modelOrder->id_pricezone_for_vehicle)
-                ->getWithDiscount(\app\models\setting\SettingVehicle::find()->limit(1)->one()->price_for_vehicle_procent)
-                ->getTextWithShowMessageButton($modelOrder->route->distance);
-            ?>
-        </i>
-        <br><br>
-
-    </div>
     <div class="col-lg-4">
         <strong>Завершенный заказ.<br><br>
             <?= $modelOrder->getFullFinishInfo(
-                true,
+                false,
                 $realRoute,
                 true,
                 false,
@@ -72,7 +48,7 @@ $this->title = 'Фактические данные по заказу №' . $mo
     </div>
     <div class="col-lg-4">
         <i>Первоначальный заказ.<br><br>
-        <?= $modelOrder->getFullNewInfo(true,true, false)?></i>
+        <?= $modelOrder->getFullNewInfo(false,true, false)?></i>
     </div>
 
     <div class="col-lg-11">
@@ -81,7 +57,9 @@ $this->title = 'Фактические данные по заказу №' . $mo
                 ->checkbox(['label' => 'Клиент оплатил наличными или на банковскую карту']);
     }?>
     </div>
+    <br>
     <div class="col-lg-11">
+        <br>
         <?=
         Html::submitButton('Назад', [
             'class' => 'btn btn-warning',

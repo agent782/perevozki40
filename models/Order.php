@@ -2040,7 +2040,12 @@ class Order extends \yii\db\ActiveRecord
 
             $text .= '<br>Комментарии водителя: ' . $this->comment_vehicle;
             if($withDiscount) {
-                $cost = $this->getFinishCost(false);
+                if($forVehicle){
+//                $cost = $cost - ($cost * (9 - $this->discount)/100) ;
+                    $cost = $this->getFinishCostForVehicle();
+                } else {
+                    $cost = $this->getFinishCost(false);
+                }
                 if($this->additional_cost){
                     $cost += $this->additional_cost;
                     $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
@@ -2063,10 +2068,8 @@ class Order extends \yii\db\ActiveRecord
 
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
 
+
             $cost = round($cost);
-            if($forVehicle && $withDiscount){
-                $cost = $cost - ($cost * (9 - $this->discount)/100);
-            }
             $return['cost'] = $cost;
             if($return['cost']) {
                 if($forVehicle) {
@@ -2114,7 +2117,7 @@ class Order extends \yii\db\ActiveRecord
 
     public function getFinishCostForVehicle(){
         if(!$this->cost) return false;
-        return round($this->cost - ($this->cost * $this->getVehicleProcentPrice()/100));
+        return ($this->cost - ($this->cost * $this->getVehicleProcentPrice()/100));
 //        return round($this->CalculateAndPrintFinishCost(false, true, false)['cost']);
     }
 
