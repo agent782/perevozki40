@@ -2064,6 +2064,9 @@ class Order extends \yii\db\ActiveRecord
             $text .= '<br>Тип оплаты: ' . $this->getPaymentText(false);
 
             $cost = round($cost);
+            if($forVehicle && $withDiscount){
+                $cost = $cost - ($cost * (9 - $this->discount)/100);
+            }
             $return['cost'] = $cost;
             if($return['cost']) {
                 if($forVehicle) {
