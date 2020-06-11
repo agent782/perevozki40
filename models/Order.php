@@ -2480,8 +2480,8 @@ class Order extends \yii\db\ActiveRecord
             'min' => 0,
             'max' => 4,
             'step' => 1,
-            'filledStar' => Icon::show('fa fa-truck'),
-            'emptyStar' => Icon::show('fa fa-truck'),
+            'filledStar' => Icon::show('truck'),
+            'emptyStar' => Icon::show('truck'),
             'size' => StarRating::SIZE_X_SMALL,
             'starCaptions' => [
                 0 => 'Нет свободных ТС.',

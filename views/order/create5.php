@@ -14,6 +14,7 @@ use yii\helpers\Url;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 use app\models\Profile;
+use kartik\icons\Icon;
 //echo date('d.m.Y H:i');
 
 ?>
@@ -130,6 +131,7 @@ use app\models\Profile;
     </div>
     </div>
     <div class="col-lg-5">
+
         <label>Маршрут.</label>
         <comment>
             <?= $route->fullRoute?>

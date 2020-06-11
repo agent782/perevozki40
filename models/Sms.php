@@ -89,7 +89,7 @@ class Sms extends \yii\db\ActiveRecord
         if($sms = Yii::$app->smsru->send($this->to, $this->message)->sms) {
             foreach ($sms as $smsStatus) {
                 $this->status = $smsStatus->status_code;
-                if ($smsStatus->sms_id) {
+                if (property_exists($smsStatus, 'sms_id')) {
                     $this->id = $smsStatus->sms_id;
                 } else {
                     $this->id = 'error_' . time() . '_' . rand(10000, 99999);
