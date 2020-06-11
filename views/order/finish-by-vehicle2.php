@@ -61,7 +61,13 @@ $this->title = 'Фактические данные по заказу №' . $mo
     </div>
     <div class="col-lg-4">
         <strong>Завершенный заказ.<br><br>
-            <?= $modelOrder->getFullFinishInfo(true, $realRoute,true, false)?>
+            <?= $modelOrder->getFullFinishInfo(
+                true,
+                $realRoute,
+                true,
+                false,
+                    true
+            )?>
         </strong>
     </div>
     <div class="col-lg-4">
