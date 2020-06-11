@@ -2117,7 +2117,7 @@ class Order extends \yii\db\ActiveRecord
 
     public function getFinishCostForVehicle(){
         if(!$this->cost) return false;
-        return ($this->cost - ($this->cost * $this->getVehicleProcentPrice()/100));
+        return round($this->cost - ($this->cost * $this->getVehicleProcentPrice()/100));
 //        return round($this->CalculateAndPrintFinishCost(false, true, false)['cost']);
     }
 
