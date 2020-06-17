@@ -6,6 +6,7 @@
  * Time: 13:38
  */
 ?>
+<div id="rates">
 <label>Выберите подходящие тарифы </label>
 <?= \yii\bootstrap\Html::activeCheckboxList($modelOrder,
     'selected_rates',
@@ -17,3 +18,4 @@
         ]
     ])
 ?>
+</div>

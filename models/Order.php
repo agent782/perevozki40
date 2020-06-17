@@ -2479,7 +2479,8 @@ class Order extends \yii\db\ActiveRecord
 
     public function getRatingCountVehicles($id_price_zone, $date = null)
     {
-//        return '';
+
+        if (Profile::notAdminOrDispetcher()) return '';
         $pluginOptions = [
             'readonly' => true,
             'showClear' => false,
