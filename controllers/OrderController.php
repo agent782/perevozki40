@@ -455,7 +455,10 @@ class OrderController extends Controller
             $modelOrder = $session->get('modelOrder');
             $user_id = ($user)?$user->id:null;
             $route = $session->get('route');
-            $modelOrder->type_payment = Yii::$app->request->post('type_payment');
+            $post = Yii::$app->request->post();
+            if(array_key_exists('type_payment', $post)) {
+                $modelOrder->type_payment = post['type_payment'];
+            }
             $modelOrder->suitable_rates =
                 $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user_id), true);
             if(Yii::$app->request->post('datetime_start'))$modelOrder->datetime_start =
