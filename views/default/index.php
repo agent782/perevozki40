@@ -5,7 +5,6 @@
     use kartik\rating\StarRating;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 
-    Icon::map($this);
 
 ?>
 <!--<script src="https://e-timer.ru/js/etimer.js"></script>-->
