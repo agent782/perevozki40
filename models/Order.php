@@ -18,7 +18,6 @@ use yii\helpers\Url;
 use app\components\widgets\ShowMessageWidget;
 use kartik\rating\StarRating;
 
-
 /**
  * This is the model class for table "Orders".
  *
@@ -601,10 +600,10 @@ class Order extends \yii\db\ActiveRecord
 //                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                 ])
             ;
-//            if($withCountVehicles){
-//                $return[$PriceZone->unique_index]
-//                    .= $this->getRatingCountVehicles($PriceZone->id, $this->datetime_start);
-//            }
+            if($withCountVehicles && !Profile::notAdminOrDispetcher()){
+                $return[$PriceZone->unique_index]
+                    .= $this->getRatingCountVehicles($PriceZone->id, $this->datetime_start);
+            }
         }
         return $return;
     }
@@ -2480,6 +2479,7 @@ class Order extends \yii\db\ActiveRecord
 
     public function getRatingCountVehicles($id_price_zone, $date = null)
     {
+//        return '';
         $pluginOptions = [
             'readonly' => true,
             'showClear' => false,
@@ -2488,8 +2488,9 @@ class Order extends \yii\db\ActiveRecord
             'min' => 0,
             'max' => 4,
             'step' => 1,
-            'filledStar' => Icon::show('truck'),
-            'emptyStar' => Icon::show('truck'),
+            'filledStar' => Icon::show('truck', ['style' => 'color: green;'], Icon::FA),
+            'emptyStar' => Icon::show('truck', ['style' => 'color: red'], Icon::FA),
+//            'emptyStar' => '&#x2606;',
             'size' => StarRating::SIZE_X_SMALL,
             'starCaptions' => [
                 0 => 'Нет свободных ТС.',
@@ -2525,7 +2526,13 @@ class Order extends \yii\db\ActiveRecord
                 ArrayHelper::removeValue($Vehicles, $vehicle);
             } else {
                 if($date){
-                    if($vehicle->hasOrderOnDate($date)){
+                    if($vehicle->hasOrderOnDate($date)
+                        || CalendarVehicle::findOne([
+                            'id_vehicle' => $vehicle->id,
+                            'date' => functions::DayToStartUnixTime($date),
+                            ['in', 'status', [CalendarVehicle::STATUS_BUSY, CalendarVehicle::STATUS_HALF_TIME]]
+                        ])
+                    ){
                         ArrayHelper::removeValue($Vehicles, $vehicle);
                     }
                 }

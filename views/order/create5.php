@@ -15,8 +15,9 @@ use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
 use app\models\Profile;
 use kartik\icons\Icon;
+use yii\widgets\Pjax;
 //echo date('d.m.Y H:i');
-
+Icon::map($this);
 ?>
 
 <h4>Шаг 5 из 5.</h4>
@@ -53,8 +54,15 @@ use kartik\icons\Icon;
                 'startDate' => date('d.m.Y H:i',  time() + 60*60), //самая ранняя возможная дата
 //                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
                 'todayBtn'=>true, //снизу кнопка "сегодня",
-
             ],
+            'pluginEvents' => [
+                'changeDate' => "
+                    function(e){
+                        
+                    }
+                "
+            ]
+
         ]
     )?>
     <?= $form->field($modelOrder, 'valid_datetime')
@@ -97,6 +105,7 @@ use kartik\icons\Icon;
                     $(this).prop("checked", false);
                 });
             }
+            $("#rates").html("");
             changePriceZones();
         '
     ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
@@ -136,7 +145,9 @@ use kartik\icons\Icon;
         <comment>
             <?= $route->fullRoute?>
         </comment>
+
         <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
+        <div id="rates">
     <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие по стоимости тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, [
             'id' => 'selected_rates',
@@ -149,6 +160,7 @@ use kartik\icons\Icon;
         услуги грузчика и т.п.)'
     );
     ?>
+        </div>
         <?php
         \yii\widgets\Pjax::end();
         ?>
@@ -166,7 +178,7 @@ use kartik\icons\Icon;
         'class' => 'btn btn-success',
         'name' => 'button',
         'value' => 'next5' ,
-        'onchange' => new \yii\web\JsExpression('
+        'onclick' => new \yii\web\JsExpression('
             alert ("Заказ оформлен");
         ')
     ])

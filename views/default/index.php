@@ -5,13 +5,13 @@
     use kartik\rating\StarRating;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 
+    Icon::map($this);
 
 ?>
 <!--<script src="https://e-timer.ru/js/etimer.js"></script>-->
 
 <div class="row">
     <div class="alert-warning" style="text-align: center">
-
         <p><?= Html::a('Рассчитать стоимость', '/order/create',
             ['class' => 'btn btn-lg btn-danger'])?>
             <?php
