@@ -178,9 +178,9 @@ Icon::map($this);
         'class' => 'btn btn-success',
         'name' => 'button',
         'value' => 'next5' ,
-        'onclick' => new \yii\web\JsExpression('
-            alert ("Заказ оформлен");
-        ')
+//        'onclick' => new \yii\web\JsExpression('
+//            alert ("Заказ оформлен");
+//        ')
     ])
         : 'Для заказа услуг он-лайн необходимо '
             . Html::a('ВОЙТИ ИЛИ ЗАРЕГИСТРИРОВАТЬСЯ.', '/default/login', ['class' => 'btn btn-info'])
