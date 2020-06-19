@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "15ff4d8fdfc7aa73bce55b9c2479c1db",
-    "content-hash": "7edb062dab5961f932c21d61a39f075b",
+    "hash": "e12caccf0c50ffb730594829a9c827ed",
+    "content-hash": "7cd20393361e31a106c891d5b6a0057e",
     "packages": [
         {
             "name": "3ch3r46/bootui-datetimepicker",
@@ -56,7 +56,7 @@
             "version": "v3.4.1",
             "source": {
                 "type": "git",
-                "url": "git@github.com:twbs/bootstrap.git",
+                "url": "https://github.com/twbs/bootstrap.git",
                 "reference": "68b0d231a13201eb14acd3dc84e51543d16e5f7e"
             },
             "dist": {
@@ -90,11 +90,33 @@
             "type": "bower-asset"
         },
         {
+            "name": "bower-asset/gasparesganga-jquery-loading-overlay",
+            "version": "v1.5.4",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:gasparesganga/jquery-loading-overlay.git",
+                "reference": "05c1d773579b0b544b9d710004308624cd13760d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gasparesganga/jquery-loading-overlay/zipball/05c1d773579b0b544b9d710004308624cd13760d",
+                "reference": "05c1d773579b0b544b9d710004308624cd13760d",
+                "shasum": null
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.7.0"
+            },
+            "type": "bower-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
             "name": "bower-asset/inputmask",
             "version": "3.3.11",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobinHerbots/Inputmask.git",
+                "url": "git@github.com:RobinHerbots/Inputmask.git",
                 "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
             },
             "dist": {
@@ -321,16 +343,16 @@
         },
         {
             "name": "components/flag-icon-css",
-            "version": "3.4.6",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
-                "url": "git@github.com:lipis/flag-icon-css.git",
-                "reference": "f4376babc181c3753197c269b9086943ea781efc"
+                "url": "https://github.com/lipis/flag-icon-css.git",
+                "reference": "5141384c57972b0b08fc3bb67bea297321fbd799"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lipis/flag-icon-css/zipball/f4376babc181c3753197c269b9086943ea781efc",
-                "reference": "f4376babc181c3753197c269b9086943ea781efc",
+                "url": "https://api.github.com/repos/lipis/flag-icon-css/zipball/5141384c57972b0b08fc3bb67bea297321fbd799",
+                "reference": "5141384c57972b0b08fc3bb67bea297321fbd799",
                 "shasum": ""
             },
             "type": "component",
@@ -355,7 +377,7 @@
                 }
             ],
             "description": "CSS for vector based country flags",
-            "time": "2020-02-04 16:13:49"
+            "time": "2020-06-10 11:53:19"
         },
         {
             "name": "corpsepk/yii2-dadata-suggestions-widget",
@@ -537,16 +559,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.5.4",
+            "version": "6.5.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "a4a1b6930528a8f7ee03518e6442ec7a44155d9d"
+                "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/a4a1b6930528a8f7ee03518e6442ec7a44155d9d",
-                "reference": "a4a1b6930528a8f7ee03518e6442ec7a44155d9d",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
+                "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
                 "shasum": ""
             },
             "require": {
@@ -554,7 +576,7 @@
                 "guzzlehttp/promises": "^1.0",
                 "guzzlehttp/psr7": "^1.6.1",
                 "php": ">=5.5",
-                "symfony/polyfill-intl-idn": "1.17.0"
+                "symfony/polyfill-intl-idn": "^1.17.0"
             },
             "require-dev": {
                 "ext-curl": "*",
@@ -600,7 +622,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2020-05-25 19:35:05"
+            "time": "2020-06-16 21:01:06"
         },
         {
             "name": "guzzlehttp/promises",
@@ -903,22 +925,22 @@
         },
         {
             "name": "kartik-v/bootstrap-fileinput",
-            "version": "v5.0.9",
+            "version": "5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/bootstrap-fileinput.git",
-                "reference": "8a6f6eda352d48c678602d0dd2155751ef088e7f"
+                "reference": "b20ed6eee45c2155b11aa6d7ec0a3cc46fe1adad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/8a6f6eda352d48c678602d0dd2155751ef088e7f",
-                "reference": "8a6f6eda352d48c678602d0dd2155751ef088e7f",
+                "url": "https://api.github.com/repos/kartik-v/bootstrap-fileinput/zipball/b20ed6eee45c2155b11aa6d7ec0a3cc46fe1adad",
+                "reference": "b20ed6eee45c2155b11aa6d7ec0a3cc46fe1adad",
                 "shasum": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0.x-dev"
+                    "dev-master": "5.1.x-dev"
                 }
             },
             "autoload": {
@@ -952,7 +974,7 @@
                 "progress",
                 "upload"
             ],
-            "time": "2020-06-02 11:45:44"
+            "time": "2020-06-11 12:37:47"
         },
         {
             "name": "kartik-v/bootstrap-popover-x",
@@ -1324,12 +1346,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-export.git",
-                "reference": "9b4b026cf134de6636f31181675a32a6b0b0b73e"
+                "reference": "14f3a93a79e0fdbc2ab646710ddd17eb178ce9ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/9b4b026cf134de6636f31181675a32a6b0b0b73e",
-                "reference": "9b4b026cf134de6636f31181675a32a6b0b0b73e",
+                "url": "https://api.github.com/repos/kartik-v/yii2-export/zipball/14f3a93a79e0fdbc2ab646710ddd17eb178ce9ce",
+                "reference": "14f3a93a79e0fdbc2ab646710ddd17eb178ce9ce",
                 "shasum": ""
             },
             "require": {
@@ -1376,7 +1398,7 @@
                 "xlsx",
                 "yii2"
             ],
-            "time": "2020-05-29 17:01:27"
+            "time": "2020-06-09 08:23:41"
         },
         {
             "name": "kartik-v/yii2-grid",
@@ -1437,12 +1459,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-icons.git",
-                "reference": "81d174a445d66042f257e2818d6e2e09ebdd8a15"
+                "reference": "5d4c96a2350b014cb8871ed6251db879f014c834"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-icons/zipball/81d174a445d66042f257e2818d6e2e09ebdd8a15",
-                "reference": "81d174a445d66042f257e2818d6e2e09ebdd8a15",
+                "url": "https://api.github.com/repos/kartik-v/yii2-icons/zipball/5d4c96a2350b014cb8871ed6251db879f014c834",
+                "reference": "5d4c96a2350b014cb8871ed6251db879f014c834",
                 "shasum": ""
             },
             "require": {
@@ -1481,7 +1503,7 @@
                 "yii",
                 "yii2"
             ],
-            "time": "2019-05-25 07:24:34"
+            "time": "2020-06-09 03:45:58"
         },
         {
             "name": "kartik-v/yii2-krajee-base",
@@ -4053,7 +4075,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v3.4.41",
+            "version": "v3.4.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
@@ -4099,6 +4121,51 @@
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
             "time": "2020-05-23 17:05:51"
+        },
+        {
+            "name": "timurmelnikov/yii2-loading-overlay",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/timurmelnikov/yii2-loading-overlay.git",
+                "reference": "316b963c5b3998a2612472caea7d53a1d1545973"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/timurmelnikov/yii2-loading-overlay/zipball/316b963c5b3998a2612472caea7d53a1d1545973",
+                "reference": "316b963c5b3998a2612472caea7d53a1d1545973",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/gasparesganga-jquery-loading-overlay": "1.5.*",
+                "yiisoft/yii2": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "timurmelnikov\\widgets\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Timur Melnikov",
+                    "email": "melnilovt@gmail.com"
+                }
+            ],
+            "description": "Yii2 виджет-обертка для использования плагина jQuery LoadingOverlay",
+            "keywords": [
+                "LoadingOverlay",
+                "ajax",
+                "jquery",
+                "pjax",
+                "widget",
+                "yii2"
+            ],
+            "time": "2017-10-25 08:44:34"
         },
         {
             "name": "twbs/bootstrap",
@@ -6495,7 +6562,7 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
@@ -6554,7 +6621,7 @@
         },
         {
             "name": "symfony/console",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
@@ -6631,7 +6698,7 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
@@ -6684,7 +6751,7 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
@@ -6745,7 +6812,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -6873,7 +6940,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -7158,7 +7225,7 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.9",
+            "version": "v4.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
@@ -7257,16 +7324,16 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6"
+                "reference": "9dc4f203e36f2b486149058bade43c851dd97451"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
-                "reference": "ab2cb0b3b559010b75981b1bdce728da3ee90ad6",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/9dc4f203e36f2b486149058bade43c851dd97451",
+                "reference": "9dc4f203e36f2b486149058bade43c851dd97451",
                 "shasum": ""
             },
             "require": {
@@ -7274,6 +7341,7 @@
                 "symfony/polyfill-ctype": "^1.8"
             },
             "conflict": {
+                "phpstan/phpstan": "<0.12.20",
                 "vimeo/psalm": "<3.9.1"
             },
             "require-dev": {
@@ -7301,7 +7369,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2020-04-18 12:12:48"
+            "time": "2020-06-16 10:16:42"
         },
         {
             "name": "yiisoft/yii2-debug",

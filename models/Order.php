@@ -2527,12 +2527,16 @@ class Order extends \yii\db\ActiveRecord
                 ArrayHelper::removeValue($Vehicles, $vehicle);
             } else {
                 if($date){
-                    if($vehicle->hasOrderOnDate($date)
-                        || CalendarVehicle::findOne([
-                            'id_vehicle' => $vehicle->id,
-                            'date' => functions::DayToStartUnixTime($date),
-                            ['in', 'status', [CalendarVehicle::STATUS_BUSY, CalendarVehicle::STATUS_HALF_TIME]]
-                        ])
+                    if(
+                        $vehicle->hasOrderOnDate($this->datetime_start)
+                        ||
+                        CalendarVehicle::find()
+                            ->where([
+                                'id_vehicle' => $vehicle->id,
+                                'date' => functions::DayToStartUnixTime($this->datetime_start)
+                              ])
+                            ->andWhere(['in', 'status', [CalendarVehicle::STATUS_BUSY, CalendarVehicle::STATUS_HALF_TIME]])
+                            ->one()
                     ){
                         ArrayHelper::removeValue($Vehicles, $vehicle);
                     }

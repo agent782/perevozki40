@@ -260,8 +260,10 @@ class OrderController extends Controller
 //                    if(!$user_id) $user_id = Yii::$app->user->id;
 //                    $modelOrder->type_payment = Payment::TYPE_CASH ;
                     $user_id = ($user)?$user->id:null;
+                    $modelOrder->type_payment = Payment::TYPE_CASH;
+                    $withCountVehicle = $modelOrder->datetime_start ? true : false;
                     $modelOrder->suitable_rates = $modelOrder
-                        ->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id), true);
+                        ->getSuitableRatesCheckboxList ($route->distance, $modelOrder->getDiscount($user_id), $withCountVehicle);
 //                    $TypiesPayment = ArrayHelper::map(TypePayment::find()->all(), 'id', 'type');
 //                    $companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
                     $session->set('route', $route);
@@ -459,12 +461,17 @@ class OrderController extends Controller
             if(array_key_exists('type_payment', $post)) {
                 $modelOrder->type_payment = $post['type_payment'];
             }
-            $modelOrder->suitable_rates =
-                $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user_id), true);
+
             if(Yii::$app->request->post('datetime_start'))$modelOrder->datetime_start =
                 Yii::$app->request->post('datetime_start');
             if(Yii::$app->request->post('valid_datetime'))$modelOrder->valid_datetime =
                 Yii::$app->request->post('valid_datetime');
+
+            $withCountVehicle = $modelOrder->datetime_start ? true : false;
+
+            $modelOrder->suitable_rates =
+                $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user_id), $withCountVehicle);
+
             $session->set('modelOrder', $modelOrder);
             return $this->renderAjax('selectedRates', [
                 'modelOrder' => $modelOrder,

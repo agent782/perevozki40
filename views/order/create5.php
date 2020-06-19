@@ -16,6 +16,7 @@ use app\components\widgets\ShowMessageWidget;
 use app\models\Profile;
 use kartik\icons\Icon;
 use yii\widgets\Pjax;
+
 //echo date('d.m.Y H:i');
 Icon::map($this);
 ?>
@@ -58,7 +59,7 @@ Icon::map($this);
             'pluginEvents' => [
                 'changeDate' => "
                     function(e){
-                        
+                        changePriceZones();
                     }
                 "
             ]
@@ -105,7 +106,7 @@ Icon::map($this);
                     $(this).prop("checked", false);
                 });
             }
-            $("#rates").html("");
+//            $("#rates").html("");
             changePriceZones();
         '
     ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
@@ -146,8 +147,8 @@ Icon::map($this);
             <?= $route->fullRoute?>
         </comment>
 
-        <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
-        <div id="rates">
+        <?php Pjax::begin(['id' => 'create5']);?>
+<!--        <div id="rates">-->
     <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие по стоимости тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, [
             'id' => 'selected_rates',
@@ -160,9 +161,9 @@ Icon::map($this);
         услуги грузчика и т.п.)'
     );
     ?>
-        </div>
+<!--        </div>-->
         <?php
-        \yii\widgets\Pjax::end();
+            Pjax::end();
         ?>
         <comment>
             Чем больше тарифов выбрано, тем больше ТС подойдут под Ваш заказ.
@@ -194,6 +195,7 @@ Icon::map($this);
 </div>
 <script>
     function changePriceZones() {
+        startLoading();
         var type_payment = $('#type_payment').find("input:checked").val();
         var datetime_start = $('#order-datetime_start').val();
         var valid_datetime = $('#order-valid_datetime').val();
@@ -205,9 +207,12 @@ Icon::map($this);
                 "type_payment": type_payment,
                 "datetime_start": datetime_start,
                 "valid_datetime": valid_datetime
-            },
+            }
         });
 
+        $(document).on('pjax:success', function(event, data, status, xhr, options) {
+            endLoading();
+        });
     }
 
 </script>
