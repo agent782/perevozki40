@@ -18,7 +18,6 @@ window.onscroll = function() {
     prevScrollpos = currentScrollPos;
 }
 
-
 // $(function () {
 //     $(":submit").on("click", function(){
         // $(this).attr("disabled", "disabled");
