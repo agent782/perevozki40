@@ -62,6 +62,5 @@ $this->title = 'Заказ автотранспорта.';
     <?php
         myActiveForm::end();
     ?>
-
 </div>
 

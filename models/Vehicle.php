@@ -856,7 +856,7 @@ class Vehicle extends \yii\db\ActiveRecord
         $unix_date = functions::DayToStartUnixTime($date);
         $orders = $this->getOrders()
             ->where(['between', 'datetime_start', time()-3600*24*2, time()+3600*24*10])
-            ->andWhere(['in', 'status',[ Order::STATUS_IN_PROCCESSING]])
+            ->andWhere(['in', 'status',[ Order::STATUS_IN_PROCCESSING, Order::STATUS_VEHICLE_ASSIGNED]])
             ->all();
         foreach ($orders as $order){
             $date_start_unix = functions::DayToStartUnixTime($order->datetime_start);
