@@ -49,7 +49,7 @@ echo \kartik\grid\GridView::widget([
             'value' => function(Vehicle $model, $key, $index) use ($modelOrder){
                 $return = '';
                 $icon_alert = '';
-                
+
                 if($distance = $model->hasOrderOnDate($modelOrder->datetime_start)){
                     if($distance > 120){
                         $return = '<br>' . Html::icon('glyphicon glyphicon-ban-circle');

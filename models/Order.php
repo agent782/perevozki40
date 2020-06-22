@@ -2526,23 +2526,28 @@ class Order extends \yii\db\ActiveRecord
             ) {
                 ArrayHelper::removeValue($Vehicles, $vehicle);
             } else {
-                if($date){
-                    if(
+                if ($date) {
+                    if (
                         $vehicle->hasOrderOnDate($this->datetime_start)
                         ||
                         CalendarVehicle::find()
                             ->where([
                                 'id_vehicle' => $vehicle->id,
 //                                'date' => functions::DayToStartUnixTime($this->datetime_start)
-                              ])
+                            ])
                             ->andWhere('TO_DAYS("date") = 
                             TO_DAYS("' . functions::DayToStartUnixTime($this->datetime_start) . '")')
                             ->andWhere(['in', 'status', [CalendarVehicle::STATUS_BUSY, CalendarVehicle::STATUS_HALF_TIME]])
                             ->one()
-                    ){
+                    ) {
                         ArrayHelper::removeValue($Vehicles, $vehicle);
                     }
                 }
+            }
+        }
+        foreach ($Vehicles as $vehicle) {
+            if(!$vehicle->user->canRole('car_owner') && !$vehicle->user->canRole('vip_car_owner')){
+                ArrayHelper::removeValue($Vehicles, $vehicle);
             }
         }
         $count = count($Vehicles);

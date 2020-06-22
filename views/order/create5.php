@@ -106,7 +106,6 @@ Icon::map($this);
                     $(this).prop("checked", false);
                 });
             }
-//            $("#rates").html("");
             changePriceZones();
         '
     ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
