@@ -2533,8 +2533,10 @@ class Order extends \yii\db\ActiveRecord
                         CalendarVehicle::find()
                             ->where([
                                 'id_vehicle' => $vehicle->id,
-                                'date' => functions::DayToStartUnixTime($this->datetime_start)
+//                                'date' => functions::DayToStartUnixTime($this->datetime_start)
                               ])
+                            ->andWhere('TO_DAYS("date") = 
+                            TO_DAYS("' . functions::DayToStartUnixTime($this->datetime_start) . '")')
                             ->andWhere(['in', 'status', [CalendarVehicle::STATUS_BUSY, CalendarVehicle::STATUS_HALF_TIME]])
                             ->one()
                     ){
