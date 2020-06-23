@@ -458,7 +458,7 @@ class OrderController extends Controller
             $user_id = ($user)?$user->id:null;
             $route = $session->get('route');
             $post = Yii::$app->request->post();
-            if(array_key_exists('type_payment', $post) && $modelOrder) {
+            if(array_key_exists('type_payment', $post)) {
                 $modelOrder->type_payment = $post['type_payment'];
             }
 
