@@ -2545,10 +2545,12 @@ class Order extends \yii\db\ActiveRecord
                 }
             }
         }
+        $ids = [];
         foreach ($Vehicles as $vehicle) {
             if(!$vehicle->user->canRole('car_owner') && !$vehicle->user->canRole('vip_car_owner')){
                 ArrayHelper::removeValue($Vehicles, $vehicle);
             }
+            $ids[] = $vehicle->id;
         }
         $count = count($Vehicles);
         $value = 0;
@@ -2572,8 +2574,16 @@ class Order extends \yii\db\ActiveRecord
             'pluginOptions' => $pluginOptions
         ]);
 
-        if(!Profile::notAdminOrDispetcher()){
-            $return .= $count;
+        if(!Profile::notAdminOrDispetcher() && $count){
+            $return .= Html::a($count,
+                '',
+                [ 'onclick' => "window.open ('"
+                    . Url::toRoute([
+                        '/logist/order/free-vehicles',
+                        'ids' => serialize($ids)
+                    ])
+                    . "'); return false"]
+            );
         }
         return $return;
     }

@@ -18,6 +18,7 @@ use Yii;
 use app\models\Order;
 use app\models\OrderSearch;
 use yii\bootstrap\Html;
+use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -506,6 +507,14 @@ class OrderController extends Controller
             return ($order->hide) ? 1 : 0;
         }
         return false;
+    }
+
+    public function actionFreeVehicles($ids){
+        $dataProvider = new ActiveDataProvider([
+           'query' => Vehicle::find()->where(['in', 'id', unserialize($ids)])
+        ]);
+
+        return $this->render('free-vehicles', ['dataProvider' => $dataProvider]);
     }
 
 }
