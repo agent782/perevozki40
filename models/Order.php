@@ -2549,8 +2549,9 @@ class Order extends \yii\db\ActiveRecord
         foreach ($Vehicles as $vehicle) {
             if(!$vehicle->user->canRole('car_owner') || !$vehicle->user->canRole('vip_car_owner')){
                 ArrayHelper::removeValue($Vehicles, $vehicle);
+            } else {
+                $ids[] = $vehicle->id;
             }
-            $ids[] = $vehicle->id;
         }
         $count = count($Vehicles);
         $value = 0;
