@@ -2547,7 +2547,7 @@ class Order extends \yii\db\ActiveRecord
         }
         $ids = [];
         foreach ($Vehicles as $vehicle) {
-            if(!$vehicle->user->canRole('car_owner') || !$vehicle->user->canRole('vip_car_owner')){
+            if(!$vehicle->user->canRole('car_owner') && !$vehicle->user->canRole('vip_car_owner')){
                 ArrayHelper::removeValue($Vehicles, $vehicle);
             } else {
                 $ids[] = $vehicle->id;
