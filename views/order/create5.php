@@ -108,7 +108,7 @@ Icon::map($this);
             }
             changePriceZones();
         '
-    ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
+    ])->label('Способ оплаты')?>
     <?php
         $companiesHide = ($modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER)
             ? '' : 'hidden';

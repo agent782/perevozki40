@@ -25,12 +25,15 @@ $this->registerJs(new \yii\web\JsExpression('
                     $(this)
                         .children()
                         .slideDown("slow");
-                } else {
+                } 
+                else {
                     $(this)
                         .children()
                         .slideUp("slow");
                 }
             });
+            
+            
 
                
 
@@ -55,12 +58,12 @@ $this->title = 'Календарь занятости';
             '<div id="slide_vehicle_' . $key . '">' .
             GridView::widget([
                 'dataProvider' => $vehicle,
-                'pjax'=>true,
-                'pjaxSettings' => [
-                    'options' => [
-                        'id' => 'pjax_calendar_' . $key
-                    ]
-                ],
+//                'pjax'=>true,
+//                'pjaxSettings' => [
+//                    'options' => [
+//                        'id' => 'pjax_calendar_' . $key
+//                    ]
+//                ],
                 'responsiveWrap' => false,
                 'summary' => false,
                 'columns' => [
