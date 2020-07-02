@@ -105,7 +105,8 @@ $this->title = 'Журнал заказов';
                         ])
                     ;
                     return $return;
-                }
+                },
+                'filter' => true
             ],
             [
                 'label' => 'Акт',
@@ -292,8 +293,28 @@ $this->title = 'Журнал заказов';
 //                    ]
 //                ],
 //            ],
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'attribute' => 'hasInvoice',
+                'label' => 'Счет',
+                'format' => 'raw',
+                'filter' =>
+                    Html::activeCheckbox($searchModel, 'hasInvoice', ['label' => ' Только не выставленные счета']
+                    )
+                ,
+                'filterOptions' => ['class' => 'minRoute'],
+            ],
+            [
+                'attribute' => 'hasCertificate',
+                'label' => 'Акт',
+                'format' => 'raw',
+                'filter' =>
+                    Html::activeCheckbox($searchModel, 'hasCertificate', ['label' => ' Только не выписанные акы']
+                    )
+                ,
+                'filterOptions' => ['class' => 'minRoute'],
+            ],
+//            ['class' => 'yii\grid\ActionColumn'],
         ],
+
     ]); ?>
 </div>

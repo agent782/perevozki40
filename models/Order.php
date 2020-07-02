@@ -2588,6 +2588,34 @@ class Order extends \yii\db\ActiveRecord
         }
         return $return;
     }
+
+    public function getHasInvoice($html = true){
+        if($this->invoice){
+            return ($html)
+                ? Html::icon('ok')
+                : 1
+                ;
+        } else {
+            return ($html)
+                ? Html::icon('remove')
+                : 0
+                ;
+        }
+    }
+
+    public function getHasCertificate($html = true){
+        if($this->certificate){
+            return ($html)
+                ? Html::icon('ok')
+                : 1
+                ;
+        } else {
+            return ($html)
+                ? Html::icon('remove')
+                : 0
+                ;
+        }
+    }
  }
 
 

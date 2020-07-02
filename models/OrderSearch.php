@@ -22,6 +22,8 @@ class OrderSearch extends Order
     public $invoiceNumber;
     public $certificateNumber;
     public $companyName;
+    public $hasInvoice;
+    public $hasCertificate;
     /**
      * @inheritdoc
      */
@@ -32,7 +34,8 @@ class OrderSearch extends Order
                 'datetime_finish', 'datetime_access', 'valid_datetime', 'id_route', 'id_route_real','type_payment', 'id_company'], 'integer'],
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
             [['cargo', 'statuses', 'type_payments'], 'safe'],
-            [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status', 'paid_car_owner_status'], 'safe']
+            [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status', 'paid_car_owner_status',
+                'hasInvoice', 'hasCertificate'], 'safe']
         ];
     }
 
@@ -101,6 +104,26 @@ class OrderSearch extends Order
             $query->joinWith(['company' => function ($q) {
                 $q->andWhere('company.name LIKE "%' . $this->companyName . '%"');
             }]);
+        }
+
+        if($this->hasInvoice) {
+            $ids_order_need_invoice = [];
+            foreach (Order::find()->where(['type_payment' => Payment::TYPE_BANK_TRANSFER])->all() as $order){
+                if(!$order->invoice){
+                    $ids_order_need_invoice[] = $order->id;
+                }
+            }
+            $query->filterWhere(['in', 'id', $ids_order_need_invoice]);
+        }
+
+        if($this->hasCertificate) {
+            $ids_order_need_certificate = [];
+            foreach (Order::find()->where(['type_payment' => Payment::TYPE_BANK_TRANSFER])->all() as $order){
+                if(!$order->certificate){
+                    $ids_order_need_certificate[] = $order->id;
+                }
+            }
+            $query->filterWhere(['in', 'id', $ids_order_need_certificate]);
         }
         return $dataProvider;
     }
