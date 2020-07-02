@@ -58,7 +58,13 @@ use yii\helpers\ArrayHelper;
 //                    'class'=> 'kv-state-enable',
 //                ],
 //            ],
-            'id',
+            [
+                'attribute' => 'id',
+                'format' => 'raw',
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
+            ],
             [
                 'attribute' => 'datetime_start',
                 'class' => EditableColumn::class,
@@ -179,7 +185,10 @@ use yii\helpers\ArrayHelper;
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
 //                    }
                     return $return;
-                }
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 14px'
+                ]
             ],
             [
                 'class' => \kartik\grid\EditableColumn::class,

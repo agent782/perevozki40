@@ -49,7 +49,13 @@ use kartik\editable\Editable;
 //                'class'=> 'kv-state-enable',
 //            ],
 //        ],
-        'id',
+        [
+            'attribute' => 'id',
+            'format' => 'raw',
+            'contentOptions' => [
+                'class' => 'h5'
+            ]
+        ],
         [
             'attribute' => 'hide',
             'format' => 'raw',
@@ -120,7 +126,10 @@ use kartik\editable\Editable;
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
                 }
                 return $return;
-            }
+            },
+            'contentOptions' => [
+                'style' => 'font-size: 14px'
+            ]
         ],
         [
             'label' => 'Выбранные тарифы для водителя',

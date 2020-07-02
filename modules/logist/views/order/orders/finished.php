@@ -50,7 +50,13 @@ use app\models\Payment;
                     'class'=> 'kv-state-enable',
                 ],
             ],
-            'id',
+            [
+                'attribute' => 'id',
+                'format' => 'raw',
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
+            ],
             'real_datetime_start',
             [
                 'label' => 'ТС',
@@ -66,7 +72,7 @@ use app\models\Payment;
                     ]);
                 },
                 'contentOptions' => [
-                    'style' => 'font-size: 16px'
+                    'style' => 'font-size: 18px'
                 ]
             ],
             [
@@ -75,6 +81,9 @@ use app\models\Payment;
                 'value' => function($model){
                     return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
                 },
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
             ],
             [
                 'class' => \kartik\grid\EditableColumn::class,
@@ -166,7 +175,10 @@ use app\models\Payment;
                             ['/logist/order/add-company', 'id_order' => $model->id]);
                     //                    }
                     return $return;
-                }
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 12px'
+                ]
             ],
             [
                 'label' => 'Действия',
