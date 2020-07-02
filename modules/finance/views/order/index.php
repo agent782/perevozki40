@@ -71,7 +71,7 @@ $this->title = 'Журнал заказов';
                             '<b style = "font-size: 18px">' . $modelInvoice->number . '</b> от ' . $modelInvoice->date,
                             Url::to(['/finance/invoice/download',
                                 'pathToFile' => Yii::getAlias('@invoices/') . $modelInvoice->url,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             ['title' => 'Скачать', 'data-pjax' => "0"]
                         ). ' '
@@ -85,7 +85,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_INVOICE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
@@ -99,7 +99,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_INVOICE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
@@ -119,7 +119,7 @@ $this->title = 'Журнал заказов';
                             '<b style = "font-size: 14px">' . $modelCertificate->number . '</b> от ' . $modelCertificate->date,
                             Url::to(['/finance/invoice/download',
                                 'pathToFile' => Yii::getAlias('@certificates/') . $modelCertificate->url,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             ['title' => 'Скачать', 'data-pjax' => "0"]
                         ) . ' '
@@ -133,7 +133,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_CERTIFICATE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
@@ -147,7 +147,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_CERTIFICATE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
