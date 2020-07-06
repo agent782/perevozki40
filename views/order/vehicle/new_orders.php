@@ -107,14 +107,14 @@ $this->registerJs("
                 return $res;
             }
         ],
-        [
-            'label' => 'Заказчик',
-            'format' => 'raw',
-            'attribute' => 'clientInfo',
-            'value' => function (Order $model){
-                return $model->getClientInfo(true, false);
-            }
-        ],
+//        [
+//            'label' => 'Заказчик',
+//            'format' => 'raw',
+//            'attribute' => 'clientInfo',
+//            'value' => function (Order $model){
+//                return $model->getClientInfo(true, false);
+//            }
+//        ],
         [
             'label' => 'Тип оплаты',
             'attribute' => 'paymentText',
