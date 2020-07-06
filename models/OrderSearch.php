@@ -22,8 +22,7 @@ class OrderSearch extends Order
     public $invoiceNumber;
     public $certificateNumber;
     public $companyName;
-    public $hasInvoice;
-    public $hasCertificate;
+    public $hasInvoiceOrCertificate;
     /**
      * @inheritdoc
      */
@@ -35,7 +34,7 @@ class OrderSearch extends Order
             [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
             [['cargo', 'statuses', 'type_payments'], 'safe'],
             [['invoiceNumber', 'certificateNumber', 'companyName', 'paid_status', 'paid_car_owner_status',
-                'hasInvoice', 'hasCertificate'], 'safe']
+                'hasInvoiceOrCertificate'], 'safe']
         ];
     }
 
@@ -106,25 +105,16 @@ class OrderSearch extends Order
             }]);
         }
 
-        if($this->hasInvoice) {
+        if($this->hasInvoiceOrCertificate) {
             $ids_order_need_invoice = [];
             foreach (Order::find()->where(['type_payment' => Payment::TYPE_BANK_TRANSFER])->all() as $order){
-                if(!$order->invoice){
+                if(!$order->invoice || !$order->certificate){
                     $ids_order_need_invoice[] = $order->id;
                 }
             }
             $query->filterWhere(['in', 'id', $ids_order_need_invoice]);
         }
 
-        if($this->hasCertificate) {
-            $ids_order_need_certificate = [];
-            foreach (Order::find()->where(['type_payment' => Payment::TYPE_BANK_TRANSFER])->all() as $order){
-                if(!$order->certificate){
-                    $ids_order_need_certificate[] = $order->id;
-                }
-            }
-            $query->filterWhere(['in', 'id', $ids_order_need_certificate]);
-        }
         return $dataProvider;
     }
 

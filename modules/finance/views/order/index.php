@@ -294,25 +294,16 @@ $this->title = 'Журнал заказов';
 //                ],
 //            ],
             [
-                'attribute' => 'hasInvoice',
-                'label' => 'Счет',
+                'label' => '',
                 'format' => 'raw',
                 'filter' =>
-                    Html::activeCheckbox($searchModel, 'hasInvoice', ['label' => ' Только не выставленные счета']
+                    Html::activeCheckbox($searchModel, 'hasInvoiceOrCertificate',
+                        ['label' => ' Только не выставленные счета или акты']
                     )
                 ,
                 'filterOptions' => ['class' => 'minRoute'],
             ],
-            [
-                'attribute' => 'hasCertificate',
-                'label' => 'Акт',
-                'format' => 'raw',
-                'filter' =>
-                    Html::activeCheckbox($searchModel, 'hasCertificate', ['label' => ' Только не выписанные акы']
-                    )
-                ,
-                'filterOptions' => ['class' => 'minRoute'],
-            ],
+
 //            ['class' => 'yii\grid\ActionColumn'],
         ],
 
