@@ -433,7 +433,7 @@ class OrderController extends Controller
 //                            return var_dump($modelOrder->id);
                         $session->remove('route');
                         $session->remove('modelOrder');
-                        functions::setFlashSuccess('Заказ офорилен.');
+                        functions::setFlashSuccess('Заказ оформлен.');
 
                     } else {
                         functions::setFlashWarning('Ошибка на сервере. Заказ не сохранен. Попробуйте позже.');
