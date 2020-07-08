@@ -11,7 +11,6 @@
 
 ?>
 
-<?= $model->PrintFinishCalculate()?>
 <br>
 <?= $model->getFullFinishInfo(true, null, true, true)?>
 
