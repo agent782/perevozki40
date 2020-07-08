@@ -120,7 +120,6 @@ $this->registerJsFile('/js/order.js');
 
         <?= $form->field($modelOrder, 'real_km')
             ->input('tel', ['id' => 'real_distance'])
-            ->label('Реальный пробег')
         ;?>
         <div id="real_h_loading">
             <?= $form->field($modelOrder, 'real_h_loading')->input('text')?>
