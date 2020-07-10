@@ -208,6 +208,8 @@ class Order extends \yii\db\ActiveRecord
                 'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
             [['length'], 'number', 'min' => 0.5,'max' => 20,
                 'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['length_spec'], 'number', 'max' => 40,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
             [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4,
                 'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
             [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200,
@@ -283,7 +285,7 @@ class Order extends \yii\db\ActiveRecord
             'cargo'
         ];
         $scenarios[self::SCENARIO_UPDATE_CRANE] = [
-            'tonnage_spec', 'selected_rates', 'type_payment',
+            'tonnage_spec', 'length_spec', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
             'cargo'
         ];
