@@ -132,7 +132,7 @@ $this->registerJsFile('/js/order.js');
             }
         ?>
         <?= $form->field($modelOrder,'additional_cost')->input('tel')->label(
-            'Дополнительные рассходы' . ShowMessageWidget::widget([
+            'Дополнительные расходы' . ShowMessageWidget::widget([
                 'helpMessage' => Tip::findOne(['model' => 'Order', 'attribute' =>'additional_cost'])->description
             ])
         )

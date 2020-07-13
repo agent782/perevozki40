@@ -21,7 +21,11 @@ $actionColumns = [
                 ]);
         },
         'update' => function ($url, $model) {
-            $url = Url::toRoute(Url::to(['/vehicle/update', 'id' => $model->id]));
+            $url = Url::toRoute(Url::to([
+                '/vehicle/update',
+                'id' => $model->id,
+                'redirect' => Url::to()
+            ]));
             return Html::a('<span class="glyphicon glyphicon-edit"></span>',
                 $url, [
                     'title' => \Yii::t('yii', 'Восстановить/редактировать.'),
@@ -217,11 +221,7 @@ $this->registerJs(
              'length_spec',
             'volume_spec',
             'statusText',
-
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {delete}'
-            ],
+            $actionColumns
         ],
     ]);
     ?>

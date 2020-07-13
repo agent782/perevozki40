@@ -907,4 +907,12 @@ class Vehicle extends \yii\db\ActiveRecord
             'ids_vehicles' => $ids_vehicles
         ];
     }
+
+    public function removePriceZone($id_price_zone){
+        $price_zone = PriceZone::findOne(['id' => $id_price_zone, 'status' => PriceZone::STATUS_ACTIVE]);
+        if($price_zone){
+           $this->unlink('price_zones', $price_zone, true);
+        }
+    }
+
 }

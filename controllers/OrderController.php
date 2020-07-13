@@ -652,7 +652,7 @@ class OrderController extends Controller
         $vehicles = [];
         $Vehicles = $UserModel->getVehicles()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])->all();
 //        return var_dump($Vehicles);
-
+        $vehicles_can_order = 0;
         foreach ($Vehicles as $vehicle) {
             if ($vehicle->canOrder($OrderModel)) {
 //                return var_dump($vehicle->getMinRate($OrderModel));
@@ -662,8 +662,27 @@ class OrderController extends Controller
                     $vehicle->brand
                     . ' (' . $vehicle->regLicense->reg_number . ') '
                     . ' <br> '
-                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true);
+                    . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true)
+                    . ' '
+                    . Html::a('Низкая цена? Нажмите, что бы не поступали заказы по тарифу №' . $rate->id ,
+                        [
+                            '/vehicle/remove-price-zone-of-vehicle',
+                            'id' => $vehicle->id,
+                            'id_price_zone' => $rate->id,
+                            'redirect' => Url::to()
+                        ], [
+                        'class' => 'btn btn-xs btn-danger',
+//                        'data-confirm' => Yii::t('yii'
+//                            , 'Вы уверены?'),
+//                        'data-method' => 'post'
+                    ])
+                ;
+                $vehicles_can_order++;
             }
+        }
+        if(!$vehicles_can_order){
+            functions::setFlashWarning('У Вас нет подходящих ТС под этот заказ.');
+            $this->redirect($redirect);
         }
         if ($vehicles) {
             $OrderModel->scenario = $OrderModel::SCENARIO_ACCESSING;

@@ -55,7 +55,7 @@ class VehicleController extends Controller
                         'roles' => ['car_owner', 'vip_car_owner']
                     ],
                     [
-                        'actions' => ['update', 'view', 'delete', 'full-delete'],
+                        'actions' => ['update', 'view', 'delete', 'full-delete','remove-price-zone-of-vehicle'],
                         'allow' => true,
                         'roles' => ['car_owner'],
                             'matchCallback' => function ($rule, $action) {
@@ -642,5 +642,27 @@ class VehicleController extends Controller
         ]);
     }
 
+    public function actionRemovePriceZoneOfVehicle($id, $id_price_zone, $redirect){
+        $vehicle = Vehicle::findOne($id);
+        if(!$vehicle){
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже');
+            return $this->redirect($redirect);
+        }
+        if($vehicle->hasPriceZone($id_price_zone)){
+            if($vehicle->getPrice_zones()->count() < 2){
+                functions::setFlashWarning('Нельзя удалить единственный тариф у ТС!');
+            } else {
+                $vehicle->removePriceZone($id_price_zone);
+                functions::setFlashSuccess('Тариф №' . $id_price_zone . ' удален у ' . $vehicle->brandAndNumber
+                    . '. Вы можете восстановить его, отредактировав ТС в разделе "Мой транспорт"'
+                );
+            }
 
+            return $this->redirect($redirect);
+        }else {
+            functions::setFlashWarning('Тариф уже удален.');
+            return $this->redirect($redirect);
+        }
+
+    }
 }
