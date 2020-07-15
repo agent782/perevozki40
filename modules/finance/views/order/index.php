@@ -195,7 +195,7 @@ $this->title = 'Журнал заказов';
                 'value' => 'paidText',
                 'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses()),
                 'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'inputType' => \kartik\editable\Editable::INPUT_RADIO_LIST,
                     'data' => $searchModel->getArrayPaidStatuses(),
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/finance/order/pru' ])
@@ -225,7 +225,7 @@ $this->title = 'Журнал заказов';
                     )
                     ,
                 'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'inputType' => \kartik\editable\Editable::INPUT_RADIO_LIST,
                     'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
                     ,
                     'formOptions' => [
