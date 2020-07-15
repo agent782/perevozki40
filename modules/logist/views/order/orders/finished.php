@@ -16,6 +16,7 @@ use app\components\widgets\FinishOrderOnlySumWidget;
 use app\models\Company;
 use app\components\widgets\ShowMessageWidget;
 use app\models\Payment;
+
 ?>
 
 <div>
@@ -32,6 +33,10 @@ use app\models\Payment;
             'options' => [
                 'id' => 'pjax_finished_orders'
             ]
+        ],
+        'id' => 'finished_orders',
+        'options' => [
+            'class' => 'container',
         ],
         'columns' => [
             [
@@ -111,15 +116,20 @@ use app\models\Payment;
                         ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
                     )
                 ,
-                'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
-                    'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
-                    ,
-                    'formOptions' => [
-                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaymentType' ])
-                    ]
-                ],
+                'editableOptions' => function ($model) {
+                    return [
+                        'inputType' => \kartik\editable\Editable::INPUT_RADIO_LIST,
+                        'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text'),
+                        'formOptions' => [
+                            'action' => \yii\helpers\Url::to(['/finance/order/changePaymentType'])
+                        ],
+                        'options' => [
+                            'id' => 'finish_orders_' . $model->id,
+                        ]
+                    ];
+                },
                 'filterOptions' => ['class' => 'minRoute'],
+                'contentOptions' => ['class' => 'minRoute']
             ],
             [
                 'label' => 'Маршрут',
@@ -197,7 +207,7 @@ use app\models\Payment;
                                 'redirect' => '/logist/order'
                             ]), ['class' => 'btn btn-sm btn-success']);
 
-                        $return .= '<br>' . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]) . '<br><br>';
+                        $return .= '<br><br>' . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]) . '<br><br>';
                     }
                     if(Yii::$app->user->can('dispetcher')) {
                         if(!$model->invoice){

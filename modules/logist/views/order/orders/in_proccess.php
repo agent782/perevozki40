@@ -41,6 +41,7 @@ use yii\helpers\ArrayHelper;
                 'id' => 'pjax_in_proccess_orders'
             ]
         ],
+        'id' => 'in_proccess_orders',
         'columns' => [
 //            [
 //                'class' => 'kartik\grid\ExpandRowColumn',
