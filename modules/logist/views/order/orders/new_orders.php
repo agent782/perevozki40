@@ -188,38 +188,39 @@ use kartik\editable\Editable;
                         $hidden = ($model->auto_find)?true:false;
                         $return .= Html::a(Html::icon('search', ['class' => 'btn-lg',
                             'title' => 'Автоматический поиск']), Url::to([
-                            '#',
+                            '/order/auto-find',
 //                            'id_order' => $model->id,
 //                            'redirect' => '/logist/order'
                         ]),
                             [
+                                'target'=>'_blank',
 //                                'data-confirm' => Yii::t('yii',
 //                                    'Начать автоматический поиск ТС по заказу?'),
 //                                'data-method' => 'post',
                                 'id' => 'start_auto_find',
                                 'hidden' => $hidden,
-                                'onclick' => new JsExpression('
-                                    $("#start_auto_find").prop("hidden", true);
-                                    $("#stop_auto_find").prop("hidden", false);
-                                    $.ajax({
-                                        url: "/logist/order/ajax-auto-find",
-                                        type: "POST",
-                                        dataType: "json",
-                                        data: {
-                                            id_order: ' . $model->id . ',
-                                        },
-                                        
-                                        success: function(data){
-                                            if(data){
-                                                $("#start_auto_find").prop("hidden", false);
-                                                $("#stop_auto_find").prop("hidden", true);
-                                            }
-                                        },
-                                        error: function(){
-                                            alert("Ошибка на сервере!")
-                                        }
-                                     });
-                                ')
+//                                'onclick' => new JsExpression('
+//                                    $("#start_auto_find").prop("hidden", true);
+//                                    $("#stop_auto_find").prop("hidden", false);
+//                                    $.ajax({
+//                                        url: "/logist/order/ajax-auto-find",
+//                                        type: "POST",
+//                                        dataType: "json",
+//                                        data: {
+//                                            id_order: ' . $model->id . ',
+//                                        },
+//
+//                                        success: function(data){
+//                                            if(data){
+//                                                $("#start_auto_find").prop("hidden", false);
+//                                                $("#stop_auto_find").prop("hidden", true);
+//                                            }
+//                                        },
+//                                        error: function(){
+//                                            alert("Ошибка на сервере!")
+//                                        }
+//                                     });
+//                                ')
                             ]);
                         $return .= Html::a(Html::icon('pause', ['class' => 'btn-lg',
                             'title' => 'Автоматический поиск']), Url::to([

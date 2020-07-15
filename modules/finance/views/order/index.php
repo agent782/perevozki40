@@ -213,6 +213,7 @@ $this->title = 'Журнал заказов';
                 ],
             ],
             [
+                'class' => \kartik\grid\EditableColumn::class,
                 'attribute' =>'type_payment',
                 'format' => 'raw',
                 'value' => function($model){
@@ -223,6 +224,15 @@ $this->title = 'Журнал заказов';
                     ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
                     )
                     ,
+                'filterOptions' => ['class' => 'minRoute'],
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    ,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaymentType' ])
+                    ]
+                ],
                 'filterOptions' => ['class' => 'minRoute'],
             ],
             [

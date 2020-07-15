@@ -62,10 +62,10 @@ class OrderController extends Controller
                 'class' => EditableColumnAction::class ,
                 'modelClass' => Order::class ,
                 'outputValue' => function (Order $model , $attribute , $key , $index) {
-                    $model->discount = $model->getDiscount($model->id_user);
-                    $model->cost_finish = $model->getFinishCost();
-                    $model->cost_finish_vehicle = $model->getFinishCostForVehicle();
-                    $model->save();
+//                    $model->discount = $model->getDiscount($model->id_user);
+//                    $model->cost_finish = $model->getFinishCost();
+//                    $model->cost_finish_vehicle = $model->getFinishCostForVehicle();
+//                    $model->save();
                     return $model->paymentMinText;
                 } ,
                 'outputMessage' => function($model , $attribute , $key , $index) {

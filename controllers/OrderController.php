@@ -9,6 +9,7 @@ use app\models\Sms;
 use app\models\VehicleType;
 use app\models\XprofileXcompany;
 use function Couchbase\fastlzCompress;
+use Symfony\Component\Process\Process;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use app\models\Message;
@@ -64,6 +65,14 @@ class OrderController extends Controller
                         'allow' => true,
                         'roles' => ['?'],
                         'actions' => ['create', 'validate-order', 'remove-order-session'],
+//                        'denyCallback' => function(){
+//                            return 1;
+//                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'roles' => ['admin'],
+                        'actions' => ['auto-find'],
 //                        'denyCallback' => function(){
 //                            return 1;
 //                        }
@@ -1100,5 +1109,18 @@ class OrderController extends Controller
     public function actionRemoveOrderSession(){
         Yii::$app->session->remove('modelOrder');
         return 1;
+    }
+
+    public function actionAutoFind(){
+        $proccess = new Process('php yii console/auto-find', yii::getAlias('@app'));
+        $proccess->start();
+
+        $time = date('H:i:s', time());
+        if(Yii::$app->request->isPjax){
+            $time = date('H:i:s', time());
+        }
+        return $this->render('auto-find',[
+            'time' => $time
+        ]);
     }
 }

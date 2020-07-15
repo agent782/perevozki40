@@ -659,7 +659,7 @@ class VehicleController extends Controller
             }
 
             return $this->redirect($redirect);
-        }else {
+        } else {
             functions::setFlashWarning('Тариф уже удален.');
             return $this->redirect($redirect);
         }

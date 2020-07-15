@@ -113,7 +113,7 @@ use app\models\Payment;
                 ,
                 'editableOptions' => [
                     'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
-                    'data' =>                         ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
                     ,
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/finance/order/changePaymentType' ])
