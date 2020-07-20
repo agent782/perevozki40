@@ -18,12 +18,12 @@ $this->registerJs($script);
     <br><br>
     <div class="h2"> <?= $time;?></div>
 </div>
-<?= Html::a("Обновить", ['/order/auto-find'],
-    [
-        'hidden' => true,
-        'id' => 'refreshButton',
-    ])
-?>
+<?//= Html::a("Обновить", ['/order/auto-find'],
+//    [
+//        'hidden' => true,
+//        'id' => 'refreshButton',
+//    ])
+//?>
 
 <?php Pjax::end()?>
 
