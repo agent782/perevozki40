@@ -1113,7 +1113,7 @@ class OrderController extends Controller
 
     public function actionAutoFind(){
         $proccess = new Process('php yii console/auto-find', yii::getAlias('@app'));
-        $proccess->start();
+//        $proccess->start();
 
         $time = date('H:i:s', time());
         if(Yii::$app->request->isPjax){
