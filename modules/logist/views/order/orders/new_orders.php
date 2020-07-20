@@ -194,6 +194,7 @@ use kartik\editable\Editable;
                         ]),
                             [
                                 'target'=>'_blank',
+                                'data-pjax' => '0',
 //                                'data-confirm' => Yii::t('yii',
 //                                    'Начать автоматический поиск ТС по заказу?'),
 //                                'data-method' => 'post',

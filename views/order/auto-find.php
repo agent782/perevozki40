@@ -11,7 +11,7 @@ $this->registerJs($script);
 ?>
 <?php Pjax::begin([
     'id' => 'auto-find',
-//    'timeout' => 1000
+//    'timeout' => 1
 ]);?>
 
 <div class="container">
