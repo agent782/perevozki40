@@ -20,9 +20,9 @@ class ConsoleController extends Controller
             'title' => 'Проверка'
         ]);
         $mes->sendPush(false);
-        sleep(10);
+        sleep(5);
         $mes->sendPush(false);
-        sleep(10);
+        sleep(5);
         $mes->sendPush(false);
     }
 
