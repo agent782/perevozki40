@@ -1830,7 +1830,7 @@ class Order extends \yii\db\ActiveRecord
             $return .= $FC->getVehicleInfo() . '<br>'
                 . $FC->getCarOwnerInfo($showPhones) . '<br>'
                 . $FC->getDriverInfo($showPhones) . '<br>';
-            return $return;
+            if(Profile::notAdminOrDispetcher()) return $return;
         }
         if(!$this->id_vehicle) return false;
         $vehicle = $this->vehicle;

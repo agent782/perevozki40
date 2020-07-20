@@ -249,6 +249,7 @@ class CompanyController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
     public function actionValidateAddCompany()
     {
         if (Yii::$app->request->isAjax) {
