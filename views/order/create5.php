@@ -173,7 +173,7 @@ Icon::map($this);
 <div class="col-lg-12">
     <?php
         if(!Profile::notAdminOrDispetcher()) {
-            $form->field($modelOrder, 'hide')->checkbox()->label('Скрыть');
+            echo $form->field($modelOrder, 'hide')->checkbox()->label('Скрыть');
         }
     ?>
     <?= Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])?>
