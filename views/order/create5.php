@@ -171,6 +171,8 @@ Icon::map($this);
     </div>
 
 <div class="col-lg-12">
+    <?= $form->field($modelOrder, 'hide')->checkbox()->label('Скрыть
+    ')?>
     <?= Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])?>
     <?=
     (!Yii::$app->user->isGuest)
