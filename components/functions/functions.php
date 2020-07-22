@@ -5,6 +5,7 @@
     use app\models\User;
     use yii\imagine\Image;
     use yii\web\UploadedFile;
+    use Symfony\Component\Process\Process;
 
     /**
  * Created by PhpStorm.

@@ -27,4 +27,14 @@ $this->registerJs($script);
 
 <?php Pjax::end()?>
 
+<?=
+    \kartik\grid\GridView::widget([
+        'filterModel' => $searchModel,
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            'id',
+        ]
+    ])
+?>
+
 

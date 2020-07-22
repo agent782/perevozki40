@@ -1120,17 +1120,21 @@ class OrderController extends Controller
         return 1;
     }
 
-    public function actionAutoFind(){
-        $proccess = new Process('php yii console/auto-find', yii::getAlias('@app'));
-
-        $proccess->start();
+    public function actionAutoFind($id_order){
+        $order = Order::findOne($id_order);
+        if(!$order){
+            return;
+        }
+        $seachModel = new OrderSearch();
+        $dataProvider = $seachModel->search(Yii::$app->request->queryParams)
+            ->query->andFilterWhere(['in', 'id', $order->suitable_vehicles]);
 
         $time = date('H:i:s', time());
-        if(Yii::$app->request->isPjax){
-            $time = date('H:i:s', time());
-        }
+
         return $this->render('auto-find',[
-            'time' => $time
+            'time' => $time,
+            'searchModel' => $seachModel,
+            'dataProvider' => $dataProvider
         ]);
     }
 }

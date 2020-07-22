@@ -189,7 +189,7 @@ use kartik\editable\Editable;
                         $return .= Html::a(Html::icon('search', ['class' => 'btn-lg',
                             'title' => 'Автоматический поиск']), Url::to([
                             '/order/auto-find',
-//                            'id_order' => $model->id,
+                            'id_order' => $model->id,
 //                            'redirect' => '/logist/order'
                         ]),
                             [
