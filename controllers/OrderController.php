@@ -346,6 +346,10 @@ class OrderController extends Controller
 
                             $session->remove('route');
                             $session->remove('modelOrder');
+
+                            functions::startCommand('console/set-suitable-vehicles-ids',
+                                [$modelOrder->id]);
+
                             return $this->redirect(['client']);
                         }
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
@@ -444,9 +448,12 @@ class OrderController extends Controller
                         $session->remove('modelOrder');
                         functions::setFlashSuccess('Заказ оформлен.');
 
+                        functions::startCommand('console/set-suitable-vehicles-ids',
+                            [$modelOrder->id]);
+
                     } else {
                         functions::setFlashWarning('Ошибка на сервере. Заказ не сохранен. Попробуйте позже.');
-                        return var_dump($modelOrder->getErrors());
+//                        return var_dump($modelOrder->getErrors());
                         return $this->redirect($redirect);
                     }
                     return $this->redirect(['/logist/order/add-company', 'id_order' => $modelOrder->id]);
@@ -573,6 +580,8 @@ class OrderController extends Controller
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     if ($route->save() && $modelOrder->save()) {
                         $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
+                        functions::startCommand('console/set-suitable-vehicles-ids',
+                            [$modelOrder->id]);
                     } else {
                         functions::setFlashWarning('Ошибка на сервере');
                     }

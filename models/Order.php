@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\components\functions\emails;
 use app\components\functions\functions;
+use app\components\SerializeBehaviors;
 use app\models\setting\Setting;
 use app\models\setting\SettingVehicle;
 use app\models\setting\SettingClient;
@@ -115,8 +116,9 @@ use kartik\rating\StarRating;
  * @property OrdersFinishContacts $finishContacts
  * @property string $comment_vehicle
  * @property bool $auto_find
- * @property integer date_paid
- * @property bool hide
+ * @property integer $date_paid
+ * @property bool $hide
+ * @property array $suitable_vehicles
 
 
  */
@@ -227,7 +229,7 @@ class Order extends \yii\db\ActiveRecord
             ],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
                 'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle',
-                'ClientPhone', 'id_user', 'date_paid', 'hide'],
+                'ClientPhone', 'id_user', 'date_paid', 'hide', 'suitable_vehicles'],
                 'safe'
             ],
             [['additional_cost','ClientPaidCash'], 'default', 'value' => '0'],
@@ -435,6 +437,10 @@ class Order extends \yii\db\ActiveRecord
                 'dateAttributes' => ['date_paid'],
                 'format' => DateBehaviors::FORMAT_DATE,
             ],
+            'serialize' => [
+                'class' => SerializeBehaviors::class,
+                'arrAttributes' => ['suitable_vehicles']
+            ]
         ];
     }
 

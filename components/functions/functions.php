@@ -1,5 +1,6 @@
 <?php
     namespace app\components\functions;
+    use app\models\Message;
     use Yii;
     use app\models\User;
     use yii\imagine\Image;
@@ -248,6 +249,18 @@ class functions
 // иначе текущую дату
             return strtr(date(func_get_arg(0)), $translate);
         }
+    }
+
+    static public function startCommand(string $command, $args = []){
+        $arguments = '';
+        if($args){
+            foreach ($args as $arg){
+                $arguments .= $arg . ' ';
+            }
+        }
+        $proccess = new Process('php yii ' . $command . ' ' . $arguments, yii::getAlias('@app'));
+
+        $proccess->start();
     }
 
 }
