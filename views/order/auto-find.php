@@ -4,7 +4,7 @@
 
 $script = <<< JS
 $(document).ready(function() {
-    // setInterval(function(){ $("#refreshButton").click(); }, 1000);
+    setInterval(function(){ $("#refreshButton").click(); }, 1000);
 });
 JS;
 $this->registerJs($script);
@@ -18,7 +18,7 @@ $this->registerJs($script);
     <br><br>
     <div class="h2"> <?= $time;?></div>
 </div>
-<?= Html::a("Обновить", ['/order/auto-find'],
+<?= Html::a("Обновить", ['/order/auto-find', ['id_order' => $modelOrder->id]],
     [
         'hidden' => true,
         'id' => 'refreshButton',
@@ -29,7 +29,6 @@ $this->registerJs($script);
 
 <?=
     \kartik\grid\GridView::widget([
-        'filterModel' => $searchModel,
         'dataProvider' => $dataProvider,
         'columns' => [
             'id',

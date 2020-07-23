@@ -6,6 +6,7 @@ use app\models\Payment;
 use app\models\Profile;
 use app\models\setting\SettingVehicle;
 use app\models\Sms;
+use app\models\VehicleSearch;
 use app\models\VehicleType;
 use app\models\XprofileXcompany;
 use function Couchbase\fastlzCompress;
@@ -34,6 +35,8 @@ use app\models\PriceZone;
 use yii\helpers\ArrayHelper;
 use yii2tech\crontab\CronJob;
 use yii2tech\crontab\CronTab;
+use yii\data\ActiveDataProvider;
+
 /**
  * OrderController implements the CRUD actions for Order model.
  */
@@ -1125,15 +1128,19 @@ class OrderController extends Controller
         if(!$order){
             return;
         }
-        $seachModel = new OrderSearch();
-        $dataProvider = $seachModel->search(Yii::$app->request->queryParams)
-            ->query->andFilterWhere(['in', 'id', $order->suitable_vehicles]);
-
+//        return var_dump($order->suitable_vehicles);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])
+        ]);
         $time = date('H:i:s', time());
+
+        if(Yii::$app->request->isPjax){
+            $time = date('H:i:s', time());
+        }
 
         return $this->render('auto-find',[
             'time' => $time,
-            'searchModel' => $seachModel,
+            'modelOrder' => $order,
             'dataProvider' => $dataProvider
         ]);
     }
