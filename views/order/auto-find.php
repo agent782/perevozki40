@@ -4,26 +4,24 @@
 
 $script = <<< JS
 $(document).ready(function() {
-    setInterval(function(){ $("#refreshButton").click(); }, 1000);
+    $.pjax.reload({
+       container: 'refresh-time',
+       url: '/order/refresh-time'
+    });
 });
 JS;
 $this->registerJs($script);
 ?>
 <?php Pjax::begin([
-    'id' => 'auto-find',
+    'id' => 'refresh-time',
 //    'timeout' => 1
 ]);?>
 
 <div class="container">
-    <br><br>
+    <br>
     <div class="h2"> <?= $time;?></div>
 </div>
-<?= Html::a("Обновить", ['/order/auto-find', ['id_order' => $modelOrder->id]],
-    [
-        'hidden' => true,
-        'id' => 'refreshButton',
-    ])
-?>
+
 
 <?php Pjax::end()?>
 

@@ -1144,4 +1144,11 @@ class OrderController extends Controller
             'dataProvider' => $dataProvider
         ]);
     }
+
+    public function actionRefreshTime(){
+        $time = date('H:i:s', time());
+        $this->renderAjax('auto-find', [
+            'time' => $time
+        ]);
+    }
 }

@@ -2056,8 +2056,24 @@ class Order extends \yii\db\ActiveRecord
                     $cost = $this->getFinishCost(false);
                 }
                 if($this->additional_cost){
-                    $cost += $this->additional_cost;
-                    $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+//                    $cost += $this->additional_cost;
+//                    $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                    if($this->type_payment == Payment::TYPE_BANK_TRANSFER){
+//                        $cost += $this->additional_cost + ($this->additional_cost * 10 / 100);
+                        if($forVehicle){
+                            $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                        } else {
+                            $text .= '<br>Дополнительные расходы: ' . ($this->additional_cost + ($this->additional_cost * 10 / 100))
+                                . 'Р. ';
+                        }
+                    } else {
+//                        $cost += $this->additional_cost + ($this->additional_cost * 10 / 100);
+                        if($forVehicle){
+                            $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                        } else {
+                            $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
+                        }
+                    }
                 }
                 if(!$forVehicle && $this->discount) {
                     $text .= '<br>Скидка: ' . $this->discount;
@@ -2084,7 +2100,9 @@ class Order extends \yii\db\ActiveRecord
                 if($forVehicle) {
                     if ($this->additional_cost) {
                         $text .= '<br><br><strong>Итого к оплате '
-                            . ($return['cost'] - ($this->additional_cost * 10 / 100))
+                            . ($return['cost']
+//                                - ($this->additional_cost * 10 / 100)
+                            )
                             . ' руб.</strong>';
                     } else {
                         $text .= '<br><br><strong>Итого к оплате '
