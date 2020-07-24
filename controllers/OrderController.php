@@ -1133,10 +1133,10 @@ class OrderController extends Controller
             'query' => Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])
         ]);
         $time = date('H:i:s', time());
-
-        if(Yii::$app->request->isPjax){
-            $time = date('H:i:s', time());
-        }
+//
+//        if(Yii::$app->request->isPjax){
+//            $time = date('H:i:s', time());
+//        }
 
         return $this->render('auto-find',[
             'time' => $time,

@@ -8,28 +8,23 @@
 $script = <<< JS
 
 $("document").ready(function(){
-        setTimeout(function(){
-            $.pjax.reload({container:"#refresh-time"});  //Reload GridView
-        },1000);
+     setInterval(() => $.pjax.reload({container:'#auto-find'}), 2*1000);
 });
 JS;
 $this->registerJs($script);
+
+$this->title = $modelOrder->id . '№ заказ';
 ?>
-<?php Pjax::begin([
-    'id' => 'refresh-time',
-//    'timeout' => 1
-]);?>
-
-<div class="container">
-    <br>
-    <div class="h2"> <?= $time;?></div>
-</div>
-
 
 <?=
     \kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
-        'pjax' => false,
+        'pjax' => true,
+        'pjaxSettings' => [
+            'options' => [
+                'id' => 'auto-find'
+            ]
+        ],
         'columns' => [
             'id',
             [
@@ -49,4 +44,3 @@ $this->registerJs($script);
     ])
 ?>
 
-<?php Pjax::end()?>
