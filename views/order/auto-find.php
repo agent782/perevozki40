@@ -26,6 +26,7 @@ $this->registerJs($script);
 <?=
     \kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
+        'pjax' => false,
         'columns' => [
             'id',
         ]
