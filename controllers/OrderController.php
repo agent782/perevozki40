@@ -1134,9 +1134,9 @@ class OrderController extends Controller
         ]);
         $time = date('H:i:s', time());
 
-        if(Yii::$app->request->isPjax){
-            $time = date('H:i:s', time());
-        }
+//        if(Yii::$app->request->isPjax){
+//            $time = date('H:i:s', time());
+//        }
 
         return $this->render('auto-find',[
             'time' => $time,
@@ -1146,9 +1146,12 @@ class OrderController extends Controller
     }
 
     public function actionRefreshTime(){
-        $time = date('H:i:s', time());
-        $this->renderAjax('auto-find', [
-            'time' => $time
-        ]);
+        if(Yii::$app->request->isPjax) {
+            $time = date('H:i:s', time());
+            return $time;
+        }
+        $this->redirect('/order/auto-find');
+
+
     }
 }

@@ -5,8 +5,11 @@
 $script = <<< JS
 $(document).ready(function() {
     $.pjax.reload({
-       container: 'refresh-time',
-       url: '/order/refresh-time'
+       container: '#refresh-time',
+       timeout: 1000,
+       // url: '/order/refresh-time',
+       // dataType:"json",
+       // type: "POST"
     });
 });
 JS;
@@ -23,8 +26,6 @@ $this->registerJs($script);
 </div>
 
 
-<?php Pjax::end()?>
-
 <?=
     \kartik\grid\GridView::widget([
         'dataProvider' => $dataProvider,
@@ -34,4 +35,4 @@ $this->registerJs($script);
     ])
 ?>
 
-
+<?php Pjax::end()?>

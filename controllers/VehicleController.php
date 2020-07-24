@@ -189,6 +189,9 @@ class VehicleController extends Controller
                 break;
             case 'create_finish':
                 if($session->get('VehicleForm'))$VehicleForm = $session->get('VehicleForm');
+                if(!$VehicleForm->vehicleTypeId || !$VehicleForm->bodyTypeId || !$VehicleForm->loadingTypeIds ) {
+                    return $this->redirect('/vehicle/create');
+                }
                 if($VehicleForm->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
                     $session->set('VehicleForm', $VehicleForm);
                     $session->set('modelRegLicense', $modelRegLicense);
