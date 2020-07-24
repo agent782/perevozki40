@@ -1134,9 +1134,9 @@ class OrderController extends Controller
         ]);
         $time = date('H:i:s', time());
 
-//        if(Yii::$app->request->isPjax){
-//            $time = date('H:i:s', time());
-//        }
+        if(Yii::$app->request->isPjax){
+            $time = date('H:i:s', time());
+        }
 
         return $this->render('auto-find',[
             'time' => $time,
