@@ -3,14 +3,11 @@
     use yii\widgets\Pjax;
 
 $script = <<< JS
-$(document).ready(function() {
-    $.pjax.reload({
-       container: '#refresh-time',
-       timeout: 1000,
-       // url: '/order/refresh-time',
-       // dataType:"json",
-       // type: "POST"
-    });
+
+$("document").ready(function(){
+        setTimeout(function(){
+            $.pjax.reload({container:"#refresh-time"});  //Reload GridView
+        },1000);
 });
 JS;
 $this->registerJs($script);
