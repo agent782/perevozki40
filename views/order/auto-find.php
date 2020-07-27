@@ -8,13 +8,15 @@
 $script = <<< JS
 
 $("document").ready(function(){
-     setInterval(() => $.pjax.reload({container:'#auto-find'}), 2*1000);
+     setInterval(() => $.pjax.reload({container:'#auto-find'}), 5*1000);
 });
 JS;
 $this->registerJs($script);
 
-$this->title = $modelOrder->id . '№ заказ';
+$this->title = $modelOrder->id . ' № заказ';
 ?>
+
+
 
 <?=
     \kartik\grid\GridView::widget([
@@ -26,7 +28,9 @@ $this->title = $modelOrder->id . '№ заказ';
             ]
         ],
         'columns' => [
-            'id',
+            [
+                'label' => $time,
+            ],
             [
                 'label' => 'Статус',
                 'format' => 'raw',
