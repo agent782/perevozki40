@@ -119,6 +119,7 @@ use kartik\rating\StarRating;
  * @property integer $date_paid
  * @property bool $hide
  * @property array $suitable_vehicles
+ * @property array $alert_car_owner_ids
 
 
  */
@@ -229,7 +230,7 @@ class Order extends \yii\db\ActiveRecord
             ],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
                 'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle',
-                'ClientPhone', 'id_user', 'date_paid', 'hide', 'suitable_vehicles'],
+                'ClientPhone', 'id_user', 'date_paid', 'hide', 'suitable_vehicles', 'alert_car_owner_ids'],
                 'safe'
             ],
             [['additional_cost','ClientPaidCash'], 'default', 'value' => '0'],
@@ -439,7 +440,7 @@ class Order extends \yii\db\ActiveRecord
             ],
             'serialize' => [
                 'class' => SerializeBehaviors::class,
-                'arrAttributes' => ['suitable_vehicles']
+                'arrAttributes' => ['suitable_vehicles', 'alert_car_owner_ids']
             ]
         ];
     }
@@ -1397,6 +1398,8 @@ class Order extends \yii\db\ActiveRecord
                 switch ($this->status) {
                     case self::STATUS_NEW: case self::STATUS_IN_PROCCESSING:
                         $title_client = 'Заказ №' . $this->id . ' изменен.';
+                        $this->datetime_access = null;
+
                         $this->deleteEventChangeStatusToExpired();
                         $this->setEventChangeStatusToExpired();
                         $sms_to_client = false;
@@ -2329,13 +2332,24 @@ class Order extends \yii\db\ActiveRecord
 
         if($vehicles) {
             usort($vehicles, function (Vehicle $a, Vehicle $b) use ($order) {
-                if($a->getMinRate($order)->r_km > $b->getMinRate($order)->r_km) {
+
+                $rate_min_a =  $a->getMinRate($order);
+                $rate_min_b =  $b->getMinRate($order);
+                if($rate_min_a->r_km && $rate_min_b->r_km){
+                    $a_min_attr = $rate_min_a->r_km;
+                    $b_min_attr = $rate_min_b->r_km;
+                } else {
+                    $a_min_attr = $rate_min_a->r_h;
+                    $b_min_attr = $rate_min_b->r_h;
+                }
+
+                if($a_min_attr > $b_min_attr) {
                     return 1;
                 }
-                if($a->getMinRate($order)->r_km < $b->getMinRate($order)->r_km) {
+                if($a_min_attr < $b_min_attr) {
                     return -1;
                 }
-                if($a->getMinRate($order)->r_km == $b->getMinRate($order)->r_km) {
+                if($a_min_attr == $b_min_attr) {
                     if(
                         ($a->user->canRole('vip_car_owner') && !$b->user->canRole('vip_car_owner'))
                         ||

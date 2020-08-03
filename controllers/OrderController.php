@@ -1132,11 +1132,7 @@ class OrderController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])
         ]);
-        $time = date('H:i:s', time());
-//
-//        if(Yii::$app->request->isPjax){
-//            $time = date('H:i:s', time());
-//        }
+        $time = date('H:i:s', (time() - strtotime($order->update_at)));
 
         return $this->render('auto-find',[
             'time' => $time,
@@ -1145,13 +1141,4 @@ class OrderController extends Controller
         ]);
     }
 
-    public function actionRefreshTime(){
-        if(Yii::$app->request->isPjax) {
-            $time = date('H:i:s', time());
-            return $time;
-        }
-        $this->redirect('/order/auto-find');
-
-
-    }
 }

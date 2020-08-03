@@ -161,7 +161,8 @@ echo \kartik\grid\GridView::widget([
             'label' => 'Тариф',
             'format' => 'raw',
             'value' => function($model) use ($modelOrder){
-                $rate = PriceZone::findOne(['id' => $model->getMinRate($modelOrder)->id, 'status' => PriceZone::STATUS_ACTIVE]);
+                $rate = PriceZone::findOne(['id' => $model->getMinRate($modelOrder)->id,
+                    'status' => PriceZone::STATUS_ACTIVE]);
                 $rate = $rate->getPriceZoneForCarOwner($model->id_user);
 
                 return $rate->getTextWithShowMessageButton($modelOrder->route->distance, true);

@@ -8,23 +8,28 @@
 
 namespace app\commands;
 
-
 use app\models\Message;
 use app\models\Order;
 use yii\console\Controller;
+use app\models\Vehicle;
+use yii\helpers\ArrayHelper;
 
 class ConsoleController extends Controller
 {
-    public function actionAutoFind(){
-        $mes = new Message([
-            'id_to_user' => 1,
-            'title' => 'Проверка'
-        ]);
-        $mes->sendPush(false);
-        sleep(5);
-        $mes->sendPush(false);
-        sleep(5);
-        $mes->sendPush(false);
+    public function actionAutoFind($id_order){
+        $order = Order::findOne($id_order);
+        if(!$order) return 0;
+        if(!$order->auto_find) return 0;
+        $vehicles = Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])->all();
+        if (!$vehicles) return 0;
+        foreach ($vehicles as $vehicle){
+            $car_owner = $vehicle->profile;
+//            if (ArrayHelper::isIn($car_owner->id, $order->alert_car_owner_ids)){
+//
+//            } else {
+                echo $car_owner->id . '"\n"';
+//            }
+        }
     }
 
     public function actionSetSuitableVehiclesIds($id_order, $sort = true){
