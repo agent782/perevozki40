@@ -165,7 +165,7 @@ class emails
             $mes = new Message([
                'id_to_user' => $idAdmin,
                 'id_order' => $id_order,
-                'title' => 'Заказ №' . $id_order . ' - ' . $order->statusText,
+                'title' => 'Заказ №' . $id_order . ' - (' . $id_car_owner . ') ' . $order->statusText,
                 'text' => '',
                 'url' => Url::to('/logist/order', true)
             ]);
