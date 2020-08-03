@@ -1705,6 +1705,8 @@ class Order extends \yii\db\ActiveRecord
         if($this->save()){
             emails::sendToAdminChangeOrder($this->id);
             functions::setFlashSuccess('Статус заказа №' . $this->id . ' изменен на "' . $this->statusText . '".');
+            functions::startCommand('console/set-suitable-vehicles-ids',
+                [$this->id]);
             return true;
         } else {
             functions::setFlashWarning('Ошибка на сервере!');

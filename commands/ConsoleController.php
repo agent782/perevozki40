@@ -19,7 +19,8 @@ class ConsoleController extends Controller
     public function actionAutoFind($id_order){
         $order = Order::findOne($id_order);
         if(!$order) return 0;
-        if(!$order->auto_find) return 0;
+        if($order->auto_find || !$order->suitable_vehicles) return 0;
+        echo 1;
         $vehicles = Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])->all();
         if (!$vehicles) return 0;
         foreach ($vehicles as $vehicle){
