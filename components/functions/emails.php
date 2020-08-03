@@ -156,9 +156,12 @@ class emails
         $order = Order::findOne($id_order);
         if(!$order) return false;
         if($push){
-            $id_car_owner = ($order->carOwner->old_id)
-                ? '"' . $order->carOwner->old_id . '"'
-                : '#' . $order->carOwner->id_user ;
+            $id_car_owner = '';
+            if($carOwner = $order->carOwner) {
+                $id_car_owner = ($carOwner->old_id)
+                    ? '"' . $carOwner->old_id . '"'
+                    : '#' . $carOwner->id_user;
+            }
             $mes = new Message([
                'id_to_user' => $idAdmin,
                 'id_order' => $id_order,
