@@ -426,67 +426,31 @@ class OrderController extends Controller
         echo false;
     }
 
-    public function actionAjaxAutoFind(){
+    public function actionAjaxStartAutoFind(){
         $post = Yii::$app->request->post();
         $id_order = $post['id_order'];
 
         $order = Order::findOne($id_order);
         if(
-            !$id_order && !$order
-            && ($order->status == $order::STATUS_NEW || $order->status == $order::STATUS_IN_PROCCESSING)
+            !$id_order || !$order || $order->auto_find
+            || ($order->status != $order::STATUS_NEW && $order->status != $order::STATUS_IN_PROCCESSING)
         ) {
             return 0;
         }
         $order->auto_find = true;
         $order->save(false);
-//        return 1;
-        if(
-            $order->auto_find
-        ) {
-            $Car_owners = $order->getSortArrayCarOwnerIdsForFind(true);
-//            $Car_owners = [186, 186];
-            if($Car_owners) {
-                $sleep = 600/count($Car_owners);
-                foreach ($Car_owners as $id_user) {
-                    $busy =
-                    $order = Order::findOne($id_order);
-                    if ($order->auto_find
-                        && ($order->status == $order::STATUS_NEW || $order->status == $order::STATUS_IN_PROCCESSING)
-                    ) {
-                        $mes = Message::find()
-                            ->where(['id_order' => $id_order])
-                            ->andWhere(['id_to_user' => $id_user])
-                            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-                            ->one();
-                        if (!$mes) {
-                            $mes = new Message();
-                        }
-                        $mes->create_at = date('d.m.Y H:i', time());
-                        $mes->AlertNewOrder($id_user, $id_order);
-                        sleep($sleep);
-                    } else {
-                        $order->auto_find = false;
-                        $order->save(false);
-                        return 1;
-                    }
-                }
-            }
-            $order->auto_find = false;
-            $order->save(false);
-            return 1;
-        } else {
-            return 0;
-        }
+
+        functions::startCommand('console/auto-find',
+            [$order->id]);
+        return 1;
+
     }
 
     public function actionAjaxStopAutoFind(){
         $post = Yii::$app->request->post();
         $id_order = $post['id_order'];
         $order = Order::findOne($id_order);
-        if(
-            !$id_order && !$order
-            && ($order->status == $order::STATUS_NEW || $order->status == $order::STATUS_IN_PROCCESSING)
-        ) {
+        if(!$order) {
             return 0;
         }
         $order->auto_find = false;

@@ -12,6 +12,7 @@ use app\components\DateBehaviors;
  * @property int $id_vehicle
  * @property int $date
  * @property int $status
+ * @property string $statusText
  */
 class CalendarVehicle extends \yii\db\ActiveRecord
 {
@@ -68,5 +69,22 @@ class CalendarVehicle extends \yii\db\ActiveRecord
             self::STATUS_FREE => 'Свободен',
             self::STATUS_HALF_TIME => 'Частично занят'
         ];
+    }
+
+    public function getStatusText(){
+        switch ($this->status){
+            case self::STATUS_FREE:
+                return 'Свободен';
+                break;
+            case self::STATUS_BUSY:
+                return 'Занят';
+                break;
+            case self::STATUS_HALF_TIME:
+                return 'Частично занят';
+                break;
+            default:
+                return null;
+                break;
+        }
     }
 }

@@ -12,6 +12,7 @@ use app\models\XprofileXcompany;
 use function Couchbase\fastlzCompress;
 use Symfony\Component\Process\Process;
 use yii\bootstrap\ActiveForm;
+use yii\data\ArrayDataProvider;
 use yii\helpers\Url;
 use app\models\Message;
 use app\models\User;
@@ -1129,9 +1130,17 @@ class OrderController extends Controller
             return;
         }
 //        return var_dump($order->suitable_vehicles);
-        $dataProvider = new ActiveDataProvider([
-            'query' => Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])
-        ]);
+//        $dataProvider = new ActiveDataProvider([
+//            'query' => Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])
+//        ]);
+        $suitable_vehicles = [];
+        foreach ($order->suitable_vehicles as $id_vehicle){
+            $suitable_vehicles[] = Vehicle::findOne($id_vehicle);
+        }
+        $dataProvider = new ArrayDataProvider();
+        $dataProvider->models = $suitable_vehicles;
+
+
         $time = date('H:i:s', (time() - strtotime($order->update_at)));
 
         return $this->render('auto-find',[
@@ -1139,6 +1148,21 @@ class OrderController extends Controller
             'modelOrder' => $order,
             'dataProvider' => $dataProvider
         ]);
+    }
+
+    public function actionAjaxRefreshPanel(){
+        $id_order = Yii::$app->request->post('id_order');
+        $order = $this->findModel($id_order);
+        $data = [];
+        $time = date('dд H:i:s', time());
+        $data['time'] = $time;
+        $data['statusText'] = $order->statusText;
+        $data['status'] = $order->status;
+        $data{'auto_find'} = $order->auto_find;
+
+//        return $time;
+        echo json_encode($data);
+
     }
 
 }
