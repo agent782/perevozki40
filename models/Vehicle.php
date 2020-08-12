@@ -13,6 +13,7 @@ use yii\helpers\Url;
 use app\models\setting\Setting;
 use yii\data\ArrayDataProvider;
 
+
 /**
  * This is the model class for table "vehicles".
  *
@@ -862,7 +863,7 @@ class Vehicle extends \yii\db\ActiveRecord
         return true;
     }
 
-    public function hasOrderOnDate($date){
+    public function hasOrderOnDate($date, bool $icon = false){
         $unix_date = functions::DayToStartUnixTime($date);
         $orders = $this->getOrders()
             ->where(['between', 'datetime_start', time()-3600*24*2, time()+3600*24*10])
@@ -872,7 +873,15 @@ class Vehicle extends \yii\db\ActiveRecord
             $date_start_unix = functions::DayToStartUnixTime($order->datetime_start);
             if($date_start_unix == $unix_date) {
                 if($route = $order->route){
-                    return $route->distance;
+                    $result = $route->distance;
+                    if($icon){
+                        if($route->distance>120){
+                            $result = Html::icon('glyphicon glyphicon-ban-circle');
+                        } else {
+                            $result = Html::icon('glyphicon glyphicon-adjust');
+                        }
+                    }
+                    return $result;
                 }
                 return true;
             };

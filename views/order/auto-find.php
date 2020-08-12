@@ -12,6 +12,7 @@
     use app\models\PriceZone;
     use app\models\Order;
     use yii\helpers\Url;
+    use app\components\widgets\ShowMessageWidget;
 
 $this->registerJs(new \yii\web\JsExpression('
     $("document").ready(function() {
@@ -163,24 +164,32 @@ $this->title = $modelOrder->id . ' № заказ';
                 'label' => 'Статус',
                 'format' => 'raw',
                 'value' => function (Vehicle $vehicle) use ($modelOrder){
+                    $return = '';
                     if($calendarVehicle = $vehicle->getCalendarVehicle($modelOrder->datetime_start)->one()){
-                        return $calendarVehicle->statusText;
+                        $return = $calendarVehicle->statusText;
                     }
-
-//                    $date_day = functions::DayToStartUnixTime($modelOrder->datetime_start);
-//                    $calendarVehicle = $vehicle->getCalendarVehicle()
-//                        ->andWhere(['date' => $date_day])->one();
-//                    if(!$calendarVehicle){
-//                        $calendarVehicle = new CalendarVehicle();
-//                    }
-//                    return $calendarVehicle->statusText;
+                    $return .= ' ' . $vehicle->hasOrderOnDate($modelOrder->datetime_start, true);
+                    return $return;
                 }
             ],
             [
                 'attribute' => 'id_user',
 //            'group' => true,
                 'format' => 'raw',
-                'value' => function(\app\models\Vehicle $model){
+                'value' => function(\app\models\Vehicle $model) use ($modelOrder){
+                    $rate = PriceZone::findOne(['id' => $model->getMinRate($modelOrder)->id,
+                        'status' => PriceZone::STATUS_ACTIVE]);
+                    $rate = $rate->getPriceZoneForCarOwner($model->id_user);
+
+                    return ShowMessageWidget::widget([
+                        'ToggleButton' => [
+                            'label' => '"' . $model->profile->old_id . '" ' .$model->profile->fioFull
+                                . ' ' .  $model->profile->phone .' (ID ' . $model->profile->id_user . ')'
+                        ],
+                        'helpMessage' => $model->fullInfo
+                            . '<br>'
+                            . $rate->getTextWithShowMessageButton($modelOrder->route->distance, true)
+                    ]);
                     return '"' . $model->profile->old_id . '" ' .$model->profile->fioFull
                         . ' ' .  $model->profile->phone .' (ID ' . $model->profile->id_user . ')';
                 },
@@ -189,21 +198,21 @@ $this->title = $modelOrder->id . ' № заказ';
 //            'groupEvenCssClass' => 'kv-grouped-row', // configure even group cell css class
 
             ],
-            [
-                'attribute' => 'fullInfo',
-                'format' => 'raw'
-            ],
-            [
-                'label' => 'Тариф',
-                'format' => 'raw',
-                'value' => function($model) use ($modelOrder){
-                    $rate = PriceZone::findOne(['id' => $model->getMinRate($modelOrder)->id,
-                        'status' => PriceZone::STATUS_ACTIVE]);
-                    $rate = $rate->getPriceZoneForCarOwner($model->id_user);
-
-                    return $rate->getTextWithShowMessageButton($modelOrder->route->distance, true);
-                }
-            ],
+//            [
+//                'attribute' => 'fullInfo',
+//                'format' => 'raw'
+//            ],
+//            [
+//                'label' => 'Тариф',
+//                'format' => 'raw',
+//                'value' => function($model) use ($modelOrder){
+//                    $rate = PriceZone::findOne(['id' => $model->getMinRate($modelOrder)->id,
+//                        'status' => PriceZone::STATUS_ACTIVE]);
+//                    $rate = $rate->getPriceZoneForCarOwner($model->id_user);
+//
+//                    return $rate->getTextWithShowMessageButton($modelOrder->route->distance, true);
+//                }
+//            ],
         ]
     ])
 ?>
