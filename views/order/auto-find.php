@@ -17,14 +17,14 @@
 $this->registerJs(new \yii\web\JsExpression('
     $("document").ready(function() {
     
-    if($("#status").val() == '. Order::STATUS_NEW .'
-        || $("#status").val() == '. Order::STATUS_IN_PROCCESSING .'
-    ){
-         setInterval(function (){
-            $.pjax.reload({container: "#auto-find"})
+     setInterval(function (){
+            if($("#status").val() == '. Order::STATUS_NEW .'
+                || $("#status").val() == '. Order::STATUS_IN_PROCCESSING .'
+            ){
+                $.pjax.reload({container: "#auto-find"})
+            }
          }
           , 30*1000);
-     }     
      setInterval(
             function() {
                  $.ajax({
