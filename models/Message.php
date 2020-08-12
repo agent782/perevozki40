@@ -197,6 +197,7 @@ class Message extends \yii\db\ActiveRecord
                 $this->text_push = '';
 
                 if ($profile->user->push_ids) {
+                    $this->push_status = $this::STATUS_SEND;
                     $this->sendPush(false);
                 }
 

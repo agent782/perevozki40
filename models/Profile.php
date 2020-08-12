@@ -955,13 +955,15 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getAlertNewOrder($id_order){
-        if($message = Message::find()
+        if($messages = Message::find()
             ->where(['id_order' => $id_order])
             ->andWhere(['id_to_user' => $this->id_user])
             ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-            ->one()
-        ) return $message;
-
+            ->all()
+        ) {
+            $message = end($messages);
+            return $message;
+        }
         return false;
     }
 }
