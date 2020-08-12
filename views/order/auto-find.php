@@ -16,8 +16,8 @@
 $this->registerJs(new \yii\web\JsExpression('
     $("document").ready(function() {
     
-    if($("#status").text() == '. Order::STATUS_NEW .'
-        || $("#status").text() == '. Order::STATUS_IN_PROCCESSING .'
+    if($("#status").val() == '. Order::STATUS_NEW .'
+        || $("#status").val() == '. Order::STATUS_IN_PROCCESSING .'
     ){
          setInterval(function (){
             $.pjax.reload({container: "#auto-find"})
@@ -51,7 +51,7 @@ $this->registerJs(new \yii\web\JsExpression('
                         }
                         $("#statusText").html(data.statusText);
                         
-                        $("#status").html(data.status);
+                        $("#status").val(data.status);
                      },
                      error : function() {
                        alert ("Ошибка на сервере");
@@ -163,13 +163,17 @@ $this->title = $modelOrder->id . ' № заказ';
                 'label' => 'Статус',
                 'format' => 'raw',
                 'value' => function (Vehicle $vehicle) use ($modelOrder){
-                    $date_day = functions::DayToStartUnixTime($modelOrder->datetime_start);
-                    $calendarVehicle = $vehicle->getCalendarVehicle()
-                        ->andWhere(['date' => $date_day])->one();
-                    if(!$calendarVehicle){
-                        $calendarVehicle = new CalendarVehicle();
+                    if($calendarVehicle = $vehicle->getCalendarVehicle($modelOrder->datetime_start)->one()){
+                        return $calendarVehicle->statusText;
                     }
-                    return $calendarVehicle->status;
+
+//                    $date_day = functions::DayToStartUnixTime($modelOrder->datetime_start);
+//                    $calendarVehicle = $vehicle->getCalendarVehicle()
+//                        ->andWhere(['date' => $date_day])->one();
+//                    if(!$calendarVehicle){
+//                        $calendarVehicle = new CalendarVehicle();
+//                    }
+//                    return $calendarVehicle->statusText;
                 }
             ],
             [

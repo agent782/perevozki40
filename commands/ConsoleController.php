@@ -92,7 +92,9 @@ class ConsoleController extends Controller
         $res = [];
 //        $return = '';
         foreach ($vehicles as $vehicle) {
-            $res[] = $vehicle->id;
+            if($vehicle->user->email) {
+                $res[] = $vehicle->id;
+            }
 //            echo $vehicle->id . "\n";
         }
         $order->suitable_vehicles = $res;
