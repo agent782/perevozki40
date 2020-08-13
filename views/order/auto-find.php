@@ -45,11 +45,12 @@ $this->registerJs(new \yii\web\JsExpression('
                                 $("#icon_play").attr("hidden", false);
                                 $("#icon_pause").attr("hidden", true);
                             }
-                            $("#time").html(data.time);                                                        
+                                                                                   
                         } else {
                             $("#icon_play, #icon_pause").attr("hidden", true);
-                              $("#time").html("");
+                              
                         }
+                         $("#time").html(data.time);
                         $("#statusText").html(data.statusText);
                         
                         $("#status").val(data.status);

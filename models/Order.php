@@ -1416,7 +1416,7 @@ class Order extends \yii\db\ActiveRecord
 
                         break;
                 }
-
+                $this->update_at = date('d.m.Y H:i', time());
                 break;
             case self::STATUS_VEHICLE_ASSIGNED:
                 $vehicle = $this->vehicle;
@@ -1700,7 +1700,7 @@ class Order extends \yii\db\ActiveRecord
 
         $this->scenario = self::SCENARIO_UPDATE_STATUS;
         $this->status = $newStatus;
-        $this->update_at = date('d.m.Y H:i', time());
+
 
         if($this->save()){
             emails::sendToAdminChangeOrder($this->id);

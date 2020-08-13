@@ -1142,7 +1142,7 @@ class OrderController extends Controller
         $dataProvider->models = $suitable_vehicles;
 
 
-        $time = date('H:i:s', (time() - strtotime($order->update_at)));
+        $time = '';
 
         return $this->render('auto-find',[
             'time' => $time,
@@ -1155,8 +1155,22 @@ class OrderController extends Controller
         $id_order = Yii::$app->request->post('id_order');
         $order = $this->findModel($id_order);
         $data = [];
-        $show_day = ((time()-strtotime($order->update_at)/24*60*60) > 1) ? 'H:i:s' :'dд H:i:s' ;
-        $time = date($show_day, (time()-strtotime($order->update_at)));
+        $time = 'Время';
+        switch ($order->status){
+            case $order::STATUS_NEW : case $order::STATUS_IN_PROCCESSING :
+                $show_day = ((time()-strtotime($order->update_at)/24*60*60) < 1) ? 'H:i:s' :'dд H:i:s' ;
+                $time = date($show_day, (time()-strtotime($order->update_at)));
+                break;
+            case $order::STATUS_VEHICLE_ASSIGNED:
+                $show_day = ((strtotime($order->datetime_access) - strtotime($order->update_at)/24*60*60) < 1) ? 'H:i:s' :'dд H:i:s' ;
+                $time = date($show_day, (strtotime($order->datetime_access) - strtotime($order->update_at)));
+                $time = date($show_day, (1597306680 - 1597306680));
+                break;
+            default:
+                $time = '111';
+                break;
+        }
+
         $data['time'] = $time;
         $data['statusText'] = $order->statusText;
         $data['status'] = $order->status;
