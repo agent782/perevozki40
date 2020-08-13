@@ -145,7 +145,6 @@ $this->title = $modelOrder->id . ' № заказ';
         ],
         'columns' => [
             [
-                'label' => $time,
                 'value' => function (Vehicle $model) use ($modelOrder){
                     $alerts = $modelOrder->alert_car_owner_ids;
                     if(is_array($alerts) && $alerts) {

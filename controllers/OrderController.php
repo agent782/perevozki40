@@ -582,6 +582,7 @@ class OrderController extends Controller
                     return $this->redirect($redirect);
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
+                    $modelOrder->update_at = date('d.m.Y H:i', time());
                     if ($route->save() && $modelOrder->save()) {
                         $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
                         functions::startCommand('console/set-suitable-vehicles-ids',
@@ -1154,7 +1155,8 @@ class OrderController extends Controller
         $id_order = Yii::$app->request->post('id_order');
         $order = $this->findModel($id_order);
         $data = [];
-        $time = date('dд H:i:s', time());
+        $show_day = ((time()-strtotime($order->update_at)/24*60*60) > 1) ? 'H:i:s' :'dд H:i:s' ;
+        $time = date($show_day, (time()-strtotime($order->update_at)));
         $data['time'] = $time;
         $data['statusText'] = $order->statusText;
         $data['status'] = $order->status;
