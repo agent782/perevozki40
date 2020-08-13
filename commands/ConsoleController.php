@@ -22,7 +22,7 @@ class ConsoleController extends Controller
     {
         $order = Order::findOne($id_order);
         if (!$order) return 0;
-        sleep(60);
+        sleep(30);
         if (!$order->auto_find || !$order->suitable_vehicles) return 0;
         $car_owners = [];
         foreach ($order->suitable_vehicles as $id_vehicle) {
@@ -52,11 +52,11 @@ class ConsoleController extends Controller
                 if (!$order->auto_find) return 'STOP';
 
                 $sleep = 600 / count($car_owners);
-                $has_alert = Message::find()
-                    ->where(['id_order' => $id_order])
-                    ->andWhere(['id_to_user' => $car_owner_id])
-                    ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-                    ->count();
+//                $has_alert = Message::find()
+//                    ->where(['id_order' => $id_order])
+//                    ->andWhere(['id_to_user' => $car_owner_id])
+//                    ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+//                    ->count();
 
                 $mes = new Message();
 
@@ -70,8 +70,8 @@ class ConsoleController extends Controller
                 $order->save(false);
 
                 sleep($sleep);
-
-                echo $car_owner_id . "\n";
+                // только для тестирования в консоли
+//                echo $car_owner_id . "\n";
 
             }
         }
