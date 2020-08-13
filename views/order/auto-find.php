@@ -24,7 +24,7 @@ $this->registerJs(new \yii\web\JsExpression('
                 $.pjax.reload({container: "#auto-find"})
             }
          }
-          , 30*1000);
+          , 20*1000);
      setInterval(
             function() {
                  $.ajax({
