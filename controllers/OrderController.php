@@ -1159,12 +1159,11 @@ class OrderController extends Controller
         switch ($order->status){
             case $order::STATUS_NEW : case $order::STATUS_IN_PROCCESSING :
                 $show_day = ((time()-strtotime($order->update_at)/24*60*60) < 1) ? 'H:i:s' :'dд H:i:s' ;
-                $time = date($show_day, (time()-strtotime($order->update_at)));
+                $time = date($show_day, (time()-strtotime($order->update_at) - 3*60*60));
                 break;
             case $order::STATUS_VEHICLE_ASSIGNED:
                 $show_day = ((strtotime($order->datetime_access) - strtotime($order->update_at)/24*60*60) < 1) ? 'H:i:s' :'dд H:i:s' ;
-                $time = date($show_day, (strtotime($order->datetime_access) - strtotime($order->update_at)));
-                $time = date($show_day, (1597306680 - 1597306680));
+                $time = date($show_day, (strtotime($order->datetime_access) - strtotime($order->update_at) - 3*60*60));
                 break;
             default:
                 $time = '111';
