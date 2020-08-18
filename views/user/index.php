@@ -174,6 +174,10 @@
             </div>
             <div class="col-lg-4">
                 <br><br>
+                <?=Tip::getTipButtonModal($modelUser, 'push_ids',
+                    ['label' => 'Что такое push уведомления? ' . Html::icon('info-sign')]
+                )?>
+                <br>
                 <iframe frameborder="0" src="https://pushall.ru/widget.php?subid=4781"
                         width="320" height="120" scrolling="no" style="overflow: hidden;">
                 </iframe>
@@ -181,10 +185,7 @@
                     <?= Html::a('Проверить PUSH ' . Html::icon('bell'),
                         Url::to('/message/check-push'), ['class' => 'btn btn-danger'])?>
                 <br>
-                <br>
-                <?=Tip::getTipButtonModal($modelUser, 'push_ids',
-                    ['label' => 'Что такое push уведомления? ' . Html::icon('info-sign')]
-                )?>
+
                 <br><br>
                 <?= Html::a('Изменить основной номер телефона <br>' . $modelUser->username,
                     Url::to(['/user/change-phone', 'id_user' => Yii::$app->user->id]), ['class' => 'btn btn-block btn-primary'])?>

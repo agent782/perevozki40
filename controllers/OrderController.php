@@ -1135,7 +1135,7 @@ class OrderController extends Controller
 //            'query' => Vehicle::find()->where(['in', 'id', $order->suitable_vehicles])
 //        ]);
         $suitable_vehicles = [];
-        if(!$order) {
+        if(!$order || !$order->suitable_vehicles) {
             functions::setFlashWarning('Список машин не сформирован. Обновите страницу.');
         } else {
             foreach ($order->suitable_vehicles as $id_vehicle) {

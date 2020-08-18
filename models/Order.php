@@ -2515,10 +2515,16 @@ class Order extends \yii\db\ActiveRecord
     }
 
     public function getMessagesNewOrder(){
-        return $messages = Message::find()
-            ->where(['id_order' => $this->id])
-            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-            -> all();
+//        return $messages = Message::find()
+//            ->where(['id_order' => $this->id])
+//            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+//            -> all();
+        if($this->alert_car_owner_ids){
+            if(is_array($this->alert_car_owner_ids)) {
+                return count($this->alert_car_owner_ids);
+            }
+        }
+        return false;
     }
 
     public function getRatingCountVehicles($id_price_zone, $date = null)

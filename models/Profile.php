@@ -955,15 +955,22 @@ class Profile extends \yii\db\ActiveRecord
     }
 
     public function getAlertNewOrder($id_order){
-        if($messages = Message::find()
-            ->where(['id_order' => $id_order])
-            ->andWhere(['id_to_user' => $this->id_user])
-            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-            ->all()
-        ) {
-            $message = end($messages);
-            return $message;
+//        if($messages = Message::find()
+//            ->where(['id_order' => $id_order])
+//            ->andWhere(['id_to_user' => $this->id_user])
+//            ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+//            ->all()
+//        ) {
+//            $message = end($messages);
+//            return $message;
+//        }
+        $order = Order::findOne($id_order);
+        if(!$order && $this->id_user || !$order->alert_car_owner_ids) return false;
+
+        if(is_array($order->alert_car_owner_ids)) {
+            return array_key_exists($this->id_user, $order->alert_car_owner_ids);
         }
+
         return false;
     }
 }
