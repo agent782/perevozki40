@@ -410,20 +410,20 @@ class OrderController extends Controller
         $id_user = $post['id_user'];
         $id_order = $post['id_order'];
 
-        if($id_user && $id_order) {
-            $mes = Message::find()
-                ->where(['id_order' => $id_order])
-                ->andWhere(['id_to_user' => $id_user])
-                ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
-                ->one();
-            if(!$mes) {
+//        if($id_user && $id_order) {
+//            $mes = Message::find()
+//                ->where(['id_order' => $id_order])
+//                ->andWhere(['id_to_user' => $id_user])
+//                ->andWhere(['type' => Message::TYPE_ALERT_CAR_OWNER_NEW_ORDER])
+//                ->one();
+//            if(!$mes) {
                 $mes = new Message();
-            }
-            $mes->create_at = date('d.m.Y H:i', time());
+//            }
+//            $mes->create_at = date('d.m.Y H:i', time());
+        return $mes->AlertNewOrder($id_user, $id_order);
 
-            return $mes->AlertNewOrder($id_user, $id_order);
-        }
-        echo false;
+//        }
+
     }
 
     public function actionAjaxStartAutoFind(){

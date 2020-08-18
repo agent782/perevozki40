@@ -179,8 +179,9 @@ $this->title = $modelOrder->id . ' № заказ';
                 'value' => function(\app\models\Vehicle $model) use ($modelOrder){
                     $rate = PriceZone::findOne(['id' => $model->getMinRate($modelOrder)->id,
                         'status' => PriceZone::STATUS_ACTIVE]);
-                    $rate = $rate->getPriceZoneForCarOwner($model->id_user);
-
+                    if($rate) {
+                        $rate = $rate->getPriceZoneForCarOwner($model->id_user);
+                    }
                     return ShowMessageWidget::widget([
                         'ToggleButton' => [
                             'label' => '"' . $model->profile->old_id . '" ' .$model->profile->fioFull

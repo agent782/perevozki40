@@ -218,7 +218,12 @@ class Message extends \yii\db\ActiveRecord
                     ]
                 )){
                     $this->email_status = self::STATUS_SEND;
+                    $this->create_at = date('d.m.Y H:i', time());
                     $this->save();
+                    $alert_car_owner_ids = $order->alert_car_owner_ids;
+                    $alert_car_owner_ids[$id_user] = time();
+                    $order->alert_car_owner_ids = $alert_car_owner_ids;
+                    $order->save(false);
                 } else {
                     $this->email_status = $this::STATUS_NEED_TO_SEND;
                 }
