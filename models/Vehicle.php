@@ -744,7 +744,7 @@ class Vehicle extends \yii\db\ActiveRecord
     }
 
     public function getMinRate(Order $Order = null){
-        if(!$Order){
+        if(!$Order || !$this->canOrder($Order)){
             $PriceZones = $this->priceZonesSelect;
             $tmpPriceZone = new PriceZone();
             $tmpPriceZone->attributes = $PriceZones[0]->attributes;
@@ -760,7 +760,7 @@ class Vehicle extends \yii\db\ActiveRecord
             }
             return ($tmpPriceZone) ? $tmpPriceZone : null;
         }
-        if(!$this->canOrder($Order)) return null;
+//        if(!$this->canOrder($Order)) return null;
         $pricezonesForVehicle = [];
         foreach ($Order->priceZones as $OrderPriceZone) {
             foreach ($this->priceZonesSelect as $priceZone){
