@@ -56,7 +56,7 @@ $this->registerJs(new \yii\web\JsExpression('
                         $("#status").val(data.status);
                      },
                      error : function() {
-                       alert ("Ошибка на сервере");
+//                       alert ("Ошибка на сервере");
                      }
                  });
                  
