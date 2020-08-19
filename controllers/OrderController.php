@@ -1128,7 +1128,7 @@ class OrderController extends Controller
     public function actionAutoFind($id_order){
         $order = Order::findOne($id_order);
         if(!$order){
-            return;
+            return ;
         }
 //        return var_dump($order->suitable_vehicles);
 //        $dataProvider = new ActiveDataProvider([
@@ -1159,7 +1159,7 @@ class OrderController extends Controller
         $id_order = Yii::$app->request->post('id_order');
         $order = $this->findModel($id_order);
         $data = [];
-        $time = 'Время';
+        $time = '';
         switch ($order->status){
             case $order::STATUS_NEW : case $order::STATUS_IN_PROCCESSING :
                 $show_day = ((time()-strtotime($order->update_at)/24*60*60) < 1) ? 'H:i:s' :'dд H:i:s' ;
@@ -1168,9 +1168,6 @@ class OrderController extends Controller
             case $order::STATUS_VEHICLE_ASSIGNED:
                 $show_day = ((strtotime($order->datetime_access) - strtotime($order->update_at)/24*60*60) < 1) ? 'H:i:s' :'dд H:i:s' ;
                 $time = date($show_day, (strtotime($order->datetime_access) - strtotime($order->update_at) - 3*60*60));
-                break;
-            default:
-                $time = '111';
                 break;
         }
 
