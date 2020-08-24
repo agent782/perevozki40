@@ -183,6 +183,7 @@ class Order extends \yii\db\ActiveRecord
     public $ClientPhone;
     public $ClientPaidCash;
     public $hand_vehicle_cost;
+    public $reset_alerts = true;
 
     /**
      * @inheritdoc
@@ -230,7 +231,8 @@ class Order extends \yii\db\ActiveRecord
             ],
             [['datetime_access', 'FLAG_SEND_EMAIL_STATUS_EXPIRED',
                 'id_price_zone_for_vehicle', 'discount', 'cost_finish', 'cost_finish_vehicle',
-                'ClientPhone', 'id_user', 'date_paid', 'hide', 'suitable_vehicles', 'alert_car_owner_ids'],
+                'ClientPhone', 'id_user', 'date_paid', 'hide', 'suitable_vehicles', 'alert_car_owner_ids',
+                'reset_alerts'],
                 'safe'
             ],
             [['additional_cost','ClientPaidCash'], 'default', 'value' => '0'],
@@ -419,7 +421,8 @@ class Order extends \yii\db\ActiveRecord
             'cost_finish_vehicle' => 'Сумма для водителя',
             'comment' => 'Комментарии:',
             'old_id' => 'Усл. обозначение',
-            'hide' => 'Скрыт'
+            'hide' => 'Скрыт',
+            'reset_alerts' => 'Новый поиск'
 
         ];
     }

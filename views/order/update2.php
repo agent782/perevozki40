@@ -23,6 +23,9 @@
     <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, ['encode' => false]);
     ?>
+        <?=
+            $form->field($modelOrder, 'reset_alerts')->checkbox();
+        ?>
     </div>
     <div class="col-lg-7">
         Информация о заказе.<br>
