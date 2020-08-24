@@ -266,36 +266,36 @@ class Order extends \yii\db\ActiveRecord
             'passengers','id_company', 'status', 'create_at', 'update_at', 'auto-find', 'hide'];
         $scenarios[self::SCENARIO_LOGIST_NEW_ORDER] = ['id_vehicle_type','body_typies', 'loading_typies',
             'tonnage', 'selected_rates', 'type_payment', 'datetime_start', 'valid_datetime',
-            'passengers', 'status', 'create_at', 'update_at', 're', 'hide'];
+            'passengers', 'status', 'create_at', 'update_at', 're', 'hide', 'auto_find'];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
             'body_typies', 'loading_typies', 'tonnage', 'length', 'width', 'height', 'volume', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at', 'longlength',
-            'cargo', 'ep', 'rp', 'lp', 'passengers'
+            'cargo', 'ep', 'rp', 'lp', 'passengers', 'auto_find'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'body_typies', 'passengers', 'cargo', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
-            'cargo'
+            'cargo', 'auto_find'
         ];
         $scenarios[self::SCENARIO_UPDATE_MANIPULATOR] = [
             'tonnage', 'tonnage_spec', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
-            'cargo'
+            'cargo', 'auto_find'
         ];
         $scenarios[self::SCENARIO_UPDATE_DUMP] = [
             'tonnage', 'volume', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
-            'cargo'
+            'cargo', 'auto_find'
         ];
         $scenarios[self::SCENARIO_UPDATE_CRANE] = [
             'tonnage_spec', 'length_spec', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
-            'cargo'
+            'cargo', 'auto_find'
         ];
         $scenarios[self::SCENARIO_UPDATE_EXCAVATOR] = [
             'volume_spec', 'selected_rates', 'type_payment',
             'datetime_start', 'valid_datetime', 'id_company', 'status', 'update_at',
-            'cargo'
+            'cargo', 'auto_find'
         ];
         $scenarios[self::SCENARIO_FINISH_TRUCK] = [
             'real_datetime_start', 'datetime_finish', 'real_km', 'additional_cost', 'comment_vehicle', 'real_h_loading',
