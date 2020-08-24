@@ -252,7 +252,7 @@ class Order extends \yii\db\ActiveRecord
             ['type_payment', 'validateForUser'],
             [['avans_client'], 'number'],
             [['re'], 'default', 'value' => false],
-            [['auto_find'], 'default', 'value' => false],
+            [['auto_find'], 'default', 'value' => true],
         ];
     }
 
