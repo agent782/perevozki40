@@ -481,4 +481,16 @@ class OrderController extends Controller
         return $this->render('free-vehicles', ['dataProvider' => $dataProvider]);
     }
 
+    public function actionAjaxResetAutoFind(){
+        $post = Yii::$app->request->post();
+        $id_order = $post['id_order'];
+        $order = Order::findOne($id_order);
+        if(!$order) {
+            return 0;
+        }
+        $order->alert_car_owner_ids = [];
+        $order->save(false);
+        return 1;
+    }
+
 }

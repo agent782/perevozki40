@@ -22,8 +22,11 @@ class ConsoleController extends Controller
     {
         $order = Order::findOne($id_order);
         if (!$order) return 0;
-        if(!$order->suitable_vehicles) {
-            sleep(90);
+
+        $count = 0;
+        while ($order->suitable_vehicles || $count > 10){
+            sleep(60);
+            $count++;
         }
         if (!$order->auto_find || !$order->suitable_vehicles) return 0;
         $car_owners = [];
