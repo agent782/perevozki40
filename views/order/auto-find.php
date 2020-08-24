@@ -119,7 +119,24 @@ $this->title = $modelOrder->id . ' № заказ';
                  });
         ')
     ])?>
-
+    <?= Html::a(Html::icon('remove'), '#', [
+        'id' => 'icon_reset',
+        'hidden' => false,
+        'onclick' => new \yii\web\JsExpression('
+            $.ajax({
+                     url : "/logist/order/ajax-reset-auto-find",
+                     dataType: "json",
+                     type: "POST",
+                     data: {id_order : '. $modelOrder->id .'},
+                     success: function(data) {
+                       
+                     },
+                     error : function() {
+                       alert ("Ошибка на сервере");
+                     }
+                 });
+        ')
+    ])?>
     <div id="time">
         <?php
             $reset_hidden = true;
