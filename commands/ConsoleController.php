@@ -24,7 +24,7 @@ class ConsoleController extends Controller
         if (!$order) return 0;
 
         $count = 0;
-        while (!$order->suitable_vehicles || $count < 120){
+        while (!$order->suitable_vehicles && $count < 120){
             if(!$order->auto_find) return;
             sleep(5);
             $count++;
@@ -77,7 +77,7 @@ class ConsoleController extends Controller
 
                 $seconds = 0;
                 while ($seconds <= $sleep ){
-                    if(!$order->auto_find) return;
+                    if(!$order->auto_find) continue;
                     sleep(1);
                     $seconds++;
                 }
