@@ -590,6 +590,11 @@ class OrderController extends Controller
                         sleep(3);
                         $modelOrder->auto_find = true;
                         $modelOrder->hide = false;
+
+                        if($modelOrder->reset_alerts){
+                            $modelOrder->alert_car_owner_ids = null;
+                        }
+
                         $modelOrder->save(false);
 
                         functions::startCommand('console/set-suitable-vehicles-ids',
