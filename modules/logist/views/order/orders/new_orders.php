@@ -154,7 +154,11 @@ use kartik\editable\Editable;
             'label' => 'Поиск...',
             'format' => 'raw',
             'value' => function(Order $model){
-                return count($model->getMessagesNewOrder());
+                $return = count($model->alert_car_owner_ids);
+                if($model->auto_find){
+                    $return .= '<br>Идет поиск ...';
+                }
+                return $return;
             }
         ],
         [
