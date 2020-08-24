@@ -24,8 +24,9 @@ class ConsoleController extends Controller
         if (!$order) return 0;
 
         $count = 0;
-        while ($order->suitable_vehicles || $count > 10){
-            sleep(60);
+        while (!$order->suitable_vehicles || $count < 120){
+            if(!$order->auto_find) return;
+            sleep(5);
             $count++;
         }
         if (!$order->auto_find || !$order->suitable_vehicles) return 0;
@@ -74,7 +75,12 @@ class ConsoleController extends Controller
                 $order->alert_car_owner_ids = $arr;
                 $order->save(false);
 
-                sleep($sleep);
+                $seconds = 0;
+                while ($seconds <= $sleep ){
+                    if(!$order->auto_find) return;
+                    sleep(1);
+                    $seconds++;
+                }
                 // только для тестирования в консоли
 //                echo $car_owner_id . "\n";
 
@@ -92,6 +98,9 @@ class ConsoleController extends Controller
 
         if ($order->status != Order::STATUS_NEW && $order->status != Order::STATUS_IN_PROCCESSING) return false;
 
+        $order->suitable_vehicles = null;
+        $order->save(false);
+
         $vehicles = ($sort)
             ? $order->getSortSuitableVehicles(false)
             : $order->getSuitableVehicles(false);
@@ -105,6 +114,12 @@ class ConsoleController extends Controller
         }
         $order->suitable_vehicles = $res;
         $order->save(false);
+
+
+        if($order->auto_find && $order->suitable_vehicles){
+            functions::startCommand('console/auto-find',
+                [$order->id]);
+        }
     }
 
 }

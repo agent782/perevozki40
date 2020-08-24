@@ -488,7 +488,7 @@ class OrderController extends Controller
         if(!$order) {
             return 0;
         }
-        $order->alert_car_owner_ids = [];
+        $order->alert_car_owner_ids = null;
         $order->save(false);
         return 1;
     }
