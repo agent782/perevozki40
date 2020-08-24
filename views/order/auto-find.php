@@ -33,6 +33,11 @@ $this->registerJs(new \yii\web\JsExpression('
                      type: "POST",
                      data: {id_order : '. $modelOrder->id .'},
                      success: function(data) {
+                        if(data.suitable_vehicles < 1){
+                            $("#icon_play").attr("hidden", true);
+                            $("#icon_pause").attr("hidden", true);
+                            return;
+                        }
                        
                        if(data.status == '. Order::STATUS_NEW .'
                             || data.status == '. Order::STATUS_IN_PROCCESSING .'

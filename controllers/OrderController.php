@@ -1175,6 +1175,7 @@ class OrderController extends Controller
         $data['statusText'] = $order->statusText;
         $data['status'] = $order->status;
         $data{'auto_find'} = $order->auto_find;
+        $data['suitable_vehicles'] = count($order->suitable_vehicles);
 
 //        return $time;
         echo json_encode($data);
