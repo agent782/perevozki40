@@ -15,16 +15,24 @@ use app\models\Profile;
 use yii\console\Controller;
 use app\models\Vehicle;
 use yii\helpers\ArrayHelper;
+use app\components\functions\functions;
 
 class ConsoleController extends Controller
 {
     public function actionAutoFind($id_order)
     {
         $order = Order::findOne($id_order);
+
+        $mes_admin = new Message([
+            'id_to_user' => 1,
+            'title' => '№' . $order->id . ' старт автопоиск'
+        ]);
+        $mes_admin->sendPush(false);
+
         if (!$order) return 0;
 
         $count = 0;
-        while (!$order->suitable_vehicles && $count < 120){
+        while (!$order->suitable_vehicles && $count < 5){
             $order->refresh();
             if(!$order->auto_find) return;
             sleep(5);
@@ -116,12 +124,11 @@ class ConsoleController extends Controller
         }
         $order->suitable_vehicles = $res;
         $order->save(false);
-
-
-        if($order->auto_find && $order->suitable_vehicles){
+        
+//        if($order->auto_find){
             functions::startCommand('console/auto-find',
                 [$order->id]);
-        }
+//        }
     }
 
 }
