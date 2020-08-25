@@ -58,6 +58,7 @@ class ConsoleController extends Controller
                 if (!$order->auto_find) return 'STOP';
 
                 $sleep = 600 / count($car_owners);
+                $sleep = 1;
 //                $has_alert = Message::find()
 //                    ->where(['id_order' => $id_order])
 //                    ->andWhere(['id_to_user' => $car_owner_id])
