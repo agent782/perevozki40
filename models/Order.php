@@ -183,7 +183,7 @@ class Order extends \yii\db\ActiveRecord
     public $ClientPhone;
     public $ClientPaidCash;
     public $hand_vehicle_cost;
-    public $reset_alerts = true;
+    public $reset_alerts = false;
 
     /**
      * @inheritdoc
