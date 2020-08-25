@@ -127,8 +127,8 @@ class ConsoleController extends Controller
         $order->save(false);
 
 //        if($order->auto_find){
-//            functions::startCommand('console/auto-find',
-//                [$order->id]);
+            functions::startCommand('console/auto-find',
+                [$order->id]);
 //        }
     }
 
