@@ -77,7 +77,7 @@ class ConsoleController extends Controller
 
                 $seconds = 0;
                 while ($seconds <= $sleep ){
-                    if(!$order->auto_find) continue;
+                    if(!$order->auto_find) break;
                     sleep(1);
                     $seconds++;
                 }
