@@ -22,11 +22,7 @@ class ConsoleController extends Controller
     public function actionAutoFind($id_order)
     {
         $order = Order::findOne($id_order);
-        $mes_admin = new Message([
-            'id_to_user' => 1,
-            'title' => '№' . $order->id . ' старт автопоиск'
-        ]);
-        $mes_admin->sendPush(false);
+
         if (!$order) return 0;
 
         $count = 0;
@@ -132,11 +128,7 @@ class ConsoleController extends Controller
 
         functions::startCommand('console/auto-find',
             [$order->id]);
-        $mes_admin = new Message([
-            'id_to_user' => 1,
-            'title' => '№' . $order->id . ' старт автопоиск'
-        ]);
-        $mes_admin->sendPush(false);
+
     }
 
 }
