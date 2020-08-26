@@ -134,8 +134,8 @@ class ConsoleController extends Controller
             'id_to_user' => 1,
             'title' => '№' . $order->id . ' старт автопоиск'
         ]);
-        $mes_admin->sendPush(false);
-        return;
+//        $mes_admin->sendPush(false);
+        return true;
 
     }
 
