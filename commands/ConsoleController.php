@@ -34,12 +34,6 @@ class ConsoleController extends Controller
         }
         if (!$order->auto_find || !$order->suitable_vehicles) return 0;
 
-        $mes_admin = new Message([
-            'id_to_user' => 1,
-            'title' => '№' . $order->id . ' старт автопоиск'
-        ]);
-        $mes_admin->sendPush(false);
-
         $car_owners = [];
         foreach ($order->suitable_vehicles as $id_vehicle) {
             $vehicle = Vehicle::findOne($id_vehicle);
@@ -54,6 +48,13 @@ class ConsoleController extends Controller
                 $car_owners[] = $vehicle->id_user;
             }
         }
+        
+        $mes_admin = new Message([
+            'id_to_user' => 1,
+            'title' => '№' . $order->id . ' старт автопоиск'
+        ]);
+
+        $mes_admin->sendPush(false);
         if (!$car_owners) return 0;
         foreach ($car_owners as $car_owner_id) {
             if ($order->alert_car_owner_ids
