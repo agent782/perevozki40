@@ -583,22 +583,26 @@ class OrderController extends Controller
                 }
                 if ($modelOrder->load(Yii::$app->request->post())) {
                     $modelOrder->update_at = date('d.m.Y H:i', time());
+                    $auto_find = $modelOrder->auto_find;
                     $modelOrder->auto_find = false;
                     if ($route->save() && $modelOrder->save()) {
-                        $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
 
                         sleep(3);
-                        $modelOrder->auto_find = true;
+                        $modelOrder->auto_find = $auto_find;
+                        if(Profile::notAdminOrDispetcher()) {
+                            $modelOrder->auto_find = true;
+                        }
                         $modelOrder->hide = false;
 
                         if($modelOrder->reset_alerts){
                             $modelOrder->alert_car_owner_ids = null;
                         }
+                        $modelOrder->changeStatus(Order::STATUS_NEW, $modelOrder->id_user);
 
-                        $modelOrder->save(false);
+//                        $modelOrder->save(false);
 
-                        functions::startCommand('console/set-suitable-vehicles-ids',
-                            [$modelOrder->id]);
+//                        functions::startCommand('console/set-suitable-vehicles-ids',
+//                            [$modelOrder->id]);
                     } else {
                         functions::setFlashWarning('Ошибка на сервере');
                     }

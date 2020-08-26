@@ -9,8 +9,10 @@
     use app\models\PriceZone;
     use app\components\widgets\ShowMessageWidget;
     use yii\bootstrap\Html;
+    use app\models\Profile;
 /* @var $modelOrder \app\models\Order*/
     $this->title = 'Изменение заказа №' . $modelOrder->id;
+
 ?>
 
 <div class="container">
@@ -23,8 +25,11 @@
     <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, ['encode' => false]);
     ?>
-        <?=
-            $form->field($modelOrder, 'reset_alerts')->checkbox();
+        <?php
+            if(!Profile::notAdminOrDispetcher()) {
+                echo $form->field($modelOrder, 'reset_alerts')->checkbox();
+                echo $form->field($modelOrder, 'auto_find')->checkbox();
+            }
         ?>
     </div>
     <div class="col-lg-7">
