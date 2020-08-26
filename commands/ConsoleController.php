@@ -126,12 +126,12 @@ class ConsoleController extends Controller
 //            echo $vehicle->id . "\n";
         }
         $order->suitable_vehicles = $res;
-
-
         $order->save(false);
+
         functions::startCommand('console/auto-find',
             [$order->id]);
-
+//        sleep(5);
+        exit('OK');
     }
 
 }
