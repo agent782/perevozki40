@@ -512,8 +512,6 @@ class OrderController extends Controller
     public function actionUpdate($id_order, $redirect = '/order/client')
     {
         $session = Yii::$app->session;
-        if($session->has('modelOrder')) $session->remove('modelOrder');
-        if($session->has('route')) $session->remove('route');
 
         $modelOrder = $this->findModel($id_order);
         if (!$modelOrder ) {
@@ -609,8 +607,8 @@ class OrderController extends Controller
                     } else {
                         functions::setFlashWarning('Ошибка на сервере');
                     }
-                    $session->remove('modelOrder');
-                    $session->remove('route');
+                    if($session->has('modelOrder')) $session->remove('modelOrder');
+                    if($session->has('route')) $session->remove('route');
                     return $this->redirect($redirect);
                     break;
                 }
