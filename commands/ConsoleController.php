@@ -130,8 +130,8 @@ class ConsoleController extends Controller
 
         functions::startCommand('console/auto-find',
             [$order->id]);
-//        sleep(5);
-        exit('OK');
+        sleep(5);
+        exit();
     }
 
 }
