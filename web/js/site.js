@@ -18,6 +18,10 @@ window.onscroll = function() {
     prevScrollpos = currentScrollPos;
 }
 
+$(document).on('beforeSubmit', 'form', function(event) {
+    $(this).find('[type=submit]').attr('disabled', true).addClass('disabled');
+});
+
 // $(function () {
 //     $(":submit").on("click", function(){
         // $(this).attr("disabled", "disabled");
