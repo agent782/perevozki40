@@ -350,7 +350,7 @@ class OrderController extends Controller
 
                             $session->remove('route');
                             $session->remove('modelOrder');
-
+                            $modelOrder->auto_save = true;
                             functions::startCommand('console/set-suitable-vehicles-ids',
                                 [$modelOrder->id]);
 
