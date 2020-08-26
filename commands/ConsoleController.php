@@ -28,7 +28,7 @@ class ConsoleController extends Controller
         $count = 0;
         while (!$order->suitable_vehicles && $count < 5){
             $order->refresh();
-            if(!$order->auto_find) return;
+            if(!$order->auto_find) return 0;
             sleep(5);
             $count++;
         }
@@ -100,6 +100,7 @@ class ConsoleController extends Controller
         }
         $order->auto_find = false;
         $order->save(false);
+        return true;
     }
 
     public function actionSetSuitableVehiclesIds($id_order, $sort = true)

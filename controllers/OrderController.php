@@ -512,6 +512,9 @@ class OrderController extends Controller
     public function actionUpdate($id_order, $redirect = '/order/client')
     {
         $session = Yii::$app->session;
+        if($session->has('modelOrder')) $session->remove('modelOrder');
+        if($session->has('route')) $session->remove('route');
+
         $modelOrder = $this->findModel($id_order);
         if (!$modelOrder ) {
             functions::setFlashWarning('Ошибка на сервере');
