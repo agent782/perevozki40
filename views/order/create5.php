@@ -174,6 +174,7 @@ Icon::map($this);
     <?php
         if(!Profile::notAdminOrDispetcher()) {
             echo $form->field($modelOrder, 'hide')->checkbox()->label('Скрыть');
+            echo $form->field($modelOrder, 'auto_find')->checkbox()->label('Авто-поиск');
         }
     ?>
     <?= Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])?>
