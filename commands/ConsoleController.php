@@ -127,20 +127,10 @@ class ConsoleController extends Controller
         }
         $order->suitable_vehicles = $res;
 
-        functions::startCommand('console/auto-find',
-            [$order->id]);
-
 
         $order->save(false);
-
-//        functions::startCommand('console/auto-find',
-//            [$order->id]);
-//
-//        $mes_admin = new Message([
-//            'id_to_user' => 1,
-//            'title' => '№' . $order->id . ' старт автопоиск'
-//        ]);
-//        $mes_admin->sendPush(false);
+        functions::startCommand('console/auto-find',
+            [$order->id]);
 
     }
 
