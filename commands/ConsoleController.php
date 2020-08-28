@@ -64,7 +64,8 @@ class ConsoleController extends Controller
             } else {
                 if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING])) {
                     $order->auto_find = false;
-                    $order->save(false);
+                    $order->updateAttributes(['auto_find']);
+//                    $order->save(false);
                 }
                 if (!$order->auto_find) return 'STOP';
 
@@ -85,11 +86,12 @@ class ConsoleController extends Controller
                 $arr = $order->alert_car_owner_ids;
                 $arr[$car_owner_id] = time();
                 $order->alert_car_owner_ids = $arr;
-                $order->save(false);
+                $order->updateAttributes(['alert_car_owner_ids']);
+//                $order->save(false);
 
                 $seconds = 0;
                 while ($seconds <= $sleep ){
-                    if(!$order->auto_find) break;
+                    if(!$order->auto_find) return 0;
                     sleep(1);
                     $seconds++;
                 }
@@ -112,7 +114,8 @@ class ConsoleController extends Controller
         if ($order->status != Order::STATUS_NEW && $order->status != Order::STATUS_IN_PROCCESSING) return false;
 
         $order->suitable_vehicles = null;
-        $order->save(false);
+        $order->updateAttributes(['suitable_vehicles']);
+//        $order->save(false);
 
         $vehicles = ($sort)
             ? $order->getSortSuitableVehicles(false)
@@ -126,7 +129,8 @@ class ConsoleController extends Controller
 //            echo $vehicle->id . "\n";
         }
         $order->suitable_vehicles = $res;
-        $order->save(false);
+        $order->updateAttributes(['suitable_vehicles']);
+//        $order->save(false);
 
         functions::startCommand('console/auto-find',
             [$order->id]);
