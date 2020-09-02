@@ -375,7 +375,7 @@ $spec_columns = [
 //        'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
-            'style' => 'font-size: 10px'
+            'style' => 'font-size: 14px; font-weight:bold;'
         ],
         'columns' => $truck_columns,
     ]); ?>
