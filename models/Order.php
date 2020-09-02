@@ -2412,7 +2412,7 @@ class Order extends \yii\db\ActiveRecord
                                 ) {
                                 return 1;
                             }
-  
+
                         } else {
                             $a_profile = $a_user->profile;
                             $b_profile = $b_user->profile;
