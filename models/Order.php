@@ -2355,32 +2355,93 @@ class Order extends \yii\db\ActiveRecord
                     return -1;
                 }
                 if($a_min_attr == $b_min_attr) {
+                    $a_user = $a->user;
+                    $b_user = $b->user;
                     if(
-                        ($a->user->canRole('vip_car_owner') && !$b->user->canRole('vip_car_owner'))
+                        ($a_user->canRole('vip_car_owner') && !$b_user->canRole('vip_car_owner'))
                         ||
-                        ($a->user->canRole('car_owner') && $b->user->canRole('user'))
+                        ($a_user->canRole('car_owner') && $b_user->canRole('user'))
+
                     ){
                         return -1;
                     }
 
-                    if(
-                        ($a->user->canRole('vip_car_owner') && $b->user->canRole('vip_car_owner'))
+                    else if(
+                        ($b_user->canRole('vip_car_owner') && !$a_user->canRole('vip_car_owner'))
                         ||
-                        ($a->user->canRole('car_owner') && $b->user->canRole('car_owner'))
-                        ||
-                        ($a->user->canRole('user') && $b->user->canRole('user'))
+                        ($b_user->canRole('car_owner') && $a_user->canRole('user'))
                     ){
-                        if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
-                            if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return -1;}
-                            if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return 1;}
-                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
+                        return 1;
+                    }
+
+                    else
+//                        (
+//                        ($a_user->canRole('vip_car_owner') && $b_user->canRole('vip_car_owner'))
+//                        ||
+//                        ($a_user->canRole('car_owner') && $b_user->canRole('car_owner'))
+//                        ||
+//                        ($a_user->canRole('user') && $b_user->canRole('user'))
+//                    )
+                    {
+                        $date = $this->datetime_start;
+
+                        $a_calendar = $a->getCalendarVehicle($date)->one();
+                        $b_calendar = $b->getCalendarVehicle($date)->one();
+                        if($a_calendar){
+                            $a_status = $a_calendar->status;
                         } else {
-                            if($a->user->profile->balanceCarOwnerSum < $b->user->profile->balanceCarOwnerSum){return 1;}
-                            if($a->user->profile->balanceCarOwnerSum > $b->user->profile->balanceCarOwnerSum){return -1;}
-                            if($a->user->profile->balanceCarOwnerSum == $b->user->profile->balanceCarOwnerSum){return 0;}
+                            $a_status = null;
+                        }
+                        if($b_calendar){
+                            $b_status = $b_calendar->status;
+                        } else {
+                            $b_status = null;
+                        }
+                        if($a_status !== $b_status){
+                            if($a_status == CalendarVehicle::STATUS_FREE) {
+                                return -1;
+                            }
+                            if($b_status == CalendarVehicle::STATUS_FREE) {
+                                return 1;
+                            }
+                            if($a_status == CalendarVehicle::STATUS_HALF_TIME
+                                ) {
+                                return -1;
+                            }
+                            if($b_status == CalendarVehicle::STATUS_HALF_TIME
+                                ) {
+                                return 1;
+                            }
+  
+                        } else {
+                            $a_profile = $a_user->profile;
+                            $b_profile = $b_user->profile;
+                            $a_balanceCarOwnerSum = $a_profile->balanceCarOwnerSum;
+                            $b_balanceCarOwnerSum = $b_profile->balanceCarOwnerSum;
+                            if ($order->type_payment == Payment::TYPE_BANK_TRANSFER) {
+                                if ($a_balanceCarOwnerSum < $b_balanceCarOwnerSum) {
+                                    return -1;
+                                }
+                                if ($a_balanceCarOwnerSum > $b_balanceCarOwnerSum) {
+                                    return 1;
+                                }
+                                if ($a_balanceCarOwnerSum == $b_balanceCarOwnerSum) {
+                                    return 0;
+                                }
+                            } else {
+                                if ($a_balanceCarOwnerSum < $b_balanceCarOwnerSum) {
+                                    return 1;
+                                }
+                                if ($a_balanceCarOwnerSum > $b_balanceCarOwnerSum) {
+                                    return -1;
+                                }
+                                if ($a_balanceCarOwnerSum == $b_balanceCarOwnerSum) {
+                                    return 0;
+                                }
+                            }
                         }
                     }
-                    return 1;
+//                    return 1;
                 }
             });
         }
