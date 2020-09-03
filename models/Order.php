@@ -615,7 +615,9 @@ class Order extends \yii\db\ActiveRecord
 //                    'ToggleButton' => ['label' => '<img src="/img/icons/help-25.png">', 'class' => 'btn'],
                 ])
             ;
-            if($withCountVehicles && !Profile::notAdminOrDispetcher()){
+            if($withCountVehicles
+//                && !Profile::notAdminOrDispetcher()
+            ){
                 $return[$PriceZone->unique_index]
                     .= $this->getRatingCountVehicles($PriceZone->id, $this->datetime_start);
             }
@@ -2599,7 +2601,7 @@ class Order extends \yii\db\ActiveRecord
     public function getRatingCountVehicles($id_price_zone, $date = null)
     {
 
-        if (Profile::notAdminOrDispetcher()) return '';
+//        if (Profile::notAdminOrDispetcher()) return '';
         $pluginOptions = [
             'readonly' => true,
             'showClear' => false,
@@ -2613,11 +2615,11 @@ class Order extends \yii\db\ActiveRecord
 //            'emptyStar' => '&#x2606;',
             'size' => StarRating::SIZE_X_SMALL,
             'starCaptions' => [
-                0 => 'Нет свободных ТС.',
-                1 => 'Очень мало свободных ТС',
-                2 => 'Мало свободных ТС',
-                3 => 'Есть свободные ТС',
-                4 => 'Много свободных ТС',
+                0 => 'Нет свободных',
+                1 => 'Очень мало',
+                2 => 'Мало',
+                3 => 'Есть',
+                4 => 'Много',
             ],
             'starCaptionClasses' => [
                 0 => 'text-danger',

@@ -490,7 +490,9 @@ class OrderController extends Controller
             $withCountVehicle = $modelOrder->datetime_start ? true : false;
 
             $modelOrder->suitable_rates =
-                $modelOrder->getSuitableRatesCheckboxList($route->distance, $modelOrder->getDiscount($user_id), $withCountVehicle);
+                $modelOrder->getSuitableRatesCheckboxList($route->distance,
+                    $modelOrder->getDiscount($user_id),
+                    $withCountVehicle);
 
             $session->set('modelOrder', $modelOrder);
             return $this->renderAjax('selectedRates', [
