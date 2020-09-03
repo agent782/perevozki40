@@ -120,6 +120,7 @@ use kartik\rating\StarRating;
  * @property bool $hide
  * @property array $suitable_vehicles
  * @property array $alert_car_owner_ids
+ * @property TypePayment $typePayment
 
 
  */
@@ -1027,6 +1028,10 @@ class Order extends \yii\db\ActiveRecord
                 break;
         }
         return $res;
+    }
+
+    public function getTypePayment(){
+        return $this->hasOne(TypePayment::class, ['id' => 'type_payment']);
     }
 
     static public function getStatusesArray(){
