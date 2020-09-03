@@ -2601,7 +2601,7 @@ class Order extends \yii\db\ActiveRecord
     public function getRatingCountVehicles($id_price_zone, $date = null)
     {
 
-//        if (Profile::notAdminOrDispetcher()) return '';
+        if ($this->id_vehicle_type != Vehicle::TYPE_TRUCK) return '';
         $pluginOptions = [
             'readonly' => true,
             'showClear' => false,
@@ -2618,7 +2618,7 @@ class Order extends \yii\db\ActiveRecord
                 0 => 'Нет свободных',
                 1 => 'Очень мало',
                 2 => 'Мало',
-                3 => 'Есть',
+                3 => 'Достаточно',
                 4 => 'Много',
             ],
             'starCaptionClasses' => [
