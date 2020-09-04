@@ -100,7 +100,7 @@ class CronController extends Controller
         )->all();
         if($Profiles) {
             foreach ($Profiles as $profile) {
-                echo $profile->id_user . ' ' . $profile->bithday . "\n";
+//                echo $profile->id_user . ' ' . $profile->bithday . "\n";
                 $text = $profile->name
                     . '! С днем рожденья поздравляем,
                     Счастья, прибыли желаем.
