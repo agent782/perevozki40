@@ -8,6 +8,8 @@
 
 namespace app\commands;
 
+use app\models\Profile;
+use app\models\Sms;
 use app\models\User;
 use Yii;
 use app\components\functions\functions;
@@ -90,6 +92,30 @@ class CronController extends Controller
                 $Message->save();
 
                 echo 1;
+    }
+
+    public function actionHappyBirthday(){
+        $Profiles = Profile::find()->where(['bithday' => strtotime(date('d.m.Y', time()))])->all();
+        if($Profiles) {
+            foreach ($Profiles as $profile) {
+                $text = $profile->name
+                    . '! С днем рожденья поздравляем,
+                    Счастья, прибыли желаем.
+                    Дом прекрасный и уют,
+                    Где родные всегда ждут.
+                    perevozki40.ru';
+
+                $sms = new Sms($profile->phone, $text);
+                $sms->sendAndSave();
+
+                $mesAdmin = new Message([
+                    'id_to_user' => 1,
+                    'title' => 'ДР ' . $profile->bithday . ' #' . $profile->id_user
+                ]);
+                $mesAdmin->sendPush(false);
+            }
+
+        }
     }
 
 
