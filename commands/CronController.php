@@ -95,9 +95,12 @@ class CronController extends Controller
     }
 
     public function actionHappyBirthday(){
-        $Profiles = Profile::find()->where(['bithday' => strtotime(date('d.m.Y', time()))])->all();
+        $Profiles = Profile::find()->where(
+            'FROM_UNIXTIME(bithday, "%d%m") = FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()), "%d%m")'
+        )->all();
         if($Profiles) {
             foreach ($Profiles as $profile) {
+                echo $profile->id_user . ' ' . $profile->bithday . "\n";
                 $text = $profile->name
                     . '! С днем рожденья поздравляем,
                     Счастья, прибыли желаем.
@@ -115,7 +118,7 @@ class CronController extends Controller
                 $mesAdmin->sendPush(false);
             }
 
-        }
+        } else echo 'no';
     }
 
 
