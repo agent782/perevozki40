@@ -163,6 +163,7 @@ class VehicleController extends Controller
                 break;
             case 'create_next2':
                 $VehicleForm=$session->get('VehicleForm');
+
                 if(!$VehicleForm || !$VehicleForm->vehicleTypeId) return $this->redirect($redirect);
 
 //                switch ($VehicleForm->vehicleTypeId){
@@ -189,8 +190,10 @@ class VehicleController extends Controller
                 break;
             case 'create_finish':
                 if($session->get('VehicleForm'))$VehicleForm = $session->get('VehicleForm');
-                if(!$VehicleForm->vehicleTypeId || !$VehicleForm->bodyTypeId || !$VehicleForm->loadingTypeIds ) {
-                    return $this->redirect('/vehicle/create');
+                if(!$VehicleForm->vehicleTypeId || !$VehicleForm->bodyTypeId
+                    || (!$VehicleForm->loadingTypeIds && $VehicleForm->vehicleTypeId == Vehicle::TYPE_TRUCK)) {
+                    functions::setFlashWarning('Внутренняя ошибка сервера. Попробуйте позже или обратитесь к администратору.');
+                    return $this->redirect(['/vehicle/create', 'id_user' => $id_user, 'redirect' => $redirect]);
                 }
                 if($VehicleForm->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
                     $session->set('VehicleForm', $VehicleForm);

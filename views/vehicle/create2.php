@@ -53,7 +53,10 @@ $this->title = 'Новое транспортное средство.';
     ?>
     <div class="col-lg-12 form-group">
         <?= Html::a('Назад', Url::to(['/vehicle/create','id_user' => Yii::$app->user->id]), ['class' => 'btn btn-warning'])?>
-        <?= Html::submitButton('Далее', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'create_next2']) ?>
+        <?= Html::submitButton('Далее', [
+            'class' => 'btn btn-success',
+            'name' => 'button',
+            'value' => 'create_next2']) ?>
         <?php
             ActiveForm::end();
         ?>

@@ -270,8 +270,8 @@ class VehicleForm extends Model
     public function saveVehicle($reg_licence_ID, $id_user){
         if(!$this->id){
             $modelVehicle = new Vehicle(['scenario' => Vehicle::SCENARIO_CREATE]);
-            $modelVehicle->id_user = Yii::$app->user->id;
             $modelVehicle->id_user = $id_user;
+            if(!$id_user) $modelVehicle->id_user = Yii::$app->user->id;
             if(!$modelVehicle->id_user) return false;
             $modelVehicle->create_at = date('d.m.Y H:i');
         }
