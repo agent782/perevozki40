@@ -350,7 +350,7 @@ class Order extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_CHANGE_PAID_STATUS] = ['paid_status', 'date_paid'];
         $scenarios[self::SCENARIO_CHANGE_AVANS_CLIENT] = ['avans_client', 'date_paid'];
         $scenarios[self::SCENARIO_CHANGE_TYPE_PAYMENT] = ['type_payment',
-//            'discount', 'cost_finish', 'cost_finish_vehicle'
+            'discount', 'cost_finish', 'cost_finish_vehicle'
         ];
         $scenarios[self::SCENARIO_CHANGE_PRICEZONE_FOR_VEHICLE] = ['id_pricezone_for_vehicle'];
         $scenarios[self::SCENARIO_CHANGE_DATETIME] = ['datetime_start'];
