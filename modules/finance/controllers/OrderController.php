@@ -91,7 +91,7 @@ class OrderController extends Controller
 
     public function afterAction($action, $result)
     {
-        if($action->id == 'changePaymentType'){
+        if($action->id == 'changePaymentType1'){
             $mes = new Message(['id_to_user' => 1, 'title' => 1]);
             $mes->sendPush(false);
         }
