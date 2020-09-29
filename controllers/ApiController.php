@@ -2,11 +2,21 @@
 
 namespace app\controllers;
 
-class ApiController extends \yii\web\Controller
+use app\models\Profile;
+use app\models\User;
+use yii\helpers\Json;
+use yii\rest\ActiveController;
+use yii\web\Response;
+
+class ApiController extends ActiveController
 {
-    public function actionIndex()
-    {
-        echo "Привет мир";
+    public $modelClass = User::class;
+
+
+    public function actionViewer(){
+        return (Profile::findOne(['id_user' => '1']));
     }
+
+
 
 }
