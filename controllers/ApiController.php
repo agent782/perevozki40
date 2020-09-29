@@ -14,7 +14,7 @@ class ApiController extends ActiveController
 
 
     public function actionViewer(){
-        return $this->asJson(Profile::findOne(['id_user' => '1']).bithday);
+        return (Profile::findOne(['id_user' => '1']));
     }
 
 

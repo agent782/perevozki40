@@ -67,9 +67,11 @@ class functions
     static public function setFlashSuccess($mes){
         return Yii::$app->session->setFlash('success', $mes);
     }
+
     static public function setFlashWarning($mes){
         return Yii::$app->session->setFlash('warning', $mes);
     }
+
     static public function setFlashInfo($mes){
         return Yii::$app->session->setFlash('info', $mes);
     }

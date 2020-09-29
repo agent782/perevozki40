@@ -41,6 +41,7 @@ class Message extends \yii\db\ActiveRecord
 
     const TYPE_ALERT_CAR_OWNER_NEW_ORDER = 1;
     const TYPE_CHANGE_PAID_STATUS = 2;
+    const TYPE_STATISTIC_CAR_OWNER = 3;
 
 
     private $idPushall = "4781";
@@ -109,7 +110,11 @@ class Message extends \yii\db\ActiveRecord
         return $this->hasOne(Review::class, ['id_message' => 'id']);
     }
 
-    public function sendPush(bool $save = true)
+    public function getOrder(){
+        return $this->hasOne(Order::class, ['id' => 'id_order']);
+    }
+
+    public function sendPush(bool $save = false)
     {
         if ($push_ids = User::findOne($this->id_to_user)->push_ids) {
             foreach ($push_ids as $push_id) {
@@ -163,7 +168,7 @@ class Message extends \yii\db\ActiveRecord
         } else {
             $this->push_status = self::STATUS_NEED_TO_SEND;
         }
-//        if($save) $this->save();
+        if($save) $this->save();
     }
 
     public function  changeStatus($newStatus){
