@@ -1,2 +1,5 @@
 <?php
-    echo $message;
+/* @var string $message
+ *
+ */
+    if($message) echo $message;
