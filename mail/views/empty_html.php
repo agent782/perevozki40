@@ -2,4 +2,4 @@
 /* @var string $message
  *
  */
-    if($message) echo $message;
+//    if($message) echo $message;
