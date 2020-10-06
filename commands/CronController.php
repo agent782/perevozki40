@@ -221,9 +221,9 @@ class CronController extends Controller
             if($count_orders) {
                 $Message .= $sum_finish . 'р. - общая сумма выполненных заказов <br><br>';
             }
-            $Message .= $count_mes . ' - предложено заказов. <br><br>';
+            $Message .= $count_mes . ' - предложено заказов,которые в итоге приняли и выполнили другие водители <br><br>';
             if($sum_not_confirmed){
-                $Message .= $sum_not_confirmed . 'р. - общая сумма непринятых заказов<br><br>';
+                $Message .= $sum_not_confirmed . 'р. - общая сумма предложенных заказов, которые в итоге приняли и выполнили другие водители<br><br>';
             }
             if($count_mes){
                 $Message .= (round($count_orders/$count_mes, 2)*100)
@@ -239,7 +239,7 @@ class CronController extends Controller
                 когда Ваше ТС занято.<br><br>';
 
             $Mes = new Message([
-                'id_to_user' => 1,
+                'id_to_user' => $id,
                 'type' => Message::TYPE_STATISTIC_CAR_OWNER,
                 'title' => $Title,
                 'text' => $Message,
@@ -250,7 +250,7 @@ class CronController extends Controller
             ]);
 
             $Mes->sendPush(true);
-            $User = User::findOne(1);
+            $User = User::findOne($id);
             functions::sendEmail(
                 [$User->email, $User->profile->email2],
                 null,
