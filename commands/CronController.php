@@ -8,6 +8,7 @@
 
 namespace app\commands;
 
+use app\components\functions\emails;
 use app\models\Profile;
 use app\models\Sms;
 use app\models\User;
@@ -171,26 +172,34 @@ class CronController extends Controller
             ->select(['id_to_user', 'id_order'])
             ->all()
         ;
-
         foreach ($Messages as $message){
-
-            if(array_key_exists($message->id_to_user, $Users)
-                &&!in_array($message->id_order, $Users[$message->id_to_user]['messages'])){
-                if($order = $message->order) {
-                    if($order->status == Order::STATUS_CONFIRMED_VEHICLE
-                        || $order->status == Order::STATUS_CONFIRMED_CLIENT
-                        || $order->status == Order::STATUS_CONFIRMED_SET_SUM
-                    ) {
-                        $Users[$message->id_to_user]['messages'][] = $message->id_order;
-                        if($order->id_car_owner != $message->id_to_user){
-                            $Users[$message->id_to_user]['sum_not_confirmed'] += $order->cost_finish_vehicle;
-                        }
+            if($order = $message->order) {
+                if($order->status == Order::STATUS_CONFIRMED_VEHICLE
+                    || $order->status == Order::STATUS_CONFIRMED_CLIENT
+                    || $order->status == Order::STATUS_CONFIRMED_SET_SUM
+                ) {
+                    if (!array_key_exists($message->id_to_user, $Users)) {
+                        $Users[$message->id_to_user] = [
+                            'messages' => [],
+                            'orders' => [],
+                            'sum_finish' => 0,
+                            'sum_re_finish' => 0,
+                            'sum_not_confirmed' => 0,
+                            'name' => User::findOne($message->id_to_user)->profile->name
+                        ];
                     }
+
+                    $Users[$message->id_to_user]['messages'][] = $message->id_order;
+                    if ($order->id_car_owner != $message->id_to_user) {
+                        $Users[$message->id_to_user]['sum_not_confirmed'] += $order->cost_finish_vehicle;
+                    }
+
                 }
             }
-        }
 
-        foreach ($Users as $user){
+        }
+//        print_r($Users);
+        foreach ($Users as $id => $user){
             $Title = 'Статистика за прошлую неделю.';
             $Users[$order->id_car_owner] = [
                 'messages' => [],
@@ -230,8 +239,8 @@ class CronController extends Controller
                 когда Ваше ТС занято.<br><br>';
 
             $Mes = new Message([
-                'id_to_user' => '1',
-                'type' =>Message::TYPE_STATISTIC_CAR_OWNER,
+                'id_to_user' => $id,
+                'type' => Message::TYPE_STATISTIC_CAR_OWNER,
                 'title' => $Title,
                 'text' => $Message,
                 'text_push' => '',
@@ -243,15 +252,23 @@ class CronController extends Controller
             $Mes->sendPush(true);
 
             functions::sendEmail(
-                ['agent782@ya.ru'],
+                [$user->email, $user->profile->email2],
                 null,
                 $Title,
-                ['message' => $Message]
+                ['message' => $Message],
+                [
+                    'html' => 'views/car-owner/week_report_html',
+                    'text' => 'views/car-owner/week_report_text'
+                ]
             );
-            break;
-
-
+            sleep(10);
         }
-        print_r($Users);
+        functions::sendEmail(
+             [Yii::$app->params['adminEmail']['email']],
+            null,
+            'Отправлено ' . count($Users) . ' отчетов за период с '
+            . $dates[1] . ' по ' . $dates[$days],
+            []
+        );
     }
 }
