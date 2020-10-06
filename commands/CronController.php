@@ -239,7 +239,7 @@ class CronController extends Controller
                 когда Ваше ТС занято.<br><br>';
 
             $Mes = new Message([
-                'id_to_user' => 1,
+                'id_to_user' => $id,
                 'type' => Message::TYPE_STATISTIC_CAR_OWNER,
                 'title' => $Title,
                 'text' => $Message,
@@ -250,7 +250,7 @@ class CronController extends Controller
             ]);
 
             $Mes->sendPush(true);
-            $User = User::findOne(1);
+            $User = User::findOne($id);
             functions::sendEmail(
                 [$User->email, $User->profile->email2],
                 null,
