@@ -63,9 +63,10 @@ class ConsoleController extends Controller
                 continue;
             } else {
                 if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING])) {
-                    $order->auto_find = false;
-                    $order->updateAttributes(['auto_find']);
+//                    $order->auto_find = false;
+//                    $order->updateAttributes(['auto_find']);
 //                    $order->save(false);
+                    break;
                 }
                 if (!$order->auto_find) return 'STOP';
 
@@ -91,7 +92,7 @@ class ConsoleController extends Controller
 
                 $seconds = 0;
                 while ($seconds <= $sleep ){
-                    if(!$order->auto_find) return 0;
+                    if(!$order->auto_find) break;
                     sleep(1);
                     $seconds++;
                 }
