@@ -218,6 +218,16 @@ class OrderController extends Controller
                     $BTypies = BodyType::getBTypiesWithShowMessageImg($modelOrder->id_vehicle_type, true);
                     $LTypies = LoadingType::getLoading_typies($modelOrder->id_vehicle_type);
                     $LTypies = LoadingType::getLTypiesWithMessageButtonImg($modelOrder->id_vehicle_type);
+
+                    if(!$modelOrder->body_typies && $modelOrder->id_vehicle_type == Vehicle::TYPE_TRUCK) {
+                        $modelOrder->body_typies = [
+                            Vehicle::BODY_awning_rear_side, Vehicle::BODY_cargo_and_passenger_minibus,
+                            Vehicle::BODY_rear_gate_awning, Vehicle::BODY_ref, Vehicle::BODY_awning_rear_side,
+                            Vehicle::BODY_commercial_minibus, Vehicle::BODY_truck_minivan,
+                            Vehicle::BODY_heated_van, Vehicle::BODY_van
+                        ];
+                    }
+
                     $session->set('modelOrder', $modelOrder);
                     return $this->render('create2', [
                         'modelOrder' => $modelOrder,
