@@ -15,6 +15,7 @@ use yii\helpers\Url;
 /* @var $LTypies array*/
 /* @var $VehicleAttributes array*/
 $this->registerJsFile('@web/js/route.js');
+$this->registerJsFile('/js/order.js');
 $this->title = 'Изменение заказа №' . $modelOrder->id;
 //$this->registerJsFile('/js/order.js');
 
