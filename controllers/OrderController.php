@@ -307,7 +307,8 @@ class OrderController extends Controller
                 $route = $session->get('route');
 
                 if (!$modelOrder || !$route) {
-                    functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
+                    $session->remove('modelOrder');
+                    functions::setFlashWarning('Ошибка на сервере. Попробуйте еще раз.');
                     return $this->redirect('create');
                 }
                 if(Yii::$app->user->isGuest) {
@@ -417,6 +418,7 @@ class OrderController extends Controller
                             return $this->redirect('/logist/order');
                         }
                     } else{
+
                         $findUser->email = $user->email;
                         $findUser->scenario = User::SCENARIO_SAVE;
                         $findProfile = $findUser->profile;
@@ -440,7 +442,7 @@ class OrderController extends Controller
                             return $this->redirect('/logist/order');
                         }
                         if(!$findProfile->save()){
-                            return var_dump($findProfile->getErrors());
+//                            return var_dump($findProfile->getErrors());
 
                             functions::setFlashWarning('Ошибка на сервере. Профиль не сохранен. Попробуйте позже.');
                             return $this->redirect('/logist/order');
@@ -449,7 +451,7 @@ class OrderController extends Controller
 
                     }
                     if(!$route->save()){
-                        functions::setFlashWarning('Ошибка на сервере. Маршрут не сохранен. Попробуйте позже.');
+                        functions::setFlashWarning('Ошибка на сервере. Маршрут не сохранен. Попробуйте еще раз.');
                         return $this->redirect('/logist/order');
                     }
                     $modelOrder->id_route = $route->id;
