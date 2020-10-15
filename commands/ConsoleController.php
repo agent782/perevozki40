@@ -57,6 +57,7 @@ class ConsoleController extends Controller
         $mes_admin->sendPush(false);
         if (!$car_owners) return 0;
         foreach ($car_owners as $car_owner_id) {
+            $order->refresh();
             if ($order->alert_car_owner_ids
                 && ArrayHelper::keyExists($car_owner_id, $order->alert_car_owner_ids)
             ) {
@@ -64,8 +65,8 @@ class ConsoleController extends Controller
             } else {
                 if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING])) {
                     $order->auto_find = false;
-                    $order->updateAttributes(['auto_find']);
-//                    $order->save(false);
+//                    $order->updateAttributes(['auto_find']);
+                    $order->save(false);
                     break;
                 }
                 if (!$order->auto_find) return 'STOP';
