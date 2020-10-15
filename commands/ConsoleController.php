@@ -22,7 +22,7 @@ class ConsoleController extends Controller
     public function actionAutoFind($id_order)
     {
         $order = Order::findOne($id_order);
-        echo "start";
+
         if (!$order) return 0;
 
         $count = 0;
@@ -48,7 +48,7 @@ class ConsoleController extends Controller
                 $car_owners[] = $vehicle->id_user;
             }
         }
-
+        echo "start";
         $mes_admin = new Message([
             'id_to_user' => 1,
             'title' => '№' . $order->id . ' старт автопоиск'
