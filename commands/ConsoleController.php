@@ -21,9 +21,8 @@ class ConsoleController extends Controller
 {
     public function actionAutoFind($id_order)
     {
-        echo "start";
         $order = Order::findOne($id_order);
-
+        echo "start";
         if (!$order) return 0;
 
         $count = 0;
