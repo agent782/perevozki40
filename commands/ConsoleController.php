@@ -21,6 +21,7 @@ class ConsoleController extends Controller
 {
     public function actionAutoFind($id_order)
     {
+        echo "start";
         $order = Order::findOne($id_order);
 
         if (!$order) return 0;
@@ -58,6 +59,7 @@ class ConsoleController extends Controller
         if (!$car_owners) return 0;
         foreach ($car_owners as $car_owner_id) {
             $order->refresh();
+            echo $order->auto_find . "/n";
             if ($order->alert_car_owner_ids
                 && ArrayHelper::keyExists($car_owner_id, $order->alert_car_owner_ids)
             ) {
@@ -65,8 +67,8 @@ class ConsoleController extends Controller
             } else {
                 if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_IN_PROCCESSING])) {
                     $order->auto_find = false;
-//                    $order->updateAttributes(['auto_find']);
-                    $order->save(false);
+                    $order->updateAttributes(['auto_find']);
+//                    $order->save(false);
                     break;
                 }
                 if (!$order->auto_find) return 'STOP';
