@@ -22,9 +22,7 @@ class ConsoleController extends Controller
     public function actionAutoFind($id_order)
     {
         $order = Order::findOne($id_order);
-
         if (!$order) return 0;
-
         $count = 0;
         while (!$order->suitable_vehicles && $count < 5){
             $order->refresh();
@@ -48,7 +46,7 @@ class ConsoleController extends Controller
                 $car_owners[] = $vehicle->id_user;
             }
         }
-        echo "start";
+
         $mes_admin = new Message([
             'id_to_user' => 1,
             'title' => '№' . $order->id . ' старт автопоиск'
@@ -57,8 +55,7 @@ class ConsoleController extends Controller
         $mes_admin->sendPush(false);
         if (!$car_owners) return 0;
         foreach ($car_owners as $car_owner_id) {
-            $order->refresh();
-            echo $order->auto_find . "/n";
+            $order = Order::findOne($order->id);
             if ($order->alert_car_owner_ids
                 && ArrayHelper::keyExists($car_owner_id, $order->alert_car_owner_ids)
             ) {

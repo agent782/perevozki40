@@ -438,10 +438,12 @@ class OrderController extends Controller
             return 0;
         }
         $order->auto_find = true;
-        $order->save(false);
+        $order->updateAttributes(['auto_find']);
+//        $order->save(false);
 
         functions::startCommand('console/auto-find',
             [$order->id]);
+        sleep(2);
         return 1;
 
     }
