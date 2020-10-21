@@ -139,6 +139,7 @@ class ProfileController extends Controller
 
     public function actionCarOwners(){
         $this->layout = functions::getLayout();
+        set_time_limit(120);
         $modelSearch = new ProfileSearch();
         $dataProvider = $modelSearch->searchCarOwners(Yii::$app->request->queryParams);
 
