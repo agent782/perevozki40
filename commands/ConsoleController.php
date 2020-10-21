@@ -130,9 +130,9 @@ class ConsoleController extends Controller
 //            echo $vehicle->id . "\n";
         }
         $order->suitable_vehicles = $res;
-        $order->updateAttributes(['suitable_vehicles']);
+//        $order->updateAttributes(['suitable_vehicles']);
 
-//        $order->save(false);
+        $order->save();
 
         functions::startCommand('console/auto-find',
             [$order->id]);
