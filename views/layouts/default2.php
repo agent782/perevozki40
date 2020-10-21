@@ -437,7 +437,7 @@ $this->title = ($this->title)
                 data-script="usocial" charset="utf-8"></script>
         <div class="uSocial-Share"
              data-pid="cbb495426c32ee6767a525e93d12f42a" data-type="share"
-             data-options="round-rect,style1,default,left,slide-down,size24,eachCounter0,counter0"
+             data-options="round-rect,style1,default,right,slide-down,size24,eachCounter0,counter0"
              data-social="vk,fb,ok,email" data-mobile="vi,wa,sms"></div>
         <!-- /uSocial -->
         </p>
