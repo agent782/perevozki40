@@ -317,7 +317,7 @@ class OrderController extends Controller
                         'modelOrder' => $modelOrder,
                         'TypiesPayment' => $TypiesPayment,
                         'companies' => $companies,
-                        'user_id' => $user_id,
+                        'user_id' => null,
                         'redirect' => $redirect
                     ]);
                 }
@@ -361,7 +361,8 @@ class OrderController extends Controller
 
                             $session->remove('route');
                             $session->remove('modelOrder');
-                            $modelOrder->auto_save = true;
+                            $modelOrder->auto_find = true;
+                            $modelOrder->updateAttributes(['auto_find']);
                             functions::startCommand('console/set-suitable-vehicles-ids',
                                 [$modelOrder->id]);
 
@@ -464,8 +465,8 @@ class OrderController extends Controller
                         $session->remove('modelOrder');
                         functions::setFlashSuccess('Заказ оформлен.');
 
-                        functions::startCommand('console/set-suitable-vehicles-ids',
-                            [$modelOrder->id]);
+//                        functions::startCommand('console/set-suitable-vehicles-ids',
+//                            [$modelOrder->id]);
 
                     } else {
                         functions::setFlashWarning('Ошибка на сервере. Заказ не сохранен. Попробуйте позже.');

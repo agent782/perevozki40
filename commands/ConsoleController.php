@@ -86,7 +86,7 @@ class ConsoleController extends Controller
                 $arr = $order->alert_car_owner_ids;
                 $arr[$car_owner_id] = time();
                 $order->alert_car_owner_ids = $arr;
-                $order->update(true, ['alert_car_owner_ids']);
+                $order->updateAttributes(['alert_car_owner_ids']);
 //                $order->save(false);
 
                 $seconds = 0;
@@ -101,7 +101,8 @@ class ConsoleController extends Controller
             }
         }
         $order->auto_find = false;
-        $order->save(false);
+        $order->updateAttributes(['auto_find']);
+//        $order->save(false);
         return true;
     }
 
@@ -129,8 +130,9 @@ class ConsoleController extends Controller
 //            echo $vehicle->id . "\n";
         }
         $order->suitable_vehicles = $res;
-//        $order->update();
-        $order->save(false);
+        $order->updateAttributes(['suitable_vehicles']);
+
+//        $order->save(false);
 
         functions::startCommand('console/auto-find',
             [$order->id]);
