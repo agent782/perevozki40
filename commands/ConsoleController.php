@@ -115,8 +115,8 @@ class ConsoleController extends Controller
         if ($order->status != Order::STATUS_NEW && $order->status != Order::STATUS_IN_PROCCESSING) return false;
 
         $order->suitable_vehicles = null;
-        $order->updateAttributes(['suitable_vehicles']);
-//        $order->save(false);
+//        $order->updateAttributes(['suitable_vehicles']);
+        $order->save(false);
 
         $vehicles = ($sort)
             ? $order->getSortSuitableVehicles(false)
@@ -132,7 +132,7 @@ class ConsoleController extends Controller
         $order->suitable_vehicles = $res;
 //        $order->updateAttributes(['suitable_vehicles']);
 
-        $order->save();
+        $order->save(false);
 
         functions::startCommand('console/auto-find',
             [$order->id]);
