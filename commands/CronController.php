@@ -12,6 +12,7 @@ use app\components\functions\emails;
 use app\models\Profile;
 use app\models\Sms;
 use app\models\User;
+use app\models\Vehicle;
 use Yii;
 use app\components\functions\functions;
 use app\models\Order;
@@ -270,5 +271,13 @@ class CronController extends Controller
             . $dates[1] . ' по ' . $dates[$days],
             []
         );
+    }
+
+    public function actionCheckVehicles(){
+        $activeVehicles = Vehicle::find()
+            ->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->all();
+
+
     }
 }
