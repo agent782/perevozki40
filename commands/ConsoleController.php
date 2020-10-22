@@ -86,8 +86,8 @@ class ConsoleController extends Controller
                 $arr = $order->alert_car_owner_ids;
                 $arr[$car_owner_id] = time();
                 $order->alert_car_owner_ids = $arr;
-                $order->updateAttributes(['alert_car_owner_ids']);
-//                $order->save(false);
+//                $order->updateAttributes(['alert_car_owner_ids']);
+                $order->save(false);
 
                 $seconds = 0;
                 while ($seconds <= $sleep ){
