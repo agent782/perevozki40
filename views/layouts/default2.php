@@ -86,8 +86,8 @@ $this->title = ($this->title)
                 \yii\bootstrap\ButtonDropdown::widget();
             ?>
             <div class="btn-group"> <!-- btn group 2, primary -->
-                <button type="button"  data-toggle="dropdown">
-                    <img src="/img/icons/menu.png" alt="Меню"/></button>
+                <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="/img/icons/cargo.png" alt="Меню"/></button>
                 <!-- Dropdown list -->
                 <div class="dropdown-menu"  role="menu" style="position: fixed">
                     <?php
