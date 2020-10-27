@@ -278,9 +278,9 @@ class CronController extends Controller
             ->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
             ->all();
 
-        $activeVehicles = Vehicle::find()
-            ->where(['id_user' => 1])
-            ->all();
+//        $activeVehicles = Vehicle::find()
+//            ->where(['id_user' => 1])
+//            ->all();
 
         foreach ($activeVehicles as $vehicle){
             echo $vehicle->update_at ? $vehicle->update_at : $vehicle->create_at;
