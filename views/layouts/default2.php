@@ -87,7 +87,7 @@ $this->title = ($this->title)
             ?>
             <div class="btn-group"> <!-- btn group 2, primary -->
                 <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="/img/icons/menu.png" alt="Меню"/></button>
+                    <img src="" alt="Меню"/></button>
                 <!-- Dropdown list -->
                 <div class="dropdown-menu"  role="menu" style="position: fixed">
                     <?php
