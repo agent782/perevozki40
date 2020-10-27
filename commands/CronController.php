@@ -294,9 +294,9 @@ class CronController extends Controller
             if(!$order) {
 
             } else {
-                $days_elapsed_last_order = (time() - strtotime($order->datetime_start))/(60*60*24);
-                $days_elapsed_update_vehicle = (time()
-                    - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24);
+                $days_elapsed_last_order =round( (time() - strtotime($order->datetime_start))/(60*60*24));
+                $days_elapsed_update_vehicle = round((time()
+                    - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24));
                 $user = $vehicle->user;
                 echo $user->old_id ? $user->old_id : '#' . $user->id
                     . '  ' . $days_elapsed_last_order
