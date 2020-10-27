@@ -290,16 +290,17 @@ class CronController extends Controller
                 ->andWhere(['!=', 'status', Order::STATUS_CANCELED])
                 ->orderBy(['datetime_start' => SORT_DESC])
                 ->one();
-            echo $order->datetime_start . "\n";
+
             if(!$order) {
                 continue;
             } else {
+                echo $order->datetime_start . "\n";
                 $days_elapsed_last_order =round( (time() - strtotime($order->datetime_start))/(60*60*24));
                 $days_elapsed_update_vehicle = round((time()
                     - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24));
                 $user = $vehicle->user;
-                echo $user->old_id ? $user->old_id : '#' . $user->id
-                    . '  ' . $days_elapsed_last_order
+                echo $user->old_id ? $user->old_id : '#' . $user->id;
+                echo '  ' . $days_elapsed_last_order
                     . '   ' . $days_elapsed_update_vehicle
                     . "\n"
                 ;
