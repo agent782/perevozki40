@@ -315,3 +315,7 @@ a.desc:after {
     font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
+input, button {
+    -webkit-appearance: none;
+}
+
