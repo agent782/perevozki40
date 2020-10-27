@@ -278,6 +278,38 @@ class CronController extends Controller
             ->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
             ->all();
 
+        $activeVehicles = Vehicle::find()
+            ->where(['id_user' => 1])
+            ->all();
+
+        foreach ($activeVehicles as $vehicle){
+            echo $vehicle->update_at ? $vehicle->update_at : $vehicle->create_at;
+            echo "\n\n";
+
+            $orders = $vehicle->getOrders()
+                ->andWhere(['!=', 'status', Order::STATUS_CANCELED])
+                ->orderBy(['datetime_start' => SORT_DESC])
+                ->one();
+            echo $orders->datetime_start . "\n";
+            foreach ($orders as $order){
+
+                if($vehicle->tonnage<=1.5){
+
+                } else if ($vehicle->tonnage>1.5 && $vehicle->tonnage<4){
+
+                } else if ($vehicle->tonnage>=4 && $vehicle->tonnage<=10){
+
+                } else {
+
+                }
+            }
+
+
+
+
+
+        }
+
 
     }
 }
