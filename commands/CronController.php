@@ -292,7 +292,7 @@ class CronController extends Controller
                 ->one();
             echo $order->datetime_start . "\n";
             if(!$order) {
-
+                continue;
             } else {
                 $days_elapsed_last_order =round( (time() - strtotime($order->datetime_start))/(60*60*24));
                 $days_elapsed_update_vehicle = round((time()
