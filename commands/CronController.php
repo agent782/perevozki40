@@ -286,18 +286,30 @@ class CronController extends Controller
             echo $vehicle->update_at ? $vehicle->update_at : $vehicle->create_at;
             echo "\n\n";
 
-            $orders = $vehicle->getOrders()
+            $order = $vehicle->getOrders()
                 ->andWhere(['!=', 'status', Order::STATUS_CANCELED])
                 ->orderBy(['datetime_start' => SORT_DESC])
                 ->one();
-            echo $orders->datetime_start . "\n";
-            foreach ($orders as $order){
+            echo $order->datetime_start . "\n";
+            if(!$order) {
 
-                if($vehicle->tonnage<=1.5){
+            } else {
+                $days_elapsed_last_order = (time() - strtotime($order->datetime_start))/(60*60*24);
+                $days_elapsed_update_vehicle = (time()
+                    - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24);
+                $user = $vehicle->user;
+                echo $user->old_id ? $user->old_id : '#' . $user->id
+                    . '  ' . $days_elapsed_last_order
+                    . '   ' . $days_elapsed_update_vehicle
+                    . "\n"
+                ;
+                if ($vehicle->tonnage <= 1.5) {
+                    if($days_elapsed_last_order/60*60*24 ){
 
-                } else if ($vehicle->tonnage>1.5 && $vehicle->tonnage<4){
+                    }
+                } else if ($vehicle->tonnage > 1.5 && $vehicle->tonnage < 4) {
 
-                } else if ($vehicle->tonnage>=4 && $vehicle->tonnage<=10){
+                } else if ($vehicle->tonnage >= 4 && $vehicle->tonnage <= 10) {
 
                 } else {
 
