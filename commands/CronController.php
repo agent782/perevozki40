@@ -274,46 +274,118 @@ class CronController extends Controller
     }
 
     public function actionCheckVehicles(){
-        $activeVehicles = Vehicle::find()
-            ->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+        $activeTruckVehicles = Vehicle::find()
+            ->where(['id_vehicle_type' => Vehicle::TYPE_TRUCK])
+            ->andWhere(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
             ->all();
 
 //        $activeVehicles = Vehicle::find()
 //            ->where(['id_user' => 1])
 //            ->all();
 
-        foreach ($activeVehicles as $vehicle){
-            echo $vehicle->update_at ? $vehicle->update_at : $vehicle->create_at;
-            echo "\n\n";
+        foreach ($activeTruckVehicles as $vehicle){
+            $user = $vehicle->user;
+//            echo $vehicle->update_at ? $vehicle->update_at : $vehicle->create_at;
+//            echo "\n\n";
+            $sendEmailChangeStatus = false;
+            $sendEmailWarningAboutChangeStatus = false;
 
             $order = $vehicle->getOrders()
                 ->andWhere(['!=', 'status', Order::STATUS_CANCELED])
                 ->orderBy(['datetime_start' => SORT_DESC])
                 ->one();
+            $days_elapsed_update_vehicle = round((time()
+                    - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24));
 
             if(!$order) {
-                continue;
-            } else {
-                echo $order->datetime_start . "\n";
-                $days_elapsed_last_order =round( (time() - strtotime($order->datetime_start))/(60*60*24));
-                $days_elapsed_update_vehicle = round((time()
-                    - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24));
-                $user = $vehicle->user;
-                echo $user->old_id ? $user->old_id : '#' . $user->id;
-                echo '  ' . $days_elapsed_last_order
-                    . '   ' . $days_elapsed_update_vehicle
-                    . "\n"
-                ;
                 if ($vehicle->tonnage <= 1.5) {
-                    if($days_elapsed_last_order/60*60*24 ){
-
+                    if($days_elapsed_update_vehicle > 30){
+                        if($days_elapsed_update_vehicle > 45){
+                            // Изменить статус на Не активно
+                            // отправить письмо
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            // Раз в %n дня отправлять письмо о скором изменении статуса
+                            if(!$days_elapsed_update_vehicle%4){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
                     }
                 } else if ($vehicle->tonnage > 1.5 && $vehicle->tonnage < 4) {
-
+                    if($days_elapsed_update_vehicle > 45){
+                        if($days_elapsed_update_vehicle > 55){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_update_vehicle%3){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
                 } else if ($vehicle->tonnage >= 4 && $vehicle->tonnage <= 10) {
-
+                    if($days_elapsed_update_vehicle > 60){
+                        if($days_elapsed_update_vehicle > 70){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_update_vehicle%3){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
                 } else {
+                    if($days_elapsed_update_vehicle > 90){
+                        if($days_elapsed_update_vehicle > 120){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_update_vehicle%5){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
+                }
 
+            } else {
+                $days_elapsed_last_order =round( (time() - strtotime($order->datetime_start))/(60*60*24));
+
+                if ($vehicle->tonnage <= 1.5) {
+                    if($days_elapsed_last_order > 30 ){
+                        if($days_elapsed_last_order > 40){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_last_order%3){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
+                } else if ($vehicle->tonnage > 1.5 && $vehicle->tonnage < 4) {
+                    if($days_elapsed_last_order > 45 ){
+                        if($days_elapsed_last_order > 55){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_last_order%3){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
+                } else if ($vehicle->tonnage >= 4 && $vehicle->tonnage <= 10) {
+                    if($days_elapsed_last_order > 60 ){
+                        if($days_elapsed_last_order > 75){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_last_order%5){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
+                } else {
+                    if($days_elapsed_last_order > 90 ){
+                        if($days_elapsed_last_order > 120){
+                            $sendEmailChangeStatus = true;
+                        } else {
+                            if(!$days_elapsed_last_order%7){
+                                $sendEmailWarningAboutChangeStatus = true;
+                            }
+                        }
+                    }
                 }
             }
 
