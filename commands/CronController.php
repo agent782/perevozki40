@@ -297,6 +297,8 @@ class CronController extends Controller
             $days_elapsed_update_vehicle = round((time()
                     - strtotime(($vehicle->update_at) ? $vehicle->update_at : $vehicle->create_at))/(60*60*24));
 
+            $days_elapsed_last_order = 0;
+
             if(!$order) {
                 if ($vehicle->tonnage <= 1.5) {
                     if($days_elapsed_update_vehicle > 30){
@@ -388,13 +390,20 @@ class CronController extends Controller
                     }
                 }
             }
+            if($sendEmailWarningAboutChangeStatus){
+                echo ' ' . $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
+                    .  '  ' . $user->profile->fioShort . ' '
+                    . $vehicle->brandAndNumber
+                    . "\n";
+            }
 
-
-
-
-
+            if($sendEmailChangeStatus){
+                echo ' ' . $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
+                    . '  ' . $user->profile->fioShort . ' '
+                    . $vehicle->brandAndNumber
+                    . "\n";
+            }
         }
-
 
     }
 }
