@@ -209,4 +209,45 @@ class emails
         }
     }
 
+    static function sendToCarOwnerAfterCheckVehicles ($id_user, $brand_and_number, $type_mes, $user_name){
+        if(!$id_user || !$type_mes || !$brand_and_number || !$user_name) return false;
+
+        $title = '';
+        $text = 'Добрый день, ' . $user_name . '!<br><br>';
+
+        if($type_mes == Message::TYPE_CHANGE_STATUS_VEHICLE){
+            $title = 'Ваше ТС удалено из поиска';
+            $text .= 'Статус Вашего ТС ' . $brand_and_number . ' изменен на НЕ АКТИВНО.<br><br>';
+            $text .= 'В течении продолжительного времени Вы не приняли ни одного заказа. 
+                Если Вы заинтересованы в дальнейшем сотрудничестве по этому ТС, 
+                Вы можете восстановить его в разделе Транспорт->Удаленные. <br><br>
+                По всем вопросам Вы можете обращаться по телефонам или электронной почте.';
+        } else if ($type_mes == Message::TYPE_CHANGE_STATUS_VEHICLE){
+            $title = 'Ваше ТС скоро будет удаленог из поиска';
+            $text .= 'В скором времени статус Вашего ТС ' . $brand_and_number . ' будет изменен на НЕ АКТИВНО.<br><br>';
+            $text .= 'В течении продолжительного времени Вы не приняли ни одного заказа.<br><br>
+                Возможно Вам не приходят push или email уведомления, проверте правильность настроек в разделе Профиль.<br>
+                Вы можете проверить данные по ТС в разделе Мой транспорт. Возможно не корректны данные или стоит проверить
+                выбранные тарифы. В скором времени ТС автоматически станет НЕ АКТИВНЫМ. 
+                По всем вопросам обращайтесь по телефонам или электронной почте.
+            ';
+        } else {
+            return false;
+        }
+
+        $Message = new Message([
+            'text' => $text,
+            'title' => $title,
+            'text_push' => '',
+//            "id_to_user" => $id_user,
+            "id_to_user" => 1,
+            'type' => $type_mes,
+            'url' => Url::to('/vehicle', true),
+        ]);
+
+        $Message->sendPush(true);
+
+
+    }
+
 }
