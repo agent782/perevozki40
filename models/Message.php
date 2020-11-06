@@ -42,6 +42,8 @@ class Message extends \yii\db\ActiveRecord
     const TYPE_ALERT_CAR_OWNER_NEW_ORDER = 1;
     const TYPE_CHANGE_PAID_STATUS = 2;
     const TYPE_STATISTIC_CAR_OWNER = 3;
+    const TYPE_CHANGE_STATUS_VEHICLE = 4;
+    const TYPE_WARNING_STATUS_VEHICLE = 5;
 
 
     private $idPushall = "4781";

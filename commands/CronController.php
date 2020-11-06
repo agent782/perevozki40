@@ -284,6 +284,7 @@ class CronController extends Controller
 //            ->all();
 
         foreach ($activeTruckVehicles as $vehicle){
+
             $user = $vehicle->user;
 //            echo $vehicle->update_at ? $vehicle->update_at : $vehicle->create_at;
 //            echo "\n\n";
@@ -308,7 +309,7 @@ class CronController extends Controller
                             $sendEmailChangeStatus = true;
                         } else {
                             // Раз в %n дня отправлять письмо о скором изменении статуса
-                            if(!$days_elapsed_update_vehicle%4){
+                            if(!($days_elapsed_update_vehicle%4)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -318,7 +319,7 @@ class CronController extends Controller
                         if($days_elapsed_update_vehicle > 55){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_update_vehicle%3){
+                            if(!($days_elapsed_update_vehicle%3)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -328,7 +329,7 @@ class CronController extends Controller
                         if($days_elapsed_update_vehicle > 70){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_update_vehicle%3){
+                            if(!($days_elapsed_update_vehicle%3)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -338,7 +339,7 @@ class CronController extends Controller
                         if($days_elapsed_update_vehicle > 120){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_update_vehicle%5){
+                            if(!($days_elapsed_update_vehicle%5)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -353,7 +354,7 @@ class CronController extends Controller
                         if($days_elapsed_last_order > 40){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_last_order%3){
+                            if(!($days_elapsed_last_order%3)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -363,7 +364,7 @@ class CronController extends Controller
                         if($days_elapsed_last_order > 55){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_last_order%3){
+                            if(!($days_elapsed_last_order%4)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -373,7 +374,7 @@ class CronController extends Controller
                         if($days_elapsed_last_order > 75){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_last_order%5){
+                            if(!($days_elapsed_last_order%5)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
@@ -383,22 +384,65 @@ class CronController extends Controller
                         if($days_elapsed_last_order > 120){
                             $sendEmailChangeStatus = true;
                         } else {
-                            if(!$days_elapsed_last_order%7){
+                            if(!($days_elapsed_last_order%7)){
                                 $sendEmailWarningAboutChangeStatus = true;
                             }
                         }
                     }
                 }
             }
+            $days = round((time() - strtotime('01.11.2020'))/(60*60*24));
+
+            if ($vehicle->tonnage <= 1.5) {
+                if($sendEmailChangeStatus){
+                    if($days < 10){
+                        $sendEmailChangeStatus = false;
+                        if(!($days%3)) {
+                            $sendEmailWarningAboutChangeStatus = true;
+                        }
+                    }
+                }
+            } else if ($vehicle->tonnage > 1.5 && $vehicle->tonnage < 4) {
+                if($sendEmailChangeStatus){
+                    if($days < 15){
+                        $sendEmailChangeStatus = false;
+                        if(!($days%5)) {
+                            $sendEmailWarningAboutChangeStatus = true;
+                        }
+                    }
+                }
+            } else if ($vehicle->tonnage >= 4 && $vehicle->tonnage <= 10) {
+                if($sendEmailChangeStatus){
+                    if($days < 20){
+                        $sendEmailChangeStatus = false;
+                        if(!($days%6)) {
+                            $sendEmailWarningAboutChangeStatus = true;
+                        }
+                    }
+                }
+            } else {
+                if($sendEmailChangeStatus){
+                    if($days < 30){
+                        $sendEmailChangeStatus = false;
+                        if(!($days%7)) {
+                            $sendEmailWarningAboutChangeStatus = true;
+                        }
+                    }
+                }
+            }
+
             if($sendEmailWarningAboutChangeStatus){
-                echo ' ' . $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
+                echo '1 ' . $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
                     .  '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber
                     . "\n";
+                emails::sendToCarOwnerAfterCheckVehicles($user->id,
+                    $vehicle->brandAndNumber, Message::TYPE_WARNING_STATUS_VEHICLE, $user->profile->name);
+                break;
             }
 
             if($sendEmailChangeStatus){
-                echo ' ' . $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
+                echo '2 ' . $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
                     . '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber
                     . "\n";
