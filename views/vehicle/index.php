@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\Url;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Vehicle;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\VehicleSearch */
@@ -48,7 +49,6 @@ $this->registerJs(
     });'
 );
 
-
 ?>
 <div class="container vehicle-index">
 
@@ -67,9 +67,9 @@ $this->registerJs(
         'dataProvider' => $dataProviderTruck,
         'filterModel' => $searchModel,
             'responsiveWrap' => false,
-        'options' => [
-//            'style' => 'width: 100%;',
-        ],
+            'options' => [
+                'style' => 'width: 100%; text-align:center;',
+            ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -132,6 +132,13 @@ $this->registerJs(
             'statusText',
             $actionColumns
         ],
+            'rowOptions' => function(\app\models\Vehicle $model){
+                if($model->status == Vehicle::STATUS_NOT_ACTIVE){
+                    return [
+                        'style' => '  color: grey'
+                    ];
+                }
+            }
     ]);
     ?>
 
@@ -149,6 +156,9 @@ $this->registerJs(
         'responsiveWrap' => false,
         'filterModel' => $searchModel,
         'summaryOptions' => ['style' => 'text-align: left;'],
+        'options' => [
+            'style' => 'width: 100%; text-align:center;',
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -176,6 +186,13 @@ $this->registerJs(
             'statusText',
             $actionColumns
         ],
+        'rowOptions' => function(\app\models\Vehicle $model){
+            if($model->status == Vehicle::STATUS_NOT_ACTIVE){
+                return [
+                    'style' => '  color: grey'
+                ];
+            }
+        }
     ]);
     ?>
 
@@ -193,6 +210,9 @@ $this->registerJs(
         'filterModel' => $searchModel,
         'showOnEmpty' => true,
         'summaryOptions' => ['style' => 'text-align: left;'],
+        'options' => [
+            'style' => 'width: 100%; text-align:center;',
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -223,6 +243,13 @@ $this->registerJs(
             'statusText',
             $actionColumns
         ],
+        'rowOptions' => function(\app\models\Vehicle $model){
+            if($model->status == Vehicle::STATUS_NOT_ACTIVE){
+                return [
+                    'style' => '  color: grey'
+                ];
+            }
+        }
     ]);
     ?>
 
@@ -241,9 +268,7 @@ $this->registerJs(
         'dataProvider' => $dataProviderDeleted,
         'responsiveWrap' => false,
         'summaryOptions' => ['style' => 'text-align: left;'],
-        'options' => [
-            'style' => 'width: 70%; text-align:center;',
-        ],
+
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'regLicense.brand.brand',
