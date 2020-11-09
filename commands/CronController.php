@@ -283,6 +283,9 @@ class CronController extends Controller
 //            ->where(['id_user' => 1])
 //            ->all();
 
+        $stat_warning = [];
+        $stat_change = [];
+
         foreach ($activeTruckVehicles as $vehicle){
 
             $user = $vehicle->user;
@@ -436,9 +439,11 @@ class CronController extends Controller
                     .  '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber
                     . "\n";
-                emails::sendToCarOwnerAfterCheckVehicles($user->id,
-                    $vehicle->brandAndNumber, Message::TYPE_WARNING_STATUS_VEHICLE, $user->profile->name);
-                break;
+//                emails::sendToCarOwnerAfterCheckVehicles($user->id,
+//                    $vehicle->brandAndNumber, Message::TYPE_WARNING_STATUS_VEHICLE, $user->profile->name);
+                $stat_warning [] = $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
+                    .  '  ' . $user->profile->fioShort . ' '
+                    . $vehicle->brandAndNumber . ' #' . $vehicle->id . ' ПРДУПРЕЖДЕНИЕ';
             }
 
             if($sendEmailChangeStatus){
@@ -446,8 +451,36 @@ class CronController extends Controller
                     . '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber
                     . "\n";
+//                emails::sendToCarOwnerAfterCheckVehicles($user->id,
+//                    $vehicle->brandAndNumber, Message::TYPE_CHANGE_STATUS_VEHICLE, $user->profile->name);
+//                $vehicle->status = Vehicle::STATUS_NOT_ACTIVE;
+                $vehicle->updateAttributes(['status']);
+                $stat_change [] = $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
+                    .  '  ' . $user->profile->fioShort . ' '
+                    . $vehicle->brandAndNumber . ' #' . $vehicle->id . ' НЕ АКТИВНО';
             }
         }
+        $mes_to_admin = '';
+        foreach ($stat_change as $item){
+            $mes_to_admin .= $item . "<br>";
+        }
+        $mes_to_admin .= "<br><br>";
+        foreach ($stat_warning as $item){
+            $mes_to_admin .= $item . '<br>';
+        }
 
+        if($mes_to_admin){
+            functions::sendEmail(
+                Yii::$app->params['adminEmail']['email'],
+                null,
+                'Изменение статусов ТС',
+                ['message' => $mes_to_admin],
+                [
+                    'html' => 'views/car-owner/after_check_vehicles_html',
+                    'text' => 'views/car-owner/after_check_vehicles_text'
+                ]
+
+            );
+        }
     }
 }

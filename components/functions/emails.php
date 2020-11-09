@@ -210,7 +210,7 @@ class emails
     }
 
     static function sendToCarOwnerAfterCheckVehicles ($id_user, $brand_and_number, $type_mes, $user_name){
-        if(!$id_user || !$type_mes || !$brand_and_number || !$user_name) return false;
+//        if(!$id_user || !$type_mes || !$brand_and_number || !$user_name) return false;
 
         $title = '';
         $text = 'Добрый день, ' . $user_name . '!<br><br>';
@@ -222,7 +222,7 @@ class emails
                 Если Вы заинтересованы в дальнейшем сотрудничестве по этому ТС, 
                 Вы можете восстановить его в разделе Транспорт->Удаленные. <br><br>
                 По всем вопросам Вы можете обращаться по телефонам или электронной почте.';
-        } else if ($type_mes == Message::TYPE_CHANGE_STATUS_VEHICLE){
+        } else if ($type_mes == Message::TYPE_WARNING_STATUS_VEHICLE){
             $title = 'Ваше ТС скоро будет удаленог из поиска';
             $text .= 'В скором времени статус Вашего ТС ' . $brand_and_number . ' будет изменен на НЕ АКТИВНО.<br><br>';
             $text .= 'В течении продолжительного времени Вы не приняли ни одного заказа.<br><br>
@@ -240,12 +240,48 @@ class emails
             'title' => $title,
             'text_push' => '',
 //            "id_to_user" => $id_user,
-            "id_to_user" => 1,
+            "id_to_user" => '186',
             'type' => $type_mes,
             'url' => Url::to('/vehicle', true),
         ]);
+        $user = User::findOne($id_user);
+        if($user) {
+            if($user->push_ids) {
+                $Message->sendPush(true);
+            } else {
+                $Message->save();
+            }
+            if($user_email = $user->email) {
+                functions::sendEmail(
+                    $user_email,
+                    null,
+                    $title,
+                    [
+                        'message' => $text
+                    ],
+                    [
+                        'html' => 'views/car-owner/after_check_vehicles_html',
+                        'text' => 'views/car-owner/after_check_vehicles_text'
+                    ]
+                );
+            }
 
-        $Message->sendPush(true);
+            if($user_email2 = $user->profile->email2) {
+                functions::sendEmail(
+                    $user_email2,
+                    null,
+                    $title,
+                    [
+                        'message' => $text
+                    ],
+                    [
+                        'html' => 'views/car-owner/after_check_vehicles_html',
+                        'text' => 'views/car-owner/after_check_vehicles_text'
+                    ]
+
+                );
+            }
+        }
 
 
     }
