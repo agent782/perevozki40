@@ -439,8 +439,8 @@ class CronController extends Controller
                     .  '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber
                     . "\n";
-//                emails::sendToCarOwnerAfterCheckVehicles($user->id,
-//                    $vehicle->brandAndNumber, Message::TYPE_WARNING_STATUS_VEHICLE, $user->profile->name);
+                emails::sendToCarOwnerAfterCheckVehicles($user->id,
+                    $vehicle->brandAndNumber, Message::TYPE_WARNING_STATUS_VEHICLE, $user->profile->name);
                 $stat_warning [] = $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
                     .  '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber . ' #' . $vehicle->id . ' ПРДУПРЕЖДЕНИЕ';
@@ -451,9 +451,9 @@ class CronController extends Controller
                     . '  ' . $user->profile->fioShort . ' '
                     . $vehicle->brandAndNumber
                     . "\n";
-//                emails::sendToCarOwnerAfterCheckVehicles($user->id,
-//                    $vehicle->brandAndNumber, Message::TYPE_CHANGE_STATUS_VEHICLE, $user->profile->name);
-//                $vehicle->status = Vehicle::STATUS_NOT_ACTIVE;
+                emails::sendToCarOwnerAfterCheckVehicles($user->id,
+                    $vehicle->brandAndNumber, Message::TYPE_CHANGE_STATUS_VEHICLE, $user->profile->name);
+                $vehicle->status = Vehicle::STATUS_NOT_ACTIVE;
                 $vehicle->updateAttributes(['status']);
                 $stat_change [] = $days_elapsed_last_order . ' ' . $days_elapsed_update_vehicle
                     .  '  ' . $user->profile->fioShort . ' '
