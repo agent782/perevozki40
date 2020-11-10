@@ -193,6 +193,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if($insert){
             $setting = new SettingProfile();
+            $setting->id_user = $this->id;
             $setting->save();
         }
         emails::sendToAdminAfterSaveUser($this->id);
