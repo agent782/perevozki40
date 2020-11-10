@@ -28,7 +28,6 @@ class SettingProfile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_user', 'send_email', 'send_sms', 'send_push'], 'integer'],
             [['id_user'], 'unique'],
             [['send_email', 'send_sms', 'send_push'], 'default', 'value' => true],
         ];
