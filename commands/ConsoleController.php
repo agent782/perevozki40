@@ -12,6 +12,7 @@ use app\models\CalendarVehicle;
 use app\models\Message;
 use app\models\Order;
 use app\models\Profile;
+use app\models\User;
 use yii\console\Controller;
 use app\models\Vehicle;
 use yii\helpers\ArrayHelper;
@@ -138,6 +139,16 @@ class ConsoleController extends Controller
             [$order->id]);
         sleep(5);
         exit();
+    }
+
+    public function actionTest(){
+        $users = User::find()->all();
+        foreach ($users as $user){
+            if(!$user->settingProfile){
+                echo $user->id . "\n";
+            }
+        }
+
     }
 
 }
