@@ -366,7 +366,7 @@ class OrderController extends Controller
                             functions::startCommand('console/set-suitable-vehicles-ids',
                                 [$modelOrder->id]);
 
-                            return $this->redirect(['client']);
+                            return $this->redirect(['/order/client']);
                         }
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
                     }
