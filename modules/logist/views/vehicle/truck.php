@@ -20,7 +20,7 @@
                 'filterModel' => $searchModel,
                 'responsiveWrap' => false,
                 'options' => [
-                    'style' => 'width: 70%;'
+                    'style' => 'width: 100%;'
                 ],
 
                 'columns' => [
