@@ -112,10 +112,12 @@ class Sms extends \yii\db\ActiveRecord
 
     public function setCost(){
         $cost = 0;
-
-        foreach (Yii::$app->smsru->cost($this->to, $this->message)->sms as $sms){
-            if($sms->status == 100 || $sms->status == 101 || $sms->status == 102) {
-                return $this->cost = $sms->cost;
+        if($this->message
+            && $Sms = Yii::$app->smsru->cost($this->to, $this->message)){
+            foreach ($Sms->sms as $sms) {
+                if ($sms->status == 100 || $sms->status == 101 || $sms->status == 102) {
+                    return $this->cost = $sms->cost;
+                }
             }
         }
         return null;
