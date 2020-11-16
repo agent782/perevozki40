@@ -11,6 +11,7 @@ use Yii;
  * @property int $send_email
  * @property int $send_sms
  * @property int $send_push
+ * @property int $mailing
  */
 class SettingProfile extends \yii\db\ActiveRecord
 {
@@ -29,7 +30,7 @@ class SettingProfile extends \yii\db\ActiveRecord
     {
         return [
             [['id_user'], 'unique'],
-            [['send_email', 'send_sms', 'send_push'], 'default', 'value' => true],
+            [['send_email', 'send_sms', 'send_push', 'mailing'], 'default', 'value' => true],
         ];
     }
 
