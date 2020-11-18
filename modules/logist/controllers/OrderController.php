@@ -115,8 +115,10 @@ class OrderController extends Controller
         ];
         $dataProvider_in_process->query
             ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_VEHICLE_ASSIGNED, Order::STATUS_DISPUTE]]);
+        $dataProvider_in_process->pagination = ['pageSize' => false];
         $dataProvider_arhive->query
             ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]]);
+        $dataProvider_arhive->pagination = ['pageSize' => 40];
         $dataProvider_expired_and_canceled->query
             ->andFilterWhere(['in', Order::tableName().'.status', [
                 Order::STATUS_EXPIRED,
