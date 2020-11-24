@@ -111,13 +111,13 @@ class CronController extends Controller
                     perevozki40.ru';
 
                 $sms = new Sms($profile->phone, $text);
-//                $sms->sendAndSave();
+                $sms->sendAndSave();
 
                 $mesAdmin = new Message([
                     'id_to_user' => 1,
                     'title' => 'ДР ' . ' #' . $profile->id_user
                 ]);
-//                $mesAdmin->sendPush(false);
+                $mesAdmin->sendPush(false);
             }
 
         } else echo 'no';
