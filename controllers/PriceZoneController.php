@@ -287,7 +287,10 @@ class PriceZoneController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PriceZone::findOne($id)) !== null) {
+        if (($model = PriceZone::findOne([
+                'id' => $id,
+                'status' => PriceZone::STATUS_ACTIVE
+            ])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
