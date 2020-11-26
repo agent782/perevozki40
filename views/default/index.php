@@ -25,6 +25,7 @@
         </p>
 
         <?=
+
             Youtube::widget([
                 'video' => 'QNSNgNL308E',
                 'iframeOptions'=>[ /*for container iframe*/
@@ -34,13 +35,13 @@
 //                    'class'=>'youtube-video-div'
 //                ],
                 'playerVars'=> [
-                    'autoplay' => 1,
+                    'autoplay' => 0,
                 ],
                 'width' => 320
             ])
         ?>
     </div>
-
+    
 <?php
     if(Yii::$app->user->can('user')):
         $carusel_user_reg = [
