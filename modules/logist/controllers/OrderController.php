@@ -301,7 +301,7 @@ class OrderController extends Controller
         if($sort) {
             $Vehicles = $modelOrder->getSortSuitableVehicles();
         } else {
-            $Vehicles = Vehicle::find()->where(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            $Vehicles = Vehicle::find()->where(['!=', 'status', [Vehicle::STATUS_DELETED, Vehicle::STATUS_FULL_DELETED]])
                 ->orderBy('id_user')->all();
 
             foreach ($Vehicles as $vehicle) {
