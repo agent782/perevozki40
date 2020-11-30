@@ -41,12 +41,12 @@
         </div>
             <div class="col-lg-6">
                 <?php
-                    $form = ActiveForm::begin();
+//                    $form = ActiveForm::begin();
                 ?>
-                <?= $form->field($SubscribeModel, 'email')->input('email')?>
+<!--                --><?//= $form->field($SubscribeModel, 'email')->input('email')?>
 
                 <?php
-                    ActiveForm::end();
+//                    ActiveForm::end();
                 ?>
             </div>
         </div>

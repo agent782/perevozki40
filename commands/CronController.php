@@ -396,7 +396,7 @@ class CronController extends Controller
             }
             $days = round((time() - strtotime('01.11.2020'))/(60*60*24));
 
-            
+
             if ($vehicle->tonnage <= 1.5) {
                 if($sendEmailChangeStatus){
                     if($days < 10){

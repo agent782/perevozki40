@@ -28,6 +28,7 @@ use app\models\Sms;
 use yii\web\Session;
 use app\models\PasswordResetRequestForm;
 use app\models\ResetPasswordForm;
+use app\models\Subscribe;
 
 //use yii\web\Controller;
 
