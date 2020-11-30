@@ -1,8 +1,13 @@
 <?php
+    /* @var $SubscribeModel Subscribe
+    */
+
     use yii\bootstrap\Html;
     use yii\helpers\Url;
     use lesha724\youtubewidget\Youtube;
     use kartik\rating\StarRating;
+    use yii\widgets\ActiveForm;
+    use app\models\Subscribe;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 
 
@@ -13,17 +18,10 @@
     <div class="alert-warning" style="text-align: center">
         <p><?= Html::a('Рассчитать стоимость', '/order/create',
             ['class' => 'btn btn-lg btn-danger'])?>
-            <?php
-//            echo StarRating::widget(['name' => 'rating_44',
-//            'pluginOptions' => [
-//            'theme' => 'krajee-svg',
-//                'filledStar' => '<i class="glyphicon glyphicon-heart"></i>',
-//                'emptyStar' => '<i class="glyphicon glyphicon-heart-empty"></i>',
-//            ]
-//            ]);
-            ?>
         </p>
-
+    </div>
+        <div class="row" style="text-align: center">
+        <div class="col-lg-6">
         <?=
 
             Youtube::widget([
@@ -40,8 +38,18 @@
                 'width' => 320
             ])
         ?>
-    </div>
-    
+        </div>
+            <div class="col-lg-6">
+                <?php
+                    $form = ActiveForm::begin();
+                ?>
+                <?= $form->field($SubscribeModel, 'email')->input('email')?>
+
+                <?php
+                    ActiveForm::end();
+                ?>
+            </div>
+        </div>
 <?php
     if(Yii::$app->user->can('user')):
         $carusel_user_reg = [
