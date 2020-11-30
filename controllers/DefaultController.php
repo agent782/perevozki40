@@ -14,6 +14,7 @@ use app\models\Profile;
 use app\models\ResetPasswordSmsForm;
 use app\models\settings\SettingSMS;
 use app\models\SignupPhoneForm;
+use app\models\Subscribe;
 use app\models\User;
 use app\models\VerifyPhone;
 use app\models\SignupUserForm;
@@ -69,8 +70,17 @@ class DefaultController extends Controller
     public function actionIndex(){
         $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
 
+        $SubscribeModel = new Subscribe();
+
+        if($SubscribeModel->load(Yii::$app->request->post())){
+            return 1;
+
+        }
+
 //        $auth = new auth_item();
-        return $this->render('index');
+        return $this->render('index', [
+            'SubscribeModel' => $SubscribeModel
+        ]);
     }
 
     public function actionLogin()
