@@ -43,9 +43,9 @@
                 <?php
 //                    $form = ActiveForm::begin();
                 ?>
-                
-//                $form->field($SubscribeModel, 'email')->input('email')
-
+                <?php
+//                    echo $form->field($SubscribeModel, 'email')->input('email')
+                ?>
 
                 <?php
 //                    ActiveForm::end();
