@@ -750,6 +750,7 @@ class Vehicle extends \yii\db\ActiveRecord
             $tmpPriceZone->attributes = $PriceZones[0]->attributes;
             $cost_r = $tmpPriceZone->r_km;
             $cost_h = $tmpPriceZone->r_h;
+
             foreach ($this->priceZonesSelect as $priceZone){
                 if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
                     $cost_r = $priceZone->r_km;

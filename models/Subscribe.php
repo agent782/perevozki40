@@ -11,12 +11,16 @@ use app\components\DateBehaviors;
  * @property int $id
  * @property string $email
  * @property int $status
+ * @property int $type
  * @property int $date
  */
 class Subscribe extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 1;
-    const STATUS_ = 1;
+    const STATUS_NO_ACTIVE = 2;
+
+    const TYPE_AUTO = 1;
+    const TYPE_MANUAL = 2;
 
     /**
      * {@inheritdoc}
@@ -32,10 +36,13 @@ class Subscribe extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'email', 'status', 'date'], 'required'],
+            [['email'], 'required'],
             ['status', 'integer'],
             ['email', 'email'],
+            ['email', 'unique', 'message' => 'Вы уже подписаны на нашу рассылку!'],
             ['date', 'default', 'value' => date('d.m.Y H:i:s')],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            ['type', 'default', 'value' => self::TYPE_AUTO]
         ];
     }
 

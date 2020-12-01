@@ -94,6 +94,7 @@ use yii\helpers\ArrayHelper;
                 'attribute' => 'fullInfoAboutVehicle',
                 'value' => function(Order $model){
                     $car_owner = $model->carOwner;
+                    if (!$car_owner) return null;
                     return ShowMessageWidget::widget([
                         'ToggleButton' => [
                             'label' => ($car_owner->old_id)? $car_owner->old_id : '#' . $car_owner->id_user
