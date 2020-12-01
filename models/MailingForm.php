@@ -15,6 +15,8 @@ use yii\base\Model;
 
 class MailingForm extends Model
 {
+    const SEND_TO_USERS = 1;
+
     public $from;
     public $to;
     public $subject;

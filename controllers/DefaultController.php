@@ -73,8 +73,11 @@ class DefaultController extends Controller
         $SubscribeModel = new Subscribe();
 
         if($SubscribeModel->load(Yii::$app->request->post())){
-            return 1;
-
+            if(!$SubscribeModel->save()){
+                functions::setFlashWarning('Подписка не активировалась. Попробуйте еще раз.');
+                $this->redirect('index');
+            }
+            functions::setFlashSuccess('Подписка активирована! Спасибо.');
         }
 
 //        $auth = new auth_item();
@@ -293,6 +296,18 @@ class DefaultController extends Controller
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionValidateSubscribe()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model = new Subscribe();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Ошибка на сервере. Неверный запрос.');
     }
 
     public function actionResetPasswordSms(){

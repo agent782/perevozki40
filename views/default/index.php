@@ -8,18 +8,19 @@
     use kartik\rating\StarRating;
     use yii\widgets\ActiveForm;
     use app\models\Subscribe;
+    use app\components\widgets\SubscribeWidget;
 //    \app\components\functions\emails::sendAfterUserRegistration(Yii::$app->user->id);
 
 
 ?>
 <!--<script src="https://e-timer.ru/js/etimer.js"></script>-->
-
 <div class="row">
     <div class="alert-warning" style="text-align: center">
         <p><?= Html::a('Рассчитать стоимость', '/order/create',
-            ['class' => 'btn btn-lg btn-danger'])?>
+            ['class' => 'btn btn-lg btn-danger', 'style' => 'width: 100%;'])?>
         </p>
     </div>
+    <br><br>
         <div class="row" style="text-align: center">
         <div class="col-lg-6">
         <?=
@@ -41,10 +42,16 @@
         </div>
             <div class="col-lg-6">
                 <?php
+                    echo SubscribeWidget::widget();
 //                    $form = ActiveForm::begin();
                 ?>
                 <?php
-//                    echo $form->field($SubscribeModel, 'email')->input('email')
+//                    echo $form->field($SubscribeModel, 'email')->input('email', [
+//                        'placeholder' => 'Введите Ваш email'
+//                    ])
+//                        ->label('Подпишитесь на наши новости и спецпредложения!');
+//                    echo Html::submitButton('Подписаться', ['class' => 'btn btn-success'])
+
                 ?>
 
                 <?php

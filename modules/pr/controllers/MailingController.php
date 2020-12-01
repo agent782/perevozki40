@@ -10,7 +10,7 @@ class MailingController extends \yii\web\Controller
     public function actionIndex()
     {
         $MailingForm = new MailingForm();
-        $users  - User::find()->all();
+        $users  = User::find()->all();
         foreach ($users as $user){
 
         }
