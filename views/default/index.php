@@ -22,7 +22,7 @@
     </div>
     <br><br>
         <div class="row" style="text-align: center">
-        <div class="col-lg-6">
+        <div class="col-md-6">
         <?=
 
             Youtube::widget([
@@ -40,7 +40,7 @@
             ])
         ?>
         </div>
-            <div class="col-lg-6">
+            <div class="col-md-5">
                 <?php
                     echo SubscribeWidget::widget();
 //                    $form = ActiveForm::begin();
