@@ -26,8 +26,11 @@ class SubscribeWidget extends Widget
 
         Modal::begin([
             'toggleButton' => [
-                'label' => 'Нажмите, чтобы подписаться на наши новости и спецпредложения',
-                'class' => 'btn btn-lg btn-primary'
+                'label' => 'Нажмите, чтобы подписаться на наши <br>новости и спецпредложения',
+                'class' => 'btn btn-lg btn-primary',
+                'style' => [
+//                    'width' => ''
+                ]
             ]
         ]);
 
