@@ -12,14 +12,27 @@ use app\models\Vehicle;
 $actionColumns = [
     'class' => 'yii\grid\ActionColumn',
     'buttons' => [
-        'delete' =>function ($url, $model) {
-            $url = Url::toRoute(Url::to(['/vehicle/full-delete', 'id' => $model->id]));
-            return Html::a('<span class="glyphicon glyphicon-trash"></span>',
-                $url, [
-                    'title' => \Yii::t('yii', 'Удалить безвозвратно.'),
-                    'data-confirm' => Yii::t('yii', 'ТС будет удалено безвозвратно, без возможности восстановления!'),
-                    'data-method' => 'post',
-                ]);
+        'delete' =>function ($url, Vehicle $model) {
+            if($model->status == $model::STATUS_DELETED) {
+                $url = Url::toRoute(Url::to(['/vehicle/full-delete', 'id' => $model->id]));
+
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                    $url, [
+                        'title' => \Yii::t('yii', 'Удалить безвозвратно.'),
+                        'data-confirm' => Yii::t('yii', 'ТС будет удалено безвозвратно, без возможности восстановления!'),
+                        'data-method' => 'post',
+                    ]);
+            } else {
+                $url = Url::toRoute(Url::to(['/vehicle/delete', 'id' => $model->id]));
+
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                    $url, [
+                        'title' => \Yii::t('yii', 'Удалить.'),
+                        'data-confirm' => Yii::t('yii', 'ТС будет удалено, Вы сможете восстановить его
+                            на вкладке "Удаленные"'),
+                        'data-method' => 'post'
+                    ]);
+            }
         },
         'update' => function ($url, $model) {
             $url = Url::toRoute(Url::to([
