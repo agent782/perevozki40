@@ -126,9 +126,9 @@ class OrderController extends Controller
             ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id])
         ;
         $dataProvider_arhive->query
-            ->where(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
-            ->andWhere(['id_user' => Yii::$app->user->id])
-            ->andWhere(['!=', 'id_car_owner', Yii::$app->user->id]);
+            ->andFilterWhere(['in', Order::tableName().'.status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->andFilterWhere(['id_user' => Yii::$app->user->id])
+            ->andFilterWhere(['!=', 'id_car_owner', Yii::$app->user->id]);
         $dataProvider_arhive->sort->defaultOrder = [
             'paid_status' => SORT_ASC,
             'datetime_finish' => SORT_DESC

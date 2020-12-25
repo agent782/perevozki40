@@ -17,6 +17,7 @@ use app\models\Invoice;
     <h4>Завершенные</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_arhive,
+        'filterModel' => $searchModel,
         'options' => [
             'class' => 'minRoute'
         ],
@@ -46,13 +47,16 @@ use app\models\Invoice;
                 'format' => 'raw'
             ],
             [
-                'attribute' => 'paidText',
+                'attribute' => 'paid_status',
+//                'attribute' => 'paidText',
+                'label' => 'Оплата',
                 'format' => 'raw',
                 'value' => function (Order $order){
                     return ($order->paid_status == $order::PAID_YES_AVANS)
                         ? $order->paidText . ' (' . $order->avans_client . ')'
                         : $order->paidText;
-                }
+                },
+                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses()),
             ],
             [
                 'attribute' => 'paymentText',
