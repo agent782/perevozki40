@@ -80,7 +80,7 @@ use app\models\Invoice;
 
                     }
 
-                    if($order->certificate){
+                    if($order->certificate && $order->certificate->urlFull){
                         $return .= '<br>' . Html::a('Акт №' . $order->certificate->number,  Url::to(['/finance/invoice/download',
                                 'pathToFile' => $order->certificate->urlFull,
                                 'redirect' => '/order/client'
