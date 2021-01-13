@@ -149,7 +149,7 @@ class functions
         return '<a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
     }
 
-    static public function DownloadFile(string $pathToFile){
+    static public function DownloadFile(string $pathToFile, $redirect){
         if(file_exists($pathToFile) && is_file($pathToFile)){
             return Yii::$app->response->sendFile($pathToFile);
         }

@@ -4,6 +4,8 @@ use kartik\grid\GridView;
 use app\models\Order;
 use app\components\widgets\ShowMessageWidget;
 use app\models\Profile;
+use yii\bootstrap\Html;
+use yii\helpers\Url;
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -186,7 +188,42 @@ use app\models\Profile;
                         ],
                         [
                             'label' => 'Комментарий',
-                            'attribute' => 'description',
+//                            'attribute' => 'description',
+                            'format' => 'raw',
+                            'value' => function ($model, $index, $key){
+                                $return = $model['description'];
+                                if (array_key_exists('id_order', $model)) {
+                                    $order = Order::findOne($model['id_order']);
+                                    if($order){
+                                        if($order->invoice){
+                                            if($order->invoice->urlFull){
+                                                $return .= '<br>' . Html::a('Счет №' . $order->invoice->number,
+                                                        Url::to(['/finance/invoice/download',
+                                                            'pathToFile' => $order->invoice->urlFull,
+                                                            'redirect' => Url::to()
+                                                        ]),
+                                                        ['title' => 'Скачать', 'data-pjax' => "0"]
+                                                    );
+                                            }
+                                        } else {
+                                            if($order->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER){
+                                                $return .= '<br>Документы оформляются...';
+                                            }
+
+                                        }
+
+                                        if($order->certificate && $order->certificate->urlFull){
+                                            $return .= '<br>' . Html::a('Акт №' . $order->certificate->number,  Url::to(['/finance/invoice/download',
+                                                    'pathToFile' => $order->certificate->urlFull,
+                                                    'redirect' => Url::to()
+                                                ]),
+                                                    ['title' => 'Скачать', 'data-pjax' => "0"]);
+                                        }
+                                    }
+
+                                }
+                                return $return;
+                            }
                         ],
                         [
                             'label' => 'Кто заказывал',
