@@ -86,6 +86,25 @@ class DefaultController extends Controller
         ]);
     }
 
+    public function actionIndex2(){
+        $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
+        $this->layout = '@app/web/guest_folder/default3';
+        $SubscribeModel = new Subscribe();
+
+        if($SubscribeModel->load(Yii::$app->request->post())){
+            if(!$SubscribeModel->save()){
+                functions::setFlashWarning('Подписка не активировалась. Попробуйте еще раз.');
+                $this->redirect('index');
+            }
+            functions::setFlashSuccess('Подписка активирована! Спасибо.');
+        }
+
+//        $auth = new auth_item();
+        return $this->render('@app/web/guest_folder/index2', [
+            'SubscribeModel' => $SubscribeModel
+        ]);
+    }
+
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
