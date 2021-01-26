@@ -19,19 +19,17 @@ class ApiController extends ActiveController
     }
 
     public function actionLogin(){
-        $request = Yii::$app->request;
-        $username = $request->post('phone');
-        $password = $request->post('password');
-
-        $username = '1111111111';
-        $password = '123456';
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $request = Yii::$app->request->headers;
+        $username = $request['phone'];
+        $password = $request['password'];
 
         $return = [
             'userid' => null,
-            'name' => null
+            'name' => null,
+            'token' => null
         ];
 
-        Yii::$app->response->format = Response::FORMAT_JSON;
 
         if($username){
             $User = User::findOne(['username' => $username]);
@@ -39,6 +37,7 @@ class ApiController extends ActiveController
                 if($User->validatePassword($password)){
                     $return['userid'] = $User->id;
                     $return['name'] = $User->profile->name;
+                    $return['token'] = $User->auth_key;
                     return $return;
                 }
             }
