@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 use yii\helpers\Url;
 use yii\web\JsExpression;
+use yii\widgets\Pjax;
 
 
 /* @var $this yii\web\View */
@@ -76,6 +77,15 @@ use yii\web\JsExpression;
             'autoFill' => true,
             'select' => new \yii\web\JsExpression('function(event, ui){
                 $("#payer_company").val(ui.item.id);
+                $.pjax.reload({
+                        url : "/finance/payment/chkboxlist-invoices",
+                        container: "#chkboxlist-invoices",
+//                        dataType:"json",
+                        type: "POST", 
+                        data: {  
+                              "id_company" : ui.item.id 
+                         }
+                    })
             }'),
             'change' => new JsExpression('function(event, ui) {               
                     if(!ui.item) {
@@ -91,6 +101,14 @@ use yii\web\JsExpression;
 
     </div>
     <?= $form->field($model, 'id_implementer')->hiddenInput(['id' => 'implementer'])->label(false) ?>
+
+    <?php
+        $pjax = Pjax::begin(['id' => 'chkboxlist-invoices']);
+    ?>
+
+    <?php
+        $pjax::end();
+    ?>
 
     <?= $form->field($model, 'id_our_company')->dropDownList($our_companies)?>
 

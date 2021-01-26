@@ -23,8 +23,8 @@ class ApiController extends ActiveController
         $username = $request->post('phone');
         $password = $request->post('password');
 
-//        $username = '1111111111';
-//        $password = '123456';
+        $username = '1111111111';
+        $password = '123456';
 
         $return = [
             'userid' => null,

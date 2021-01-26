@@ -12,6 +12,7 @@ use app\models\Payment;
 use app\models\PaymentSearch;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use yii\bootstrap\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -188,5 +189,12 @@ class PaymentController extends Controller
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionChkboxlistInvoices(){
+        if (Yii::$app->request->isPjax){
+            $id_compani = Yii::$app->request->post('id_company');
+            return $this->renderAjax('chkboxlist', ['i' => $id_compani]);
+        }
     }
 }
