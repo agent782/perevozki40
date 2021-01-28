@@ -21,6 +21,7 @@ use Yii;
  * @property int $update_at
  * @property Order $order;
  * @property Company $company
+ * @property string $labelInvoices
  */
 class Invoice extends \yii\db\ActiveRecord
 {
@@ -121,5 +122,10 @@ class Invoice extends \yii\db\ActiveRecord
         return false;
     }
 
+    public function getLabelInvoices(){
+        return
+            '№' . $this->number . ' от ' . $this->date . ' ( ' . $this->order->cost_finish . 'р. )'
+            ;
+    }
 
 }

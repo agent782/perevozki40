@@ -40,6 +40,8 @@ class Payment extends \yii\db\ActiveRecord
     const STATUS_SUCCESS = 1;
     const STATUS_WAIT = 2;
     const STATUS_ERROR = 3;
+
+    public $invoices = [];
     /**
      * {@inheritdoc}
      */
@@ -62,7 +64,8 @@ class Payment extends \yii\db\ActiveRecord
             [['comments', 'sys_info'], 'string'],
             [['date', 'create_at', 'update_at'], 'default', 'value' => date('d.m.Y')],
             [['date', 'create_at', 'update_at'], 'date', 'format' => 'php: d.m.Y'],
-            ['id_request_payment', 'default', 'value' => null]
+            ['id_request_payment', 'default', 'value' => null],
+            ['invoices', 'safe']
         ];
     }
 

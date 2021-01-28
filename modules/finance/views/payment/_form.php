@@ -49,6 +49,7 @@ use yii\widgets\Pjax;
     <?= $form->field($model, 'id_user')->hiddenInput(['id' => 'payer_user', 'readonly' => true]) ?>
 
     <?= \yii\jui\AutoComplete::widget([
+            'id' => 'form',
             'clientOptions' => [
                 'source' => $profiles,
                 'autoFill' => true,
@@ -78,12 +79,14 @@ use yii\widgets\Pjax;
             'select' => new \yii\web\JsExpression('function(event, ui){
                 $("#payer_company").val(ui.item.id);
                 $.pjax.reload({
-                        url : "/finance/payment/chkboxlist-invoices",
+                        url : "/finance/payment/create",
                         container: "#chkboxlist-invoices",
 //                        dataType:"json",
                         type: "POST", 
                         data: {  
-                              "id_company" : ui.item.id 
+                              "id_company" : ui.item.id,
+                              "form_id" : "' . $form->id . '",
+//                              "model" : "' . serialize($model) . '"
                          }
                     })
             }'),
