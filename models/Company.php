@@ -362,4 +362,19 @@ class Company extends \yii\db\ActiveRecord
             ->andWhere(['type' => Document::TYPE_CONTRACT_CLIENT]);
     }
 
+    public function getInvoices(){
+        $Orders = $this->getOrders()
+            ->andFilterWhere(['type_payment' => Payment::TYPE_BANK_TRANSFER])
+            ->andFilterWhere(['in', 'paid_status', [Order::PAID_NO, Order::PAID_YES_AVANS]])
+            ->all();
+        $invoices = [];
+        foreach ($Orders as $order){
+            if($order->invoice) {
+                $invoices[] = $order->invoice;
+            }
+        }
+        return $invoices;
+    }
+
+
 }

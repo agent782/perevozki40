@@ -240,4 +240,16 @@ class Message extends \yii\db\ActiveRecord
         return false;
     }
 
+    static public function sendPushToUser($id_user, $title, $mes = null, $save = false, $url = null){
+        $mes = new Message([
+            'id_to_user' => $id_user,
+            'title' => $title,
+            'text_push' => $mes,
+            'url' => $url,
+
+        ]);
+
+        $mes->sendPush($save);
+    }
+
 }

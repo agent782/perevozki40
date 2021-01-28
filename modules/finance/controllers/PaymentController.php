@@ -4,6 +4,9 @@ namespace app\modules\finance\controllers;
 
 use app\components\functions\functions;
 use app\models\Company;
+use app\models\Invoice;
+use app\models\Message;
+use app\models\Order;
 use app\models\OrderSearch;
 use app\models\Profile;
 use app\models\setting\SettingFinance;
@@ -83,6 +86,23 @@ class PaymentController extends Controller
      */
     public function actionCreate()
     {
+        if (Yii::$app->request->isPjax){
+            $id_company = Yii::$app->request->post('id_company');
+            $form_id = Yii::$app->request->post('form_id');
+            $model = new Payment();
+
+            $invoices_not_paid = ArrayHelper::map(Company::findOne(
+                $id_company)->getInvoices(),
+                'id_order',
+                'labelInvoices');
+
+            return $this->renderAjax('chkboxlist', [
+                'i' => $id_company,
+                'form_id' => $form_id,
+                'model' => $model,
+                'invoices' => $invoices_not_paid
+            ]);
+        }
         $model = new Payment();
         $model->date = date('d.m.Y');
         $model->id_implementer = Yii::$app->user->id;
@@ -95,7 +115,27 @@ class PaymentController extends Controller
         $profiles = Profile::getArrayForAutoComplete();
         $our_companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         if ($model->load(Yii::$app->request->post())) {
+//            return var_dump($model);
+
             if($model->save()){
+                if($selected_orders = $model->invoices){
+                    foreach ($selected_orders as $order_id){
+                        $order = Order::findOne($order_id);
+                        if($order->paid_status != Order::PAID_YES) {
+                            $order->paid_status = Order::PAID_YES;
+                            $order->scenario = Order::SCENARIO_CHANGE_PAID_STATUS;
+                            $order->date_paid = $model->date;
+                            if($order->save()){
+//                                $order->sendMesAfterChangePaidStatus();
+                                Message::sendPushToUser(
+                                    1,
+                                    '№' . $order->id . ' оплачен клиентом'
+                                );
+                            }
+                        }
+                    }
+                }
+
                 functions::setFlashSuccess('Платеж проведен.');
             } else {
                 functions::setFlashWarning('Платеж не проведен.');
@@ -193,8 +233,12 @@ class PaymentController extends Controller
 
     public function actionChkboxlistInvoices(){
         if (Yii::$app->request->isPjax){
-            $id_compani = Yii::$app->request->post('id_company');
-            return $this->renderAjax('chkboxlist', ['i' => $id_compani]);
+            $id_company = Yii::$app->request->post('id_company');
+            $form_id = Yii::$app->request->post('form_id');
+            return $this->renderAjax('chkboxlist', [
+                'i' => $id_company,
+                'form_id' => $form_id
+            ]);
         }
     }
 }
