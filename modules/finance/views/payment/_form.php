@@ -37,6 +37,9 @@ use yii\widgets\Pjax;
     <?= $form->field($model,'calculation_with')->radioList($model->getArrayCalculationWith())?>
     <?= $form->field($model, 'type')->radioList(\app\models\TypePayment::getTypiesPaymentsArray(), [
         'encode' => false,
+        'onchange' => new JsExpression('
+            $("#chkboxlist-invoices").html("");
+        ')
     ]) ?>
     <?= $form->field($model, 'cost')->input('tel') ?>
 
