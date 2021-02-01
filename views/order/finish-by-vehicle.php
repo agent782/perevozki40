@@ -119,7 +119,9 @@ $this->registerJsFile('/js/order.js');
         ?>
 
         <?= $form->field($modelOrder, 'real_km')
-            ->input('tel', ['id' => 'real_distance'])
+            ->input('tel', [
+                    'id' => 'real_distance'
+            ])
         ;?>
         <div id="real_h_loading">
             <?= $form->field($modelOrder, 'real_h_loading')->input('text')?>
@@ -155,7 +157,7 @@ $this->registerJsFile('/js/order.js');
 
     <?php
     ActiveForm::end();
-    \yii\widgets\Pjax::end();
+     \yii\widgets\Pjax::end();
     ?>
 
 

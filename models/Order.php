@@ -241,7 +241,7 @@ class Order extends \yii\db\ActiveRecord
                 'real_length_spec', 'real_volume_spec', 'cost', 'id_review_vehicle', 'id_review_client'], 'number' ],
             [['suitable_rates', 'datetime_access', 'id_route', 'id_route_real', 'id_price_zone_real', 'cost', 'comment'], 'safe'],
             [['id','longlength', 'ep', 'rp', 'lp', 'id_route', 'id_route_real', 'additional_cost',
-                'id_payment', 'status', 'type_payment', 'passengers', 'real_km', 'id_pricezone_for_vehicle',
+                'id_payment', 'status', 'type_payment', 'passengers',  'id_pricezone_for_vehicle',
                 'id_car_owner'], 'integer'],
             [['hand_vehicle_cost'], 'number', 'max' => '200000'],
             [['cargo', 'comment_vehicle'], 'string'],
@@ -256,6 +256,9 @@ class Order extends \yii\db\ActiveRecord
             [['avans_client'], 'number'],
             [['re'], 'default', 'value' => false],
             [['auto_find'], 'default', 'value' => false],
+            ['real_km', 'integer', 'whenClient' => "function(attribute, value){
+                alert (value);
+            }"]
         ];
     }
 
