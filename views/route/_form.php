@@ -1,4 +1,4 @@
-<?php
+ <?php
 /* @var $this yii\web\View */
 /* @var $model app\models\Route */
 /* @var $form yii\widgets\ActiveForm */
