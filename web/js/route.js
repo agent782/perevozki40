@@ -175,7 +175,7 @@ $(document).ready(function () {
         }
 
         $('#testBut').on('click', function () {
-            alert(arrayDataForAjax());
+            // alert(arrayDataForAjax());
         });
 
         $('.points').keypress(function (event) {
