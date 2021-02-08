@@ -6,9 +6,11 @@ use app\components\ApiComponent;
 use Yii;
 use app\models\Profile;
 use app\models\User;
+use yii\filters\auth\HttpBearerAuth;
 use yii\helpers\Json;
 use yii\rest\ActiveController;
 use yii\web\Response;
+use yii\web\UnauthorizedHttpException;
 
 class ApiController extends ApiComponent
 {
@@ -29,6 +31,12 @@ public function beforeAction($action)
     public function actionLogin(){
 //        Yii::$app->response->format = Response::FORMAT_JSON;
         $request = Yii::$app->request->getBodyParams();
+        if(!key_exists('phone', $request)
+         || !key_exists('password', $request)){
+            return [
+                'status' => 'ERROR'
+            ];
+        }
         $username = $request['phone'];
         $password = $request['password'];
 
@@ -36,12 +44,18 @@ public function beforeAction($action)
             $User = User::findOne(['username' => $username]);
             if($User){
                 if($User->validatePassword($password)){
+                    if(key_exists('firebase_id', $request)){
+                        if(!is_array($User->firebase_ids) || !in_array($request['firebase_id'], $User->firebase_ids)){
+                            $User->firebase_ids[] = $request['firebase_id'];
+                            $User->save();
+                        }
+                    }
                     $return = [
                         'status' => 'OK'
                     ];
 
                     $return['userid'] = $User->id;
-                    $return['roles'] = $User->getRolesString();
+                    $return['roles'] = $User->getRoles(true);
                     $return['token'] = $User->auth_key;
                     return $return;
                 }
@@ -51,7 +65,66 @@ public function beforeAction($action)
         return [
             'status' => 'ERROR'
         ];
+    }
 
+    public function actionLogout(){
+        $request = Yii::$app->request->getBodyParams();
+
+        if(!key_exists('userid', $request)
+            || !$request['userid']
+            || $request['userid'] != Yii::$app->user->id
+        ){
+            throw new UnauthorizedHttpException();
+        }
+        $User = Yii::$app->user->identity;
+
+        if(key_exists('firebase_id', $request)){
+            if(is_array($User->firebase_ids) && in_array($request['firebase_id'], $User->firebase_ids)){
+                unset($User->firebase_ids['firebase_id']);
+                $User->save();
+            }
+        }
+
+        return ['status' => 'OK'];
+
+    }
+
+    public function actionOrders(){
+        $request = Yii::$app->request->getBodyParams();
+
+        if(!key_exists('userid', $request)
+            || !$request['userid']
+            || $request['userid'] != Yii::$app->user->id
+        ){
+            throw new UnauthorizedHttpException();
+        }
+        $User = Yii::$app->user->identity;
+        $User = new User();
+
+        $return = [
+            'new' => [],
+            'in_proccess' => [],
+            'completed' => []
+        ];
+
+        if($User->canRole('user')
+            || $User->canRole('client')
+            || $User->canRole('vip_client')
+        ){
+
+        }
+
+        if($User->canRole('car_owner')
+            || $User->canRole('vip_car_owner')
+        ){
+
+        }
+
+        if($User->canRole('admin')
+            || $User->canRole('dispetcher')
+        ){
+
+        }
     }
 
 
