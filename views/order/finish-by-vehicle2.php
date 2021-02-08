@@ -97,7 +97,6 @@ $this->title = 'Фактические данные по заказу №' . $mo
         });
         $('#lengthRoute').on('change', function () {
             $('#real_distance').val($(this).val());
-//            alert($('#lengthRoute').val());
         })
     });
 </script>

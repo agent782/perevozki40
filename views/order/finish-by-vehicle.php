@@ -118,11 +118,15 @@ $this->registerJsFile('/js/order.js');
         }
         ?>
 
-        <?= $form->field($modelOrder, 'real_km')
+        <?=
+        $form->field($modelOrder, 'real_km')
             ->input('tel', [
-                    'id' => 'real_distance'
+                'id' => 'real_distance',
             ])
-        ;?>
+        ;
+        ?>
+
+
         <div id="real_h_loading">
             <?= $form->field($modelOrder, 'real_h_loading')->input('text')?>
         </div>
@@ -176,6 +180,7 @@ $this->registerJsFile('/js/order.js');
         });
 
         $('#real_distance').on('change', function () {
+
             if($(this).val()>=120){
                 $('#real_h_loading').show();
             } else {

@@ -257,7 +257,7 @@ class Order extends \yii\db\ActiveRecord
             [['re'], 'default', 'value' => false],
             [['auto_find'], 'default', 'value' => false],
             ['real_km', 'integer', 'whenClient' => "function(attribute, value){
-                alert (value);
+//                alert (value);
             }"]
         ];
     }
