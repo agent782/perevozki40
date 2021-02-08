@@ -36,6 +36,7 @@ use yii\db\Expression;
  * @property integer $updated_at
  * @property string $password write-only password
  * @property array $push_ids
+ * @property array $firebase_ids
  * @property array $drivers
  * @property array $vehicles
  * @property array $vehicleIds
@@ -121,7 +122,7 @@ class User extends ActiveRecord implements IdentityInterface
             ],
             'SerializeUnserialize' => [
                 'class' => SerializeBehaviors::class,
-                'arrAttributes' => ['push_ids']
+                'arrAttributes' => ['push_ids', 'firebase_ids']
             ]
         ];
     }
@@ -150,7 +151,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
 //            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['captcha' , 'captcha', 'message' => 'Введите код, как на картинке.'],
-            [['push_ids', 'new_username', 'send_last_sms_time'], 'safe'],
+            [['push_ids', 'firebase_ids', 'new_username', 'send_last_sms_time'], 'safe'],
             ['sms_code_for_reset_password', 'string', 'max' => 10],
             ['old_id', 'string' , 'max' => 31]
         ];

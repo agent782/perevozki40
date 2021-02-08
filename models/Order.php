@@ -2099,10 +2099,11 @@ class Order extends \yii\db\ActiveRecord
                 }
             } else {
                 if($this->additional_cost){
-                    $cost += $this->additional_cost + ($this->additional_cost * 10 / 100);
                     if($forVehicle){
+                        $cost += $this->additional_cost;
                         $text .= '<br>Дополнительные расходы: ' . $this->additional_cost . 'Р. ';
                     } else {
+                        $cost += $this->additional_cost + ($this->additional_cost * 10 / 100);
                         $text .= '<br>Дополнительные расходы: ' . ($this->additional_cost + ($this->additional_cost * 10 / 100))
                             . 'Р. ';
                     }
