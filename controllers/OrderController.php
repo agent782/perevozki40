@@ -689,6 +689,10 @@ class OrderController extends Controller
             functions::setFlashWarning('Заказ был принят другим водителем.');
             return $this->redirect($redirect);
         }
+        if($OrderModel->hide && Profile::notAdminOrDispetcher()){
+            functions::setFlashWarning('Заказ был принят другим водителем.');
+            return $this->redirect($redirect);
+        }
         $UserModel = User::findOne($id_user);
         if (!$OrderModel || !$UserModel) {
             functions::setFlashWarning('Ошибка на сервере');
