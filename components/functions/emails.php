@@ -155,17 +155,18 @@ class emails
         if(!$emailAdmin) $emailAdmin = Yii::$app->params['logistEmail']['email'];
         $order = Order::findOne($id_order);
         if(!$order) return false;
+        $id_car_owner = '';
+        if($carOwner = $order->carOwner) {
+            $id_car_owner = ($carOwner->old_id)
+                ? '"' . $carOwner->old_id . '"'
+                : '#' . $carOwner->id_user;
+        }
         if($push){
-            $id_car_owner = '';
-            if($carOwner = $order->carOwner) {
-                $id_car_owner = ($carOwner->old_id)
-                    ? '"' . $carOwner->old_id . '"'
-                    : '#' . $carOwner->id_user;
-            }
             $mes = new Message([
                'id_to_user' => $idAdmin,
                 'id_order' => $id_order,
-                'title' => 'Заказ №' . $id_order . ' - (' . $id_car_owner . ') ' . $order->statusText,
+//                'title' => 'Заказ №' . $id_order . ' - (' . $id_car_owner . ') ' . $order->statusText,
+                'title' => $id_car_owner . ' №' . $id_order . ' ' .$order->statusText,
                 'text' => '',
                 'url' => Url::to('/logist/order', true)
             ]);
@@ -176,7 +177,7 @@ class emails
             functions::sendEmail(
                 $emailAdmin,
                 null,
-                'Заказ №' . $id_order . ' - ' . $order->statusText,
+                'Заказ №' . $id_order . ' - ' . $order->statusText . ' (' . $id_car_owner . ')',
                 []
             );
         }
