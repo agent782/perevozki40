@@ -18,6 +18,10 @@ use yii\helpers\Url;
     <?php $this->beginBody() ?>
     <?= $content ?>
     <br>
+    Инструкция для подключения PUSH уведомлений.
+    <br>
+    https://youtu.be/ggzdPpIRpdI
+    <br><br>
     С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', 'http://perevozki40.ru')?>
     <?php $this->endBody() ?>
 </body>
