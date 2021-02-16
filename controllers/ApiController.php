@@ -33,6 +33,7 @@ public function beforeAction($action)
 
     public function actionLogin(){
 //        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Yii::$app->request->post();
         $request = Yii::$app->request->getBodyParams();
         if(!key_exists('phone', $request)
          || !key_exists('password', $request)){
