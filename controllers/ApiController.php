@@ -32,17 +32,18 @@ public function beforeAction($action)
     }
 
     public function actionLogin(){
-//        Yii::$app->response->format = Response::FORMAT_JSON;
-        return Yii::$app->request->post();
-        $request = Yii::$app->request->getBodyParams();
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+//        return json_decode(Yii::$app->request->rawBody);
+        $request = json_decode(Yii::$app->request->rawBody);
         if(!key_exists('phone', $request)
          || !key_exists('password', $request)){
             return [
                 'status' => 'ERROR'
             ];
         }
-        $username = $request['phone'];
-        $password = $request['password'];
+        $username = $request->phone;
+        $password = $request->password;
 
         if($username){
             $User = User::findOne(['username' => $username]);
