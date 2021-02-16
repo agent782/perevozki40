@@ -22,7 +22,11 @@ use yii\helpers\Url;
     <br>
     https://youtu.be/ggzdPpIRpdI
     <br><br>
+<<<<<<< HEAD
     С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', 'http://perevozki40.ru')?>
+=======
+    С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', 'https://perevozki40.ru')?>
+>>>>>>> 5855c47a5aef123b0f69ff6c061572432ecf1684
     <?php $this->endBody() ?>
 </body>
 </html>
