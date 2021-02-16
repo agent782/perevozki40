@@ -3,10 +3,7 @@ RewriteEngine On RewriteBase /
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 # Otherwise forward it to index.php
-RewriteCond %{HTTPS} off
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,NE,R=301]
-#RewriteCond %{HTTPS} =off
-#RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [QSA,L]
+
 RewriteRule . index.php
 php_value memory_limit 256M
 
