@@ -34,7 +34,7 @@ public function beforeAction($action)
     public function actionLogin(){
 //        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        return (Yii::$app->request->post('body'));
+        return json_decode(Yii::$app->request->post);
         $request = (Yii::$app->request->rawBody);
         if(!$request){
             return [
