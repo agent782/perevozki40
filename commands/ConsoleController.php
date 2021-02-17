@@ -82,8 +82,8 @@ class ConsoleController extends Controller
 
                 $mes->create_at = date('d.m.Y H:i', time());
 
-                $mes->AlertNewOrder($car_owner_id, $id_order);
-//                $mes->AlertNewOrder(1, $id_order);
+//                $mes->AlertNewOrder($car_owner_id, $id_order);
+                $mes->AlertNewOrder(1, $id_order);
                 $arr = $order->alert_car_owner_ids;
                 $arr[$car_owner_id] = time();
                 $order->alert_car_owner_ids = $arr;
