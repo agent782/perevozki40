@@ -35,7 +35,7 @@ public function beforeAction($action)
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         return json_encode(Yii::$app->request->rawBody);
-        $request = json_decode(Yii::$app->request->rawBody)->phone;
+        $request = (Yii::$app->request->rawBody);
         if(!$request){
             return [
                 'status' => 'ERROR'
