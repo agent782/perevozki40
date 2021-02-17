@@ -34,8 +34,8 @@ public function beforeAction($action)
     public function actionLogin(){
 //        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        return json_decode(Yii::$app->request->rawBody)->phone;
-        $request = (Yii::$app->request->rawBody);
+//        return json_decode(Yii::$app->request->rawBody)->phone;
+        $request = json_decode(Yii::$app->request->rawBody);
         if(!$request){
             return [
                 'status' => 'ERROR'
@@ -54,10 +54,10 @@ public function beforeAction($action)
             $User = User::findOne(['username' => $username]);
             if($User){
                 if($User->validatePassword($password)){
-                    if(key_exists('firebase_id', $request)){
-                        if(!is_array($User->firebase_ids) || !in_array($request['firebase_id'], $User->firebase_ids)){
-                            $User->firebase_ids[] = $request['firebase_id'];
-                            $User->save();
+                    if($request->firebase_id){
+                        if(!is_array($User->firebase_ids) || !in_array($request->firebase_id, $User->firebase_ids)){
+                            $User->firebase_ids[] = $request->firebase_id;
+//                            $User->save();
                         }
                     }
                     $return = [
