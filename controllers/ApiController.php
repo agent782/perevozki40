@@ -36,8 +36,12 @@ public function beforeAction($action)
 
 //        return json_decode(Yii::$app->request->rawBody);
         $request = json_decode(Yii::$app->request->rawBody);
-        if(!key_exists('phone', $request)
-         || !key_exists('password', $request)){
+        if(!$request){
+            return [
+                'status' => 'ERROR'
+            ];
+        }
+        if(!$request->phone || !$request->password){
             return [
                 'status' => 'ERROR'
             ];
