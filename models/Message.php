@@ -199,7 +199,7 @@ class Message extends \yii\db\ActiveRecord
                 $this->id_to_user = $id_user;
                 $this->type = self::TYPE_ALERT_CAR_OWNER_NEW_ORDER;
                 $this->title = 'НОВЫЙ ЗАКАЗ №' . $order->id;
-                $this->url = Url::to('/order/vehicle', 'https');
+                $this->url = Url::to('/order/vehicle');
                 $this->text = 'Новый заказ в поиске';
                 $this->text_push = '';
 
