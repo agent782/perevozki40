@@ -41,6 +41,7 @@ public function beforeAction($action)
                 'status' => 'ERROR'
             ];
         }
+        return $request;
         if(!$request->phone || !$request->password){
             return [
                 'status' => 'ERROR'
