@@ -83,7 +83,6 @@ public function beforeAction($action)
         $request = json_decode(Yii::$app->request->rawBody);
 //        return $request->userid;
         if(!$request->userid
-            || !$request->userid
             || $request->userid != Yii::$app->user->id
         ){
             throw new UnauthorizedHttpException();
@@ -104,9 +103,8 @@ public function beforeAction($action)
     public function actionOrders(){
         $request = json_decode(Yii::$app->request->rawBody);
 
-        if(!key_exists('userid', $request)
-            || !$request['userid']
-            || $request['userid'] != Yii::$app->user->id
+        if(!$request->userid
+            || $request->userid != Yii::$app->user->id
         ){
             throw new UnauthorizedHttpException();
         }
