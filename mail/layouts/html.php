@@ -15,7 +15,6 @@ use yii\helpers\Url;
     <?php $this->head() ?>
 </head>
 <body>
-    <?php $this->beginBody() ?>
     <?= $content ?>
     <br>
     Инструкция для подключения PUSH уведомлений.
@@ -23,7 +22,7 @@ use yii\helpers\Url;
     https://youtu.be/ggzdPpIRpdI
     <br><br>
     С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', 'https://perevozki40.ru')?>
-    <?php $this->endBody() ?>
+
 </body>
 </html>
 <?php $this->endPage() ?>
