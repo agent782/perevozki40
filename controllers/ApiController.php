@@ -81,7 +81,7 @@ public function beforeAction($action)
 
     public function actionLogout(){
         $request = json_decode(Yii::$app->request->rawBody);
-        return 1111111111111;
+        return $request->userid;
         if(!$request->userid
             || !$request->userid
             || $request->userid != Yii::$app->user->id
