@@ -80,18 +80,18 @@ public function beforeAction($action)
     }
 
     public function actionLogout(){
-        $request = Yii::$app->request->getBodyParams();
-
-        if(!key_exists('userid', $request)
-            || !$request['userid']
-            || $request['userid'] != Yii::$app->user->id
+        $request = json_decode(Yii::$app->request->rawBody);
+        return 1111111111111;
+        if(!$request->userid
+            || !$request->userid
+            || $request->userid != Yii::$app->user->id
         ){
             throw new UnauthorizedHttpException();
         }
         $User = Yii::$app->user->identity;
 
-        if(key_exists('firebase_id', $request)){
-            if(is_array($User->firebase_ids) && in_array($request['firebase_id'], $User->firebase_ids)){
+        if($request->firebase_id){
+            if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
                 unset($User->firebase_ids['firebase_id']);
                 $User->save();
             }
@@ -102,7 +102,7 @@ public function beforeAction($action)
     }
 
     public function actionOrders(){
-        $request = Yii::$app->request->getBodyParams();
+        $request = json_decode(Yii::$app->request->rawBody);
 
         if(!key_exists('userid', $request)
             || !$request['userid']
