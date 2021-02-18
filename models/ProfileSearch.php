@@ -90,7 +90,11 @@ class ProfileSearch extends Profile
         $query = [];
         $Profiles = Profile::find()->joinWith('user')->all();
         foreach ($Profiles as $profile){
-            if($profile->getVehicles()->count() || $profile->user->canRole('car_owner')){
+            if(
+                ($profile->getVehicles()->count()
+                || $profile->user->canRole('car_owner'))
+                && ($profile->balanceCarOwnerPayNow && $profile->balanceCarOwnerSum)
+            ){
                 $query [] = $profile;
             }
         }
