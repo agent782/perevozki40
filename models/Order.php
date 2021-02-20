@@ -2298,6 +2298,7 @@ class Order extends \yii\db\ActiveRecord
                     }
                 }
                 $return .= '<br><br>' . $this->comment_vehicle;
+                $return .= '<br><br>' . $this->getFullFinishInfo();
                 break;
         }
 
