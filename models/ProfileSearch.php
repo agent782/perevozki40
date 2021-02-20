@@ -93,7 +93,7 @@ class ProfileSearch extends Profile
             if(
                 ($profile->getVehicles()->count()
                 || $profile->user->canRole('car_owner'))
-                && ($profile->balanceCarOwnerPayNow && $profile->balanceCarOwnerSum)
+                && ($profile->balanceCarOwnerPayNow || $profile->balanceCarOwnerSum)
             ){
                 $query [] = $profile;
             }
