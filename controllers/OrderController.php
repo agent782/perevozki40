@@ -723,18 +723,18 @@ class OrderController extends Controller
                     . ' <br> '
                     . $rate->getTextWithShowMessageButton($OrderModel->route->distance, true)
                     . ' '
-                    . Html::a('Низкая цена? Нажмите, что бы не поступали заказы по тарифу №' . $rate->id ,
-                        [
-                            '/vehicle/remove-price-zone-of-vehicle',
-                            'id' => $vehicle->id,
-                            'id_price_zone' => $rate->id,
-                            'redirect' => Url::to()
-                        ], [
-                        'class' => 'btn btn-xs btn-danger',
+//                    . Html::a('Низкая цена? Нажмите, что бы не поступали заказы по тарифу №' . $rate->id ,
+//                        [
+//                            '/vehicle/remove-price-zone-of-vehicle',
+//                            'id' => $vehicle->id,
+//                            'id_price_zone' => $rate->id,
+//                            'redirect' => Url::to()
+//                        ], [
+//                        'class' => 'btn btn-xs btn-danger',
 //                        'data-confirm' => Yii::t('yii'
 //                            , 'Вы уверены?'),
 //                        'data-method' => 'post'
-                    ])
+//                    ])
                 ;
                 $vehicles_can_order++;
             }
