@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'showPageSummary' => true,
 //        'pjax' => true,
         'responsiveWrap' => false,
         'columns' => [
@@ -61,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Html::a($model->balanceSum, Url::to(['/admin/users/view', 'id' => $id_user]));
                 },
                 'filter' => false,
-                'pageSummary' => true   
+                'pageSummary' => true
 //                'value' => function (Company $company){
 //                    return $company->balance['balance'];
 //                }
