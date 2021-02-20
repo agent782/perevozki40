@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'raw',
                 'value' => function (Company $model){
                     $id_user = $model->getProfiles()->one()->id_user;
+                    return $model->balanceSum;
                     return Html::a($model->balanceSum, Url::to(['/admin/users/view', 'id' => $id_user]));
                 },
                 'filter' => false,
