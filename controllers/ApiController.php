@@ -104,7 +104,7 @@ public function beforeAction($action)
         if($request->firebase_id){
          //   if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
             if(($key=array_search($request->firebase_id, $User->firebase_ids)) !== false){
-                return 1;
+//                return 1;
                 $firebase_ids = $User->firebase_ids;
                 unset($firebase_ids[$key]);
                 $User->firebase_ids = $firebase_ids;
