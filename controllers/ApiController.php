@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers;
 
 use app\components\ApiComponent;
@@ -58,7 +59,9 @@ public function beforeAction($action)
 
                             $User->firebase_ids[] = $request->firebase_id;
                         } else {
-                            $User->firebase_ids = [$request->firebase_id];
+				$firebase_ids = [];
+                            $firebase_ids [] = $request->firebase_id;
+				$User->firebase_ids = $firebase_ids;
                         }
 			$User->scenario = $User::SCENARIO_SAVE;
                        $User->save();
@@ -90,11 +93,14 @@ public function beforeAction($action)
             throw new UnauthorizedHttpException();
         }
         $User = Yii::$app->user->identity;
+	return $User->firebase_ids)'
 
         if($request->firebase_id){
          //   if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
 		if(($key=array_search($request->firebase_id, $User->firebase_ids)) !== false){ 
-        	        unset($User->firebase_ids[$key]);
+			$firebase_ids = $User->firebase_ids;
+	        	        unset($firebase_ids[$key]);
+			$User->firebase_ids = $firebase_ids;
 			$User->scenario = $User::SCENARIO_SAVE;
                		 $User->save();
 		}
