@@ -63,9 +63,9 @@ public function beforeAction($action)
                             $firebase_ids [] = $request->firebase_id;
 				$User->firebase_ids = $firebase_ids;
                         }
-			$User->scenario = $User::SCENARIO_SAVE;
+			            $User->scenario = $User::SCENARIO_SAVE;
                        $User->save();
-			$User->errors;
+//			$User->errors;
                     }
                     $return = [
                         'status' => 'OK'
