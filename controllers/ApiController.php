@@ -93,7 +93,7 @@ public function beforeAction($action)
             throw new UnauthorizedHttpException();
         }
         $User = Yii::$app->user->identity;
-	return $User->firebase_ids)'
+//	return $User->firebase_ids;
 
         if($request->firebase_id){
          //   if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
@@ -101,6 +101,7 @@ public function beforeAction($action)
 			$firebase_ids = $User->firebase_ids;
 	        	        unset($firebase_ids[$key]);
 			$User->firebase_ids = $firebase_ids;
+			if(!$User->firebase_ids) $User->firebase_ids = null;
 			$User->scenario = $User::SCENARIO_SAVE;
                		 $User->save();
 		}
