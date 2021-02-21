@@ -98,6 +98,7 @@ public function beforeAction($action)
         }
         $User = Yii::$app->user->identity;
 //	return $User->firebase_ids;
+        return $request->firebase_id;
     return $key=array_search($request->firebase_id, $User->firebase_ids);
         if($request->firebase_id){
          //   if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
