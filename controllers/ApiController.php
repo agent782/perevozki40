@@ -59,12 +59,12 @@ public function beforeAction($action)
 
                             $User->firebase_ids[] = $request->firebase_id;
                         } else {
-				$firebase_ids = [];
+				            $firebase_ids = [];
                             $firebase_ids [] = $request->firebase_id;
-				$User->firebase_ids = $firebase_ids;
+				            $User->firebase_ids = $firebase_ids;
                         }
 			            $User->scenario = $User::SCENARIO_SAVE;
-                       $User->save();
+                        $User->save();
                     }
                     $return = [
                         'status' => 'OK'
