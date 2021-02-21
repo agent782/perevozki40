@@ -81,7 +81,8 @@ class User extends ActiveRecord implements IdentityInterface
             'active_at',
             'status',
             'new_username',
-            'old_id'
+            'old_id',
+		'firebase_ids'
         ];
         $scenarios[self::SCENARIO_CHANGE_PASS] = [
             'old_pass', 'new_pass','new_pass_repeat', 'old_id'
