@@ -55,10 +55,12 @@ public function beforeAction($action)
             if($User){
                 if($User->validatePassword($password)){
                     if($request->firebase_id){
-                        if(is_array($User->firebase_ids) && !in_array($request->firebase_id, $User->firebase_ids)){
-                            $firebase_ids =  $User->firebase_ids;
-                            $firebase_ids[] = $request->firebase_id;
-                            $User->firebase_ids[] =  firebase_ids;
+                        if(is_array($User->firebase_ids)){
+                            if(!in_array($request->firebase_id, $User->firebase_ids)) {
+                                $firebase_ids = $User->firebase_ids;
+                                $firebase_ids[] = $request->firebase_id;
+                                $User->firebase_ids[] = firebase_ids;
+                            }
                         } else {
 				            $firebase_ids = [];
                             $firebase_ids [] = $request->firebase_id;
