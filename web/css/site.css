@@ -148,10 +148,9 @@ a.desc:after {
 }
 
 #menu-mobile {
-    /*position: fixed;*/
     font-family: 'Josefin Sans', sans-serif;
-    top: 0px;
-    width: auto;
+    top: -5px;
+    width: 100%;
     text-align: center;
     color: #400450;
     font-size: 18px;
@@ -160,7 +159,9 @@ a.desc:after {
     border: 5px;
     border-color: #821e82;
     margin: 3px;
+
 }
+
 /*li{*/
      /*font-size: 18px;*/
      /*background: black;*/
@@ -173,7 +174,6 @@ a.desc:after {
     font-size: 14px;
     /*float: left;*/
     background: #821e82;
-
 }
 
 /*.menu:hover{*/
@@ -314,4 +314,5 @@ a.desc:after {
 .contacts{
     font-family: "Comic Sans MS", cursive, sans-serif;
 }
+
 

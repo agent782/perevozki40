@@ -157,7 +157,7 @@ class Driver extends \yii\db\ActiveRecord
             if ($this->phone2) $return .= ' (доп. ' . functions::getHtmlLinkToPhone($this->phone2) . ')';
             $return .= '. <br>';
         }
-        if($showPassport) $return .= 'Пасспорт: ' . $this->passport->fullInfo . ' <br>';
+        if($showPassport) $return .= 'Паспорт: ' . $this->passport->fullInfo . ' <br>';
         if($showDriveLicense) $return .= 'ВУ: ' . $this->license->fullInfo . ' <br>';
 
         return $return;

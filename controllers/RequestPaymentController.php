@@ -12,6 +12,7 @@ use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * RequestPaymentController implements the CRUD actions for RequestPayment model.
@@ -30,6 +31,15 @@ class RequestPaymentController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@']
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -82,10 +92,17 @@ class RequestPaymentController extends Controller
         $model->id_user = $user->id;
         $min_cost = 1000;
         $sum_request_payments = $profile->getSumRequestsPayments();
-        $max_cost = $profile->getBalanceCarOwner()['balance'] - $sum_request_payments;
+        $balanceCarOwner = $profile->getBalanceCarOwner();
+        $max_cost = $balanceCarOwner['balance'] - $sum_request_payments - $balanceCarOwner['not_paid'];
 
 
         if ($model->load(Yii::$app->request->post())) {
+            //Если есть незавершенные заказы
+            if($profile->hasOrdersInProccess()){
+                functions::setFlashWarning('У Вас есть незавершенные заказы. Завершить их и повторить запрос.');
+                return $this->redirect('/request-payment');
+            }
+
             if($model->cost >= $min_cost && $model->cost <= $max_cost){
                 functions::setFlashSuccess('Статус платежа - "В очереди..."');
                 if($model->save()){

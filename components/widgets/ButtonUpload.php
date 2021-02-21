@@ -29,7 +29,6 @@ class ButtonUpload extends Widget
     public $action;
 
     public function run()
-
     {
 //        $modelDocument = Document::findOne(['id_company' => $this->idCompany, 'type'=>Document::TYPE_CONTRACT_CLIENT]);
         Modal::begin([

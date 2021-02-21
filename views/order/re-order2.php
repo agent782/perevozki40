@@ -48,7 +48,7 @@ $this->registerJsFile('/js/order.js');
 //            && $modelOrder->id_vehicle_type == Vehicle::TYPE_SPEC
 //        ){
             echo $form->field($modelOrder, 'body_typies')->checkboxList([
-                    $modelOrder->body_typies[0] => $modelOrder->body_typies[0]
+                    $modelOrder->body_typies[1] => $modelOrder->body_typies[1]
                 ], ['hidden' => true])->label(false);
 //        }
         ?>
@@ -82,7 +82,7 @@ $this->registerJsFile('/js/order.js');
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
-                    'type' => 'tel',
+                    'type' => 'text',
                     'style' => 'width: 150px',
                 ]
             ]);

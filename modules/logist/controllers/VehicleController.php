@@ -16,6 +16,9 @@ class VehicleController extends \yii\web\Controller
         $searchModel = new VehicleSearch();
         $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, Vehicle::SORT_TRUCK,
             [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING,Vehicle::STATUS_NOT_ACTIVE]);
+        $dataProviderTruck->pagination = [
+            'pageSize' => 20
+        ];
         $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, Vehicle::SORT_PASS,
             [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING,Vehicle::STATUS_NOT_ACTIVE]);
         $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, Vehicle::SORT_SPEC,

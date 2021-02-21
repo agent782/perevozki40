@@ -8,6 +8,7 @@ use app\components\widgets\UploadInvoiceWidget;
 use app\components\widgets\ShowMessageWidget;
 use yii\helpers\Url;
 use app\models\Invoice;
+use app\models\Order;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\OrderSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -23,6 +24,12 @@ $this->title = 'Журнал заказов';
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'pjax' => true,
+        'pjaxSettings' => [
+            'options' => [
+                'id' => 'pjax_orders'
+            ],
+        ],
+        'responsiveWrap' => false,
 //        'responsive' => true,
 //        'floatHeader' => true,
 //        'pjaxSettings' => [
@@ -36,9 +43,21 @@ $this->title = 'Журнал заказов';
                 'attribute' => 'id',
                 'label' => '№ заказа',
                 'format' => 'raw',
-                'value' => function($model){
-                    return Html::a($model->id, Url::to(['/finance/order/view', 'id' => $model->id]));
-                }
+                'value' => function(Order $model){
+                    return Html::a($model->id, '', [
+                        'onclick' => "window.open ('"
+                            . Url::toRoute(['/finance/order/view', 'id' => $model->id])
+                            . "'); return false"
+                    ]);
+                    return ShowMessageWidget::widget([
+                        'ToggleButton' => [
+                            'label' => $model->id
+                        ],
+                        'helpMessage' => $model->getFullFinishInfo()                    ]);
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 12px'
+                ]
             ],
             'datetime_finish',
             [
@@ -52,7 +71,7 @@ $this->title = 'Журнал заказов';
                             '<b style = "font-size: 18px">' . $modelInvoice->number . '</b> от ' . $modelInvoice->date,
                             Url::to(['/finance/invoice/download',
                                 'pathToFile' => Yii::getAlias('@invoices/') . $modelInvoice->url,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             ['title' => 'Скачать', 'data-pjax' => "0"]
                         ). ' '
@@ -66,7 +85,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_INVOICE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
@@ -80,13 +99,14 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_INVOICE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
                     ;
                     return $return;
-                }
+                },
+                'filter' => true
             ],
             [
                 'label' => 'Акт',
@@ -99,7 +119,7 @@ $this->title = 'Журнал заказов';
                             '<b style = "font-size: 14px">' . $modelCertificate->number . '</b> от ' . $modelCertificate->date,
                             Url::to(['/finance/invoice/download',
                                 'pathToFile' => Yii::getAlias('@certificates/') . $modelCertificate->url,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             ['title' => 'Скачать', 'data-pjax' => "0"]
                         ) . ' '
@@ -113,7 +133,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_CERTIFICATE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
@@ -127,7 +147,7 @@ $this->title = 'Журнал заказов';
                             'action' => Url::to(['/finance/invoice/upload',
                                 'type' => Invoice::TYPE_CERTIFICATE,
                                 'id_order' => $value,
-                                'redirect' => '/finance/order'
+                                'redirect' => Url::to()
                             ]),
                             'index' => $index
                         ])
@@ -139,8 +159,34 @@ $this->title = 'Журнал заказов';
                 'label' => 'Сумма',
                 'format' => 'raw',
                 'value' => function($model){
-                    return $model->cost_finish . ' / ' . $model->cost_finish_vehicle;
+                    return
+                        $model->cost_finish
+                        . ' / '
+                        . $model->cost_finish_vehicle;
                 },
+                'contentOptions' => [
+                    'style' => 'font-size: 14px'
+                ]
+            ],
+            [
+                'class' => \kartik\grid\EditableColumn::class,
+                'attribute' => 'date_paid',
+                'label' => 'Дата оплаты',
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DATE,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changeDatePaid' ])
+                    ],
+                    'options'=>[
+                        'type' => \kartik\date\DatePicker::TYPE_INLINE,
+                        'pluginOptions'=>[
+                            'format' => 'dd.mm.yyyy',
+                            'autoclose' => true,
+                            'todayBtn' => true,
+                            'todayHighlight' => true,
+                        ]
+                    ]
+                ],
             ],
             [
                 'class' => \kartik\grid\EditableColumn::class,
@@ -149,7 +195,7 @@ $this->title = 'Журнал заказов';
                 'value' => 'paidText',
                 'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses()),
                 'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'inputType' => \kartik\editable\Editable::INPUT_RADIO_LIST,
                     'data' => $searchModel->getArrayPaidStatuses(),
                     'formOptions' => [
                         'action' => \yii\helpers\Url::to([ '/finance/order/pru' ])
@@ -167,6 +213,7 @@ $this->title = 'Журнал заказов';
                 ],
             ],
             [
+                'class' => \kartik\grid\EditableColumn::class,
                 'attribute' =>'type_payment',
                 'format' => 'raw',
                 'value' => function($model){
@@ -177,6 +224,14 @@ $this->title = 'Журнал заказов';
                     ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
                     )
                     ,
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_RADIO_LIST,
+                    'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    ,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaymentType' ])
+                    ]
+                ],
                 'filterOptions' => ['class' => 'minRoute'],
             ],
             [
@@ -191,48 +246,75 @@ $this->title = 'Журнал заказов';
                     $return .= ' ' . Html::a(Html::icon('edit', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
                             ['/logist/order/add-company', 'id_order' => $model->id, 'redirect' => '/finance/order']);
                     return $return;
-                },
-                'filter' => \yii\jui\AutoComplete::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'companyName',
-                    'clientOptions' => [
-                        'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
-                        'autoFill' => true,
-                    ]
-                ])
+                }
+//                'filter' => \yii\jui\AutoComplete::widget([
+//                    'model' => $searchModel,
+//                    'attribute' => 'companyName',
+//                    'clientOptions' => [
+//                        'source' => \app\models\Company::find()->select(['name_full as value', 'name_full as label'])->asArray()->all(),
+//                        'autoFill' => true,
+//                    ]
+//                ])
             ],
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
-                'value' => function($model){
+                'value' => function(Order $model){
                     $profile = $model->profile;
-                    return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    $return = '';
+                    if($model->re && $model->id_user == $model->id_car_owner){
+                        $return .= $model->comment;
+                    }
+                    $return .= ' ' . Html::a($model->clientInfo, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+                    $return .= ShowMessageWidget::widget([
+                        'helpMessage' => $profile->getProfileInfo(true,true,true,true),
+                        'header' => $profile->fioFull,
+                        'ToggleButton' => ['label' => Html::icon('info-sign'), 'style' => 'cursor: help']
+                    ]);
+                    return $return;
                 }
             ],
+//            [
+//                'label' => 'Водитель',
+//                'format' => 'raw',
+//                'value' => function(Order $model){
+//                    $return = '';
+//                    $profile = $model->carOwner;
+//                    if($profile)
+//                        $return  .= Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
+//                    $return .= ShowMessageWidget::widget([
+//                        'helpMessage' => $model->vehicle->getFullInfo(),
+//                        'ToggleButton' => ['label' => Html::icon('info-sign'), 'style' => 'cursor: help']
+//                    ]);
+//                    return $return;
+//                }
+//            ],
+//            [
+//                'class' => \kartik\grid\EditableColumn::class,
+//                'attribute' => 'paid_car_owner_status',
+//                'value' => 'paidCarOwnerText',
+//                'filter' => Html::activeCheckboxList($searchModel, 'paid_car_owner_status', $searchModel->getArrayPaidStatuses()),
+//                'editableOptions' => [
+//                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+//                    'data' => $searchModel->getArrayPaidStatuses(),
+//                    'formOptions' => [
+//                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaidCarOwnerStatus' ])
+//                    ]
+//                ],
+//            ],
             [
-                'label' => 'Водитель',
+                'label' => '',
                 'format' => 'raw',
-                'value' => function($model){
-                    $profile = $model->carOwner;
-                    if($profile)
-                        return Html::a($profile->fioFull, Url::to(['/finance/profile/view', 'id' => $profile->id_user]));
-                }
-            ],
-            [
-                'class' => \kartik\grid\EditableColumn::class,
-                'attribute' => 'paid_car_owner_status',
-                'value' => 'paidCarOwnerText',
-                'filter' => Html::activeCheckboxList($searchModel, 'paid_car_owner_status', $searchModel->getArrayPaidStatuses()),
-                'editableOptions' => [
-                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
-                    'data' => $searchModel->getArrayPaidStatuses(),
-                    'formOptions' => [
-                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaidCarOwnerStatus' ])
-                    ]
-                ],
+                'filter' =>
+                    Html::activeCheckbox($searchModel, 'hasInvoiceOrCertificate',
+                        ['label' => ' Только не выставленные счета или акты']
+                    )
+                ,
+                'filterOptions' => ['class' => 'minRoute'],
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+//            ['class' => 'yii\grid\ActionColumn'],
         ],
+
     ]); ?>
 </div>

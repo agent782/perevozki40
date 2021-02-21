@@ -315,7 +315,7 @@ class PriceZone extends \yii\db\ActiveRecord
                 break;
 
             case Vehicle::TYPE_PASSENGER:
-                $result .= '<p>Количество пассажиров: ' . $this->passengers . '.</p>';
+                $result .= '<p>Количество пассажиров, от : ' . $this->passengers . '.</p>';
                 break;
 
             case Vehicle::TYPE_SPEC:
@@ -389,10 +389,10 @@ class PriceZone extends \yii\db\ActiveRecord
 
     public function CostCalculationWithDiscountHtml($distance = null, $discount = null){
         $cost = $this->CostCalculation($distance);
-        if(!$cost) return 'Невозможно расчитать стоимость. Расстояние не определено!';
+        if(!$cost || !$distance) return 'Невозможно расчитать стоимость. Расстояние не определено!';
         if(!$discount) return $cost;
         $return = '<s>'. $cost . '</s> '
-            . '<strong>' . round($cost - ($cost*$discount/100)) . '</strong>';
+            . '<strong>' . round(intval($cost) - (intval($cost)*$discount/100)) . '</strong>';
 
         return $return;
 
@@ -595,5 +595,17 @@ class PriceZone extends \yii\db\ActiveRecord
                 'helpMessage' => $this->printHtml()
             ])
             : $this->id;
+    }
+
+    static public function getArrayAllPriceZones($text = true){
+        $return = [];
+        foreach (PriceZone::find()
+                     ->where(['status' => PriceZone::STATUS_ACTIVE])
+                     ->orderBy('id')
+                     ->all()
+                 as $priceZone){
+            $return [$priceZone->unique_index] = $priceZone->id;
+        }
+        return $return;
     }
 }

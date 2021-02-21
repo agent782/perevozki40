@@ -50,15 +50,15 @@ $this->registerJsFile('/js/order.js');
     </div>
 <br><br>
     <div class="col-lg-4">
-
         <?= $form->field($modelOrder, 'real_datetime_start',[
             'enableClientValidation' => true
-        ])->widget(DateTimePicker::className(),[
+        ])
+            ->widget(DateTimePicker::className(),[
                 'name' => 'dp_1',
 //                'type' => DateTimePicker::TYPE_INPUT,
                 'options' => [
                     'placeholder' => 'Ввод даты/времени...',
-                    'onchange' => '$("#order-valid_datetime").val($("#order-datetime_start").val())'
+//                    'onchange' => '$("#order-valid_datetime").val($("#order-datetime_start").val())'
                 ],
                 'convertFormat' => true,
 //                'value'=> date("d.m.Y H:i",time()),
@@ -73,7 +73,8 @@ $this->registerJsFile('/js/order.js');
 
                 ],
             ]
-        )?>
+        )
+        ?>
         <?= $form->field($modelOrder, 'datetime_finish',[
             'enableClientValidation' => true
         ])
@@ -110,28 +111,34 @@ $this->registerJsFile('/js/order.js');
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
-                    'type' => 'tel',
+                    'type' => 'text',
                     'style' => 'width: 150px',
                 ]
             ]);
         }
         ?>
 
-        <?= $form->field($modelOrder, 'real_km')
-            ->input('tel', ['id' => 'real_distance'])
-            ->label('Реальный пробег')
-        ;?>
+        <?=
+        $form->field($modelOrder, 'real_km')
+            ->input('tel', [
+                'id' => 'real_distance',
+            ])
+        ;
+        ?>
+
+
         <div id="real_h_loading">
-            <?= $form->field($modelOrder, 'real_h_loading')->input('tel')?>
+            <?= $form->field($modelOrder, 'real_h_loading')->input('text')?>
         </div>
         <?php
             if($modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_OVERHAND)
                 || $modelOrder->vehicle->hasLoadingType(Vehicle::LOADING_TYPE_SIDEWAYS)){
-                echo $form->field($modelOrder, 'real_remove_awning')->input('tel');
+                echo $form->field($modelOrder, 'real_remove_awning')->input('tel',
+                    ['readonly' => true])->hint('Будет доступно позже.');
             }
         ?>
         <?= $form->field($modelOrder,'additional_cost')->input('tel')->label(
-            'Дополнительные рассходы' . ShowMessageWidget::widget([
+            'Дополнительные расходы' . ShowMessageWidget::widget([
                 'helpMessage' => Tip::findOne(['model' => 'Order', 'attribute' =>'additional_cost'])->description
             ])
         )
@@ -154,7 +161,7 @@ $this->registerJsFile('/js/order.js');
 
     <?php
     ActiveForm::end();
-    \yii\widgets\Pjax::end();
+     \yii\widgets\Pjax::end();
     ?>
 
 
@@ -173,6 +180,7 @@ $this->registerJsFile('/js/order.js');
         });
 
         $('#real_distance').on('change', function () {
+
             if($(this).val()>=120){
                 $('#real_h_loading').show();
             } else {

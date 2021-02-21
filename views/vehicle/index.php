@@ -1,13 +1,55 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Url;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Vehicle;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\VehicleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+$actionColumns = [
+    'class' => 'yii\grid\ActionColumn',
+    'buttons' => [
+        'delete' =>function ($url, Vehicle $model) {
+            if($model->status == $model::STATUS_DELETED) {
+                $url = Url::toRoute(Url::to(['/vehicle/full-delete', 'id' => $model->id]));
+
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                    $url, [
+                        'title' => \Yii::t('yii', 'Удалить безвозвратно.'),
+                        'data-confirm' => Yii::t('yii', 'ТС будет удалено безвозвратно, без возможности восстановления!'),
+                        'data-method' => 'post',
+                    ]);
+            } else {
+                $url = Url::toRoute(Url::to(['/vehicle/delete', 'id' => $model->id]));
+
+                return Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                    $url, [
+                        'title' => \Yii::t('yii', 'Удалить.'),
+                        'data-confirm' => Yii::t('yii', 'ТС будет удалено, Вы сможете восстановить его
+                            на вкладке "Удаленные"'),
+                        'data-method' => 'post'
+                    ]);
+            }
+        },
+        'update' => function ($url, $model) {
+            $url = Url::toRoute(Url::to([
+                '/vehicle/update',
+                'id' => $model->id,
+                'redirect' => Url::to()
+            ]));
+            return Html::a('<span class="glyphicon glyphicon-edit"></span>',
+                $url, [
+                    'title' => \Yii::t('yii', 'Восстановить/редактировать.'),
+//                                'data-pjax' => '0',
+                ]);
+
+        }
+    ],
+    'template' => '{update} {delete}'
+];
 
 $this->title = 'Мой транспорт.';
 $this->params['breadcrumbs'][] = $this->title;
@@ -20,14 +62,14 @@ $this->registerJs(
     });'
 );
 
-
 ?>
-<div class="vehicle-index">
+<div class="container vehicle-index">
 
     <h2><?= Html::encode($this->title) ?></h2>
 
     <p>
-        <?= Html::a('Добавить транспортное средство', ['create', 'id_user' => Yii::$app->user->id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Добавить транспортное средство', ['create', 'id_user' => Yii::$app->user->id],
+            ['class' => 'btn btn-success']) ?>
     </p>
     <?php
         if($dataProviderTruck->getCount()):
@@ -37,9 +79,10 @@ $this->registerJs(
     <?= GridView::widget([
         'dataProvider' => $dataProviderTruck,
         'filterModel' => $searchModel,
-        'options' => [
-            'style' => 'width: 70%;',
-        ],
+            'responsiveWrap' => false,
+            'options' => [
+                'style' => 'width: 100%; text-align:center;',
+            ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
@@ -100,8 +143,15 @@ $this->registerJs(
             // 'rp',
             // 'lp',
             'statusText',
-            ['class' => 'yii\grid\ActionColumn'],
+            $actionColumns
         ],
+            'rowOptions' => function(\app\models\Vehicle $model){
+                if($model->status == Vehicle::STATUS_NOT_ACTIVE){
+                    return [
+                        'style' => '  color: grey'
+                    ];
+                }
+            }
     ]);
     ?>
 
@@ -116,10 +166,11 @@ $this->registerJs(
 
     <?= GridView::widget([
         'dataProvider' => $dataProviderPass,
+        'responsiveWrap' => false,
         'filterModel' => $searchModel,
         'summaryOptions' => ['style' => 'text-align: left;'],
         'options' => [
-            'style' => 'width: 70%; text-align: center;',
+            'style' => 'width: 100%; text-align:center;',
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -146,8 +197,15 @@ $this->registerJs(
                 }
             ],
             'statusText',
-            ['class' => 'yii\grid\ActionColumn'],
+            $actionColumns
         ],
+        'rowOptions' => function(\app\models\Vehicle $model){
+            if($model->status == Vehicle::STATUS_NOT_ACTIVE){
+                return [
+                    'style' => '  color: grey'
+                ];
+            }
+        }
     ]);
     ?>
 
@@ -161,11 +219,12 @@ $this->registerJs(
 
     <?= GridView::widget([
         'dataProvider' => $dataProviderSpec,
+        'responsiveWrap' => false,
         'filterModel' => $searchModel,
         'showOnEmpty' => true,
         'summaryOptions' => ['style' => 'text-align: left;'],
         'options' => [
-            'style' => 'width: 70%; text-align:center;',
+            'style' => 'width: 100%; text-align:center;',
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
@@ -195,9 +254,15 @@ $this->registerJs(
              'length_spec',
             'volume_spec',
             'statusText',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            $actionColumns
         ],
+        'rowOptions' => function(\app\models\Vehicle $model){
+            if($model->status == Vehicle::STATUS_NOT_ACTIVE){
+                return [
+                    'style' => '  color: grey'
+                ];
+            }
+        }
     ]);
     ?>
 
@@ -208,17 +273,15 @@ $this->registerJs(
     <?php
     if($dataProviderDeleted->getCount()):
     ?>
-<div>
+
     <a  href="#aDeleted" id="aDeleted"><h2> Удаленные</h2>(Показать/скрыть)</a>
         <div id="deleted" hidden>
 
         <?= GridView::widget([
         'dataProvider' => $dataProviderDeleted,
-        'filterModel' => $searchModel,
+        'responsiveWrap' => false,
         'summaryOptions' => ['style' => 'text-align: left;'],
-        'options' => [
-            'style' => 'width: 70%; text-align:center;',
-        ],
+
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'regLicense.brand.brand',
@@ -229,30 +292,7 @@ $this->registerJs(
                     return \app\models\BodyType::find()->where(['id' => $model->body_type])->one()->body;
                 }
             ],
-            [
-                'class' => 'yii\grid\ActionColumn',
-                'buttons' => [
-                    'delete' =>function ($url, $model) {
-                        $url = Url::toRoute(Url::to(['/vehicle/full-delete', 'id' => $model->id]));
-                        return Html::a('<span class="glyphicon glyphicon-trash"></span>',
-                            $url, [
-                                'title' => \Yii::t('yii', 'Удалить безвозвратно.'),
-                                'data-confirm' => Yii::t('yii', 'ТС будет удалено безвозвратно, без возможности восстановления!'),
-                                'data-method' => 'post',
-                            ]);
-                    },
-                    'update' => function ($url, $model) {
-                        $url = Url::toRoute(Url::to(['/vehicle/update', 'id' => $model->id]));
-                        return Html::a('<span class="glyphicon glyphicon-edit"></span>',
-                            $url, [
-                                'title' => \Yii::t('yii', 'Восстановить/редактировать.'),
-//                                'data-pjax' => '0',
-                            ]);
-
-                    }
-                ],
-                'template' => '{update} {delete}'
-            ],
+           $actionColumns
         ],
     ]);
         ?>
@@ -261,6 +301,5 @@ $this->registerJs(
         <?php
     endif;
     ?>
-</div>
 </div>
 

@@ -33,6 +33,7 @@ echo GridView::widget([
 //        ],
 //        'profile.photoFullPath:image',
         'profile.name',
+        'role',
         'status',
 //            'dateCreatedAt'
         ['class' => 'yii\grid\ActionColumn'],

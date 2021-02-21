@@ -12,6 +12,9 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use app\models\setting\SettingVehicle;
 use yii\bootstrap\Tabs;
+use app\components\widgets\ShowMessageWidget;
+use app\models\Payment;
+use app\models\PriceZone;
 ?>
 <div>
     <?= GridView::widget([
@@ -22,7 +25,7 @@ use yii\bootstrap\Tabs;
 //        'responsive'=>true,
 //        'floatHeader'=>false,
         'options' => [
-            'class' => 'minRoute'
+//            'class' => 'minRoute'
         ],
 //        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
 //        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
@@ -32,6 +35,13 @@ use yii\bootstrap\Tabs;
         'pjax'=>true,
         'columns' => [
             'id',
+            [
+                'attribute' =>'datetime_start',
+                'format' => 'raw',
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
+            ],
             [
                 'label' => 'ТС',
                 'format' => 'raw',
@@ -75,7 +85,23 @@ use yii\bootstrap\Tabs;
             ],
             [
                 'attribute' => 'paymentText',
-                'format' => 'raw'
+                'format' => 'raw',
+                'value' => function(Order $model){
+                    $return = $model->paymentText
+                        . ShowMessageWidget::widget([
+                            'helpMessage' => $model->typePayment->description
+                        ])
+                        . '<br>'
+
+                        ;
+                    if($model->type_payment == Payment::TYPE_BANK_TRANSFER){
+                        $return .= '(Стоимость для Клиента на ' . (9 - $model->discount) . ' % выше. ';
+                        $return .= PriceZone::findOne(['unique_index' => $model
+                            ->id_pricezone_for_vehicle])
+                            ->getTextWithShowMessageButton($model->route->distance, true, $model->discount);
+                    }
+                    return $return;
+                }
             ],
             [
                 'label' => 'Действия',

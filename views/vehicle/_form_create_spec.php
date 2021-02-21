@@ -90,7 +90,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             <?php
                 echo $form->field($VehicleForm, 'tonnage', ['inputOptions' => [
 //                    'id' => 'tonnage',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]])->label('Максимальная грузоподъемность кузова:');
             ?>
         </div>
@@ -98,11 +98,11 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             <?php
                 echo $form->field($VehicleForm, 'length', ['inputOptions' => [
 //                    'id' => 'length',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]]);
                 echo $form->field($VehicleForm, 'width', ['inputOptions' => [
 //                    'id' => 'width',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]]);
             ?>
         </div>
@@ -110,7 +110,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             <?php
                 echo $form->field($VehicleForm, 'volume', ['inputOptions' => [
 //                    'id' => 'volume',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]]);
             ?>
         </div>
@@ -118,11 +118,11 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             <?php
                 echo $form->field($VehicleForm, 'tonnage_spec', ['inputOptions' => [
 //                    'id' => 'tonnage_spec',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]]);
                 echo $form->field($VehicleForm, 'length_spec', ['inputOptions' => [
 //                    'id' => 'length_spec',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]]);
             ?>
         </div>
@@ -130,7 +130,7 @@ $descLTs = ArrayHelper::map(LoadingType::find()->asArray()->all(), 'id', 'descri
             <?php
                 echo $form->field($VehicleForm, 'volume_spec', ['inputOptions' => [
 //                    'id' => 'volume_spec',
-                    'type' => 'tel'
+                    'type' => 'text'
                 ]]);
             ?>
         </div>

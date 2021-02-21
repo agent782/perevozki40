@@ -62,17 +62,17 @@ class VehicleForm extends Model
                 'loadingTypeIds',
             ]
                 , 'required', 'message' => 'Выберите хотя бы один из вариантов.'],
-            [[
-                'tonnage',
-                'length',
-                'height',
-                'width',
-                'volume',
-                'length_spec',
-                'tonnage_spec',
-                'volume_spec',
-                'passengers',
-            ], 'number'],
+            ['passengers', 'integer'],
+            [['tonnage', 'tonnage_spec'], 'number', 'min' => 0.01, 'max' => 50,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['length'], 'number', 'min' => 0.5,'max' => 20,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
             ['tonnage', 'validateTonnage', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [['length', 'width'], 'validateLengthWidth', 'skipOnEmpty' => false, 'enableClientValidation' => true],
             [['height'], 'validateHeigth', 'skipOnEmpty' => false, 'enableClientValidation' => true],
@@ -218,6 +218,7 @@ class VehicleForm extends Model
                                 ['<=', 'length_min', ($this->length + 2)],
                             ]
                         ])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
                     ;
                 }
                 break;
@@ -269,8 +270,8 @@ class VehicleForm extends Model
     public function saveVehicle($reg_licence_ID, $id_user){
         if(!$this->id){
             $modelVehicle = new Vehicle(['scenario' => Vehicle::SCENARIO_CREATE]);
-            $modelVehicle->id_user = Yii::$app->user->id;
             $modelVehicle->id_user = $id_user;
+            if(!$id_user) $modelVehicle->id_user = Yii::$app->user->id;
             if(!$modelVehicle->id_user) return false;
             $modelVehicle->create_at = date('d.m.Y H:i');
         }

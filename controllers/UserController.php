@@ -95,6 +95,9 @@ class UserController extends Controller
 //                return $this->render('signupClient2', compact(['modelProfile']));
                 functions::setFlashSuccess('Спасибо, ' . $modelProfile->name . ' ' . $modelProfile->patrinimic
                     . '! Надеемся на долгосрочное сотрудничество!');
+                $user = $modelProfile->user;
+                $user->status = User::STATUS_ACTIVE;
+                $user->save(false);
                 emails::sendAfterClientRegistration($modelProfile->id_user);
                 return $this->redirect('/order/client');
             } else {
@@ -194,6 +197,7 @@ class UserController extends Controller
             if (User::find()->where(['username' => $user->username])->one()) {
                 $tmpUser = User::findOne(['username' => $user->username]);
                 $tmpUser->email = $user->email;
+                $tmpUser->old_id = $user->old_id;
                 $tmpProfile = $tmpUser->profile;
                 $tmpProfile->name = $profile->name;
                 $tmpProfile->surname = $profile->surname;
@@ -210,7 +214,7 @@ class UserController extends Controller
 
                 if ($user->save() && $profile->save()) {
                     functions::setFlashSuccess('Пользовватель сохранен.');
-                    $this->redirect([$redirect, 'id_user' => $user->id, 'redirect' => $redirect2]);
+                    $this->redirect([$redirect, 'id_user' => $user->id, 'id_order' => $id_order,    'redirect' => $redirect2]);
                 } else {
                     functions::setFlashWarning('Ошибка при сохранении пользователя');
                 }
@@ -375,88 +379,8 @@ class UserController extends Controller
     }
 
     public function actionBalance($id_user = null){
-        if(!$id_user) $id_user = Yii::$app->user->id;
-
-        $Profile = Profile::findOne($id_user);
-        if(!$Profile) throw new HttpException(404, 'Страница не найдена');
-        $User = $Profile->user;
-        $balance = [];
-        $Balance = $Profile->balance;
-        $dataProvider_car_owner = [];
-        $dataProvider_user = [];
-        $dataProviders_companies = [];
-        $ids_companies = '';
-
-        if($User->canRole('user')) {
-            $balance = [
-                'car_owner' => 0,
-                'not_paid' => 0,
-                'user' => $Balance['balance_user']['balance'],
-                'companies' => 0
-            ];
-        }
-        if($User->canRole('client') || $User->canRole('car_owner')) {
-            $balance = [
-                'car_owner' => 0,
-                'not_paid' => 0,
-                'user' => $Balance['balance_user']['balance'],
-                'companies' => $Balance['balance_companies']['balance']
-            ];
-            foreach ($Balance['balance_companies'] as $id_company => $orders){
-                if($company = Company::findOne($id_company)){
-                    $dataProviders_companies[$id_company] = new ArrayDataProvider([
-                        'allModels' => $Balance['balance_companies'][$id_company]['orders'],
-                        'pagination' => ['pageSize' => 15],
-                        'sort' => [
-                            'attributes' => ['date'],
-                            'defaultOrder' => [
-                                'date' => SORT_DESC
-                            ]
-                        ]
-                    ]);
-                    $ids_companies .= $id_company . ' ';
-                }
-            }
-            $ids_companies = substr($ids_companies, 0, -1);
-        }
-        if($User->canRole('car_owner')){
-            $balance = [
-                'car_owner' => $Balance['balance_car_owner']['balance'],
-                'not_paid' => $Balance['balance_car_owner']['not_paid'],
-                'user' => $Balance['balance_user']['balance'],
-                'companies' => $Balance['balance_companies']['balance']
-            ];
-            $dataProvider_car_owner = new ArrayDataProvider([
-                'allModels' => $Balance['balance_car_owner']['orders'],
-                'pagination' => ['pageSize' => 15],
-                'sort' => [
-                    'attributes' => ['date'],
-                    'defaultOrder' => [
-                        'date' => SORT_DESC
-                    ]
-                ]
-            ]);
-        }
-
-        $dataProvider_user = new ArrayDataProvider([
-            'allModels' => $Balance['balance_user']['orders'],
-            'pagination' => ['pageSize' => 15],
-            'sort' => [
-                'attributes' => ['date'],
-                'defaultOrder' => [
-                    'date' => SORT_DESC
-                ]
-            ]
-        ]);
-
-        return $this->render('balance', [
-            'dataProvider_car_owner' => $dataProvider_car_owner,
-            'dataProvider_user' => $dataProvider_user,
-            'dataProviders_companies' => $dataProviders_companies,
-            'balance' => $balance,
-            'Balance' => $Balance,
-            'ids_companies' => $ids_companies
-        ]);
-
+        $this->layout = functions::getLayout();
+        return $this->render('balance', User::arrayBalanceParamsForRender($id_user));
     }
+
 }

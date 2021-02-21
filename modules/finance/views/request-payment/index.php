@@ -1,9 +1,10 @@
 <?php
 
 use yii\bootstrap\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Url;
 use app\models\RequestPayment;
+use app\models\User;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\RequestPaymentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -19,17 +20,31 @@ $this->title = 'Заявки на выплаты водителям';
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'responsiveWrap' => false,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'id_user',
+            'create_at',
+            [
+                'attribute' => 'id_user',
+                'label' => 'Водитель',
+                'format' => 'raw',
+                'value' => function(RequestPayment $model){
+                    $user = User::findOne($model->id_user);
+                    if($user){
+                        return '"'. $user->old_id . '" ' . $user->profile->fioShort . ' (#' . $user->id . ')';
+                    } else {
+                        return '#' . $model->id_user;
+                    }
+                }
+            ],
             'cost',
-            'type_payment',
+            'typePaymentText',
             'requisites:ntext',
             //'url_files:ntext',
             'statusText',
-            'create_at',
+
             [
                 'label' => 'Действия',
                 'format' => 'raw',

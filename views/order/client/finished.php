@@ -17,43 +17,46 @@ use app\models\Invoice;
     <h4>Завершенные</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_arhive,
+        'filterModel' => $searchModel,
         'options' => [
             'class' => 'minRoute'
         ],
         'responsiveWrap' => false,
         'pjax'=>true,
         'columns' => [
-//            [
-//                'class' => 'kartik\grid\ExpandRowColumn',
-//                'value' => function ($model, $key, $index, $column) {
-//
-//                    return GridView::ROW_COLLAPSED;
-//                },
-//                'enableRowClick' => true,
-//                'allowBatchToggle'=>true,
-//                'detail'=>function ($model) {
-////                    return $model->id;
-//                    return Yii::$app->controller->renderPartial('view', ['model'=>$model]);
-//                },
-//                'detailOptions'=>[
-//                    'class'=> 'kv-state-enable',
-//                ],
-//            ],
+            [
+                'class' => 'kartik\grid\ExpandRowColumn',
+                'value' => function ($model, $key, $index, $column) {
+
+                    return GridView::ROW_COLLAPSED;
+                },
+                'enableRowClick' => true,
+                'allowBatchToggle'=>true,
+                'detail'=>function ($model) {
+                    return Yii::$app->controller->renderPartial('client/view', ['model'=>$model]);
+                },
+                'detailOptions'=>[
+                    'class'=> 'kv-state-enable',
+                ],
+            ],
             'id',
             'datetime_finish',
             [
                 'label' => 'Сумма к оплате',
-                'attribute' => 'finishCost',
+                'attribute' => 'cost_finish',
                 'format' => 'raw'
             ],
             [
-                'attribute' => 'paidText',
+                'attribute' => 'paid_status',
+//                'attribute' => 'paidText',
+                'label' => 'Оплата',
                 'format' => 'raw',
                 'value' => function (Order $order){
                     return ($order->paid_status == $order::PAID_YES_AVANS)
                         ? $order->paidText . ' (' . $order->avans_client . ')'
                         : $order->paidText;
-                }
+                },
+                'filter' => Html::activeCheckboxList($searchModel, 'paid_status', $searchModel->getArrayPaidStatuses()),
             ],
             [
                 'attribute' => 'paymentText',
@@ -77,7 +80,7 @@ use app\models\Invoice;
 
                     }
 
-                    if($order->certificate){
+                    if($order->certificate && $order->certificate->urlFull){
                         $return .= '<br>' . Html::a('Акт №' . $order->certificate->number,  Url::to(['/finance/invoice/download',
                                 'pathToFile' => $order->certificate->urlFull,
                                 'redirect' => '/order/client'

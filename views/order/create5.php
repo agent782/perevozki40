@@ -13,8 +13,12 @@ use kartik\datetime\DateTimePicker;
 use yii\helpers\Url;
 use app\models\PriceZone;
 use app\components\widgets\ShowMessageWidget;
+use app\models\Profile;
+use kartik\icons\Icon;
+use yii\widgets\Pjax;
+
 //echo date('d.m.Y H:i');
-//var_dump($companies);
+Icon::map($this);
 ?>
 
 <h4>Шаг 5 из 5.</h4>
@@ -51,8 +55,15 @@ use app\components\widgets\ShowMessageWidget;
                 'startDate' => date('d.m.Y H:i',  time() + 60*60), //самая ранняя возможная дата
 //                'endDate' => date('d.m.Y H:i',  time() + 60*60*24*30),
                 'todayBtn'=>true, //снизу кнопка "сегодня",
-
             ],
+            'pluginEvents' => [
+                'changeDate' => "
+                    function(e){
+                        changePriceZones();
+                    }
+                "
+            ]
+
         ]
     )?>
     <?= $form->field($modelOrder, 'valid_datetime')
@@ -97,7 +108,7 @@ use app\components\widgets\ShowMessageWidget;
             }
             changePriceZones();
         '
-    ])->label('Способ оплаты' . \app\models\Tip::getTipButtonModal($modelOrder, 'type_payment'))?>
+    ])->label('Способ оплаты')?>
     <?php
         $companiesHide = ($modelOrder->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER)
             ? '' : 'hidden';
@@ -119,17 +130,24 @@ use app\components\widgets\ShowMessageWidget;
             ]), ['target' => '_blank'])
         ;
         ?>
-    <?= $form->field($modelOrder, 'id_company',[
-        'enableAjaxValidation' => true,
-        ])->radioList($companies)->label('Юр. лица: '. $link_add_company)?>
+
+    <?php if(Profile::notAdminOrDispetcher()) {
+            echo $form->field($modelOrder, 'id_company', [
+                'enableAjaxValidation' => true,
+            ])->radioList($companies)->label('Юр. лица: ' . $link_add_company);
+    }
+    ?>
     </div>
     </div>
     <div class="col-lg-5">
+
         <label>Маршрут.</label>
         <comment>
             <?= $route->fullRoute?>
         </comment>
-        <?php \yii\widgets\Pjax::begin(['id' => 'create5']);?>
+
+        <?php Pjax::begin(['id' => 'create5']);?>
+<!--        <div id="rates">-->
     <?= $form->field($modelOrder, 'selected_rates')->label('Выберите подходящие по стоимости тарифы *.')
         ->checkboxList($modelOrder->suitable_rates, [
             'id' => 'selected_rates',
@@ -142,8 +160,9 @@ use app\components\widgets\ShowMessageWidget;
         услуги грузчика и т.п.)'
     );
     ?>
+<!--        </div>-->
         <?php
-        \yii\widgets\Pjax::end();
+            Pjax::end();
         ?>
         <comment>
             Чем больше тарифов выбрано, тем больше ТС подойдут под Ваш заказ.
@@ -152,13 +171,22 @@ use app\components\widgets\ShowMessageWidget;
     </div>
 
 <div class="col-lg-12">
+    <?php
+        if(!Profile::notAdminOrDispetcher()) {
+            echo $form->field($modelOrder, 'hide')->checkbox()->label('Скрыть');
+            echo $form->field($modelOrder, 'auto_find')->checkbox()->label('Авто-поиск');
+        }
+    ?>
     <?= Html::a('Назад', \yii\helpers\Url::previous(), ['class' => 'btn btn-warning'])?>
     <?=
     (!Yii::$app->user->isGuest)
         ? Html::submitButton('Оформить заказ', [
         'class' => 'btn btn-success',
         'name' => 'button',
-        'value' => 'next5'
+        'value' => 'next5' ,
+//        'onclick' => new \yii\web\JsExpression('
+//            alert ("Заказ оформлен");
+//        ')
     ])
         : 'Для заказа услуг он-лайн необходимо '
             . Html::a('ВОЙТИ ИЛИ ЗАРЕГИСТРИРОВАТЬСЯ.', '/default/login', ['class' => 'btn btn-info'])
@@ -172,6 +200,7 @@ use app\components\widgets\ShowMessageWidget;
 </div>
 <script>
     function changePriceZones() {
+        startLoading();
         var type_payment = $('#type_payment').find("input:checked").val();
         var datetime_start = $('#order-datetime_start').val();
         var valid_datetime = $('#order-valid_datetime').val();
@@ -183,9 +212,12 @@ use app\components\widgets\ShowMessageWidget;
                 "type_payment": type_payment,
                 "datetime_start": datetime_start,
                 "valid_datetime": valid_datetime
-            },
+            }
         });
 
+        $(document).on('pjax:success', function(event, data, status, xhr, options) {
+            endLoading();
+        });
     }
 
 </script>

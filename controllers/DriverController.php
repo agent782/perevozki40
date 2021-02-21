@@ -14,6 +14,7 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * DriverController implements the CRUD actions for Driver model.
@@ -32,6 +33,33 @@ class DriverController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin', 'dispetcher', 'logist', 'finance']
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'create', 'ajax-validation', 'validate-driver-license'],
+                        'roles' => ['car_owner', 'vip_car_owner']
+                    ],
+                    [
+                        'actions' => ['update', 'view', 'delete', 'recovery'],
+                        'allow' => true,
+                        'roles' => ['car_owner', 'vip_car_owner'],
+                        'matchCallback' => function ($rule, $action) {
+                            $user_id = Yii::$app->user->id;
+                            $driver = Driver::findOne(Yii::$app->request->get('id'));
+                            if($driver) {
+                                return ($driver->id_car_owner == $user_id);
+                            }
+                            return false;
+                        },
+                    ],
+                ],
+            ]
         ];
     }
 
@@ -196,6 +224,7 @@ class DriverController extends Controller
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
+
     public function actionValidateDriverLicense(){
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;

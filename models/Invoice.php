@@ -20,6 +20,8 @@ use Yii;
  * @property int $create_at
  * @property int $update_at
  * @property Order $order;
+ * @property Company $company
+ * @property string $labelInvoices
  */
 class Invoice extends \yii\db\ActiveRecord
 {
@@ -110,6 +112,20 @@ class Invoice extends \yii\db\ActiveRecord
 
     public function getOrder(){
         return $this->hasOne(Order::class, ['id' => 'id_order']);
+    }
+
+    public function getCompany(){
+        $order = $this->order;
+        if($order){
+            return $order->company;
+        }
+        return false;
+    }
+
+    public function getLabelInvoices(){
+        return
+            '№' . $this->number . ' от ' . $this->date . ' ( ' . $this->order->cost_finish . 'р. )'
+            ;
     }
 
 }

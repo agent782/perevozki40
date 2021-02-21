@@ -1,9 +1,11 @@
 <?php
     namespace app\components\functions;
+    use app\models\Message;
     use Yii;
     use app\models\User;
     use yii\imagine\Image;
     use yii\web\UploadedFile;
+    use Symfony\Component\Process\Process;
 
     /**
  * Created by PhpStorm.
@@ -65,14 +67,17 @@ class functions
     static public function setFlashSuccess($mes){
         return Yii::$app->session->setFlash('success', $mes);
     }
+
     static public function setFlashWarning($mes){
         return Yii::$app->session->setFlash('warning', $mes);
     }
+
     static public function setFlashInfo($mes){
         return Yii::$app->session->setFlash('info', $mes);
     }
 
-    static public function sendEmail($to, $from, string $sub, array $params, $views = null, $layouts = null, array $files = []){
+    static public function sendEmail($to, $from, string $sub, array $params, $views = null,
+                                     $layouts = null, array $files = []){
         if(!$from) $from = Yii::$app->params['robotEmail'];
         if(!$views) $views = [
             'html' => 'views/empty_html',
@@ -126,6 +131,7 @@ class functions
         }
         return $res;
     }
+
     static public function getAttributesAndPublicAttributes($model){
         $attributes = get_class_vars(get_class($model));
         $attributes = array_merge($attributes, $model->getAttributes());
@@ -138,12 +144,12 @@ class functions
         return $attributes;
     }
 
-    static public function getHtmlLinkToPhone(string $phone, $html =true){
+    static public function getHtmlLinkToPhone($phone, $html =true){
         if(!$html) return $phone;
         return '<a href = "tel:'. '+7' . $phone . '">' . $phone . '</a>';
     }
 
-    static public function DownloadFile(string $pathToFile){
+    static public function DownloadFile(string $pathToFile, $redirect){
         if(file_exists($pathToFile) && is_file($pathToFile)){
             return Yii::$app->response->sendFile($pathToFile);
         }
@@ -163,4 +169,102 @@ class functions
         $s = str_replace(" ", "-", $s); // заменяем пробелы знаком минус
         return $s; // возвращаем результат
     }
+
+    static public function getLayout(){
+        $layout = 'default2';
+
+        $adminLayout = '@app/views/layouts/logist';
+        $logistLayout = '@app/views/layouts/logist';
+        $buhLayout = '@app/modules/finance/views/layouts/finance';
+
+        if(Yii::$app->user->can('admin')) $layout = $adminLayout;
+        if(Yii::$app->user->can('dispetcher')) $layout = $logistLayout;
+        if(Yii::$app->user->can('buh')) $layout = $buhLayout;
+
+        return $layout;
+    }
+
+    static function DayToStartUnixTime(string $date){
+        $day = (24*3600);
+        $reminder = strtotime($date) % $day;
+        if($reminder > 43140 && $reminder <= 75540){
+            return round (strtotime($date)/($day)) * $day - $day;
+        } else {
+            return round (strtotime($date)/($day)) * $day;
+        }
+    }
+
+    static public function rus_date() {
+// Перевод
+        $translate = array(
+            "am" => "дп",
+            "pm" => "пп",
+            "AM" => "ДП",
+            "PM" => "ПП",
+            "Monday" => "Понедельник",
+            "Mon" => "Пн",
+            "Tuesday" => "Вторник",
+            "Tue" => "Вт",
+            "Wednesday" => "Среда",
+            "Wed" => "Ср",
+            "Thursday" => "Четверг",
+            "Thu" => "Чт",
+            "Friday" => "Пятница",
+            "Fri" => "Пт",
+            "Saturday" => "Суббота",
+            "Sat" => "Сб",
+            "Sunday" => "Воскресенье",
+            "Sun" => "Вс",
+            "January" => "Января",
+            "Jan" => "Янв",
+            "February" => "Февраля",
+            "Feb" => "Фев",
+            "March" => "Марта",
+            "Mar" => "Мар",
+            "April" => "Апреля",
+            "Apr" => "Апр",
+            "May" => "Мая",
+            "May" => "Мая",
+            "June" => "Июня",
+            "Jun" => "Июн",
+            "July" => "Июля",
+            "Jul" => "Июл",
+            "August" => "Августа",
+            "Aug" => "Авг",
+            "September" => "Сентября",
+            "Sep" => "Сен",
+            "October" => "Октября",
+            "Oct" => "Окт",
+            "November" => "Ноября",
+            "Nov" => "Ноя",
+            "December" => "Декабря",
+            "Dec" => "Дек",
+            "st" => "ое",
+            "nd" => "ое",
+            "rd" => "е",
+            "th" => "ое"
+        );
+        // если передали дату, то переводим ее
+        if (func_num_args() > 1) {
+            $timestamp = func_get_arg(1);
+            return strtr(date(func_get_arg(0), $timestamp), $translate);
+        } else {
+// иначе текущую дату
+            return strtr(date(func_get_arg(0)), $translate);
+        }
+    }
+
+    static public function startCommand(string $command, $args = []){
+        $arguments = '';
+        if($args){
+            foreach ($args as $arg){
+                $arguments .= $arg . ' ';
+            }
+        }
+        $proccess = new Process('php yii ' . $command . ' ' . $arguments, yii::getAlias('@app'));
+
+        $proccess->start();
+    }
+
+
 }

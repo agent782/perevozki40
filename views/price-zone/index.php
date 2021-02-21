@@ -127,12 +127,12 @@ $truck_columns = [
     'min_r_30',
     'min_r_40',
     'min_r_50',
-    [
-        'attribute' => 'remove_awning',
-        'value' => function(PriceZone $model){
-            return $model->getCosts_for()['remove_awning'];
-        }
-    ],
+//    [
+//        'attribute' => 'remove_awning',
+//        'value' => function(PriceZone $model){
+//            return $model->getCosts_for()['remove_awning'];
+//        }
+//    ],
     $actionColumn
 ];
 $pass_columns = [
@@ -153,7 +153,10 @@ $pass_columns = [
             }
         }
     ],
-    'passengers',
+    [
+        'attribute' => 'passengers',
+        'label' => 'Количество пассажиров, от, чел.'
+    ],
     [
         'attribute' => 'r_km',
         'value' => function(PriceZone $model){
@@ -340,14 +343,13 @@ $spec_columns = [
         <p>
             3. Общее время работы (для заказов с пробегом менее 120 км)
         </p>
+<!--        <p>-->
+<!--            4. Количество "растентовок" кузова сверху или сбоку. Оплачиваются дополнительно.-->
+<!--        </p>-->
         <p>
-            4. Количество "растентовок" кузова сверху или сбоку. Оплачиваются дополнительно.
-        </p>
-        <p>
-            5. Дополнительные расходы. Платные дороги, въезды, выезды. Услуги грузчиков. Оплачиваются отдельно.
+            4. Дополнительные расходы. Платные дороги, въезды, выезды. Услуги грузчиков. Оплачиваются отдельно.
         </p>
 
-    </p>
     <h4 >Грузовой транспорт</h4>
     <div>
         <?= ExportMenu::widget([
@@ -373,7 +375,7 @@ $spec_columns = [
 //        'filterModel' => $searchModel,
         'responsiveWrap' => false,
         'options' => [
-            'style' => 'font-size: 10px'
+            'style' => 'font-size: 14px; font-weight:bold;'
         ],
         'columns' => $truck_columns,
     ]); ?>
@@ -451,5 +453,6 @@ $spec_columns = [
             endif;
         ?>
     </comment>
+</div>
 </div>
 

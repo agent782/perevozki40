@@ -13,6 +13,9 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use \app\models\XprofileXcompany;
+use yii\web\JsExpression;
+use kartik\grid\EditableColumn;
+use kartik\editable\Editable;
 
 ?>
 <div>
@@ -46,7 +49,42 @@ use \app\models\XprofileXcompany;
 //                'class'=> 'kv-state-enable',
 //            ],
 //        ],
-        'id',
+        [
+            'attribute' => 'id',
+            'format' => 'raw',
+            'contentOptions' => [
+                'class' => 'h5'
+            ]
+        ],
+        [
+            'attribute' => 'hide',
+            'format' => 'raw',
+            'value' => function (Order $model, $index){
+                return Html::checkbox('hide', $model->hide, [
+                    'onchange' => new JsExpression('
+                        $.ajax({
+                        url: "/logist/order/hide",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            id_order : '. $index .'
+                        },
+                        
+                        success: function(data){
+                            if(data){
+                                $(this).attr("checked", true);
+                            } else {
+                                $(this).attr("checked", false);
+                            }
+                        },
+                        error: function(){
+                            alert("Ошибка на сервере %(");
+                        }
+                    });    
+                    ')
+                ]);
+            }
+        ],
         [
             'label' => 'Дата/время',
             'format' => 'raw',
@@ -57,7 +95,10 @@ use \app\models\XprofileXcompany;
                     . $model->valid_datetime
                     . ')</i>'
                     ;
-            }
+            },
+            'contentOptions' => [
+                'class' => 'h5'
+            ]
         ],
         [
             'label' => 'Маршрут',
@@ -76,17 +117,19 @@ use \app\models\XprofileXcompany;
             'label' => 'Заказчик',
             'format' => 'raw',
 //            'attribute' => 'clientInfo',
-            'value' => function ($model){
-                $return = $model->clientInfo;
+            'value' => function (Order $model){
+                $return = $model->getClientInfo();
                 $company = \app\models\Company::findOne($model->id_company);
                 if(!$company){
 
                         $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
                 }
-
                 return $return;
-            }
+            },
+            'contentOptions' => [
+                'style' => 'font-size: 14px'
+            ]
         ],
         [
             'label' => 'Выбранные тарифы для водителя',
@@ -108,11 +151,22 @@ use \app\models\XprofileXcompany;
             'format' => 'raw'
         ],
         [
+            'label' => 'Поиск...',
+            'format' => 'raw',
+            'value' => function(Order $model){
+                $return = count($model->alert_car_owner_ids);
+                if($model->auto_find){
+                    $return .= '<br>Идет поиск ...';
+                }
+                return $return;
+            }
+        ],
+        [
             'label' => 'Действия',
             'format' => 'raw',
             'value' => function($model){
                 if($model->status == Order::STATUS_NEW || $model->status == Order::STATUS_IN_PROCCESSING){
-                    return
+                    $return =
                         Html::a(Html::icon('ok-sign', ['class' => 'btn-lg','title' => 'Назначить машину']), Url::to([
                             '/logist/order/find-vehicle',
                             'redirect' => '/order/accept-order',
@@ -133,9 +187,23 @@ use \app\models\XprofileXcompany;
                         ]),
                             ['data-confirm' => Yii::t('yii',
                                 'Пока заказ не принят водителем, Вы можете отменить его без потери рейтинга. Отменить заказ?'),
-                                'data-method' => 'post'])
-                        ;
+                                'data-method' => 'post']);
+                    if(Yii::$app->user->can('admin')) {
+                        $return .= Html::a(
+                            Html::icon('search', ['class' => 'btn-lg',
+                            'title' => 'Автоматический поиск']), Url::to([
+                            '/order/auto-find',
+                            'id_order' => $model->id,
+//                            'redirect' => '/logist/order'
+                        ]),
+                            [
+                                'target'=>'_blank',
+                                'data-pjax' => '0',
+                                'id' => 'start_auto_find',
+                            ]);
 
+                    }
+                    return $return;
                 }
             }
         ]

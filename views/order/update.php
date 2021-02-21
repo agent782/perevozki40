@@ -15,6 +15,7 @@ use yii\helpers\Url;
 /* @var $LTypies array*/
 /* @var $VehicleAttributes array*/
 $this->registerJsFile('@web/js/route.js');
+$this->registerJsFile('/js/order.js');
 $this->title = 'Изменение заказа №' . $modelOrder->id;
 //$this->registerJsFile('/js/order.js');
 
@@ -154,7 +155,7 @@ $this->title = 'Изменение заказа №' . $modelOrder->id;
         foreach ($VehicleAttributes as $attribute){
             echo $form->field($modelOrder, $attribute, [
                 'inputOptions' => [
-                    'type' => 'tel',
+                    'type' => 'text',
                     'style' => 'width: 150px',
                 ]
             ]);

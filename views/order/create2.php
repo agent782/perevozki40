@@ -20,23 +20,37 @@ $this->registerJsFile('/js/order.js');
     ]);
     echo $form->field($modelOrder, 'id_vehicle_type')->hiddenInput()->label(false);
 ?>
-
 <?=
 ($modelOrder->id_vehicle_type != \app\models\Vehicle::TYPE_SPEC)
     ?
     $form->field($modelOrder, 'body_typies[]')->checkboxList(
-        $BTypies, ['id' => 'chkBodyTypies', 'encode' => false])
-    ->hint('Чем больше типов кузова выбрано, тем больше вероятность подбора ТС')
+        $BTypies, [
+            'id' => 'chkBodyTypies',
+            'encode' => false,
+            'value' => $modelOrder->body_typies
+        ])
+    ->hint(($modelOrder->id_vehicle_type == \app\models\Vehicle::TYPE_TRUCK)
+        ? 'Тип кузова ен влияет на тариф (за исключением "включенного" рефрежиратора).<br>
+    Чем больше типов кузова выбрано, тем больше вероятность подбора ТС.<br>  
+    Если Вам нужна открытая машина для погрузки "сверху",
+     подойдет не только бортовая машина, но и тентованнные с погрузкой сверху.<br> 
+     Если Вам нужна просто закрытая машина, выберайте все типы кроме бортового.<br> 
+     Если Вам нужна погрузка cбоку, подойдут бортовой и тентованные варианты.' : '')
     :
-    $form->field($modelOrder, 'body_typies[]')->radioList($BTypies, ['encode' => false])
+    $form->field($modelOrder, 'body_typies[]')->radioList($BTypies,
+        [
+            'encode' => false,
+            'value' => $modelOrder->body_typies
+        ]);
 ?>
 <?php
     if($LTypies){
+        $LTvalues = ($modelOrder->loading_typies)?$modelOrder->loading_typies:[2];
        echo $form->field($modelOrder, 'loading_typies[]')->checkboxList($LTypies,
             [
                 'id' => 'chkLoadingTypies',
-                'value' => [2],
-                'encode' => false
+                'value' => $LTvalues,
+                'encode' => false,
             ])->label('Необходимый тип погрузки/выгрузки.')
            ->hint('Выбирайте дополнительные типы погрузки только при необходимости!');
     }

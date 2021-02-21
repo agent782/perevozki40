@@ -72,7 +72,7 @@ $this->title = 'Изменение основного номера телефо�
     <?= $form->field($VerifyPhone, 'userCode', [
 //        'enableAjaxValidation' => false,
         'enableClientValidation' => true
-    ])->input('tel', ['autocomplete' => 'off'])?>
+    ])->input('text', ['autocomplete' => 'off'])?>
 
     <?=Html::submitButton('Изменить номер телефона', [ 'class' => 'btn btn-success'])?>
 <?php

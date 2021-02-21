@@ -49,7 +49,11 @@
         "kartik-v/yii2-money": "@dev",
         "kartik-v/yii2-export": "dev-master",
         "deka6pb/yii2-geocoder": "@dev",
-        "softark/yii2-mb-captcha": "dev-master"
+        "softark/yii2-mb-captcha": "dev-master",
+        "marqu3s/yii2-summernote": "dev-master",
+        "lesha724/yii2-youtube-widget": "*",
+        "kartik-v/yii2-icons": "@dev",
+        "timurmelnikov/yii2-loading-overlay": "~1.0.0"
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",

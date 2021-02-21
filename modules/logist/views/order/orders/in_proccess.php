@@ -12,12 +12,17 @@ use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
 use app\components\widgets\FinishOrderOnlySumWidget;
+use app\models\Company;
+use app\components\widgets\ShowMessageWidget;
+use kartik\grid\EditableColumn;
+use app\models\Payment;
+use yii\helpers\ArrayHelper;
 ?>
 <div>
     <h4>В процессе выполнения...</h4>
     <?= GridView::widget([
         'dataProvider' => $dataProvider_in_process,
-//    'filterModel' => $searchModel,
+        'filterModel' => $searchModel,
 //        'bordered' => true,
 //        'striped' => false,
 //        'responsive'=>true,
@@ -36,6 +41,7 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                 'id' => 'pjax_in_proccess_orders'
             ]
         ],
+        'id' => 'in_proccess_orders',
         'columns' => [
 //            [
 //                'class' => 'kartik\grid\ExpandRowColumn',
@@ -53,17 +59,65 @@ use app\components\widgets\FinishOrderOnlySumWidget;
 //                    'class'=> 'kv-state-enable',
 //                ],
 //            ],
-            'id',
-            'datetime_start',
+            [
+                'attribute' => 'id',
+                'format' => 'raw',
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
+            ],
+            [
+                'attribute' => 'datetime_start',
+                'class' => EditableColumn::class,
+                'editableOptions' => [
+                    'format' => \kartik\editable\Editable::FORMAT_BUTTON,
+                    'size' => 'xs',
+                    'inputType' => \kartik\editable\Editable::INPUT_DATETIME,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/logist/order/change-datetime'])
+                    ],
+                    'options'=>[
+                        'pluginOptions'=>[
+                            'format' => 'dd.mm.yyyy H:ii',
+                            'autoclose' => true,
+                            'todayBtn' => true,
+                        ],
+                    ]
+                ],
+                'contentOptions' => [
+                    'class' => 'h5'
+                ]
+            ],
             [
                 'label' => 'ТС',
                 'format' => 'raw',
-                'attribute' => 'fullInfoAboutVehicle'
+                'attribute' => 'fullInfoAboutVehicle',
+                'value' => function(Order $model){
+                    $car_owner = $model->carOwner;
+                    if (!$car_owner) return null;
+                    return ShowMessageWidget::widget([
+                        'ToggleButton' => [
+                            'label' => ($car_owner->old_id)? $car_owner->old_id : '#' . $car_owner->id_user
+                        ],
+                        'helpMessage' =>  $model->fullInfoAboutVehicle
+                    ]);
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 16px'
+                ]
             ],
             [
-            'label' => 'Маршрут',
-            'format' => 'raw',
-            'attribute' => 'route.fullRoute'
+                'label' => 'Маршрут',
+                'format' => 'raw',
+                'attribute' => 'route.fullRoute',
+                'value' => function (Order $model){
+                    return $model->route->fullRoute . ' '
+                        . Html::a(Html::icon('edit'), [
+                            '/order/change-route',
+                            'id_order' => $model->id,
+                            'redirect' => Url::to('/logist/order')
+                        ]);
+                }
             ],
             [
                 'label' => 'Информация о заказе',
@@ -84,47 +138,110 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                 }
             ],
             [
+                'class' => EditableColumn::class,
                 'label' => 'Тариф для водителя',
                 'format' => 'raw',
                 'attribute' => 'id_pricezone_for_vehicle',
-                'value' => function($modelOrder){
+                'value' => function(Order $modelOrder){
                     return \app\models\PriceZone::findOne(['unique_index' => $modelOrder
                         ->id_pricezone_for_vehicle])
                         ->getWithDiscount(\app\models\setting\SettingVehicle::find()->limit(1)->one()
                             ->price_for_vehicle_procent)
-                        ->getTextWithShowMessageButton($modelOrder->route->distance, true);
-                }
+                        ->getTextWithShowMessageButton($modelOrder->route->distance, true)
+                        ;
+                },
+                'editableOptions' => [
+                    'format' => \kartik\editable\Editable::FORMAT_BUTTON,
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/logist/order/change-pricezone-in-proccess' ])
+                    ],
+                    'data' => \app\models\PriceZone::getArrayAllPriceZones(false)
+                ],
+                'visible' => Yii::$app->user->can('admin'),
+
             ],
             [
                 'label' => 'Заказчик',
                 'format' => 'raw',
 //            'attribute' => 'clientInfo',
                 'value' => function ($model){
-                    $return = $model->clientInfo;
-                    $company = \app\models\Company::findOne($model->id_company);
-                    if(!$company){
-                        $return .= '<br>' . Html::a(Html::icon('plus', ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']),
+                    $return = '';
+                    $company = Company::findOne($model->id_company);
+                    if($model->id_user == $model->id_car_owner && $model->re){
+                        $return = $model->comment;
+                        if($company) {
+                            $return .= '<br><br>';
+                            $return .=  ($company->name_short) ? $company->name_short : $company->name;
+                        }
+                    } else {
+                        $return  = $model->getClientInfo();
+                    }
+                    $re = ($model->re)? Html::icon('star') . '"авто"':'';
+                    $return  = $re . '<br>' . $return;
+//                    if(!$company){
+                        $return .= '<br>'
+                            . Html::a(Html::icon('edit',
+                                ['title' => 'Добавить юр. лицо', 'class' => 'btn-xs btn-primary']
+                            ),
                                 ['/logist/order/add-company', 'id_order' => $model->id]);
+//                    }
+                    return $return;
+                },
+                'contentOptions' => [
+                    'style' => 'font-size: 14px'
+                ]
+            ],
+            [
+                'class' => \kartik\grid\EditableColumn::class,
+                'attribute' =>'type_payment',
+                'format' => 'raw',
+                'value' => function($model){
+                    return $model->paymentMinText;
+                },
+                'filter' =>
+                    Html::activeCheckboxList($searchModel, 'type_payments',
+                        ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    )
+                ,
+                'editableOptions' => [
+                    'inputType' => \kartik\editable\Editable::INPUT_DROPDOWN_LIST,
+                    'data' => ArrayHelper::map(\app\models\TypePayment::find()->all(), 'id', 'min_text')
+                    ,
+                    'formOptions' => [
+                        'action' => \yii\helpers\Url::to([ '/finance/order/changePaymentType' ])
+                    ]
+                ],
+                'filterOptions' => ['class' => 'minRoute'],
+            ],
+            [
+                'label' => 'Поиск...',
+                'format' => 'raw',
+                'value' => function(Order $model){
+                    $return = count($model->alert_car_owner_ids);
+                    if($model->auto_find){
+                        $return .= '<br>Идет поиск ...';
                     }
                     return $return;
                 }
             ],
             [
-                'attribute' => 'paymentText',
-                'format' => 'raw'
-            ],
-            [
                 'label' => 'Действия',
                 'format' => 'raw',
-                'value' => function($model){
-                    return
+                'value' => function(Order $model){
+                    $return = '';
+                    $return .=
                         Html::a('Заказ выполнен', Url::to([
                                 '/order/finish-by-vehicle',
                                 'id_order' => $model->id,
                                 'redirect' => '/logist/order'
-                            ]),['class' => 'btn btn-sm btn-success']) . '<br><br>'
-                        . FinishOrderOnlySumWidget::widget(['id_order' => $model->id]). '<br><br>'
-                        . Html::a('Удалить ТС', Url::to([
+                            ]),['class' => 'btn btn-sm btn-success']) . '<br><br>';
+                    if(Yii::$app->user->can('admin')
+                        || $model->type_payment != Payment::TYPE_BANK_TRANSFER
+                    ) {
+                        $return .= FinishOrderOnlySumWidget::widget(['id_order' => $model->id]) . '<br><br>';
+                    }
+                    $return .= Html::a('Удалить ТС', Url::to([
                             '/order/canceled-by-vehicle',
                             'id_order' => $model->id,
                             'id_user' => $model->id_user,
@@ -151,8 +268,8 @@ use app\components\widgets\FinishOrderOnlySumWidget;
                                     'data-method' => 'post']
                             ])
                         ;
+                    return $return;
                 }
-
             ],
         ]
     ]); ?>

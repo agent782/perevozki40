@@ -12,7 +12,7 @@ $vehTypeId = $model->id_vehicle_type;
 
         echo $form->field($model, 'tonnage', ['inputOptions' => [
             'id' => 'tonnage',
-            'type' => 'tel',
+            'type' => 'text',
             'autofocus' => true,
             'onchange' => '
                 UpdatePriceZones();
@@ -24,26 +24,26 @@ $vehTypeId = $model->id_vehicle_type;
         ]]);
         echo $form->field($model, 'length', ['inputOptions' => [
             'id' => 'length',
-            'type' => 'tel'
-        ]])->input('number', [
+            'type' => 'text'
+        ]])->input('text', [
             'onchange' => 'setVolume(); UpdatePriceZones();',
-            'type' => 'tel'
+            'type' => 'text'
         ]);
         echo $form->field($model, 'width', ['inputOptions' => [
             'id' => 'width',
-            'type' => 'tel'
-        ]])->input('number', [
+            'type' => 'text'
+        ]])->input('text', [
             'onchange' => 'setVolume();UpdatePriceZones();'
         ]);
         echo $form->field($model, 'height', ['inputOptions' => [
             'id' => 'height',
-            'type' => 'tel'
-        ]])->input('number', [
+            'type' => 'text'
+        ]])->input('text', [
             'onchange' => 'setVolume();UpdatePriceZones();',
         ]);
         echo $form->field($model, 'volume', ['inputOptions' => [
             'id' => 'volume',
-            'type' => 'tel',
+            'type' => 'text',
             'onchange' => '
                 UpdatePriceZones();
             '
@@ -74,7 +74,8 @@ $vehTypeId = $model->id_vehicle_type;
         var w = $("#width").val();
         var h = $("#height").val();
         if(l && w && h){
-            $("#volume").val(l*w*h);
+            var v = l*w*h;
+            $("#volume").val(v.toFixed(2));
         } else $("#volume").val("");
     };
 </script>

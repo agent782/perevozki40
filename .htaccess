@@ -4,3 +4,4 @@ RewriteRule ^(.+)?$ /web/$1
 Order Allow,Deny
 Allow from all
 Deny from 185.86.164.104 188.168.152.9 185.119.81.50 192.99.37.42 185.166.131.147
+

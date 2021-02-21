@@ -43,10 +43,17 @@ class VehicleSearch extends Vehicle
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $VehType, $sort, array $Statuses, bool $admin = false)
+    public function search($params,
+                           $VehType,
+                           $sort,
+                           array $Statuses = [Vehicle::STATUS_ONCHECKING,
+                               Vehicle::STATUS_ACTIVE, Vehicle::STATUS_NOT_ACTIVE],
+                           bool $admin = false)
     {
         $id_user = Yii::$app->user->id;
-        if(Yii::$app->user->can('admin')){
+        if(Yii::$app->user->can('admin')
+            || Yii::$app->user->can('dispetcher')
+        ){
             $query = Vehicle::find()->where(['id_vehicle_type' => $VehType, 'status' => $Statuses]);
         }else {
             $query = Vehicle::find()->where(['id_user' => $id_user, 'id_vehicle_type' => $VehType, 'status' => $Statuses]);
@@ -84,4 +91,5 @@ class VehicleSearch extends Vehicle
 
         return $dataProvider;
     }
+
 }

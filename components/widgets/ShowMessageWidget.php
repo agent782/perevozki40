@@ -31,11 +31,19 @@ class ShowMessageWidget extends Widget
             'clientOptions' => [
                 'backdrop' => 'static',
 //                'keyboard' => true
-            ]
-//            'bodyOptions' => ['class' => 'container'],
+            ],
+            'bodyOptions' => [
+//                'class' => 'container',
+                'style' => '
+                     position: relative;
+                    overflow-y: auto;
+                    max-height: 400px;
+                    padding: 15px; '
+            ],
+
         ]);
 
-        echo $this->helpMessage;
+        echo '<div>' . $this->helpMessage . '</div>';
 
         Modal::end();
     }

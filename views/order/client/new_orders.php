@@ -12,7 +12,9 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
-
+$this->registerJs("
+    setInterval(() => $.pjax.reload({container:'#pjax_new_orders'}), 2*60*1000); 
+");
 ?>
 <div>
     <h4>В процессе поиска ТС...</h4>
@@ -23,6 +25,11 @@ use yii\bootstrap\Tabs;
     ],
     'responsiveWrap' => false,
     'pjax'=>true,
+    'pjaxSettings' => [
+        'options' => [
+            'id' => 'pjax_new_orders'
+        ]
+    ],
     'columns' => [
 //        [
 //            'class' => 'kartik\grid\ExpandRowColumn',

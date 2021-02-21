@@ -86,13 +86,18 @@ class Sms extends \yii\db\ActiveRecord
     public function sendAndSave(){
         if(!$this->to || !$this->message) return false;
 
-        foreach (Yii::$app->smsru->send($this->to, $this->message)->sms as $smsStatus) {
-            $this->status = $smsStatus->status_code;
-            $this->id = $smsStatus->sms_id;
-            if(!$smsStatus->sms_id) $this->id = 'error_'.time().'_'.rand(10000,99999);
-            $this->status_text = $smsStatus->status;
-            if ($this->save()) return $this;
+        if($sms = Yii::$app->smsru->send($this->to, $this->message)->sms) {
+            foreach ($sms as $smsStatus) {
+                $this->status = $smsStatus->status_code;
+                if (property_exists($smsStatus, 'sms_id')) {
+                    $this->id = $smsStatus->sms_id;
+                } else {
+                    $this->id = 'error_' . time() . '_' . rand(10000, 99999);
+                }
+                $this->status_text = $smsStatus->status;
+                if ($this->save()) return $this;
 //            return $this->getErrors();
+            }
         }
         return false;
     }
@@ -107,10 +112,12 @@ class Sms extends \yii\db\ActiveRecord
 
     public function setCost(){
         $cost = 0;
-
-        foreach (Yii::$app->smsru->cost($this->to, $this->message)->sms as $sms){
-            if($sms->status == 100 || $sms->status == 101 || $sms->status == 102) {
-                return $this->cost = $sms->cost;
+        if($this->message
+            && $Sms = Yii::$app->smsru->cost($this->to, $this->message)){
+            foreach ($Sms->sms as $sms) {
+                if ($sms->status == 100 || $sms->status == 101 || $sms->status == 102) {
+                    return $this->cost = $sms->cost;
+                }
             }
         }
         return null;

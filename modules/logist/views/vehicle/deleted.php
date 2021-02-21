@@ -6,6 +6,7 @@
  * Time: 9:09
  */
 use kartik\grid\GridView;
+use yii\bootstrap\Html;
 ?>
 
     <label class="h3">Удаленные</label>

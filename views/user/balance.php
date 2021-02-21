@@ -1,6 +1,11 @@
 <?php
 
 use kartik\grid\GridView;
+use app\models\Order;
+use app\components\widgets\ShowMessageWidget;
+use app\models\Profile;
+use yii\bootstrap\Html;
+use yii\helpers\Url;
 /**
  * Created by PhpStorm.
  * User: Admin
@@ -13,7 +18,7 @@ use kartik\grid\GridView;
 
     $this->registerJs(new \yii\web\JsExpression('
         $(function(){
-        var arr_ids = $(\'#ids_companies\').text().split(\' \');
+        var arr_ids = $("#ids_companies").text().split(" ");
         for(var i in arr_ids) {
             $("#slide_company_" + arr_ids[i]).hide();
             $("#pointer_company_" + arr_ids[i]).click(function () {
@@ -42,6 +47,12 @@ use kartik\grid\GridView;
             'label' => 'Ваш баланс водителя*: ' . $balance['car_owner'] . 'р. (' . $balance['not_paid'] . '*****)' ,
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_car_owner,
+                'pjax'=>true,
+                'pjaxSettings' => [
+                    'options' => [
+                        'id' => 'pjax_balance_car_owner'
+                    ]
+                ],
                 'responsiveWrap' => false,
                 'columns' => [
                     [
@@ -66,12 +77,31 @@ use kartik\grid\GridView;
                         'label' => 'Комментарий',
                         'attribute' => 'description',
                     ],
+                    [
+                        'label' => '',
+                        'format' => 'raw',
+                        'value' => function($model){
+                            if(array_key_exists('id_order',$model)) {
+                                $order = Order::findOne($model['id_order']);
+                                if ($order) {
+                                    return ShowMessageWidget::widget([
+                                        'helpMessage' => $order->getFullFinishInfo(false, null,
+                                            true, true, true)
+                                    ]);
+                                }
+                            }
+                        }
+                    ]
                 ]
             ]),
         ];
+        $comments .= ($balance['car_owner'] - $balance['not_paid'])
+            ? 'Сумма к выплате на сегодняшний день: '
+            . ($balance['car_owner'] - $balance['not_paid']) . ' р.'
+            : 'Сумма к выплате на сегодняшний день: 0р.';
         $comments .= '<p><comment>* Баланс по принятым Вами заказам на Ваши ТС.</comment></p>';
-        $comments .= '<p><comment>**** Сумма частичной оплаты Клиентом за заказ за вычетом процентов
-            (Оставшаяся неоплаченная Клиентом сумма по заказу за вычетом процентов)</comment></p>';
+        $comments .= '<p><comment>**** Сумма к выплате за заказ
+            (Оставшаяся неоплаченная Клиентом сумма по заказу)</comment></p>';
         $comments .= '<p>***** Сумма неоплаченных Клиентами "безнальных" заказов</p>';
     }
     if($dataProvider_user && $balance){
@@ -79,6 +109,12 @@ use kartik\grid\GridView;
             'label' => 'Ваш баланс клиента**: ' . $balance['user'] . 'р.',
             'content' => GridView::widget([
                 'dataProvider' => $dataProvider_user,
+                'pjax'=>true,
+                'pjaxSettings' => [
+                    'options' => [
+                        'id' => 'pjax_balance_client'
+                    ]
+                ],
                 'responsiveWrap' => false,
                 'columns' => [
                     [
@@ -99,6 +135,20 @@ use kartik\grid\GridView;
                         'label' => 'Комментарий',
                         'attribute' => 'description',
                     ],
+                    [
+                        'label' => '',
+                        'format' => 'raw',
+                        'value' => function($model){
+                            if(array_key_exists('id_order',$model)) {
+                                $order = Order::findOne($model['id_order']);
+                                if ($order) {
+                                    return ShowMessageWidget::widget([
+                                        'helpMessage' => $order->getFullFinishInfo(false, null, true, true)
+                                    ]);
+                                }
+                            }
+                        }
+                    ]
                 ]
             ]),
         ];
@@ -108,13 +158,18 @@ use kartik\grid\GridView;
         $content = '';
         foreach ($dataProviders_companies as $id_company => $dataProvider_company){
             if($company = \app\models\Company::findOne($id_company)) {
-                $content .= '<div class="h4" id="pointer_company_' . $id_company . '" style = "cursor: pointer;">';
-                $content .= $company->name . ' ('
+                $content .= '<div id="pointer_company_' . $id_company . '" style = "cursor: pointer;">';
+                $content .= $company->name . '('
                 . $Balance['balance_companies'][$id_company]['balance'] . ' р.)';
                 $content .= '<div id="slide_company_' . $id_company . '">';
                 $content .= GridView::widget([
                     'dataProvider' => $dataProvider_company,
-                    'pjax' => true,
+                    'pjax'=>true,
+                    'pjaxSettings' => [
+                        'options' => [
+                            'id' => 'pjax_balance_company_' . $company->id
+                        ]
+                    ],
                     'responsiveWrap' => false,
                     'columns' => [
                         [
@@ -133,17 +188,92 @@ use kartik\grid\GridView;
                         ],
                         [
                             'label' => 'Комментарий',
-                            'attribute' => 'description',
+//                            'attribute' => 'description',
+                            'format' => 'raw',
+                            'value' => function ($model, $index, $key){
+                                $return = $model['description'];
+                                if (array_key_exists('id_order', $model)) {
+                                    $order = Order::findOne($model['id_order']);
+                                    if($order){
+                                        if($order->invoice){
+                                            if($order->invoice->urlFull){
+                                                $return .= '<br>' . Html::a('Счет №' . $order->invoice->number,
+                                                        Url::to(['/finance/invoice/download',
+                                                            'pathToFile' => $order->invoice->urlFull,
+                                                            'redirect' => Url::to()
+                                                        ]),
+                                                        ['title' => 'Скачать', 'data-pjax' => "0"]
+                                                    );
+                                            }
+                                        } else {
+                                            if($order->type_payment == \app\models\Payment::TYPE_BANK_TRANSFER){
+                                                $return .= '<br>Документы оформляются...';
+                                            }
+
+                                        }
+
+                                        if($order->certificate && $order->certificate->urlFull){
+                                            $return .= '<br>' . Html::a('Акт №' . $order->certificate->number,  Url::to(['/finance/invoice/download',
+                                                    'pathToFile' => $order->certificate->urlFull,
+                                                    'redirect' => Url::to()
+                                                ]),
+                                                    ['title' => 'Скачать', 'data-pjax' => "0"]);
+                                        }
+                                    }
+
+                                }
+                                return $return;
+                            }
                         ],
                         [
                             'label' => 'Кто заказывал',
                             'value' => function($model){
                                 if(array_key_exists('id_order',$model)) {
-                                    $order = \app\models\Order::findOne($model['id_order']);
+                                    $order = Order::findOne($model['id_order']);
                                     if ($order) {
                                         if ($profile = $order->profile) {
                                             return $profile->fioFull;
                                         }
+                                    }
+                                }
+                            }
+                        ],
+                        [
+                            'label' => 'ТС',
+                            'format' => 'raw',
+                            'attribute' => 'fullInfoAboutVehicle',
+                            'value' => function($model){
+                                if(array_key_exists('id_order',$model)) {
+                                    $order = Order::findOne($model['id_order']);
+                                    if ($order) {
+                                        $car_owner = $order->carOwner;
+                                        return ShowMessageWidget::widget([
+                                            'ToggleButton' => [
+                                                'label' => ($car_owner->old_id) ? $car_owner->old_id : '#' . $car_owner->id_user
+                                            ],
+                                            'helpMessage' => $order->getFullInfoAboutVehicle(false, false, false, false)
+                                        ]);
+                                    }
+                                }
+                            },
+                            'contentOptions' => [
+                                'style' => 'font-size: 16px'
+                            ],
+                            'visible' => !Profile::notAdminOrDispetcher()
+                        ],
+                        [
+                            'label' => '',
+                            'format' => 'raw',
+                            'value' => function($model){
+                                if(array_key_exists('id_order',$model)) {
+                                    $order = Order::findOne($model['id_order']);
+                                    if ($order) {
+                                        return ShowMessageWidget::widget([
+                                            'helpMessage' => $order->getFullFinishInfo(false,
+                                                null, true, true)
+                                                . $order->getFullInfoAboutVehicle(false, false,
+                                                    false)
+                                        ]);
                                     }
                                 }
                             }
@@ -164,8 +294,6 @@ use kartik\grid\GridView;
 ?>
 
 <div class="container">
-
-
     <?=
         \yii\bootstrap\Tabs::widget([
             'id' => 'balances',
@@ -177,6 +305,7 @@ use kartik\grid\GridView;
            'items' => $items,
         ]);
     ?>
+    <br><br>
     <?= $comments?>
 
 </div>

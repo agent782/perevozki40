@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use app\components\SerializeBehaviors;
 use FontLib\Table\Type\post;
 use Yii;
@@ -10,6 +11,8 @@ use yii\bootstrap\Html;
 use app\components\widgets\ShowMessageWidget;
 use yii\helpers\Url;
 use app\models\setting\Setting;
+use yii\data\ArrayDataProvider;
+
 
 /**
  * This is the model class for table "vehicles".
@@ -39,7 +42,7 @@ use app\models\setting\Setting;
  * @property integer $body_type BodyTypeText
  * @property string $bodyTypeText
  * @property float $description
- * @property float $photo
+ * @property string $photo
  * @property LoadingType[] $loadingtypes
  * @property array $loadingtypesText
  * @property BodyType[] $bodyType
@@ -54,6 +57,7 @@ use app\models\setting\Setting;
  * @property string $brandAndNumber
  * @property string $fullInfo
  * @property PriceZone[] $priceZonesSelect
+ * @property array CalendarVehicle $calendarVehicle
 
 
 
@@ -153,6 +157,7 @@ class Vehicle extends \yii\db\ActiveRecord
     public $loadingTypeIds = [];
     public $Price_zones = [];
     public $photoFile;
+    public $calendar;
 
     /**
      * @inheritdoc
@@ -172,19 +177,29 @@ class Vehicle extends \yii\db\ActiveRecord
                 'except' => self::SCENARIO_DELETE,
                 'message' => 'Выберите хотя бы один из вариантов.'],
             [['tonnage', 'length', 'width', 'height', 'volume','loadingTypeIds',
-                'passengers',
-                'tonnage_spec', 'length_spec', 'volume_spec'],
+                'passengers', 'tonnage_spec', 'length_spec', 'volume_spec'],
                 'required',
                 'on' => [self::SCENARIO_UPDATE_TRUCK, self::SCENARIO_UPDATE_PASS,
                 self::SCENARIO_UPDATE_SPEC_BODY_manipulator, self::SCENARIO_UPDATE_SPEC_BODY_crane,
                 self::SCENARIO_UPDATE_SPEC_BODY_dump, self::SCENARIO_UPDATE_SPEC_BODY_excavator],
             ],
-            [['id_user', 'passengers', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
-            [['tonnage', 'length', 'width', 'height', 'volume'], 'number'],
+            [['id_user', 'passengers', 'longlength', 'ep', 'rp', 'lp', 'reg_license_id', 'id_vehicle_type'], 'integer'],
+//            [['tonnage', 'length', 'width', 'height', 'volume', 'tonnage_spec', 'length_spec', 'volume_spec'], 'number'],
             [['create_at', 'update_at'], 'default', 'value' => date('d.m.Y h:i')],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['rating', 'default', 'value' => 0],
-            [['bodyTypies', 'error_mes'], 'safe']
+            [['bodyTypies', 'error_mes'], 'safe'],
+            [['tonnage', 'tonnage_spec'], 'number', 'min' => 0.1, 'max' => 50,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['length'], 'number', 'min' => 0.5,'max' => 20,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['width', 'height'], 'number', 'min' => 0.5, 'max' => 4,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['volume', 'volume_spec'], 'number', 'min' => 0.01, 'max' => 200,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['volume_spec'], 'number', 'min' => 0.1, 'max' => 5,
+                'message' => 'Ввведите число. Для ввода дробного числа используйте символ "."(точка), например : 1.5 , 3.75 и т.п.'],
+            [['photo'], 'string']
         ];
     }
 
@@ -196,7 +211,8 @@ class Vehicle extends \yii\db\ActiveRecord
         $scenarios[self::SCENARIO_CHECK] = ['error_mes'];
         $scenarios[self::SCENARIO_CREATE] = [];
         $scenarios[self::SCENARIO_UPDATE_TRUCK] = [
-            'Price_zones','body_type', 'loadingTypeIds', 'tonnage', 'length', 'width', 'height', 'volume', 'longlenth'
+            'Price_zones','body_type', 'loadingTypeIds', 'tonnage', 'length'
+            , 'width', 'height', 'volume', 'longlength'
         ];
         $scenarios[self::SCENARIO_UPDATE_PASS] = [
             'Price_zones','body_type', 'passengers'
@@ -227,15 +243,15 @@ class Vehicle extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID ТС'),
             'id_user' => Yii::t('app', 'ID пользователя'),
-            'tonnage' => Yii::t('app', 'Грузо-подъемность, т.'),
-            'length' => Yii::t('app', 'Длина кузова'),
-            'width' => Yii::t('app', 'Ширина кузова'),
-            'height' => Yii::t('app', 'Высота кузова'),
-            'volume' => Yii::t('app', 'Объем кузова'),
+            'tonnage' => Yii::t('app', 'Грузо-подъемность (тонн)'),
+            'length' => Yii::t('app', 'Длина кузова, (метры)'),
+            'width' => Yii::t('app', 'Ширина кузова, (метры)'),
+            'height' => Yii::t('app', 'Высота кузова, (метры)'),
+            'volume' => Yii::t('app', 'Объем кузова, м3'),
             'passengers' => Yii::t('app', 'Количество пассажиров'),
-            'tonnage_spec' => Yii::t('app', 'Грузо-подъемность механизма, т.'),
-            'length_spec' => Yii::t('app', 'Длина механизма'),
-            'volume_spec' => Yii::t('app', 'Объем механизма'),
+            'tonnage_spec' => Yii::t('app', 'Грузо-подъемность механизма, (тонн)'),
+            'length_spec' => Yii::t('app', 'Длина механизма, (метры)'),
+            'volume_spec' => Yii::t('app', 'Объем механизма, (метры)'),
             'ep' => Yii::t('app', 'Количество "европоддонов" 0,8*1,2м'),
             'rp' => Yii::t('app', 'Количество "русских" поддонов 1,0*1,2м'),
             'lp' => Yii::t('app', 'Количество поддонов 1,2*1,2м'),
@@ -275,6 +291,40 @@ class Vehicle extends \yii\db\ActiveRecord
         return parent::beforeDelete(); // TODO: Change the autogenerated stub
     }
 
+    public function afterFind()
+    {
+        for ($i=0; $i<9; $i++){
+//            $status = CalendarVehicle::STATUS_FREE;
+            $status = null;
+            $date = date('d.m.Y', time()  + (3600*24*$i));
+//            $date = strtotime($date);
+            $date = functions::DayToStartUnixTime($date);
+            if($calendarVehicle = $this->getCalendarVehicle()->andWhere(['date' => $date])->one()){
+                $status = $calendarVehicle->status;
+            }
+            $this->calendar[] = [
+                'date' => $date,
+                'status' => $status,
+                'id_vehicle' => $this->id
+            ];
+        }
+        parent::afterFind(); // TODO: Change the autogenerated stub
+    }
+
+    public function getCalendarVehicle($date = null){
+        if($date){
+            if(is_array($date)){
+
+            } else{
+                $date_unix_day = functions::DayToStartUnixTime($date);
+                return $this->hasOne(CalendarVehicle::class, ['id_vehicle' => 'id'])
+                    ->andWhere(['date' => $date_unix_day]);
+            }
+        } else {
+            return $this->hasMany(CalendarVehicle::class, ['id_vehicle' => 'id']);
+        }
+    }
+
     public function getLoadingtypes()
     {
         return $this->hasMany(LoadingType::className(), ['id' => 'id_loadingtype'])
@@ -285,12 +335,21 @@ class Vehicle extends \yii\db\ActiveRecord
 //        return $this->hasMany(ClassifierVehicle::className(), ['id' => 'id_classifier_vehicle'])->viaTable('{{%XvehicleXclassifier_vehicle}}', ['id_vehicle' => 'id']);
 //    }
 
+
     public function getPrice_zones()
     {
         return $this->hasMany(PriceZone::className(), ['id' => 'id_price_zone'])
             ->viaTable('XvehicleXpricezone', ['id_vehicle' => 'id'])
             ->andFilterWhere([PriceZone::tableName().'.status' => PriceZone::STATUS_ACTIVE])
             ;
+    }
+
+    public function hasPriceZone($id_pricezone){
+        if (!$id_pricezone) return false;
+        foreach ($this->getPrice_zones()->all() as $price_zone){
+            if($price_zone->id == $id_pricezone) return true;
+        }
+        return false;
     }
 
     public function getIdRates()
@@ -356,26 +415,53 @@ class Vehicle extends \yii\db\ActiveRecord
     public static function getPriceZones($modelVehicle, $idVehicleType)
     {
         $result = [];
-        $priceZones = PriceZone::find()->where(['veh_type' => $idVehicleType])->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
+        $priceZones = PriceZone::find()->where(['veh_type' => $idVehicleType])
+            ->andWhere(['status' => PriceZone::STATUS_ACTIVE]);
         switch ($idVehicleType) {
             case Vehicle::TYPE_TRUCK:
                 $priceZones = $priceZones
-                    ->andFilterWhere(['<=', 'tonnage_max', $modelVehicle->tonnage])
-                    ->orFilterWhere(
-                        ['<=', 'tonnage_min', $modelVehicle->tonnage]
-                    )
-                    ->andFilterWhere(['<=', 'volume_min', $modelVehicle->volume])
-                    ->orFilterWhere(
-                        ['<=', 'volume_max', $modelVehicle->volume]
-                    )
-                    ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
-                    ->orFilterWhere(
-                        ['<=', 'length_max', $modelVehicle->length]
+                    ->andFilterWhere(['<=', 'tonnage_min', $modelVehicle->tonnage])
+//                    ->andFilterWhere(['<=', 'volume_min', $modelVehicle->volume])
+//                    ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
+                    ->andFilterWhere(
+                        ['or' ,
+                            ['<=', 'volume_min', $modelVehicle->volume],
+                            ['<=', 'length_min', $modelVehicle->length]
+                        ]
                     )
                 ;
-                (!$modelVehicle->longlength)
-                    ? $priceZones = $priceZones->andFilterWhere(['longlength' => $modelVehicle->longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
-                    : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+//                (!$modelVehicle->longlength)
+//                    ? $priceZones = $priceZones->andFilterWhere(['longlength' => $modelVehicle->longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
+//                    : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+                if(!$modelVehicle->longlength){
+                    $priceZones = $priceZones
+                        ->andFilterWhere(['longlength' => $modelVehicle->longlength])
+//                        ->andFilterWhere(['<=', 'length_min', $modelVehicle->length])
+                        ->andFilterWhere(
+                            ['or' ,
+                                ['<=', 'volume_min', $modelVehicle->volume],
+                                ['<=', 'length_min', $modelVehicle->length]
+                            ]
+                        )
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all()
+                    ;
+                } else {
+                    $priceZones = $priceZones
+                        ->andFilterWhere([
+                            'or',
+                            ['and',
+                                ['longlength' => false],
+                                ['<=', 'length_min', $modelVehicle->length]
+                            ],
+                            ['and',
+                                ['longlength' => true],
+                                ['<=', 'length_min', ($modelVehicle->length + 2)],
+                            ]
+                        ])
+                        ->orderBy(['r_km' => SORT_DESC, 'r_h' => SORT_DESC])
+                        ->all();
+                }
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $priceZones = $priceZones
@@ -491,12 +577,15 @@ class Vehicle extends \yii\db\ActiveRecord
         foreach ($this->price_zones as $price_zone) {
             $price_zone = $price_zone->getPriceZoneForCarOwner($this->id_user);
             $return .= ShowMessageWidget::widget([
-                'ToggleButton' => ['label' =>$price_zone->id],
+                'ToggleButton' => [
+                    'label' =>$price_zone->id,
+                    'class' => 'btn btn-sm'
+                ],
                 'helpMessage' => $price_zone->printHtml()
             ]);
-            $return .= ', ';
+            $return .= ' ';
         }
-        $return = substr($return, 0, -2);
+//        $return = substr($return, 0, -2);
         return $return;
     }
 
@@ -553,15 +642,20 @@ class Vehicle extends \yii\db\ActiveRecord
         return $res;
     }
 
-    public function canOrder(Order $Order){
+    public function canOrder(Order $Order, $withPriceZone = true){
         if ($this->id_vehicle_type != $Order->id_vehicle_type) return false;
+
         $hasPriceZone = 0;
         foreach ($Order->priceZones as $priceZone){
             foreach ($this->priceZonesSelect as $pZone){
                 if ($priceZone->id == $pZone->id) $hasPriceZone = 1;
             }
         }
-        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType)) && !$Order->re) return false;
+        if(!$withPriceZone){
+            $hasPriceZone = 1;
+        }
+        if((!$hasPriceZone || !$Order->hasBodyType($this->bodyType))
+            && !$Order->re) return false;
 
         switch ($this->id_vehicle_type){
             case Vehicle::TYPE_TRUCK:
@@ -650,12 +744,13 @@ class Vehicle extends \yii\db\ActiveRecord
     }
 
     public function getMinRate(Order $Order = null){
-        if(!$Order){
+        if(!$Order || !$this->canOrder($Order)){
             $PriceZones = $this->priceZonesSelect;
             $tmpPriceZone = new PriceZone();
             $tmpPriceZone->attributes = $PriceZones[0]->attributes;
             $cost_r = $tmpPriceZone->r_km;
             $cost_h = $tmpPriceZone->r_h;
+
             foreach ($this->priceZonesSelect as $priceZone){
                 if($cost_r > $priceZone->r_km || $cost_h > $priceZone->r_h) {
                     $cost_r = $priceZone->r_km;
@@ -666,7 +761,7 @@ class Vehicle extends \yii\db\ActiveRecord
             }
             return ($tmpPriceZone) ? $tmpPriceZone : null;
         }
-        if(!$this->canOrder($Order)) return null;
+//        if(!$this->canOrder($Order)) return null;
         $pricezonesForVehicle = [];
         foreach ($Order->priceZones as $OrderPriceZone) {
             foreach ($this->priceZonesSelect as $priceZone){
@@ -708,10 +803,14 @@ class Vehicle extends \yii\db\ActiveRecord
                 $return .= 'Грузоподъемность: ' . $this->tonnage . 'т. ';
                 $return .= 'Размеры (Д*Ш*В): ' . $this->length . ' * ' . $this->width . ' * ' . $this->height  .'м. ';
                 $return .= 'Объем: ' . $this->volume . 'м3. ';
-                $return .= 'Евро-поддоны(1.2*0.8м): ' . $this->ep . 'шт, ';
-                $return .= 'поддоны(1.2*1м): ' . $this->rp . 'шт, ';
-                $return .= 'поддоны(1.2*1.2м): ' . $this->lp . 'шт. ';
-                $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
+                if($this->ep)
+                    $return .= 'Евро-поддоны(1.2*0.8м): ' . $this->ep . 'шт, ';
+                if($this->rp)
+                    $return .= 'поддоны(1.2*1м): ' . $this->rp . 'шт, ';
+                if($this->lp)
+                    $return .= 'поддоны(1.2*1.2м): ' . $this->lp . 'шт. ';
+                if($this->passengers)
+                    $return .= 'Пассажиры: ' . $this->passengers . 'чел. ';
                 $return .= 'Груз-длинномер: ' . $this->longlengthIcon . '. <br>';
                 break;
             case self::TYPE_PASSENGER:
@@ -743,6 +842,7 @@ class Vehicle extends \yii\db\ActiveRecord
                 }
                 break;
         }
+        $return .= $this->description;
         return $return;
     }
 
@@ -763,4 +863,66 @@ class Vehicle extends \yii\db\ActiveRecord
         if($user->can('admin') || $user->can('dispetcher')) return false;
         return true;
     }
+
+    public function hasOrderOnDate($date, bool $icon = false){
+        $unix_date = functions::DayToStartUnixTime($date);
+        $orders = $this->getOrders()
+            ->where(['between', 'datetime_start', time()-3600*24*2, time()+3600*24*10])
+            ->andWhere(['in', 'status',[ Order::STATUS_IN_PROCCESSING, Order::STATUS_VEHICLE_ASSIGNED]])
+            ->all();
+        foreach ($orders as $order){
+            $date_start_unix = functions::DayToStartUnixTime($order->datetime_start);
+            if($date_start_unix == $unix_date) {
+                if($route = $order->route){
+                    $result = $route->distance;
+                    if($icon){
+                        if($route->distance>120){
+                            $result = Html::icon('glyphicon glyphicon-ban-circle');
+                        } else {
+                            $result = Html::icon('glyphicon glyphicon-adjust');
+                        }
+                    }
+                    return $result;
+                }
+                return true;
+            };
+        }
+        return false;
+    }
+
+    static public function ArrayCalendarParamsForRender($id_user){
+        if($id_user){
+            $user = User::findOne($id_user);
+        } else {
+            $user = Yii::$app->user->identity;
+        }
+
+        $vehicles = $user->getVehicles()
+            ->andWhere(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->all();
+        $Vehicles = [];
+        $ids_vehicles = '';
+        if($vehicles) {
+            foreach ($vehicles as $vehicle) {
+                $ids_vehicles .= $vehicle->id . ' ';
+                $calendar = $vehicle->calendar;
+                $Vehicles [$vehicle->id] = new ArrayDataProvider([
+                    'allModels' => $calendar
+                ]);
+            }
+            $ids_vehicles = substr($ids_vehicles, 0, -1);
+        }
+        return [
+            'Vehicles' => $Vehicles,
+            'ids_vehicles' => $ids_vehicles
+        ];
+    }
+
+    public function removePriceZone($id_price_zone){
+        $price_zone = PriceZone::findOne(['id' => $id_price_zone, 'status' => PriceZone::STATUS_ACTIVE]);
+        if($price_zone){
+           $this->unlink('price_zones', $price_zone, true);
+        }
+    }
+
 }

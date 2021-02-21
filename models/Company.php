@@ -46,6 +46,8 @@ use app\components\functions\functions;
  * @property integer $created_at
  * @property integer $updated_at
  * @property array $balance
+ * @property integer $balanceSum
+ * @property Document $contract
  */
 
 
@@ -117,7 +119,7 @@ class Company extends \yii\db\ActiveRecord
                 ], 'safe'],
             ['status', 'default', 'value' => self::STATUS_NEW],
             ['raiting', 'default', 'value' => 0],
-            [['created_at', 'updated_at'], 'default', 'value' => date('d.m.Y')]
+            [['created_at', 'updated_at'], 'default', 'value' => date('d.m.Y')],
         ];
     }
 
@@ -210,7 +212,9 @@ class Company extends \yii\db\ActiveRecord
     }
 
     public function getPayments(){
-        return $this->hasMany(Payment::class, ['id_company' => 'id']);
+        return $this->hasMany(Payment::class, ['id_company' => 'id'])
+            ->andWhere(['status' => Payment::STATUS_SUCCESS])
+            ;
     }
     // Компания проверена хотя бы для одного пользователя
     public function checked($id_company){
@@ -298,38 +302,79 @@ class Company extends \yii\db\ActiveRecord
             'balance' => 0,
             'orders' => []
         ];
-        foreach ($this->orders as $order) {
-
+        $orders = $this->getOrders()
+            ->andWhere(['in', 'status', [Order::STATUS_CONFIRMED_VEHICLE, Order::STATUS_CONFIRMED_CLIENT]])
+            ->all();
+        foreach ($orders as $order){
             if($order->type_payment != Payment::TYPE_CASH) {
                 $return['balance'] -= $order->cost_finish;
-//            $return[$this->id]['balance'] -= $order->cost_finish;
                 $return['orders'][] = [
                     'date' => $order->datetime_finish,
-                    'credit' => $order->cost_finish,
+                    'debit' => $order->cost_finish,
                     'description' => 'Заказ № ' . $order->id,
                     'id_order' => $order->id,
                 ];
-            }else {
+            } else {
                 $return['orders'][] = [
-                    'date' => $payment->date,
-                    'debit' => $payment->cost,
-                    'credit' => $payment->cost,
-                    'description' => $payment->comments . ' Оплачен наличными водителю.',
-                    'id_paiment' => $payment->id
+                    'date' => $order->datetime_finish,
+                    'credit' => $order->cost_finish,
+                    'debit' => $order->cost_finish,
+                    'description' => 'Заказ № ' . $order->id . '. Оплачен водителю.',
+                    'id_order' => $order->id,
                 ];
             }
         }
         foreach ($this->payments as $payment) {
+            if($payment->direction == Payment::CREDIT){
+                $return['balance'] -= $payment->cost;
+            } else {
                 $return['balance'] += $payment->cost;
-                $return['orders'][] = [
-                    'date' => $payment->date,
-                    'debit' => $payment->cost,
-                    'description' => $payment->comments,
-                    'id_paiment' => $payment->id
-                ];
+            }
+
+            $return['orders'][] = [
+                'date' => $payment->date,
+                'debit' => ($payment->direction == Payment::CREDIT) ? $payment->cost : '',
+                'credit' => ($payment->direction == Payment::DEBIT) ? $payment->cost : '',
+//                        'debit' => $payment->cost,
+                'description' => $payment->comments,
+                'id_paiment' => $payment->id
+            ];
         }
-        array_multisort($return['orders'], SORT_DESC);
+        if(is_array($return['orders'])) {
+
+            usort($return['orders'], function($a, $b)
+            {
+                if ($a["date"] == $b["date"]) {
+                    return 0;
+                }
+                return (strtotime($a["date"]) > strtotime($b["date"])) ? -1 : 1;
+            });
+        }
         return $return;
     }
+
+    public function getBalanceSum() : int {
+        return $this->balance['balance'];
+    }
+
+    public function getContract(){
+        return $this->hasOne(Document::class, ['id_company' => 'id'])
+            ->andWhere(['type' => Document::TYPE_CONTRACT_CLIENT]);
+    }
+
+    public function getInvoices(){
+        $Orders = $this->getOrders()
+            ->andFilterWhere(['type_payment' => Payment::TYPE_BANK_TRANSFER])
+            ->andFilterWhere(['in', 'paid_status', [Order::PAID_NO, Order::PAID_YES_AVANS]])
+            ->all();
+        $invoices = [];
+        foreach ($Orders as $order){
+            if($order->invoice) {
+                $invoices[] = $order->invoice;
+            }
+        }
+        return $invoices;
+    }
+
 
 }

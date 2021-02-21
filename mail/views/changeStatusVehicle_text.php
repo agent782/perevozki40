@@ -9,4 +9,7 @@
 Добрый день, <?=$profile->name?>!
 
 Статус Вашего ТС <?= $vehicle->brand . ' (' . $vehicle->regLicense->reg_number . ') ' ?> изменился.
-Текущ
+
+    Текущий статус: <?= $vehicle->statusText?>.
+
+<?= $vehicle->error_mes ?>

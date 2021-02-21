@@ -2,10 +2,13 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use Yii;
 use app\components\DateBehaviors;
 use yii\bootstrap\Html;
 use yii\helpers\Url;
+use app\models\Profile;
+use app\models\Order;
 
 /**
  * This is the model class for table "message".
@@ -36,6 +39,12 @@ class Message extends \yii\db\ActiveRecord
     const STATUS_READ = 3;
     const STATUS_DELETE = 10;
 
+    const TYPE_ALERT_CAR_OWNER_NEW_ORDER = 1;
+    const TYPE_CHANGE_PAID_STATUS = 2;
+    const TYPE_STATISTIC_CAR_OWNER = 3;
+    const TYPE_CHANGE_STATUS_VEHICLE = 4;
+    const TYPE_WARNING_STATUS_VEHICLE = 5;
+
 
     private $idPushall = "4781";
 
@@ -56,13 +65,15 @@ class Message extends \yii\db\ActiveRecord
     {
         return [
             [['type', 'status', 'id_to_user', 'id_from_user', 'email_status',
-                'sms_status', 'push_status', 'id_order'], 'integer'],
+                'sms_status', 'push_status', 'id_order',
+                'email_status', 'push_status'], 'integer'],
             [['id_to_user'], 'required'],
             [['title', 'url'], 'string', 'max' => 255],
             [['text', 'text_push'], 'string'],
             ['create_at', 'default', 'value' => date('d.m.Y H:i:s')],
             ['status','default', 'value' => self::STATUS_SEND],
-            [[ 'can_review_client', 'can_review_vehicle', 'id_to_review', 'id_from_review'], 'safe']
+            [['id_to_review', 'id_from_review'], 'default', 'value' => null],
+            [[ 'can_review_client', 'can_review_vehicle'], 'default', 'value' => 0]
         ];
     }
 
@@ -101,7 +112,11 @@ class Message extends \yii\db\ActiveRecord
         return $this->hasOne(Review::class, ['id_message' => 'id']);
     }
 
-    public function sendPush()
+    public function getOrder(){
+        return $this->hasOne(Order::class, ['id' => 'id_order']);
+    }
+
+    public function sendPush(bool $save = false)
     {
         if ($push_ids = User::findOne($this->id_to_user)->push_ids) {
             foreach ($push_ids as $push_id) {
@@ -155,7 +170,7 @@ class Message extends \yii\db\ActiveRecord
         } else {
             $this->push_status = self::STATUS_NEED_TO_SEND;
         }
-        $this->save();
+        if($save) $this->save();
     }
 
     public function  changeStatus($newStatus){
@@ -173,5 +188,68 @@ class Message extends \yii\db\ActiveRecord
         return ($newMessages)?$newMessages:null;
     }
 
+    public function AlertNewOrder($id_user, $id_order){
+        $profile = Profile::find()->where(['id_user' => $id_user])->one();
+        $order = Order::findOne($id_order);
+
+        if($profile && $order) {
+            if($order->status == $order::STATUS_NEW
+                || $order->status == $order::STATUS_IN_PROCCESSING) {
+                $this->id_order = $id_order;
+                $this->id_to_user = $id_user;
+                $this->type = self::TYPE_ALERT_CAR_OWNER_NEW_ORDER;
+                $this->title = 'НОВЫЙ ЗАКАЗ №' . $order->id;
+                $this->url = Url::toRoute('/order/vehicle', true);
+                $this->text = 'Новый заказ в поиске';
+                $this->text_push = '';
+
+                if ($profile->user->push_ids) {
+                    $this->push_status = $this::STATUS_SEND;
+                    $this->sendPush(false);
+                }
+
+                $email = [];
+                if($profile->email) $email[] = $profile->email;
+                if($profile->email2) $email[] = $profile->email2;
+                if(functions::sendEmail(
+                    $profile->email,
+                    null,
+                    $this->title,
+                    [
+                        'name' => $profile->name,
+                        'id_order' => $id_order
+                    ],
+                    [
+                        'html' => 'views/Order/newOrder_html',
+                       'text' => 'views/Order/newOrder_text',
+                    ]
+                )){
+                    $this->email_status = self::STATUS_SEND;
+                    $this->create_at = date('d.m.Y H:i', time());
+                    $this->save();
+                    $alert_car_owner_ids = $order->alert_car_owner_ids;
+                    $alert_car_owner_ids[$id_user] = time();
+                    $order->alert_car_owner_ids = $alert_car_owner_ids;
+                    $order->save(false);
+                } else {
+                    $this->email_status = $this::STATUS_NEED_TO_SEND;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    static public function sendPushToUser($id_user, $title, $mes = null, $save = false, $url = null){
+        $mes = new Message([
+            'id_to_user' => $id_user,
+            'title' => $title,
+            'text_push' => $mes,
+            'url' => $url,
+
+        ]);
+
+        $mes->sendPush($save);
+    }
 
 }

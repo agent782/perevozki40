@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\functions\functions;
 use Yii;
 
 /**
@@ -79,6 +80,40 @@ class OrdersFinishContacts extends \yii\db\ActiveRecord
         $this->driver_phone = $driver_phone;
         $this->vehicle_brand = $vehicle_brand;
         $this->vehicle_number = $vehacle_number;
+    }
 
+    public function getVehicleInfo(){
+        return $this->vehicle_brand . ' (' . $this->vehicle_number . ')';
+    }
+
+    public function getCarOwnerInfo($phone = true){
+        $return = $this->car_owner_surname . ' '
+            . $this->car_owner_name;
+        if($phone) {
+            $return .= ' ('
+                . $this->car_owner_phone . ')';
+        }
+        return $return;
+    }
+
+    public function getDriverInfo($phone = true){
+        if(!$this->driver_phone) return '';
+        $return = $this->driver_surname . ' '
+            . $this->driver_name;
+        if($phone) {
+            $return .= ' ('
+                . $this->driver_phone . ')';
+        }
+        return $return;
+    }
+
+    public function getClientInfo($phone = true, $html = true){
+        $return = $this->client_surname . ' ';
+        $return .= $this->client_name;
+        if($phone) {
+            $return .= ' (' . functions::getHtmlLinkToPhone($this->client_phone) . ')';
+        }
+
+        return $return;
     }
 }

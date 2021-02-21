@@ -36,12 +36,12 @@
             <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A8f81f9ffabdf1f909e590133b384865c439a8744c6c43f9ec0d37eaef523537d&amp;source=constructor" width="90%" height="200" frameborder="0"></iframe>
             <br>
             <p class="h4">График работы:</p>
-            <p>Пн: 9 - 18</p>
-            <p>Вт: 9 - 18</p>
-            <p>Ср: 9 - 18</p>
-            <p>Чт: 9 - 18</p>
-            <p>Пт: 9 - 18</p>
-            <p>Сб: 10 - 15</p>
+            <p>Пн: 9 - 17</p>
+            <p>Вт: 9 - 17</p>
+            <p>Ср: 9 - 17</p>
+            <p>Чт: 9 - 17</p>
+            <p>Пт: 9 - 16</p>
+            <p>Сб. Вс - удаленно</p>
         </div>
     </div>
 </div>

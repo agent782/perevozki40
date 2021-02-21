@@ -1,5 +1,7 @@
 <?php
-/**
+
+/* @var $this \yii\web\View
+*
  * Created by PhpStorm.
  * User: Admin
  * Date: 05.01.2019
@@ -11,6 +13,12 @@ use yii\bootstrap\Html;
 use app\models\Vehicle;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use app\models\CalendarVehicle;
+use app\components\functions\functions;
+
+$this->registerJs("
+    setInterval(() => $.pjax.reload({container:'#pjax_new_orders'}), 2*60*1000); 
+");
 ?>
 <div>
 <?= GridView::widget([
@@ -21,7 +29,7 @@ use yii\bootstrap\Tabs;
 //        'responsive'=>true,
 //        'floatHeader'=>false,
     'options' => [
-        'class' => 'minRoute'
+//        'class' => 'minRoute'
     ],
 //        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
 //        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
@@ -29,6 +37,11 @@ use yii\bootstrap\Tabs;
 //        'persistResize'=>true,
     'responsiveWrap' => false,
     'pjax'=>true,
+    'pjaxSettings' => [
+        'options' => [
+            'id' => 'pjax_new_orders'
+        ]
+    ],
     'columns' => [
 //        [
 //            'class' => 'kartik\grid\ExpandRowColumn',
@@ -48,11 +61,12 @@ use yii\bootstrap\Tabs;
 //        ],
         'id',
         [
+            'label' => 'Дата/время',
             'attribute' => 'datetime_start',
-            'options' => [
-//                    'style' =>'width: 100px',
-            ],
-            'contentOptions'=>['style'=>'white-space: normal;']
+            'contentOptions'=>[
+                'style'=>'white-space: normal;',
+                'class' => 'h5'
+            ]
         ],
         [
             'label' => 'Маршрут',
@@ -79,7 +93,7 @@ use yii\bootstrap\Tabs;
         [
             'label' => 'Подходит для Ваших ТС',
             'format' => 'raw',
-            'value' => function($model){
+            'value' => function(Order $model){
                 $res = '';
                 $vehicles = \app\models\Vehicle::find()
                     ->where([
@@ -89,18 +103,57 @@ use yii\bootstrap\Tabs;
                 if(!count($vehicles)) return;
                 foreach ($vehicles as $vehicle) {
                     if ($vehicle->canOrder($model)) {
-                        $res .= $vehicle->regLicense->reg_number . '<br>';
+                        $calendar = $vehicle->getCalendarVehicle($model->datetime_start)->one();
+                        $res .= $vehicle->regLicense->reg_number . ' ';
+                        if ($calendar) {
+                            $status = $calendar->status;
+                        } else {
+                            $status = "";
+                        }
+                        $res .= Html::radioList('calendar' . $vehicle->id,
+                            $status,
+                            CalendarVehicle::getArrayListStatuses(),
+                            [
+                                'style' => 'font-size: 8px; display:inline-block',
+                                'onchange' =>
+                                    '
+                                        $.ajax({
+                                                url: "/calendar-vehicle/ajax-change-status",
+                                                type: "POST",
+                                                dataType: "json",
+                                                data: {
+                                                    date: ' . functions::DayToStartUnixTime($model->datetime_start) . ',
+                                                    id_vehicle: ' . $vehicle->id . ',
+                                                    status: $(this).find("input:checked").val()
+                                                },
+                                                
+                                                success: function(data){
+//                                                        alert(data);
+                                                },
+                                                error: function(){
+                                                    alert("Ошибка на сервере!")
+                                                }
+                                         });
+                                    '
+                            ]) . '<br>';
                     }
                 }
                 return $res;
-            }
+            },
+            'contentOptions' => [
+                'class' => 'h4'
+            ]
         ],
+//        [
+//            'label' => 'Заказчик',
+//            'format' => 'raw',
+//            'attribute' => 'clientInfo',
+//            'value' => function (Order $model){
+//                return $model->getClientInfo(true, false);
+//            }
+//        ],
         [
-            'label' => 'Заказчик',
-            'format' => 'raw',
-            'attribute' => 'clientInfo'
-        ],
-        [
+            'label' => 'Тип оплаты',
             'attribute' => 'paymentText',
             'format' => 'raw'
         ],

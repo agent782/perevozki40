@@ -4,13 +4,18 @@ namespace app\modules\finance\controllers;
 
 use app\components\functions\functions;
 use app\models\Company;
+use app\models\Invoice;
+use app\models\Message;
+use app\models\Order;
 use app\models\OrderSearch;
 use app\models\Profile;
 use app\models\setting\SettingFinance;
 use Yii;
 use app\models\Payment;
 use app\models\PaymentSearch;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use yii\bootstrap\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -32,6 +37,15 @@ class PaymentController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['admin', 'buh']
+                    ]
+                ]
+            ]
         ];
     }
 
@@ -43,7 +57,9 @@ class PaymentController extends Controller
     {
         $searchModel = new PaymentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-//        $dataProvider->query->andWhere(['id_user' => 73]);
+        $dataProvider->pagination = [
+            'pageSize' => 100
+        ];
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -70,19 +86,56 @@ class PaymentController extends Controller
      */
     public function actionCreate()
     {
+        if (Yii::$app->request->isPjax){
+            $id_company = Yii::$app->request->post('id_company');
+            $form_id = Yii::$app->request->post('form_id');
+            $model = new Payment();
+
+            $invoices_not_paid = ArrayHelper::map(Company::findOne(
+                $id_company)->getInvoices(),
+                'id_order',
+                'labelInvoices');
+
+            return $this->renderAjax('chkboxlist', [
+                'i' => $id_company,
+                'form_id' => $form_id,
+                'model' => $model,
+                'invoices' => $invoices_not_paid
+            ]);
+        }
         $model = new Payment();
         $model->date = date('d.m.Y');
         $model->id_implementer = Yii::$app->user->id;
         $model->id_our_company = SettingFinance::find()->one()->id_default_company;
-//        $model->status = $model::STATUS_SUCCESS;
-//        $model->calculation_with = $model::CALCULATION_WITH_CLIENT;
-//        $model->direction = $model::DEBIT;
-//        $model->type = Payment::TYPE_BANK_TRANSFER;
+        $model->status = $model::STATUS_SUCCESS;
+        $model->calculation_with = $model::CALCULATION_WITH_CLIENT;
+        $model->direction = $model::DEBIT;
+        $model->type = Payment::TYPE_BANK_TRANSFER;
         $companies = Company::getArrayForAutoComplete();
         $profiles = Profile::getArrayForAutoComplete();
         $our_companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
         if ($model->load(Yii::$app->request->post())) {
+//            return var_dump($model);
+
             if($model->save()){
+                if($selected_orders = $model->invoices){
+                    foreach ($selected_orders as $order_id){
+                        $order = Order::findOne($order_id);
+                        if($order->paid_status != Order::PAID_YES) {
+                            $order->paid_status = Order::PAID_YES;
+                            $order->scenario = Order::SCENARIO_CHANGE_PAID_STATUS;
+                            $order->date_paid = $model->date;
+                            if($order->save()){
+//                                $order->sendMesAfterChangePaidStatus();
+                                Message::sendPushToUser(
+                                    1,
+                                    '№' . $order->id . ' оплачен клиентом'
+                                );
+                            }
+                        }
+                    }
+                }
+
                 functions::setFlashSuccess('Платеж проведен.');
             } else {
                 functions::setFlashWarning('Платеж не проведен.');
@@ -109,12 +162,24 @@ class PaymentController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $companies = Company::getArrayForAutoComplete();
+        $profiles = Profile::getArrayForAutoComplete();
+        $our_companies = ArrayHelper::map(Yii::$app->user->identity->profile->companies, 'id', 'name');
+
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                functions::setFlashSuccess('Платеж проведен.');
+            } else {
+                functions::setFlashWarning('Платеж не проведен.');
+            }
+            return $this->redirect('index');
         }
 
         return $this->render('update', [
             'model' => $model,
+            'companies' => $companies,
+            'profiles' => $profiles,
+            'our_companies' => $our_companies
         ]);
     }
 
@@ -125,12 +190,18 @@ class PaymentController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-//    public function actionDelete($id)
-//    {
-//        $this->findModel($id)->delete();
-//
-//        return $this->redirect(['index']);
-//    }
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        $model->status = $model::STATUS_CANCELED;
+
+        if($model->save()){
+            functions::setFlashSuccess('Платеж отменен.');
+        } else {
+            functions::setFlashWarning('Ошибка. Платеж не отменен');
+        }
+        return $this->redirect(['index']);
+    }
 
     /**
      * Finds the Payment model based on its primary key value.
@@ -158,5 +229,16 @@ class PaymentController extends Controller
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionChkboxlistInvoices(){
+        if (Yii::$app->request->isPjax){
+            $id_company = Yii::$app->request->post('id_company');
+            $form_id = Yii::$app->request->post('form_id');
+            return $this->renderAjax('chkboxlist', [
+                'i' => $id_company,
+                'form_id' => $form_id
+            ]);
+        }
     }
 }

@@ -124,8 +124,7 @@ class DocumentController extends Controller
                     $urlFiles[] = $path.'.'.$file->extension;
                     $i++;
                 }
-
-//                $model->url_upload = $pdfContract.'.'.$model->upload_file->extension;
+                //                $model->url_upload = $pdfContract.'.'.$model->upload_file->extension;
 
                 $model->url_upload = serialize($urlFiles);
 
@@ -203,14 +202,17 @@ class DocumentController extends Controller
         $files = [];
         switch ($modelDoc->type) {
             case Document::TYPE_CONTRACT_CLIENT:
-                foreach (unserialize($modelDoc->url_upload) as $filename) {
-                    $files[] = Yii::getAlias('@client_contracts_uploads/' . $filename);
+                if($modelDoc->url_upload) {
+                    foreach (unserialize($modelDoc->url_upload) as $filename) {
+                        $files[] = Yii::getAlias('@client_contracts_uploads/' . $filename);
+                    }
                 }
         }
-
-        foreach ($files as $file) {
-            if (file_exists($file)) {
-                unlink($file);
+        if($files) {
+            foreach ($files as $file) {
+                if (file_exists($file)) {
+                    unlink($file);
+                }
             }
         }
         $modelDoc->status = Document::STATUS_UNSIGNED;

@@ -9,6 +9,8 @@ use app\models\User;
 use app\models\UserSearch;
 use yii\web\Controller;
 use yii\filters\AccessControl;use Yii;
+use app\models\VehicleSearch;
+use app\models\Vehicle;
 use yii\data\SqlDataProvider;
 use app\models\auth_item;
 
@@ -23,23 +25,25 @@ class UsersController extends Controller
      *
      */
 
-//    public function behaviors()
-//    {
-//        return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'rules' => [
-////                    [
-////                        'actions' => ['check-users-updates'],
-////                        'allow' => true,
-////                        'roles' => ['@']
-////                    ],
-////                    [
-////                        'allow' => true,
-////                        'roles' => ['admin']
-////                    ],
-//                ]]];
-//    }
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'update', 'delete', 'check-users-updates', 'confirm-profile-update',
+                            'cancelProfileUpdate'],
+                        'allow' => true,
+                        'roles' => ['admin', 'buh', 'dispetcher']
+                    ],
+                    [
+                        'actions' => ['select-roles'],
+                        'allow' => true,
+                        'roles' => ['admin']
+                    ]
+                ]]];
+    }
 
 
 
@@ -54,11 +58,35 @@ class UsersController extends Controller
 
     public function actionView($id)
     {
+        $this->layout = functions::getLayout();
         $model = $this->findModel($id);
         $profile = $model->profile;
-        return $this->render('view', [
-            'model' => $model,'profile' => $profile,
-        ]);
+
+        $searchModel = new VehicleSearch();
+//        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK,
+            Vehicle::SORT_TRUCK);
+        $dataProviderTruck->query->andFilterWhere(['id_user' => $id]);
+        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER,
+            Vehicle::SORT_PASS);
+        $dataProviderPass->query->andFilterWhere(['id_user' => $id]);
+        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC,
+            Vehicle::SORT_SPEC);
+        $dataProviderSpec->query->andFilterWhere(['id_user' => $id]);
+        $dataProviderDeleted = $searchModel->search(Yii::$app->request->queryParams, [1,2,3], Vehicle::SORT_DATE_CREATE, [Vehicle::STATUS_DELETED]);
+        $dataProviderDeleted->query->andFilterWhere(['id_user' => $id]);
+
+
+        return $this->render('view',
+            array_merge([
+            'model' => $model,
+            'profile' => $profile,
+            'searchModelVehicle' => $searchModel,
+            'dataProviderTruck' => $dataProviderTruck,
+            'dataProviderPass' => $dataProviderPass,
+            'dataProviderSpec' => $dataProviderSpec,
+            'dataProviderDeleted' => $dataProviderDeleted,
+        ], User::arrayBalanceParamsForRender($id), Vehicle::ArrayCalendarParamsForRender($id)));
     }
 
     /**
@@ -66,18 +94,18 @@ class UsersController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Test();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
-        }
-    }
+//    public function actionCreate()
+//    {
+//        $model = new Test();
+//
+//        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+//            return $this->redirect(['view', 'id' => $model->id]);
+//        } else {
+//            return $this->render('create', [
+//                'model' => $model,
+//            ]);
+//        }
+//    }
 
     /**
      * Updates an existing Test model.
@@ -253,5 +281,23 @@ class UsersController extends Controller
         }
 
         return $this->redirect($redirect);
+    }
+
+    public function actionSelectRoles(){
+        $post = Yii::$app->request->post();
+        $id_user = $post['id_user'];
+        $selected_roles = $post['selected_roles'];
+        if($selected_roles){
+            if($user = User::findOne($id_user)){
+                $auth = Yii::$app->authManager;
+                $auth->revokeAll($id_user);
+                foreach ($selected_roles as $selected_role){
+                    $auth->assign($auth->getRole($selected_role), $id_user);
+                }
+                return true;
+            }
+        }
+
+        echo false;
     }
 }

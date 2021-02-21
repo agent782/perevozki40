@@ -2,11 +2,16 @@
 
 namespace app\modules\admin\controllers;
 use app\components\functions\functions;
+use app\models\CalendarVehicle;
+use app\models\Message;
 use app\models\Order;
+use app\models\Route;
 use app\models\User;
 use app\models\UserSearch;
+use function GuzzleHttp\Promise\all;
 use yii\web\Controller;
-use yii\filters\AccessControl;use Yii;
+use yii\filters\AccessControl;
+use Yii;
 use yii\data\SqlDataProvider;
 use app\models\auth_item;
 use yii\web\HttpException;
@@ -36,6 +41,20 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
+        $order = Order::findOne(274);
+//        var_dump( CalendarVehicle::findOne([
+//            'id_vehicle' => 129
+//            ,
+//            'date' => functions::DayToStartUnixTime($order->datetime_start)
+//        ]));
+//        return;
+        return var_dump($order->getSortSuitableVehicles(true));
+//        return var_dump($order);
+//        return var_dump($order->getSuitableVehicles());
+
+//        return var_dump($order->getSortArrayCarOwnerIdsForFind());
+
+
         return $this->render('index');
     }
 

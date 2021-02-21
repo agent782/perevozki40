@@ -11,7 +11,8 @@
 
 ?>
 <div class="container">
-<div class="col-lg-4">
+    <div class="row">
+<div class="col-lg-6">
     <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($OrderModel, 'id_vehicle')->radioList($vehicles
         ,[
@@ -46,7 +47,8 @@
         ActiveForm::end();
     ?>
 </div>
-<div class="col-lg-8">
-    <?= $OrderModel->getFullNewInfo(true,false, false)?>
+<div class="col-lg-6">
+    <?= $OrderModel->getFullNewInfo(false, false, false)?>
+</div>
 </div>
 </div>

@@ -14,6 +14,7 @@ use app\models\Profile;
 use app\models\ResetPasswordSmsForm;
 use app\models\settings\SettingSMS;
 use app\models\SignupPhoneForm;
+use app\models\Subscribe;
 use app\models\User;
 use app\models\VerifyPhone;
 use app\models\SignupUserForm;
@@ -67,8 +68,41 @@ class DefaultController extends Controller
     }
 
     public function actionIndex(){
+        $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
+
+        $SubscribeModel = new Subscribe();
+
+        if($SubscribeModel->load(Yii::$app->request->post())){
+            if(!$SubscribeModel->save()){
+                functions::setFlashWarning('Подписка не активировалась. Попробуйте еще раз.');
+                $this->redirect('index');
+            }
+            functions::setFlashSuccess('Подписка активирована! Спасибо.');
+        }
+
 //        $auth = new auth_item();
-        return $this->render('index');
+        return $this->render('index', [
+            'SubscribeModel' => $SubscribeModel
+        ]);
+    }
+
+    public function actionIndex2(){
+        $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
+        $this->layout = '@app/web/guest_folder/default3';
+        $SubscribeModel = new Subscribe();
+
+        if($SubscribeModel->load(Yii::$app->request->post())){
+            if(!$SubscribeModel->save()){
+                functions::setFlashWarning('Подписка не активировалась. Попробуйте еще раз.');
+                $this->redirect('index');
+            }
+            functions::setFlashSuccess('Подписка активирована! Спасибо.');
+        }
+
+//        $auth = new auth_item();
+        return $this->render('@app/web/guest_folder/index2', [
+            'SubscribeModel' => $SubscribeModel
+        ]);
     }
 
     public function actionLogin()
@@ -112,7 +146,7 @@ class DefaultController extends Controller
 
     //Регистрация
     public function actionSignup(){
-        return $this->redirect('/');
+//        return $this->redirect('/');
 
         $modelUser = new User();
         $modelProfile = new Profile();
@@ -149,11 +183,12 @@ class DefaultController extends Controller
 
                     if($session->get('timeout_new_code') > time()) {
 //                        return 1 . $session->get('timeout_new_code');
-                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 5 минут после последней попытки');
+                        functions::setFlashWarning('Повторная отправка смс-кода возможна через 
+                            5 минут после последней попытки');
                         return $this->render('signup2', compact(['modelVerifyPhone', 'modelProfile', 'modelUser']));
                     }
                     $modelVerifyPhone->generateCode();
-                    $sms = new Sms($modelUser->username, $modelVerifyPhone->getVerifyCode());
+                    $sms = new Sms($modelUser->username, 'Код: ' . $modelVerifyPhone->getVerifyCode() . '.');
 //                     Отправка кода
                     if (!$sms->sendAndSave()) {
                         functions::setFlashWarning('Ошибка на сервере. Попробуйте позже.');
@@ -197,6 +232,9 @@ class DefaultController extends Controller
                         if (Yii::$app->getUser()->login($modelUser)) {
                             $modelProfile->id_user = $modelUser->id;
                             if ($modelProfile->save()) {
+                                $user = $modelProfile->user;
+                                $user->status = User::STATUS_ACTIVE;
+                                $user->save(false);
                                 emails::sendAfterUserRegistration($modelProfile->id_user);
 //                                emails::sendAfterUserRegistration(73);
 //                                $session->removeAll();
@@ -277,6 +315,18 @@ class DefaultController extends Controller
                 return \yii\widgets\ActiveForm::validate($model);
         }
         throw new \yii\web\BadRequestHttpException('Bad request!');
+    }
+
+    public function actionValidateSubscribe()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+            $model = new Subscribe();
+            if($model->load(Yii::$app->request->post()))
+                return \yii\widgets\ActiveForm::validate($model);
+        }
+        throw new \yii\web\BadRequestHttpException('Ошибка на сервере. Неверный запрос.');
     }
 
     public function actionResetPasswordSms(){
@@ -416,6 +466,7 @@ class DefaultController extends Controller
     public function actionAbout(){
         return $this->render('/default/about');
     }
+
 
 }
 

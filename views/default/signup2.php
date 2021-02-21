@@ -36,8 +36,8 @@ $form = ActiveForm::begin([
         ],
         'options' => [
             'type' => 'tel',
-            'autocorrect' => 'off',
-            'autocomplete' => 'tel',
+//            'autocorrect' => 'off',
+//            'autocomplete' => 'tel',
         ]
     ])?>
 

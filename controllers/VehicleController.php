@@ -20,6 +20,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\models\LoadingType;
 use yii\filters\AccessControl;
+use yii\data\ArrayDataProvider;
 
 use yii\web\UploadedFile;
 
@@ -50,11 +51,11 @@ class VehicleController extends Controller
                     [
                         'allow' => true,
                         'actions' => ['index', 'create', 'select-pricezones', 'update-pricezones',
-                            'validate-vehicle-form', 'validate-vehicle'],
-                        'roles' => ['car_owner']
+                            'validate-vehicle-form', 'validate-vehicle', 'calendar'],
+                        'roles' => ['car_owner', 'vip_car_owner']
                     ],
                     [
-                        'actions' => ['update', 'view', 'delete', 'full-delete'],
+                        'actions' => ['update', 'view', 'delete', 'full-delete','remove-price-zone-of-vehicle'],
                         'allow' => true,
                         'roles' => ['car_owner'],
                             'matchCallback' => function ($rule, $action) {
@@ -65,7 +66,7 @@ class VehicleController extends Controller
                             }
                             return false;
                         },
-                    ]
+                    ],
                 ],
             ]
         ];
@@ -88,9 +89,14 @@ class VehicleController extends Controller
     {
         $searchModel = new VehicleSearch();
 //        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProviderTruck = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_TRUCK, Vehicle::SORT_TRUCK, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
-        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_PASSENGER, Vehicle::SORT_PASS, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
-        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC, Vehicle::SORT_SPEC, [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]);
+        $dataProviderTruck = $searchModel
+            ->search(Yii::$app->request->queryParams,
+                Vehicle::TYPE_TRUCK,
+                Vehicle::SORT_TRUCK);
+        $dataProviderPass = $searchModel->search(Yii::$app->request->queryParams,
+            Vehicle::TYPE_PASSENGER, Vehicle::SORT_PASS);
+        $dataProviderSpec = $searchModel->search(Yii::$app->request->queryParams, Vehicle::TYPE_SPEC,
+            Vehicle::SORT_SPEC);
         $dataProviderDeleted = $searchModel->search(Yii::$app->request->queryParams, [1,2,3], Vehicle::SORT_DATE_CREATE, [Vehicle::STATUS_DELETED]);
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -157,6 +163,7 @@ class VehicleController extends Controller
                 break;
             case 'create_next2':
                 $VehicleForm=$session->get('VehicleForm');
+
                 if(!$VehicleForm || !$VehicleForm->vehicleTypeId) return $this->redirect($redirect);
 
 //                switch ($VehicleForm->vehicleTypeId){
@@ -183,6 +190,11 @@ class VehicleController extends Controller
                 break;
             case 'create_finish':
                 if($session->get('VehicleForm'))$VehicleForm = $session->get('VehicleForm');
+                if(!$VehicleForm->vehicleTypeId || !$VehicleForm->bodyTypeId
+                    || (!$VehicleForm->loadingTypeIds && $VehicleForm->vehicleTypeId == Vehicle::TYPE_TRUCK)) {
+                    functions::setFlashWarning('Внутренняя ошибка сервера. Попробуйте позже или обратитесь к администратору.');
+                    return $this->redirect(['/vehicle/create', 'id_user' => $id_user, 'redirect' => $redirect]);
+                }
                 if($VehicleForm->load(Yii::$app->request->post()) && $modelRegLicense->load(Yii::$app->request->post())) {
                     $session->set('VehicleForm', $VehicleForm);
                     $session->set('modelRegLicense', $modelRegLicense);
@@ -334,8 +346,26 @@ class VehicleController extends Controller
                     $modelRegLicense->id . '_2'
                 );
                 if ($tmpImage2) $modelRegLicense->image2 = $tmpImage2;
+                $model->status = Vehicle::STATUS_ONCHECKING;
                 if ($model->save() && $modelRegLicense->save()) {
-                    Yii::$app->session->setFlash('success', 'ТС сохранено.');
+                    functions::setFlashSuccess('ТС создано и отправлено на модерацию.');
+
+                    functions::sendEmail(
+                        [
+                            Yii::$app->params['logistEmail']['email'],
+                        ],
+                        null,
+                        'ТС изменено. ТС на проверке!',
+                        [
+                            'vehicle' => $model,
+                            'profile' => Profile::findOne(['id_user' => $model->id_user]),
+                        ],
+
+                        [
+                            'html' => 'views/toAdmin/VehicleOnCheck',
+                            'text' => 'views/toAdmin/VehicleOnCheck',
+                        ]
+                    );
 //                    return $this->redirect('/vehicle/index');
                 } else {
                     $model = $modelOLD;
@@ -410,12 +440,51 @@ class VehicleController extends Controller
                 $longlength = $post['longlength'];
                 $priceZones = $priceZones
                     ->andFilterWhere(['<=', 'tonnage_min', $tonnage])
-                    ->andFilterWhere(['<=', 'volume_min', $volume])
-                    ->andFilterWhere(['<=', 'length_min', $length])
+                    ->andFilterWhere(
+                        ['or' ,
+                            ['<=', 'volume_min', $volume],
+                            ['<=', 'length_min', $length]
+                        ]
+                    )
+//                    ->andFilterWhere(['<=', 'volume_min', $volume])
+//                    ->andFilterWhere(['<=', 'length_min', $length])
                 ;
-                (!$longlength)
-                ? $priceZones = $priceZones->andFilterWhere(['longlength' => $longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
-                : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+//                (!$longlength)
+//                ? $priceZones = $priceZones
+//                    ->andFilterWhere(['longlength' => $longlength])->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all()
+//                : $priceZones = $priceZones->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])->all();
+
+                if(!$longlength){
+                    $priceZones = $priceZones
+                        ->andFilterWhere(['longlength' => $longlength])
+//                        ->andFilterWhere(['<=', 'length_min', $length])
+                        ->andFilterWhere(
+                            ['or' ,
+                                ['<=', 'volume_min', $volume],
+                                ['<=', 'length_min', $length]
+                            ]
+                        )
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all()
+                    ;
+                } else {
+                    $priceZones = $priceZones
+                        ->andFilterWhere([
+                            'or',
+                            ['and' ,
+                                ['longlength' => false],
+                                ['<=', 'length_min', $length]
+                            ],
+                            ['and' ,
+                                ['longlength' => true],
+                                ['<=', 'length_min', ($length + 2)],
+                            ]
+                        ])
+                        ->orderBy(['r_km'=>SORT_DESC, 'r_h'=>SORT_DESC])
+                        ->all()
+                    ;
+                }
+
                 break;
             case Vehicle::TYPE_PASSENGER:
                 $passengers = $post['passengers'];
@@ -550,5 +619,56 @@ class VehicleController extends Controller
         throw new \yii\web\BadRequestHttpException('Bad request!');
     }
 
+    public function actionCalendar($id_user = null){
+        if($id_user){
+            $user = User::findOne($id_user);
+        } else {
+            $user = Yii::$app->user->identity;
+        }
 
+        $vehicles = $user->getVehicles()
+            ->andWhere(['in', 'status', [Vehicle::STATUS_ACTIVE, Vehicle::STATUS_ONCHECKING]])
+            ->all();
+        $Vehicles = [];
+        $ids_vehicles = '';
+        if($vehicles) {
+            foreach ($vehicles as $vehicle) {
+                $ids_vehicles .= $vehicle->id . ' ';
+                $calendar = $vehicle->calendar;
+                $Vehicles [$vehicle->id] = new ArrayDataProvider([
+                    'allModels' => $calendar
+                ]);
+            }
+            $ids_vehicles = substr($ids_vehicles, 0, -1);
+        }
+
+        return $this->render('calendar', [
+            'Vehicles' => $Vehicles,
+            'ids_vehicles' => $ids_vehicles
+        ]);
+    }
+
+    public function actionRemovePriceZoneOfVehicle($id, $id_price_zone, $redirect){
+        $vehicle = Vehicle::findOne($id);
+        if(!$vehicle){
+            functions::setFlashWarning('Ошибка на сервере. Попробуйте позже');
+            return $this->redirect($redirect);
+        }
+        if($vehicle->hasPriceZone($id_price_zone)){
+            if($vehicle->getPrice_zones()->count() < 2){
+                functions::setFlashWarning('Нельзя удалить единственный тариф у ТС!');
+            } else {
+                $vehicle->removePriceZone($id_price_zone);
+                functions::setFlashSuccess('Тариф №' . $id_price_zone . ' удален у ' . $vehicle->brandAndNumber
+                    . '. Вы можете восстановить его, отредактировав ТС в разделе "Мой транспорт"'
+                );
+            }
+
+            return $this->redirect($redirect);
+        } else {
+            functions::setFlashWarning('Тариф уже удален.');
+            return $this->redirect($redirect);
+        }
+
+    }
 }

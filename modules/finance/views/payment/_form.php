@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\jui\DatePicker;
 use yii\helpers\Url;
 use yii\web\JsExpression;
+use yii\widgets\Pjax;
 
 
 /* @var $this yii\web\View */
@@ -36,6 +37,9 @@ use yii\web\JsExpression;
     <?= $form->field($model,'calculation_with')->radioList($model->getArrayCalculationWith())?>
     <?= $form->field($model, 'type')->radioList(\app\models\TypePayment::getTypiesPaymentsArray(), [
         'encode' => false,
+        'onchange' => new JsExpression('
+            $("#chkboxlist-invoices").html("");
+        ')
     ]) ?>
     <?= $form->field($model, 'cost')->input('tel') ?>
 
@@ -48,6 +52,7 @@ use yii\web\JsExpression;
     <?= $form->field($model, 'id_user')->hiddenInput(['id' => 'payer_user', 'readonly' => true]) ?>
 
     <?= \yii\jui\AutoComplete::widget([
+            'id' => 'form',
             'clientOptions' => [
                 'source' => $profiles,
                 'autoFill' => true,
@@ -76,6 +81,17 @@ use yii\web\JsExpression;
             'autoFill' => true,
             'select' => new \yii\web\JsExpression('function(event, ui){
                 $("#payer_company").val(ui.item.id);
+                $.pjax.reload({
+                        url : "/finance/payment/create",
+                        container: "#chkboxlist-invoices",
+//                        dataType:"json",
+                        type: "POST", 
+                        data: {  
+                              "id_company" : ui.item.id,
+                              "form_id" : "' . $form->id . '",
+//                              "model" : "' . serialize($model) . '"
+                         }
+                    })
             }'),
             'change' => new JsExpression('function(event, ui) {               
                     if(!ui.item) {
@@ -92,6 +108,14 @@ use yii\web\JsExpression;
     </div>
     <?= $form->field($model, 'id_implementer')->hiddenInput(['id' => 'implementer'])->label(false) ?>
 
+    <?php
+        $pjax = Pjax::begin(['id' => 'chkboxlist-invoices']);
+    ?>
+
+    <?php
+        $pjax::end();
+    ?>
+
     <?= $form->field($model, 'id_our_company')->dropDownList($our_companies)?>
 
     <?= $form->field($model, 'status')->radioList([
@@ -101,7 +125,7 @@ use yii\web\JsExpression;
     <?= $form->field($model, 'comments')->textarea(['rows' => 6]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Отметить заказы', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'select']) ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success', 'name' => 'button', 'value' => 'select']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
