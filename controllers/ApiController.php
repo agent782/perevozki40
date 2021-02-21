@@ -1,6 +1,4 @@
-
 <?php
-
 namespace app\controllers;
 
 use app\components\ApiComponent;
