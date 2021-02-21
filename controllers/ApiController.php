@@ -60,14 +60,16 @@ public function beforeAction($action)
                                 $firebase_ids = $User->firebase_ids;
                                 $firebase_ids[] = $request->firebase_id;
                                 $User->firebase_ids = $firebase_ids;
+                                $User->scenario = $User::SCENARIO_SAVE;
+                                $User->save();
                             }
                         } else {
 				            $firebase_ids = [];
                             $firebase_ids [] = $request->firebase_id;
 				            $User->firebase_ids = $firebase_ids;
+                            $User->scenario = $User::SCENARIO_SAVE;
+                            $User->save();
                         }
-			            $User->scenario = $User::SCENARIO_SAVE;
-                        $User->save();
                     }
                     $return = [
                         'status' => 'OK'
@@ -101,7 +103,7 @@ public function beforeAction($action)
          //   if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
 		if(($key=array_search($request->firebase_id, $User->firebase_ids)) !== false){ 
 			$firebase_ids = $User->firebase_ids;
-	        	        unset($firebase_ids[$key]);
+            unset($firebase_ids[$key]);
 			$User->firebase_ids = $firebase_ids;
 			if(!$User->firebase_ids) $User->firebase_ids = null;
 			$User->scenario = $User::SCENARIO_SAVE;
