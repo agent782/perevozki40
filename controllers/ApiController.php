@@ -65,7 +65,6 @@ public function beforeAction($action)
                         }
 			            $User->scenario = $User::SCENARIO_SAVE;
                        $User->save();
-//			$User->errors;
                     }
                     $return = [
                         'status' => 'OK'
