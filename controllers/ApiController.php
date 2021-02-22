@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\ApiComponent;
+use app\models\Message;
 use app\models\Order;
 use Yii;
 use app\models\Profile;
@@ -101,10 +102,14 @@ public function beforeAction($action)
 //        return $request->firebase_id;
 //        $key=array_search($request->firebase_id, $User->firebase_ids);
 //        return $key !==false;
+        $text = '';
         if($request->firebase_id){
+            $text .= '1 ';
             if(is_array($User->firebase_ids)){
+                $text .= '2 ';
             if(($key=array_search($request->firebase_id, $User->firebase_ids)) !== false){
 //                return 1;
+                $text .= '3 ';
                 $firebase_ids = $User->firebase_ids;
                 unset($firebase_ids[$key]);
                 $User->firebase_ids = $firebase_ids;
@@ -115,6 +120,12 @@ public function beforeAction($action)
 
             }
         }
+        $mes = new  Message([
+            'id_to_user' => 1,
+            'title' => $text,
+            'text' => ''
+        ]);
+        $mes->sendPush(false);
 
         return ['status' => 'OK'];
 
