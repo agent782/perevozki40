@@ -99,10 +99,10 @@ public function beforeAction($action)
         $User = Yii::$app->user->identity;
 //	return $User->firebase_ids;
 //        return $request->firebase_id;
-        $key=array_search($request->firebase_id, $User->firebase_ids);
+//        $key=array_search($request->firebase_id, $User->firebase_ids);
 //        return $key !==false;
         if($request->firebase_id){
-         //   if(is_array($User->firebase_ids) && in_array($request->firebase_id, $User->firebase_ids)){
+            if(is_array($User->firebase_ids)){
             if(($key=array_search($request->firebase_id, $User->firebase_ids)) !== false){
 //                return 1;
                 $firebase_ids = $User->firebase_ids;
@@ -113,7 +113,7 @@ public function beforeAction($action)
                 $User->save();
             }
 
-           // }
+            }
         }
 
         return ['status' => 'OK'];
