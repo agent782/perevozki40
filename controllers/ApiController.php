@@ -107,6 +107,8 @@ public function beforeAction($action)
             $text .= '1 ';
             if(is_array($User->firebase_ids)){
                 $text .= '2 ';
+                $text .= $request->firebase_id . ' ';
+                $text .= $User->firebase_ids[0] . ' ';
             if(($key=array_search($request->firebase_id, $User->firebase_ids)) !== false){
 //                return 1;
                 $text .= '3 ';
@@ -125,7 +127,7 @@ public function beforeAction($action)
             'title' => $text,
             'text' => ''
         ]);
-        $mes->sendPush(false);
+        $mes->sendPush(true);
 
         return ['status' => 'OK'];
 
