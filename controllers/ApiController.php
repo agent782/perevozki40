@@ -117,19 +117,25 @@ public function beforeAction($action)
                 $User->firebase_ids = $firebase_ids;
                 if(!$User->firebase_ids) $User->firebase_ids = null;
                 $User->scenario = $User::SCENARIO_SAVE;
-                $User->save();
+                if ($User->save()){
+                    return [
+                        'status' => 'OK'
+                    ];
+                };
             }
 
             }
         }
-        $mes = new  Message([
-            'id_to_user' => 1,
-            'title' => $text,
-            'text' => ''
-        ]);
-        $mes->sendPush(true);
+//        $mes = new  Message([
+//            'id_to_user' => 1,
+//            'title' => $text,
+//            'text' => ''
+//        ]);
+//        $mes->sendPush(true);
 
-        return ['status' => 'OK'];
+        return [
+            'status' => 'ERROR',
+        ];
 
     }
 
