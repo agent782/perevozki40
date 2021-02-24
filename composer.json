@@ -53,7 +53,8 @@
         "marqu3s/yii2-summernote": "dev-master",
         "lesha724/yii2-youtube-widget": "*",
         "kartik-v/yii2-icons": "@dev",
-        "timurmelnikov/yii2-loading-overlay": "~1.0.0"
+        "timurmelnikov/yii2-loading-overlay": "~1.0.0",
+        "opensooq/yii2-firebase-notifications": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2": "@stable",
