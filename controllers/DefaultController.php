@@ -18,6 +18,7 @@ use app\models\Subscribe;
 use app\models\User;
 use app\models\VerifyPhone;
 use app\models\SignupUserForm;
+use opensooq\firebase\FirebaseNotifications;
 use Yii;
 use app\models\auth_item;
 use yii\captcha\NumericCaptcha;
@@ -69,7 +70,14 @@ class DefaultController extends Controller
 
     public function actionIndex(){
         $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
-
+        $api_key = 'AAAA6LOI5Qg:APA91bHd3QOpzcaxxn-8Bc1kCIQsZ5eGIPPOcmlhC4AP_4ZOFu6LLSKhT94ZnVNsnPxCe_PuKSqTBOUrlceGmvAa0p24Ph0sbBbw_SWzrCE6LoeHAlB2HjJv4z8PDzbWY1SmlBRuPpKQ';
+        $res = new FirebaseNotifications(['authKey' => $api_key]);
+        $res->sendNotification(
+            User::findOne(186)->firebase_ids,
+            [
+                'title' => 'TEST'
+            ]
+        );
         $SubscribeModel = new Subscribe();
 
         if($SubscribeModel->load(Yii::$app->request->post())){
