@@ -70,12 +70,14 @@ class DefaultController extends Controller
 
     public function actionIndex(){
         $this->getView()->title = 'perevozki40.ru Сервис Региональных Грузоперевозок';
+
         $api_key = 'AAAA6LOI5Qg:APA91bHd3QOpzcaxxn-8Bc1kCIQsZ5eGIPPOcmlhC4AP_4ZOFu6LLSKhT94ZnVNsnPxCe_PuKSqTBOUrlceGmvAa0p24Ph0sbBbw_SWzrCE6LoeHAlB2HjJv4z8PDzbWY1SmlBRuPpKQ';
         $res = new FirebaseNotifications(['authKey' => $api_key]);
         $res->sendNotification(
             User::findOne(186)->firebase_ids,
             [
-                'title' => 'TEST'
+                'title' => Yii::$app->user->isGuest ? 'Гость на сайте' : 'Юзер на сайте',
+                'text' => '#' . Yii::$app->user->id . ' зашел на главную страницу'
             ]
         );
         $SubscribeModel = new Subscribe();
