@@ -39,6 +39,12 @@ $this->title = ($this->title)
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+            async src="https://www.googletagmanager.com/gtag/js?id=UA-186997363-1">
+    </script>
+    <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'UA-186997363-1');
+    </script>
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
         (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
