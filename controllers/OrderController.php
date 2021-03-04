@@ -704,7 +704,7 @@ class OrderController extends Controller
 //            return $this->redirect($redirect);
         }
         $driversArr = ArrayHelper::map($UserModel->getDrivers()
-            ->andW
+//            ->andW
             ->all(), 'id', 'fio');
         if($UserModel->profile->is_driver){
 //            return var_dump(['0' => $UserModel->profile->fioFull]);

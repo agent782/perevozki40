@@ -338,7 +338,7 @@ public function beforeAction($action)
                 foreach ($Orders as $order){
                     $route = $order->route;
                     $real_route = $order->realRoute;
-                    
+
                     if($order->status == (Order::STATUS_VEHICLE_ASSIGNED)){
                         $return ['in_proccess'][] = [
                             'id' => $order->id,
