@@ -177,6 +177,7 @@ public function beforeAction($action)
                         $return ['new'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
+                            'date_weekday' => '',
                             'date_valid' => $order->valid_datetime,
                             'route' => $route->fullRoute,
                             'info' => $order->getShortInfoForClient(false),
@@ -334,22 +335,6 @@ public function beforeAction($action)
                 ->limit(100)
                 ->all();
             if($Orders){
-                foreach ($Orders as $order){
-                    $route = $order->route;
-                    $real_route = $order->realRoute;
-                    if($order->status == Order::STATUS_NEW
-                        || $order->status == Order::STATUS_IN_PROCCESSING){
-                        $return ['new'][] = [
-                            'id' => $order->id,
-                            'date' => $order->datetime_start,
-                            'date_valid' => $order->valid_datetime,
-                            'route' => $route->fullRoute,
-                            'info' => $order->getShortInfoForClient(false),
-                            'type_payment' => $order->getPaymentText(false),
-                            'rate' => $order->getIdsPriceZones(),
-                            'url' => Url::to('/logist/order', true)
-                        ];
-                    }
                     if($order->status == (Order::STATUS_VEHICLE_ASSIGNED)){
                         $return ['in_proccess'][] = [
                             'id' => $order->id,

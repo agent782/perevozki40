@@ -703,7 +703,9 @@ class OrderController extends Controller
             functions::setFlashWarning('У Вас не добавлен ни один водитель!');
 //            return $this->redirect($redirect);
         }
-        $driversArr = ArrayHelper::map($UserModel->getDrivers()->all(), 'id', 'fio');
+        $driversArr = ArrayHelper::map($UserModel->getDrivers()
+            ->andW
+            ->all(), 'id', 'fio');
         if($UserModel->profile->is_driver){
 //            return var_dump(['0' => $UserModel->profile->fioFull]);
             $driversArr['0'] = $UserModel->profile->fioFull;
