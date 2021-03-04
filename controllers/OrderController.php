@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 use app\components\functions\emails;
+use app\models\Driver;
 use app\models\Payment;
 use app\models\Profile;
 use app\models\setting\SettingVehicle;
@@ -704,7 +705,7 @@ class OrderController extends Controller
 //            return $this->redirect($redirect);
         }
         $driversArr = ArrayHelper::map($UserModel->getDrivers()
-//            ->andW
+            ->andWhere(['status' => Driver::STATUS_ACTIVE])
             ->all(), 'id', 'fio');
         if($UserModel->profile->is_driver){
 //            return var_dump(['0' => $UserModel->profile->fioFull]);
