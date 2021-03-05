@@ -315,7 +315,6 @@ public function beforeAction($action)
                     $route = $order->route;
                     if (($order->status == Order::STATUS_NEW
                             || $order->status == Order::STATUS_IN_PROCCESSING)
-                        && !$order->hide
                     ) {
                         $return ['new'][] = [
                             'id' => $order->id,
