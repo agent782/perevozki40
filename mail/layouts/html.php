@@ -21,7 +21,6 @@ use yii\helpers\Url;
     <br>
     https://youtu.be/ggzdPpIRpdI
     <br><br>
-    С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', 'http://perevozki40.ru')?>
     С Уважением, Сервис Региональных Перевозок <?= Html::a('perevozki40.ru', 'https://perevozki40.ru')?>
 
     <?php $this->endBody() ?>

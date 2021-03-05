@@ -319,7 +319,7 @@ public function beforeAction($action)
                         $return ['new'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
-                            'day_week' => functions::DayToStartUnixTime($order->datetime_start),
+                            'day_week' => functions::rus_date('l', $order->datetime_start),
                             'date_valid' => $order->valid_datetime,
                             'route' => $route->fullRoute,
                             'info' => $order->getShortInfoForClient(false),
