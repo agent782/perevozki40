@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\ApiComponent;
+use app\components\functions\functions;
 use app\models\Message;
 use app\models\Order;
 use Yii;
@@ -319,6 +320,7 @@ public function beforeAction($action)
                         $return ['new'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
+                            'day_week' => functions::DayToStartUnixTime($order->datetime_start),
                             'date_valid' => $order->valid_datetime,
                             'route' => $route->fullRoute,
                             'info' => $order->getShortInfoForClient(false),
