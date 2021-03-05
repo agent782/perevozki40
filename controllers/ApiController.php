@@ -245,6 +245,7 @@ public function beforeAction($action)
                         $return ['new'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
+                            'day_week' => functions::rus_date('l', strtotime($order->datetime_start)),
                             'date_valid' => $order->valid_datetime,
                             'route' => $route->fullRoute,
                             'info' => $order->getShortInfoForClient(false),
@@ -268,6 +269,7 @@ public function beforeAction($action)
                         $return ['in_proccess'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
+                            'day_week' => functions::rus_date('l', strtotime($order->datetime_start)),
                             'route' => $route->fullRoute,
                             'info' => $order->getShortInfoForClient(false),
                             'client' => $order->getClientInfo(false, true),
