@@ -1851,10 +1851,15 @@ class Order extends \yii\db\ActiveRecord
                                             $showDriveLicence = true, $html = false){
         $return = '';
         if($FC = $this->finishContacts){
-            $return .= $FC->getVehicleInfo() . '<br>'
-                . $FC->getCarOwnerInfo($showPhones) . '<br>'
-                . $FC->getDriverInfo($showPhones) . '<br>';
-            if(Profile::notAdminOrDispetcher()) return $return;
+            if($this->status == self::STATUS_CONFIRMED_VEHICLE
+                || $this->status == self::STATUS_CONFIRMED_SET_SUM
+                || $this->status == self::STATUS_CONFIRMED_CLIENT
+            ) {
+                $return .= $FC->getVehicleInfo() . '<br>'
+                    . $FC->getCarOwnerInfo($showPhones) . '<br>'
+                    . $FC->getDriverInfo($showPhones) . '<br>';
+                if (Profile::notAdminOrDispetcher()) return $return;
+            }
         }
         if(!$this->id_vehicle) return false;
         $vehicle = $this->vehicle;
