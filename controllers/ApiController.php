@@ -336,7 +336,7 @@ public function beforeAction($action)
                             'info' => $order->getShortInfoForClient(false),
                             'type_payment' => $order->getPaymentText(false),
                             'rate' => '',
-                            'url' => Url::to(['/logist/order',,
+                            'url' => Url::to(['/logist/order',
                                 'tab' => 0
                             ], true)
                         ];
