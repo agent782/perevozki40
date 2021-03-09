@@ -281,8 +281,8 @@ public function beforeAction($action)
                                 ->getTextWithShowMessageButton($route->distance, false),
                             'type_payment' => $order->getPaymentText(false),
                             'url' => Url::to([
-                                '/order/finish-by-vehicle',
-                                'id_order' => $order->id,
+                                '/order/vehicle',
+                                'tab' => 1
                             ], true)
                         ];
                     }
