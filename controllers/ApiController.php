@@ -200,7 +200,10 @@ public function beforeAction($action)
                                 ->id_pricezone_for_vehicle)
                                 ->getTextWithShowMessageButton($route->distance, false, $order->discount),
                             'type_payment' => $order->getPaymentText(false),
-                            'url' => Url::to('/order/client', true)
+                            'url' => Url::to([
+                                '/order/client',
+                                'tab' => 1
+                            ], true)
                         ];
                     }
                     if($order->status == Order::STATUS_CONFIRMED_VEHICLE
@@ -218,7 +221,10 @@ public function beforeAction($action)
                             'vehicle' => $order->getFullInfoAboutVehicle(false,false,false,
                                 false),
                             'client' => $order->getClientInfo(false, false),
-                            'url' => Url::to('/order/vehicle', true)
+                            'url' => Url::to([
+                                '/order/vehicle',
+                                'tab' => 2
+                            ], true)
                         ];
                     }
 
@@ -300,7 +306,10 @@ public function beforeAction($action)
                             'info' => $order->getShortInfoForClient(false),
                             'client' => $order->getClientInfo(false, false),
                             'vehicle' => $order->getFullInfoAboutVehicle(false,false,false,true),
-                            'url' => Url::to('/order/vehicle', true)
+                            'url' => Url::to([
+                                '/order/vehicle',
+                                'tab' => 2
+                            ], true)
                         ];
                     }
 
@@ -327,7 +336,9 @@ public function beforeAction($action)
                             'info' => $order->getShortInfoForClient(false),
                             'type_payment' => $order->getPaymentText(false),
                             'rate' => '',
-                            'url' => Url::to('/logist/order', true)
+                            'url' => Url::to(['/logist/order',,
+                                'tab' => 0
+                            ], true)
                         ];
                     }
                 }
@@ -381,7 +392,10 @@ public function beforeAction($action)
                             'info' => $order->getShortInfoForClient(false),
                             'client' => $order->getClientInfo(false, false),
                             'vehicle' => $order->getFullInfoAboutVehicle(false,false,false,true),
-                            'url' => Url::to('/logist/order', true)
+                            'url' => Url::to([
+                                '/logist/order',
+                                'tab' => 2
+                            ], true)
                         ];
                     }
 
