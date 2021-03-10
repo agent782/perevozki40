@@ -26,7 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'content' => $this->render('vehicle/new_orders', [
                         'dataProvider_newOrders' => $dataProvider_newOrders,
                         'searchModel' => $searchModel
-                    ])
+                    ]),
+                    'active' => ($tab == 'new')?true:false,
                 ],
                 [
                     'id' => 'in_proccess',
@@ -35,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider_in_process' => $dataProvider_in_process,
                         'searchModel' => $searchModel
                     ]),
-                    'active' => ($dataProvider_in_process->count)?true:false,
+                    'active' => ($tab == 'in_proccess')?true:false,
                 ],
                 [
                     'options' => ['id' => 'completed'],
@@ -44,6 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'dataProvider_arhive' => $dataProvider_arhive,
                         'searchModel' => $searchModel
                     ]),
+                    'active' => ($tab == 'completed')?true:false,
                 ],
             ]
         ]);

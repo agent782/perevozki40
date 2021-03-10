@@ -288,7 +288,7 @@ public function beforeAction($action)
                             'type_payment' => $order->getPaymentText(false),
                             'url' => Url::to([
                                 '/order/vehicle',
-                                'tab' => 1
+                                'tab' => 'in_proccess'
                             ], true)
                         ];
                     }
@@ -307,7 +307,8 @@ public function beforeAction($action)
                             'client' => $order->getClientInfo(false, false),
                             'vehicle' => $order->getFullInfoAboutVehicle(false,false,false,true),
                             'url' => Url::to([
-                                '/order/vehicle#completed',
+                                '/order/vehicle',
+                                'tab' => 'completed'
                             ], true)
                         ];
                     }

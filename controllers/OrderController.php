@@ -149,7 +149,7 @@ class OrderController extends Controller
         ]);
     }
 
-    public function actionVehicle()
+    public function actionVehicle($tab = 'new')
     {
         $searchModel = new OrderSearch();
 //        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -168,11 +168,16 @@ class OrderController extends Controller
             'datetime_finish' => SORT_DESC
         ];
 
+        if(Yii::$app->request->get('tab')){
+            $tab = Yii::$app->request->get('tab');
+        }
+
         return $this->render('vehicle', [
             'searchModel' => $searchModel,
             'dataProvider_newOrders' => $dataProvider_newOrders,
             'dataProvider_in_process' => $dataProvider_in_process,
             'dataProvider_arhive' => $dataProvider_arhive,
+            'tab' => $tab
         ]);
     }
 
