@@ -25,11 +25,7 @@ use app\models\PriceZone;
 //        'striped' => false,
 //        'responsive'=>true,
 //        'floatHeader'=>false,
-
 //        'responsiveWrap' => false,
-        'options' => [
-//            'style' => 'max-width: 300px; white-space: normal;'
-        ],
 //        'pjax'=>true,
         'columns' => [
             'id',
