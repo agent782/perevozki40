@@ -1102,7 +1102,7 @@ class OrderController extends Controller
                             Order::STATUS_VEHICLE_ASSIGNED,
                             $modelOrder->id_car_owner,
                             $modelOrder->id_vehicle);
-                        functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрировкан!');
+                        functions::setFlashSuccess('Спасибо! Повторный заказ зарегистрирован!');
                         return $this->redirect($redirect);
                     } else {
                         functions::setFlashWarning('Указанные данные по заказу не подходят для выбранного ТС');

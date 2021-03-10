@@ -28,8 +28,11 @@ use yii\helpers\ArrayHelper;
 //        'responsive'=>true,
 //        'floatHeader'=>false,
         'options' => [
-            'class' => 'minRoute'
+            'class' => 'minRoute',
         ],
+//        'contentOptions'=>[
+//                'style'=>'white-space: normal;'
+//        ]
 //        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
 //        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
 //        'filterRowOptions'=>['class'=>'kartik-sheet-style'],

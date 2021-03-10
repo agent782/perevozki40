@@ -5,7 +5,8 @@
  * Date: 05.01.2019
  * Time: 12:28
  */
-use kartik\grid\GridView;
+use yii\grid\GridView;
+//use kartik\grid\GridView;
 use app\models\Order;
 use yii\bootstrap\Html;
 use app\models\Vehicle;
@@ -24,15 +25,12 @@ use app\models\PriceZone;
 //        'striped' => false,
 //        'responsive'=>true,
 //        'floatHeader'=>false,
+
+//        'responsiveWrap' => false,
         'options' => [
-//            'class' => 'minRoute'
+//            'style' => 'max-width: 300px; white-space: normal;'
         ],
-//        'containerOptions'=>['style'=>'overflow: auto'], // only set when $responsive = false
-//        'headerRowOptions'=>['class'=>'kartik-sheet-style'],
-//        'filterRowOptions'=>['class'=>'kartik-sheet-style'],
-//        'persistResize'=>true,
-        'responsiveWrap' => false,
-        'pjax'=>true,
+//        'pjax'=>true,
         'columns' => [
             'id',
             [
@@ -47,7 +45,11 @@ use app\models\PriceZone;
                 'format' => 'raw',
                 'value' => function($order){
                     return $order->getFullInfoAboutVehicle(true,true,true,true);
-                }            ],
+                },
+                'contentOptions' => [
+//                    'style' => 'max-width: 300px; white-space: normal;'
+                ]
+            ],
             [
                 'label' => 'Маршрут',
                 'format' => 'raw',
