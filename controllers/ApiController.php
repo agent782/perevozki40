@@ -307,8 +307,7 @@ public function beforeAction($action)
                             'client' => $order->getClientInfo(false, false),
                             'vehicle' => $order->getFullInfoAboutVehicle(false,false,false,true),
                             'url' => Url::to([
-                                '/order/vehicle',
-                                'active' => 'completed'
+                                '/order/vehicle#completed',
                             ], true)
                         ];
                     }
