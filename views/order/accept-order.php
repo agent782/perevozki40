@@ -40,13 +40,14 @@
                     'redirect' => $redirect,
                 ])
             ])); ?>
-
+    <br>
     <?= Html::a('Отменить', $redirect, ['class' => 'btn btn-warning'])?>
     <?= Html::submitButton('Принять и позвонить', ['class' => 'btn btn-primary'])?>
     <?php
         ActiveForm::end();
     ?>
 </div>
+        <br><br>
 <div class="col-lg-6">
     <?= $OrderModel->getFullNewInfo(false, false, false)?>
 </div>
