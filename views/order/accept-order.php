@@ -41,7 +41,7 @@
                 ])
             ])); ?>
     <br>
-    <?= Html::a('Отменить', $redirect, ['class' => 'btn btn-warning'])?>
+    <?= Html::a('Назад', $redirect, ['class' => 'btn btn-warning'])?>
     <?= Html::submitButton('Принять и позвонить', ['class' => 'btn btn-primary'])?>
     <?php
         ActiveForm::end();

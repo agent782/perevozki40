@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'encodeLabels' => false,
             'items' => [
                 [
+                    'id' => 'new',
                     'label' => 'В поиске...<br>(+' . $dataProvider_newOrders->totalCount . ')',
                     'content' => $this->render('vehicle/new_orders', [
                         'dataProvider_newOrders' => $dataProvider_newOrders,
@@ -28,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ])
                 ],
                 [
+                    'id' => 'in_proccess',
                     'label' => 'В процессе... <br>(+' . $dataProvider_in_process->totalCount . ')' ,
                     'content' => $this->render('vehicle/in_proccess', [
                         'dataProvider_in_process' => $dataProvider_in_process,
@@ -36,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'active' => ($dataProvider_in_process->count)?true:false,
                 ],
                 [
+                    'id' => 'completed',
                     'label' => 'Завершенные<br>(+' . $dataProvider_arhive->totalCount . ')',
                     'content' => $this->render('vehicle/finished', [
                         'dataProvider_arhive' => $dataProvider_arhive,
