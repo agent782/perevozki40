@@ -27,7 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'content' => $this->render('client/new_orders', [
                     'dataProvider_newOrders' => $dataProvider_newOrders,
                     'searchModel' => $searchModel
-                ])
+                ]),
+                'active' => ($tab == 'new')?true:false,
             ],
             [
                 'label' => 'В процессе... <br>(+' . $dataProvider_in_process->totalCount . ')' ,
@@ -35,14 +36,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'dataProvider_in_process' => $dataProvider_in_process,
                     'searchModel' => $searchModel
                 ]),
-                'active' => ($dataProvider_in_process->count)?true:false,
-            ],
+                'active' => ($tab == 'in_proccess')?true:false,            ],
             [
                 'label' => 'Завершенные<br>(+' . $dataProvider_arhive->totalCount . ')',
                 'content' => $this->render('client/finished', [
                     'dataProvider_arhive' => $dataProvider_arhive,
                     'searchModel' => $searchModel
                 ]),
+                'active' => ($tab == 'completed')?true:false,
             ],
             [
                 'label' => 'Отмененные<br>(+' . $dataProvider_canceled->totalCount . ')',
@@ -50,6 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'dataProvider_canceled' => $dataProvider_canceled,
                     'searchModel' => $searchModel
                 ]),
+                'active' => ($tab == 'canceled')?true:false,
             ],
         ]
     ]);

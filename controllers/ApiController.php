@@ -178,6 +178,7 @@ public function beforeAction($action)
                         $return ['new'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
+                            'day_week' => functions::rus_date('l', strtotime($order->datetime_start)),
                             'date_weekday' => '',
                             'date_valid' => $order->valid_datetime,
                             'route' => $route->fullRoute,
@@ -191,6 +192,7 @@ public function beforeAction($action)
                         $return ['in_proccess'][] = [
                             'id' => $order->id,
                             'date' => $order->datetime_start,
+                            'day_week' => functions::rus_date('l', strtotime($order->datetime_start)),
                             'route' => $route->fullRoute,
                             'info' => $order->getShortInfoForClient(false),
                             'vehicle' => $order->getFullInfoAboutVehicle(true,true,
@@ -202,7 +204,7 @@ public function beforeAction($action)
                             'type_payment' => $order->getPaymentText(false),
                             'url' => Url::to([
                                 '/order/client',
-                                'tab' => 1
+                                'tab' => 'in_proccess'
                             ], true)
                         ];
                     }
@@ -223,7 +225,7 @@ public function beforeAction($action)
                             'client' => $order->getClientInfo(false, false),
                             'url' => Url::to([
                                 '/order/vehicle',
-                                'tab' => 2
+                                'tab' => 'completed'
                             ], true)
                         ];
                     }
