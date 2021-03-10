@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'active' => ($dataProvider_in_process->count)?true:false,
                 ],
                 [
-                    'id' => 'completed',
+                    'options' => ['id' => 'completed'],
                     'label' => 'Завершенные<br>(+' . $dataProvider_arhive->totalCount . ')',
                     'content' => $this->render('vehicle/finished', [
                         'dataProvider_arhive' => $dataProvider_arhive,
